@@ -4,30 +4,30 @@ if(typeof HTTP == 'undefined')
 if(typeof HTTP.Ajax == 'undefined')
 	JSAN.use('HTTP.Ajax');
 ////////////////////////////////////////////////////////////////////////
-JSmarty = function()
+JSmarty = function(){};
+
+JSmarty.VERSION = 'dev0.0.1';
+JSmarty.LICENSE = 'LGPL';
+
+JSmarty.prototype =
 {
-	this.template_dir	= './templates';
-	this.left_delimiter	= '{';
-	this.right_delimiter= '}';
+	template_dir : './templates',
+	left_delimiter : '{',
+	right_delimiter : '}',
 
-	this._result = new String();
-
-	this._tpl_vars =
+	_ajax: new HTTP.Ajax(),
+	_result: '',
+	_tpl_vars:
 	{
-		smarty:
+		smarty :
 		{
-			get		: {},
-			cookies	: {},
-			foreach	: {},
-			section	: {},
-			version	: JSmarty.VERSION,
-			template: ''
+			get:{}, template:{}, foreach:{},
+			sections:{}, version: JSmarty.VERSION
 		}
-	};
-
-	this._plugin =
+	},
+	_plugin:
 	{
-		Block		: { Foreach:true, Section:true, Capture: true, 'If':true },
+		Block		: { Foreach:true, Section:true, Capture: true, 'If':true, Testformat:true },
 		Insert		: {},
 		Modifier	: {},
 		Compiler	: { Assign:true },
@@ -36,11 +36,8 @@ JSmarty = function()
 		Prefilter	: {},
 		Postfilter	: {},
 		Outputfilter: {}
-	};
-
+	}
 }
-JSmarty.VERSION = 'dev0.0.1';
-JSmarty.LICENSE = 'LGPL';
 /* --------------------------------------------------------------------
  # public methods : Parser
  -------------------------------------------------------------------- */
@@ -146,14 +143,18 @@ JSmarty.prototype.assign = function(tpl_var, value)
 // fetch
 JSmarty.prototype.fetch = function(file)
 {
-	var request = new HTTP.Ajax().create();
+	var callback;
 
-	// ここら辺かなりの仮実装です(汗)
-	request.open('GET',this.template_dir +'/'+ file);
-	request.send('');
-	this._result = this.parser(request.responseText);
+	complete = function(request, options){
+		return options.jsmarty.toText(options.jsmarty.parser(request.responseText));
+	}
 
-	return this.toText(this._result,this._tpl_vars,'');
+	return this._ajax.request
+			(
+				this.template_dir + '/' + file,{
+				argments	: { jsmarty : this },
+				onComplete	: complete
+			});
 }
 // display
 JSmarty.prototype.display = function(file)
