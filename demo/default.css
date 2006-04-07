@@ -1,0 +1,26 @@
+body
+{
+	margin: 16px 64px;
+	color: #330000; font-size: 90%; line-height: 1.5em;
+	font-family: Verdana, Helvetica, sans-serif;
+}
+
+h1
+{
+	font-size: 130%; padding: 8px;
+	border: 1px solid #000000;
+	border-width: 1px 8px;
+}
+
+h2
+{
+	font-size: 125%; padding: 4px;
+	border-left: 8px solid #000000;
+	border-bottom: 1px solid #000000;
+}
+
+.result
+{
+	margin:8px; padding: 8px;
+	border: 1px solid #000000;
+}

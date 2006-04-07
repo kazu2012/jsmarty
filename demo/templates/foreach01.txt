@@ -1,0 +1,3 @@
+{foreach from=$hoge item='datum' key='key'}
+{$key}:{$datum}<br />
+{/foreach}
