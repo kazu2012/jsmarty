@@ -119,7 +119,7 @@ JSmarty.prototype.parser = function(result)
 
 	// Function Expression
 
-	return result;
+	return this.toText(result);
 }
 /* --------------------------------------------------------------------
  # public methods : Templates Variables
@@ -143,25 +143,27 @@ JSmarty.prototype.assign = function(tpl_var, value)
 // fetch
 JSmarty.prototype.fetch = function(file)
 {
-	var callback;
+	var comlete;
 
 	complete = function(request, options){
-		return options.jsmarty.toText(options.jsmarty.parser(request.responseText));
+		options.jsmarty._result = options.jsmarty.parser(request.responseText);
 	}
 
-	return this._ajax.request
-			(
-				this.template_dir + '/' + file,{
-				argments	: { jsmarty : this },
-				onComplete	: complete
-			});
+	this._ajax.request
+	(
+		this.template_dir + '/' + file,{
+		asynchronous : false,
+		onComplete : complete,
+		onCompleteOptions : { jsmarty : this }
+	});
+
+	return this._result;
 }
 // display
 JSmarty.prototype.display = function(file)
 {
 	document.write(this.fetch(file));
 }
-
 // get_template_vars
 JSmarty.prototype.get_template_vars = function(tpl_var)
 {
