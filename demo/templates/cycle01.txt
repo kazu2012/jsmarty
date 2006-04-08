@@ -1,0 +1,7 @@
+<ol>
+  <li>{cycle value='one,two,tree,four,five'}</li>
+  <li>{cycle value='one,two,tree,four,five'}</li>
+  <li>{cycle value='one,two,tree,four,five'}</li>
+  <li>{cycle value='one,two,tree,four,five'}</li>
+  <li>{cycle value='one,two,tree,four,five'}</li>
+</ul>

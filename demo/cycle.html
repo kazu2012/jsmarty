@@ -4,25 +4,23 @@
 	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 	<meta http-equiv='Content-Style-Type'  content='text/css' />
 	<meta http-equiv='Content-Script-Type' content='text/javascript' />
-	<title>Foreach Examples</title>
+	<title>Cycle Examples</title>
 	<link rel='stylesheet' type='text/css' href='default.css' />
 	<script type='text/javascript' charset='UTF-8' src='JSAN.js'></script>
 </head>
 <body>
 
-<h1>JSmarty.Block.Foreach</h1>
+<h1>JSmarty.Function.Cycle</h1>
 
-<h2>foreach01.txt</h2>
-<div class='result' id='idForeach01'>
-</div>
+<h2>cycle01</h2>
+<div class='result' id='idCycle01'></div>
 
 <script type='text/javascript'>
 JSAN.includePath = ['../libs','../../jslib'];
 
 JSAN.use('JSmarty');
 var smarty = new JSmarty();
-smarty.assign('hoge', { English:'Hello,World', Japanese:'こんにちは,世界!!', French:'Allo,' });
-smarty.display('foreach01.txt', document.getElementById('idForeach01'));
+smarty.display('cycle01.txt', document.getElementById('idCycle01'));
 </script>
 
 </body>
