@@ -16,7 +16,7 @@ JSmarty.Block.Foreach = function(params, content, jsmarty)
 		loop.iteration = 0;
 	}
 
-	for(key in params.from)
+	for(i in params.from)
 	{
 		if(params.name)
 		{
@@ -24,10 +24,10 @@ JSmarty.Block.Foreach = function(params, content, jsmarty)
 			if(loop.first && (loop.iteration != 1)) loop.first = false;
 			if(loop.iteration == loop.total) loop.last = true;
 		}
-		if(params.key) jsmarty.assign(params.key, key);
+		if(params.key) jsmarty.assign(params.key, i);
 
-		jsmarty.assign(params.item, params.from[key]);
-		HTMLStr += jsmarty.toText(content);
+		jsmarty.assign(params.item, params.from[i]);
+		HTMLStr += jsmarty.parser(content);
 	}
 
 	if(params.name)

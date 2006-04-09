@@ -13,6 +13,11 @@
 <h1>JSmarty.Block.Foreach</h1>
 
 <h2>foreach01.txt</h2>
+<pre>
+var smarty = new JSmarty();
+smarty.assign('hoge', { English:'Hello,World', Japanese:'こんにちは,世界!!', French:'Allo,' });
+smarty.display('foreach01.txt', document.getElementById('idForeach01'));
+</pre>
 <div class='result' id='idForeach01'>
 </div>
 

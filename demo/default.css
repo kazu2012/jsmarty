@@ -1,6 +1,6 @@
 body
 {
-	margin: 16px 64px;
+	margin: 16px;
 	color: #330000; font-size: 90%; line-height: 1.5em;
 	font-family: Verdana, Helvetica, sans-serif;
 }
@@ -19,8 +19,20 @@ h2
 	border-bottom: 1px solid #000000;
 }
 
-.result
+
+pre, .result
 {
 	margin:8px; padding: 8px;
 	border: 1px solid #000000;
+}
+
+#toc h1
+{
+	text-align: center;
+}
+
+#toc ul
+{
+	margin: 0px 16px;
+	padding: 0px;
 }
