@@ -1,4 +1,4 @@
-JSmarty.Function.Counter = function(params, jsmarty)
+JSmarty.Function.Counter = function(params, JSmarty)
 {
 	return '';
 }

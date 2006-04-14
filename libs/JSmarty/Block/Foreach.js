@@ -1,14 +1,14 @@
-JSmarty.Block.Foreach = function(params, content, jsmarty)
+JSmarty.Block.Foreach = function(params, content, JSmarty)
 {
 	var HTMLStr = '', loop;
 
-	params = jsmarty.toParams(params);
+	params = JSmarty.toParams(params);
 	params.key	= (params.key) ? params.key : false;
-	params.from = jsmarty.get_template_vars(params.from);
+	params.from = JSmarty.get_template_vars(params.from);
 
 	if(params.name)
 	{
-		loop = jsmarty._jsmarty_vars.foreach[params.name];
+		loop = JSmarty._jsmarty_vars.foreach[params.name];
 		loop.show  = true;
 		loop.last  = false;
 		loop.first = true;
@@ -24,10 +24,10 @@ JSmarty.Block.Foreach = function(params, content, jsmarty)
 			if(loop.first && (loop.iteration != 1)) loop.first = false;
 			if(loop.iteration == loop.total) loop.last = true;
 		}
-		if(params.key) jsmarty.assign(params.key, i);
+		if(params.key) JSmarty.assign(params.key, i);
 
-		jsmarty.assign(params.item, params.from[i]);
-		HTMLStr += jsmarty.parser(content);
+		JSmarty.assign(params.item, params.from[i]);
+		HTMLStr += JSmarty.parser(content);
 	}
 
 	if(params.name)
