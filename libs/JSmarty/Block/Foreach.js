@@ -2,7 +2,6 @@ JSmarty.Block.Foreach = function(params, content, JSmarty)
 {
 	var HTMLStr = '', loop;
 
-	params = JSmarty.toParams(params);
 	params.key	= (params.key) ? params.key : false;
 	params.from = JSmarty.get_template_vars(params.from);
 

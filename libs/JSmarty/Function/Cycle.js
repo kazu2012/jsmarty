@@ -1,20 +1,52 @@
 JSmarty.Function.Cycle = function($params, $smarty)
 {
-	var $name, $print, $advance, $reset, $retval, $cycle_array;
+	var $retval, $cycle_array;
+	var $name, $print, $advance, $reset;
 
-	$name	 = ($params.name)	 ? $params.name    : 'default';
-	$print	 = ($params.print)	 ? $params.print   : true;
-	$reset	 = ($params.reset)	 ? $params.reset   : false;
-	$advance = ($params.advance) ? $params.advance : true;
+	$name	 = $params['name']	  || 'default';
+	$print	 = $params['print']   || true;
+	$reset	 = $params['reset']   || false;
+	$advance = $params['advance'] || true;
 
-	if(typeof $cycle_vars == 'undefined')
-		$cycle_vars = {};
+	if(typeof $cycle_vars == 'undefined') $cycle_vars = {};
+	if(typeof $cycle_vars[$name] == 'undefined') $cycle_vars[$name] = {};
+
+	if(!$params['values'])
+	{
+		if(!$cycle_vars[$name]['values'])
+		{
+			$smarty.trigger_error("cycle: missing 'values' parameter");
+			return '';
+		}
+	}
+	else
+	{
+		if(!$cycle_vars[$name]['values'] && $cycle_vars[$name]['values'] != $params['values'])
+			$cycle_vars[$name]['index'] = 0;
+		$cycle_vars[$name]['values'] = $params['values'];
+	}
+
 	if(typeof $cycle_vars[$name] == 'undefined')
 		$cycle_vars[$name] = {index:0,values:''};
 
-	$cycle_array = $params.value.split(',');
+	$cycle_vars[$name]['delimiter'] = ($params['delimiter']) ? $params['delimiter'] : ',';
 
-	if(print)
+	// à»â∫ÇÃãììÆâˆÇµÇ¢Ç©Ç‡Åc
+	if($cycle_vars[$name]['values'].constructor == 'array')
+		$cycle_array = $cycle_vars[$name]['values'];
+	else
+		$cycle_array = $cycle_vars[$name]['values'].split($cycle_vars[$name]['delimiter']);
+
+	if(!$cycle_vars[$name]['index'] || $reset)
+		$cycle_vars[$name]['index'] = 0;
+
+	if($params['assign'])
+	{
+		$print = false;
+		$smarty.assign($params['assign'], $cycle_array[$cycle_vars[$name]['index']]);
+	}
+
+	if($print)
  		$retval = $cycle_array[$cycle_vars[$name]['index']];
 	else
 		$retval = '';

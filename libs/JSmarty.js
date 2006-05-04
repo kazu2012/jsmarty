@@ -1,35 +1,43 @@
 ////////////////////////////////////////////////////////////////////////
-if(typeof HTTP == 'undefined')
-	HTTP = {};
-if(typeof HTTP.Ajax == 'undefined')
-	JSAN.use('HTTP.Ajax');
-////////////////////////////////////////////////////////////////////////
 JSmarty = function(){};
-
+JSmarty.Core = {};
+JSmarty.Block = {};
+JSmarty.Insert = {};
+JSmarty.Modifier = {};
+JSmarty.Compiler = {};
+JSmarty.Resource = {};
+JSmarty.Function = {};
+JSmarty.Prefilter = {};
+JSmarty.Postfilter = {};
+JSmarty.Outputfilter = {};
+/////////////////////////////////////////////////////////**NAME SPACES**
+JSAN.use('JSmarty.Core.Ajax');
+////////////////////////////////////////////////////////////**INCLUDES**
 JSmarty.AUTHOR	= 'shogo';
 JSmarty.VERSION = 'dev0.0.1';
 JSmarty.LICENSE = 'LGPL';
 
 JSmarty.prototype =
 {
+	$smarty:{ get:{},foreach:{},sections:{},capture:{},template:'',version: JSmarty.VERSION},
+
+	debugging : false,
 	template_dir : './templates',
 	left_delimiter : '{',
 	right_delimiter : '}',
-	debugging : false,
 
-	_ajax: new HTTP.Ajax(),
-	_result: '',
+	_ajax: new JSmarty.Core.Ajax(),
+	_result:'',
 	_pattern: new RegExp(),
 	_tpl_vars:{},
-	_jsmarty_vars:{ get:{}, template:'', foreach:{}, sections:{}, version: JSmarty.VERSION },
 	_plugin:
 	{
-		Block		: { Foreach:true, Section:true, Capture: true, 'If':true, Testformat:true },
+		Block		: { Capture: true, Foreach:true, Section:true, 'If':true},
 		Insert		: {},
 		Modifier	: {},
 		Compiler	: { Assign:true },
 		Resource	: {},
-		Function	: { Cycle :true, Ldelim:true, Rdelim:true, Html_image:true },
+		Function	: { Cycle :true, Counter:true, Ldelim:true, Rdelim:true},
 		Postfilter	: {},
 		Prefilter	: {},
 		Outputfilter: {}
@@ -65,7 +73,7 @@ JSmarty.prototype.variables = function(string, array, prefix)
 	switch(prefix)
 	{
 		case '$smarty\\.':
-			array = this._jsmarty_vars;
+			array = this.$smarty;
 			break;
 	}
 
@@ -104,11 +112,7 @@ JSmarty.prototype.parser = function(content)
 	{
 		if((result = pattern.exec(content[i])) == null)
 		{
-			if(block.flag)
-			{
-				block.content += content[i];
-				content[i] = '';
-			}
+			if(block.flag) block.content += content[i], content[i] = '';
 			continue;
 		}
 
@@ -119,9 +123,8 @@ JSmarty.prototype.parser = function(content)
 				block.index--;
 				continue;
 			}
-
 			if(typeof JSmarty.Block[block.name] == 'undefined')
-				JSAN.use('JSmarty.Block.'+result[1]);
+				JSAN.use('JSmarty.Block.'+block.name);
 			content[i] = JSmarty.Block[block.name](block.param, block.content, this);
 			continue;
 		}
@@ -137,6 +140,8 @@ JSmarty.prototype.parser = function(content)
 
 			block.name = result[1]; block.flag = true;
 			block.param= result[2]; block.close= L+'/'+block.name.toLowerCase()+R;
+
+			if(result[1] != 'If') block.param = this.toParams(block.param);
 
 			continue;
 		}
@@ -155,59 +160,86 @@ JSmarty.prototype.parser = function(content)
 /* --------------------------------------------------------------------
  # public methods : Template Variables
  -------------------------------------------------------------------- */
+// append
+JSmarty.prototype.append = function()
+{
+	
+}
 // assign
 JSmarty.prototype.assign = function(tpl_var, value)
 {
 	if(typeof value == 'undefined') value = null;
 
-	if(typeof tpl_var == 'object')
+	if(typeof tpl_var == 'string')
 	{
-		for(key in tpl_var)
-		{
-			if(key != '')
-				this._tpl_vars[key] = tpl_var[key];
-		}
+		this._tpl_vars['$'+tpl_var] = value;
 		return;
 	}
-	if(tpl_var != '')
-		this._tpl_vars['$'+tpl_var] = value;
+
+	for(i in tpl_var)
+	{
+		if(i == '') continue;
+		this._tpl_vars[i] = tpl_var[i];
+	}
+}
+// clear_assign
+JSmarty.prototype.clear_assign = function(tpl_var)
+{
+	if(typeof tpl_var == 'string')
+	{
+		delete this._tpl_vars['$'+tpl_var];
+		return;
+	}
+
+	for(i in tpl_var)
+	{
+		if(i == '') continue;
+		delete this._tpl_vars['$'+tpl_var[i]];
+	}
+}
+// clear_all_assign
+JSmarty.prototype.clear_all_assign = function(){
+	this._tpl_vars = new Array();
 }
 // get_template_vars
-JSmarty.prototype.get_template_vars = function(tpl_var)
-{
-	return this._tpl_vars[tpl_var];
+JSmarty.prototype.get_template_vars = function(tpl_var){
+	return (tpl_var) ? this._tpl_vars[tpl_var] : this._tpl_vars;
 }
 /* --------------------------------------------------------------------
  # public methods : Template Process
  -------------------------------------------------------------------- */
 // fetch
-JSmarty.prototype.fetch = function()
+JSmarty.prototype.fetch = function(file, element, display)
 {
-	
-}
-// display
-JSmarty.prototype.display = function(file, element)
-{
-	var complete, jsmarty = this;
-	this._jsmarty_vars.templete = this.template_dir +'/'+ file;
+	var ajax = this._ajax, smarty = this;
 
-	complete = function(request)
+	element = element || false;
+	display = display || false;
+
+	this.$smarty.template = file;
+
+	if(element)
 	{
-		if(jsmarty.debugging) var e, s = (new Date()).getTime();
-		jsmarty._result   = jsmarty.parser(request.responseText);
-		if(jsmarty.debugging)
+		oncomplete = function(request)
 		{
-			e =(new Date()).getTime();
-			alert('HTML Convert Time:\t'+ (e-s)/1000 +' Sec');
+			smarty._result	  = smarty.parser(request.responseText);
+			element.innerHTML = smarty._result;
 		}
-		element.innerHTML = jsmarty._result;
+		ajax.request(this.template_dir+'/'+file,{oncomplete:oncomplete});
+		return;
 	}
 
-	this._ajax.request
-	(
-		this._jsmarty_vars.templete,'',{
-		onComplete : complete
-	});
+	ajax.request(this.template_dir+'/'+file,{async:false});
+	this._result = this.parser(ajax.getText());
+
+	if(display)
+		document.write(this._result);
+
+	return this._result;
+}
+// display
+JSmarty.prototype.display = function(file, element){
+	this.fetch(file, element, true);
 }
 /* --------------------------------------------------------------------
  # public methods : Plugins
@@ -229,11 +261,3 @@ JSmarty.prototype.unregister_modifier = function(modifier){
 JSmarty.prototype.unregister_compiler_function = function(compiler){
 	delete this._plugin.Compiler[compiler];
 }
-
-////////////////////////////////////////////////////////////////////////
-JSmarty.Block = {};
-JSmarty.Modifier = {};
-JSmarty.Function = {};
-JSMarty.Prefilter = {};
-JSmarty.Postfilter = {};
-//////////////////////////////////////////////////////// *NAMESPACES* //
