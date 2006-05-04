@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+	<meta http-equiv='Content-Style-Type'  content='text/css' />
+	<meta http-equiv='Content-Script-Type' content='text/javascript' />
+	<title>JSmarty.Block.If</title>
+	<link rel='stylesheet' type='text/css' href='default.css' />
+	<script type='text/javascript' charset='UTF-8' src='JSAN.js'></script>
+</head>
+<body>
+
+<h1>JSmarty.Block.If</h1>
+
+<h2>if01.txt</h2>
+<pre>
+smarty.assign('hoge', true);
+</pre>
+<div class='result' id='idIf01'>
+</div>
+
+<script type='text/javascript'>
+JSAN.includePath = ['../libs','../../jslib'];
+
+JSAN.use('JSmarty');
+var smarty = new JSmarty();
+smarty.assign('hoge', true);
+smarty.display('if01.txt', document.getElementById('idIf01'));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+{if $hoge}
+Hello, World!!
+{/if}

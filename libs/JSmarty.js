@@ -211,6 +211,7 @@ JSmarty.prototype.get_template_vars = function(tpl_var){
 // fetch
 JSmarty.prototype.fetch = function(file, element, display)
 {
+	var oncomplete;
 	var ajax = this._ajax, smarty = this;
 
 	element = element || false;
@@ -222,14 +223,18 @@ JSmarty.prototype.fetch = function(file, element, display)
 	{
 		oncomplete = function(request)
 		{
-			smarty._result	  = smarty.parser(request.responseText);
-			element.innerHTML = smarty._result;
+			return function()
+			{
+				if(request.readyState != 4) return;
+				element.innerHTML = smarty.parser(request.responseText);
+				request = null;
+			}
 		}
-		ajax.request(this.template_dir+'/'+file,{oncomplete:oncomplete});
+		ajax.request(this.template_dir +'/'+ file,{ oncomplete : oncomplete });
 		return;
 	}
 
-	ajax.request(this.template_dir+'/'+file,{async:false});
+	ajax.request(this.template_dir +'/'+ file,{async:false});
 	this._result = this.parser(ajax.getText());
 
 	if(display)
@@ -245,8 +250,17 @@ JSmarty.prototype.display = function(file, element){
  # public methods : Plugins
  -------------------------------------------------------------------- */
 // register_*
-JSmarty.prototype.register_block = function(block){
+J.Smarty.prototype.register_block = function(block){
 	this._plugin.Block[block] = true;
+}
+JSmarty.prototype.register_function = function(func){
+	this._plugin.Function[func] = true;
+}
+JSmarty.prototype.register_modifier = function(modifier){
+	this._plugin.Modifier[modifier] = true;
+}
+JSmarty.prototype.register_compiler_function = function(compiler){
+	this._plugin.Compiler[compiler] = true;
 }
 // unregister_*
 JSmarty.prototype.unregister_block = function(block){

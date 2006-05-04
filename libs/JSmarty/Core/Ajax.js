@@ -1,12 +1,10 @@
 JSmarty.Core.Ajax = function(){};
 JSmarty.Core.Ajax.prototype =
 {
-	xmlhttp: false
+	onLine : (document.URL.indexOf('http')==0) ? true : false
 }
 JSmarty.Core.Ajax.prototype.create = function()
 {
-	if(this.xmlhttp == null) return null;
-
 	var msxmls = [
 		'Msxml2.XMLHTTP.5.0',
 		'Msxml2.XMLHTTP.4.0',
@@ -15,16 +13,14 @@ JSmarty.Core.Ajax.prototype.create = function()
 		'Microsoft.XMLHTTP'
 	]
 
-	try
-	{
+	try{
 		return new XMLHttpRequest();
 	}
 	catch(e)
 	{
 		for(var i=0; i<msxmls[i].length; ++i)
 		{
-			try
-			{
+			try{
 				return new ActiveXObject(msxmls[i]);
 			}
 			catch(e){}
@@ -34,8 +30,8 @@ JSmarty.Core.Ajax.prototype.create = function()
 }
 JSmarty.Core.Ajax.prototype.request = function(url, options)
 {
-	var request = this.xmlhttp = this.create();
-	var cashe, async, method, onrequest, oncomplete;
+	var xmlhttp = this.create();
+	var cashe, async, method, oncomplete;
 
 	options= options || {};
 	cashe  = options.cashe || '';
@@ -44,29 +40,15 @@ JSmarty.Core.Ajax.prototype.request = function(url, options)
 	onrequest  = options.onrequest	|| function(){};
 	oncomplete = options.oncomplete || function(){};
 
-	request.open( method, url, async);
+	xmlhttp.open(method, url, async);
 	if(async)
 	{
-		onrequest(request);
-
-		if(request.onload)
-		{
-			request.onload = function(){ oncomplete(request) };
-		}
+		if(typeof xmlhttp.onload != 'undefined')
+			xmlhttp.onload = oncomplete(xmlhttp);
 		else
-		{
-			request.onreadystatechange = function()
-			{
-				switch(request.readyState)
-				{
-					case 4:
-						oncomplete(request);
-						break;
-				}
-			}
-		}
+			xmlhttp.onreadystatechange = oncomplete(xmlhttp);
 	}
-	request.send('');
+	xmlhttp.send('');
 }
 JSmarty.Core.Ajax.prototype.getText = function()
 {
