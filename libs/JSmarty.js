@@ -44,9 +44,9 @@ JSmarty.prototype =
 	{
 		get:{},
 		foreach: {}, sections:{}, capture:{},
-		ldelim : left_delimiter, rdelim: right_delimiter,
+		ldelim : this.left_delimiter, rdelim: this.right_delimiter,
 		version: JSmarty.VERSION, template: ''
-	},
+	}
 }
 /* --------------------------------------------------------------------
  # public methods : Parser
@@ -105,23 +105,23 @@ JSmarty.prototype.variables = function(string, array, prefix)
 // parser
 JSmarty.prototype.parser = function(content)
 {
-	var result, pattern = new RegExp();
+	var result, contents, pattern = new RegExp();
 	var L = this.left_delimiter, R = this.right_delimiter;
 	var block = { name:'', index:0, flag:false, content:''};
+//	var name = '', text = '', index = 0, nested = false;
 
 	pattern.compile(L+'([\\w/]+)([^'+L+']*?)'+R, 'g');
-	content = content.replace(pattern, L+'M'+R+L+'$1$2'+R+L+'M'+R);
-	content = content.split(L+'M'+R);
+	contents = content.replace(pattern, L+'M'+R+L+'$1$2'+R+L+'M'+R).split(L+'M'+R);
 
-	for(i in content)
+	for(var i in contents)
 	{
-		if((result = pattern.exec(content[i])) == null)
+		if((result = pattern.exec(contents[i])) == null)
 		{
-			if(block.flag) block.content += content[i], content[i] = '';
+			if(block.flag) block.content += contents[i], contents[i] = '';
 			continue;
 		}
 
-		if(content[i] == block.close)
+		if(contents[i] == block.close)
 		{
 			if(block.index > 0)
 			{
@@ -130,7 +130,7 @@ JSmarty.prototype.parser = function(content)
 			}
 			if(typeof JSmarty.Block[block.name] == 'undefined')
 				JSAN.use('JSmarty.Block.'+block.name);
-			content[i] = JSmarty.Block[block.name](block.param, block.content, this);
+			contents[i] = JSmarty.Block[block.name](block.param, block.content, this);
 			continue;
 		}
 
@@ -139,7 +139,7 @@ JSmarty.prototype.parser = function(content)
 		// Block
 		if(this._plugin.Block[result[1]])
 		{
-			content[i] = '';
+			contents[i] = '';
 
 			if(block.flag) block.index++;
 
@@ -155,12 +155,12 @@ JSmarty.prototype.parser = function(content)
 		{
 			if(typeof JSmarty.Function[result[1]] == 'undefined')
 				JSAN.use('JSmarty.Function.'+result[1]);
-			content[i] = JSmarty.Function[result[1]](this.toParams(result[2]), this);
+			contents[i] = JSmarty.Function[result[1]](this.toParams(result[2]), this);
 			continue;
 		}
 	}
 
-	return this.variables(content.join(''));
+	return this.variables(contents.join(''));
 }
 /* --------------------------------------------------------------------
  # public methods : Template Variables
