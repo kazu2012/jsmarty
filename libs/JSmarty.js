@@ -101,14 +101,12 @@ JSmarty.prototype.variables = function(string, array, prefix)
 
 	return string;
 }
-
 // parser
 JSmarty.prototype.parser = function(content)
 {
 	var result, contents, pattern = new RegExp();
 	var L = this.left_delimiter, R = this.right_delimiter;
-	var block = { name:'', index:0, flag:false, content:''};
-//	var name = '', text = '', index = 0, nested = false;
+	var close, params, block = '', index = 0, nested = false;
 
 	pattern.compile(L+'([\\w/]+)([^'+L+']*?)'+R, 'g');
 	contents = content.replace(pattern, L+'M'+R+L+'$1$2'+R+L+'M'+R).split(L+'M'+R);
@@ -117,20 +115,18 @@ JSmarty.prototype.parser = function(content)
 	{
 		if((result = pattern.exec(contents[i])) == null)
 		{
-			if(block.flag) block.content += contents[i], contents[i] = '';
+			if(nested) content += contents[i], contents[i] = '';
 			continue;
 		}
 
-		if(contents[i] == block.close)
+		if(contents[i] == close)
 		{
-			if(block.index > 0)
-			{
-				block.index--;
-				continue;
+			if(index > 0){
+				index--; continue;
 			}
-			if(typeof JSmarty.Block[block.name] == 'undefined')
-				JSAN.use('JSmarty.Block.'+block.name);
-			contents[i] = JSmarty.Block[block.name](block.param, block.content, this);
+			if(typeof JSmarty.Block[block] == 'undefined')
+				JSAN.require('JSmarty.Block.'+ block);
+			contents[i] = JSmarty.Block[block](param, content, this);
 			continue;
 		}
 
@@ -139,26 +135,26 @@ JSmarty.prototype.parser = function(content)
 		// Block
 		if(this._plugin.Block[result[1]])
 		{
+			if(nested) index++;
+			content= '';
+			nested = true;
+			block  = result[1];
+			close  = L+'/'+ block.toLowerCase() +R;
+			param  = (result[1] == 'If') ? result[2] : this.toParams(result[2]);
 			contents[i] = '';
-
-			if(block.flag) block.index++;
-
-			block.name = result[1]; block.flag = true;
-			block.param= result[2]; block.close= L+'/'+block.name.toLowerCase()+R;
-
-			if(result[1] != 'If') block.param = this.toParams(block.param);
-
 			continue;
 		}
+
 		// Function
 		if(this._plugin.Function[result[1]])
 		{
 			if(typeof JSmarty.Function[result[1]] == 'undefined')
-				JSAN.use('JSmarty.Function.'+result[1]);
+				JSAN.require('JSmarty.Function.'+result[1]);
 			contents[i] = JSmarty.Function[result[1]](this.toParams(result[2]), this);
 			continue;
 		}
 	}
+
 
 	return this.variables(contents.join(''));
 }
