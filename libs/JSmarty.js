@@ -19,10 +19,8 @@ JSmarty.LICENSE = 'LGPL';
 
 JSmarty.prototype =
 {
-	$smarty:{ get:{},foreach:{},sections:{},capture:{},template:'',version: JSmarty.VERSION},
-
 	debugging : false,
-	template_dir : './templates',
+	template_dir : './templates/',
 	left_delimiter : '{',
 	right_delimiter : '}',
 
@@ -41,7 +39,14 @@ JSmarty.prototype =
 		Postfilter	: {},
 		Prefilter	: {},
 		Outputfilter: {}
-	}
+	},
+	$smarty:
+	{
+		get:{},
+		foreach: {}, sections:{}, capture:{},
+		ldelim : left_delimiter, rdelim: right_delimiter,
+		version: JSmarty.VERSION, template: ''
+	},
 }
 /* --------------------------------------------------------------------
  # public methods : Parser
@@ -160,12 +165,7 @@ JSmarty.prototype.parser = function(content)
 /* --------------------------------------------------------------------
  # public methods : Template Variables
  -------------------------------------------------------------------- */
-// append
-JSmarty.prototype.append = function()
-{
-	
-}
-// assign
+/** assign **/
 JSmarty.prototype.assign = function(tpl_var, value)
 {
 	if(typeof value == 'undefined') value = null;
@@ -182,7 +182,7 @@ JSmarty.prototype.assign = function(tpl_var, value)
 		this._tpl_vars[i] = tpl_var[i];
 	}
 }
-// clear_assign
+/** clear_assign **/
 JSmarty.prototype.clear_assign = function(tpl_var)
 {
 	if(typeof tpl_var == 'string')
@@ -197,81 +197,80 @@ JSmarty.prototype.clear_assign = function(tpl_var)
 		delete this._tpl_vars['$'+tpl_var[i]];
 	}
 }
-// clear_all_assign
+/** clear_all_assign **/
 JSmarty.prototype.clear_all_assign = function(){
 	this._tpl_vars = new Array();
 }
-// get_template_vars
+/** get_template_vars **/
 JSmarty.prototype.get_template_vars = function(tpl_var){
 	return (tpl_var) ? this._tpl_vars[tpl_var] : this._tpl_vars;
 }
 /* --------------------------------------------------------------------
  # public methods : Template Process
  -------------------------------------------------------------------- */
-// fetch
+/** fetch **/
 JSmarty.prototype.fetch = function(file, element, display)
 {
-	var oncomplete;
-	var ajax = this._ajax, smarty = this;
-
-	element = element || false;
-	display = display || false;
+	var result, xmlhttp = this._ajax;
 
 	this.$smarty.template = file;
 
 	if(element)
 	{
-		oncomplete = function(request)
-		{
-			return function()
-			{
-				if(request.readyState != 4) return;
-				element.innerHTML = smarty.parser(request.responseText);
-				request = null;
-			}
-		}
-		ajax.request(this.template_dir +'/'+ file,{ oncomplete : oncomplete });
+		xmlhttp.display(this.template_dir + file, element, this);
 		return;
 	}
 
-	ajax.request(this.template_dir +'/'+ file,{async:false});
-	this._result = this.parser(ajax.getText());
+	result = xmlhttp.file_get_contents(this.template_dir + file);
+	result = this.parser(result);
 
-	if(display)
-		document.write(this._result);
+	if(display === true)
+	{
+		document.write(result);
+		return;
+	}
 
-	return this._result;
+	return result;
 }
-// display
+/** display **/
 JSmarty.prototype.display = function(file, element){
 	this.fetch(file, element, true);
+}
+/** templete_exists **/
+JSmarty.prototype.template_exists = function(){
 }
 /* --------------------------------------------------------------------
  # public methods : Plugins
  -------------------------------------------------------------------- */
-// register_*
-J.Smarty.prototype.register_block = function(block){
+/** register_block **/
+JSmarty.prototype.register_block = function(block){
 	this._plugin.Block[block] = true;
 }
+/** register_function **/
 JSmarty.prototype.register_function = function(func){
 	this._plugin.Function[func] = true;
 }
+/** register_modifier **/
 JSmarty.prototype.register_modifier = function(modifier){
 	this._plugin.Modifier[modifier] = true;
 }
+/** register_compiler_function **/
 JSmarty.prototype.register_compiler_function = function(compiler){
 	this._plugin.Compiler[compiler] = true;
 }
-// unregister_*
+/** unregister_block **/
 JSmarty.prototype.unregister_block = function(block){
 	delete this._plugin.Block[block];
 }
+/** unregister_function **/
 JSmarty.prototype.unregister_function = function(func){
 	delete this._plugin.Function[func];
 }
+/** unregister_modifier **/
 JSmarty.prototype.unregister_modifier = function(modifier){
 	delete this._plugin.Modifier[modifier];
 }
+/** unregister_compiler_functio **/
 JSmarty.prototype.unregister_compiler_function = function(compiler){
 	delete this._plugin.Compiler[compiler];
 }

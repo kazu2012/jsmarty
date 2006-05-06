@@ -28,29 +28,36 @@ JSmarty.Core.Ajax.prototype.create = function()
 	}
 	return null;
 }
-JSmarty.Core.Ajax.prototype.request = function(url, options)
+JSmarty.Core.Ajax.prototype.display = function(url, element, smarty)
 {
 	var xmlhttp = this.create();
-	var cashe, async, method, oncomplete;
 
-	options= options || {};
-	cashe  = options.cashe || '';
-	async  = (typeof options.async == 'undefined') ? true : options.async;
-	method = options.method|| 'GET';
-	onrequest  = options.onrequest	|| function(){};
-	oncomplete = options.oncomplete || function(){};
-
-	xmlhttp.open(method, url, async);
-	if(async)
-	{
-		if(typeof xmlhttp.onload != 'undefined')
-			xmlhttp.onload = oncomplete(xmlhttp);
-		else
-			xmlhttp.onreadystatechange = oncomplete(xmlhttp);
-	}
+	xmlhttp.open('GET', url, true);
+	if(typeof xmlhttp.onload != 'undefined')
+		xmlhttp.onload = this._handler(xmlhttp, element, smarty);
+	else
+		xmlhttp.onreadystatechange = this._handler(xmlhttp, element, smarty);
 	xmlhttp.send('');
 }
-JSmarty.Core.Ajax.prototype.getText = function()
+JSmarty.Core.Ajax.prototype.file_get_contents = function(filename)
 {
-	return this.xmlhttp.responseText;
+	var xmlhttp = new JSmarty.Core.Ajax().create();
+
+	xmlhttp.open('GET', filename, false);
+	xmlhttp.send('');
+
+	return xmlhttp.responseText;
+}
+JSmarty.Core.Ajax.prototype.file_exists = function(filename)
+{
+	return true;
+}
+JSmarty.Core.Ajax.prototype._handler = function(xmlhttp, element, smarty)
+{
+	return function()
+	{
+		if(xmlhttp.readyState != 4) return;
+		element.innerHTML = smarty.parser(xmlhttp.responseText);
+		xmlhttp = null;
+	}
 }
