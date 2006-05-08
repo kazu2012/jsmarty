@@ -40,6 +40,12 @@ JSmarty.prototype =
 		Prefilter	: {},
 		Outputfilter: {}
 	},
+	_plugins:
+	{
+		Modifier: {}, Function:  {}, Block:       {},
+		Prefilter:{}, Postfilter:{}, Outputfilter:{},
+		Resource: {}, Insert:    {}, Compiler:    {}
+	},
 	$smarty:
 	{
 		get:{},
@@ -101,12 +107,50 @@ JSmarty.prototype.variables = function(string, array, prefix)
 
 	return string;
 }
-// parser
+
+/** _filter **/
+JSmarty.prototype._filter = function()
+{
+	return '';
+}
+
+/** _modifier **/
+JSmarty.prototype._modifier = function()
+{
+	return '';
+}
+/** _function **/
+JSmarty.prototype._function = function(type, func, param, content)
+{
+	var plugin;
+
+	plugin = this._plugins[type];
+	func   = func.charAt(0).toUpperCase() + func.substring(1);
+
+	if(typeof plugin[func] == 'undefined')
+		plugin[func] = JSAN.require('JSmarty.'+ type +'.'+ func);
+	if(!plugin[func]) return '';
+
+	if(func != 'If') param = this.toParams(param);
+
+	content = (!content) ? plugin[func](param, this):
+	                       plugin[func](param, content, this);
+
+	return content;
+}
+
+/** parser **/
 JSmarty.prototype.parser = function(content)
 {
-	var result, contents, pattern = new RegExp();
+	var result, contents, pattern = this._pattern;
 	var L = this.left_delimiter, R = this.right_delimiter;
 	var close, params, block = '', index = 0, nested = false;
+	var isblock = {};
+
+	pattern.compile(L+'\\/(.*?)'+R,'g');
+	while(result = pattern.exec(content)){
+		list[result[1]] = true;
+	}
 
 	pattern.compile(L+'([\\w/]+)([^'+L+']*?)'+R, 'g');
 	contents = content.replace(pattern, L+'M'+R+L+'$1$2'+R+L+'M'+R).split(L+'M'+R);
@@ -121,12 +165,10 @@ JSmarty.prototype.parser = function(content)
 
 		if(contents[i] == close)
 		{
-			if(index > 0){
-				index--; continue;
-			}
-			if(typeof JSmarty.Block[block] == 'undefined')
-				JSAN.require('JSmarty.Block.'+ block);
-			contents[i] = JSmarty.Block[block](param, content, this);
+			if(index == 0)
+				contents[i] = this._function('Block', block, param, content);
+			else
+				index--;
 			continue;
 		}
 
@@ -140,21 +182,13 @@ JSmarty.prototype.parser = function(content)
 			nested = true;
 			block  = result[1];
 			close  = L+'/'+ block.toLowerCase() +R;
-			param  = (result[1] == 'If') ? result[2] : this.toParams(result[2]);
+			param  = result[2];
 			contents[i] = '';
 			continue;
 		}
 
-		// Function
-		if(this._plugin.Function[result[1]])
-		{
-			if(typeof JSmarty.Function[result[1]] == 'undefined')
-				JSAN.require('JSmarty.Function.'+result[1]);
-			contents[i] = JSmarty.Function[result[1]](this.toParams(result[2]), this);
-			continue;
-		}
+		contents[i] = this._function('Function', result[1], result[2]);
 	}
-
 
 	return this.variables(contents.join(''));
 }
@@ -172,7 +206,7 @@ JSmarty.prototype.assign = function(tpl_var, value)
 		return;
 	}
 
-	for(i in tpl_var)
+	for(var i in tpl_var)
 	{
 		if(i == '') continue;
 		this._tpl_vars[i] = tpl_var[i];
@@ -187,7 +221,7 @@ JSmarty.prototype.clear_assign = function(tpl_var)
 		return;
 	}
 
-	for(i in tpl_var)
+	for(var i in tpl_var)
 	{
 		if(i == '') continue;
 		delete this._tpl_vars['$'+tpl_var[i]];
@@ -240,33 +274,33 @@ JSmarty.prototype.template_exists = function(){
  -------------------------------------------------------------------- */
 /** register_block **/
 JSmarty.prototype.register_block = function(block){
-	this._plugin.Block[block] = true;
+	this._plugins.Block[block] = true;
 }
 /** register_function **/
 JSmarty.prototype.register_function = function(func){
-	this._plugin.Function[func] = true;
+	this._plugins.Function[func] = true;
 }
 /** register_modifier **/
 JSmarty.prototype.register_modifier = function(modifier){
-	this._plugin.Modifier[modifier] = true;
+	this._plugins.Modifier[modifier] = true;
 }
 /** register_compiler_function **/
 JSmarty.prototype.register_compiler_function = function(compiler){
-	this._plugin.Compiler[compiler] = true;
+	this._plugins.Compiler[compiler] = true;
 }
 /** unregister_block **/
 JSmarty.prototype.unregister_block = function(block){
-	delete this._plugin.Block[block];
+	delete this._plugins.Block[block];
 }
 /** unregister_function **/
 JSmarty.prototype.unregister_function = function(func){
-	delete this._plugin.Function[func];
+	delete this._plugins.Function[func];
 }
 /** unregister_modifier **/
 JSmarty.prototype.unregister_modifier = function(modifier){
-	delete this._plugin.Modifier[modifier];
+	delete this._plugins.Modifier[modifier];
 }
-/** unregister_compiler_functio **/
+/** unregister_compiler_function **/
 JSmarty.prototype.unregister_compiler_function = function(compiler){
-	delete this._plugin.Compiler[compiler];
+	delete this._plugins.Compiler[compiler];
 }
