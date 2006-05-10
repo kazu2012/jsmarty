@@ -23,7 +23,7 @@ JSmarty.prototype =
 	template_dir : './templates/',
 	left_delimiter : '{',
 	right_delimiter : '}',
-
+	autoload_filters: {},
 	_ajax: new JSmarty.Core.Ajax(),
 	_result:'',
 	_pattern: new RegExp(),
@@ -101,7 +101,8 @@ JSmarty.prototype.variables = function(string, array, prefix)
 JSmarty.prototype._filter = function(type, src)
 {
 	var filter;
-	return '';
+
+	return src;
 }
 
 /** _modifier **/
@@ -146,6 +147,7 @@ JSmarty.prototype.parser = function(src, initial)
 
 	if(initial)
 	{
+		src = this._filter('Prefilter', src);
 		src = src.replace(pattern, L+R+L+'$1$2'+R+L+R);
 	}
 
