@@ -1,20 +1,17 @@
 JSmarty.Function.Counter = function($params, $smarty)
 {
-	// $counters;
+	var $counters = JSmarty.Function.Counter.$counters;
 	var $retval, $name, $counter;
 
 	$name = ($params['name']) ? $params['name'] : 'default';
-
-	if(typeof $counters == 'undefined')
-		$counters = {};
 
 	if(typeof $counters[$name] == 'undefined')
 	{
 		$counters[$name] = {
 			start: 1,
 			skip : 1,
-			direction : 'up',
-			count: 1
+			count: 1,
+			direction : 'up'
 			};
 	}
 
@@ -55,3 +52,4 @@ JSmarty.Function.Counter = function($params, $smarty)
 
 	return $retval;
 }
+JSmarty.Function.Counter.$counters = {};
