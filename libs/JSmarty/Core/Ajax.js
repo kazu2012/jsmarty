@@ -57,7 +57,7 @@ JSmarty.Core.Ajax.prototype._handler = function(xmlhttp, element, smarty)
 	return function()
 	{
 		if(xmlhttp.readyState != 4) return;
-		element.innerHTML = smarty.parser(xmlhttp.responseText);
+		element.innerHTML = smarty.parser(xmlhttp.responseText, true);
 		xmlhttp = null;
 	}
 }

@@ -28,18 +28,7 @@ JSmarty.prototype =
 	_result:'',
 	_pattern: new RegExp(),
 	_tpl_vars:{},
-	_plugin:
-	{
-		Block		: { Capture: true, Foreach:true, Section:true, 'If':true},
-		Insert		: {},
-		Modifier	: {},
-		Compiler	: { Assign:true },
-		Resource	: {},
-		Function	: { Cycle :true, Counter:true, Ldelim:true, Rdelim:true},
-		Postfilter	: {},
-		Prefilter	: {},
-		Outputfilter: {}
-	},
+	_isblock:{},
 	_plugins:
 	{
 		Modifier: {}, Function:  {}, Block:       {},
@@ -109,29 +98,30 @@ JSmarty.prototype.variables = function(string, array, prefix)
 }
 
 /** _filter **/
-JSmarty.prototype._filter = function()
+JSmarty.prototype._filter = function(type, src)
 {
+	var filter;
 	return '';
 }
 
 /** _modifier **/
 JSmarty.prototype._modifier = function()
 {
-	return '';
+	var modifier;
 }
 /** _function **/
-JSmarty.prototype._function = function(type, func, param, content)
+JSmarty.prototype._function = function(type, result, content)
 {
-	var plugin;
+	var plugin, func, param;
 
 	plugin = this._plugins[type];
-	func   = func.charAt(0).toUpperCase() + func.substring(1);
+	func   = result[1].charAt(0).toUpperCase() + result[1].substring(1);
 
 	if(typeof plugin[func] == 'undefined')
 		plugin[func] = JSAN.require('JSmarty.'+ type +'.'+ func);
 	if(!plugin[func]) return '';
 
-	if(func != 'If') param = this.toParams(param);
+	if(func != 'If') param = this.toParams(result[2]);
 
 	content = (!content) ? plugin[func](param, this):
 	                       plugin[func](param, content, this);
@@ -140,57 +130,50 @@ JSmarty.prototype._function = function(type, func, param, content)
 }
 
 /** parser **/
-JSmarty.prototype.parser = function(content)
+JSmarty.prototype.parser = function(src, initial)
 {
-	var result, contents, pattern = this._pattern;
+	var isblock = this._isblock, pattern = this._pattern;
 	var L = this.left_delimiter, R = this.right_delimiter;
-	var close, params, block = '', index = 0, nested = false;
-	var isblock = {};
+	var result, count = 0, flag = false, block = [], point = 0;
 
-	pattern.compile(L+'\\/(.*?)'+R,'g');
-	while(result = pattern.exec(content)){
-		list[result[1]] = true;
+	if(initial)
+	{
+		pattern.compile(L+'\\/(.*?)'+R,'g');
+		while(result = pattern.exec(src)) isblock[result[1]] = true;
 	}
 
 	pattern.compile(L+'([\\w/]+)([^'+L+']*?)'+R, 'g');
-	contents = content.replace(pattern, L+'M'+R+L+'$1$2'+R+L+'M'+R).split(L+'M'+R);
 
-	for(var i in contents)
+	if(initial)
 	{
-		if((result = pattern.exec(contents[i])) == null)
-		{
-			if(nested) content += contents[i], contents[i] = '';
-			continue;
-		}
-
-		if(contents[i] == close)
-		{
-			if(index == 0)
-				contents[i] = this._function('Block', block, param, content);
-			else
-				index--;
-			continue;
-		}
-
-		result[1] = result[1].charAt(0).toUpperCase() + result[1].substring(1);
-
-		// Block
-		if(this._plugin.Block[result[1]])
-		{
-			if(nested) index++;
-			content= '';
-			nested = true;
-			block  = result[1];
-			close  = L+'/'+ block.toLowerCase() +R;
-			param  = result[2];
-			contents[i] = '';
-			continue;
-		}
-
-		contents[i] = this._function('Function', result[1], result[2]);
+		src = src.replace(pattern, L+R+L+'$1$2'+R+L+R);
 	}
 
-	return this.variables(contents.join(''));
+	src = src.split(L+R);
+
+	for(var i=0;i<src.length;i++)
+	{
+		if((result = pattern.exec(src[i])) == null) continue;
+
+		if(src[i] == (L+'/'+block[1]+R))
+		{
+			if(count > 0) count--;
+			else
+				src.splice(point, i, this._function('Block', block, src.splice(point+1, i-2).join(L+R)));
+			continue;
+		}
+
+		if(isblock[result[1]])
+		{
+			if(flag) count--;
+			else     point = i, flag = true, block = result.toString().split(',');
+			continue;
+		}
+
+		if(!flag) src[i] = this._function('Function', result);
+	}
+
+	return this.variables(src.join(''));
 }
 /* --------------------------------------------------------------------
  # public methods : Template Variables
@@ -241,6 +224,7 @@ JSmarty.prototype.get_template_vars = function(tpl_var){
 /** fetch **/
 JSmarty.prototype.fetch = function(file, element, display)
 {
+	var e,s;
 	var result, xmlhttp = this._ajax;
 
 	this.$smarty.template = file;
@@ -252,7 +236,9 @@ JSmarty.prototype.fetch = function(file, element, display)
 	}
 
 	result = xmlhttp.file_get_contents(this.template_dir + file);
-	result = this.parser(result);
+	if(this.debugging) s =(new Date()).getTime();
+	result = this.parser(result, true);
+	if(this.debugging) e =(new Date()).getTime(), alert('HTML Convert Time :\t'+ (e-s)/1000 +'.sec');
 
 	if(display === true)
 	{
@@ -273,34 +259,34 @@ JSmarty.prototype.template_exists = function(){
  # public methods : Plugins
  -------------------------------------------------------------------- */
 /** register_block **/
-JSmarty.prototype.register_block = function(block){
-	this._plugins.Block[block] = true;
+JSmarty.prototype.register_block = function(name, impl){
+	this._plugins.Block[name] = impl;
 }
 /** register_function **/
-JSmarty.prototype.register_function = function(func){
-	this._plugins.Function[func] = true;
+JSmarty.prototype.register_function = function(name, impl){
+	this._plugins.Function[name] = impl;
 }
 /** register_modifier **/
-JSmarty.prototype.register_modifier = function(modifier){
-	this._plugins.Modifier[modifier] = true;
+JSmarty.prototype.register_modifier = function(name, impl){
+	this._plugins.Modifier[name] = impl;
 }
 /** register_compiler_function **/
-JSmarty.prototype.register_compiler_function = function(compiler){
-	this._plugins.Compiler[compiler] = true;
+JSmarty.prototype.register_compiler_function = function(name, impl){
+	this._plugins.Compiler[name] = impl;
 }
 /** unregister_block **/
-JSmarty.prototype.unregister_block = function(block){
-	delete this._plugins.Block[block];
+JSmarty.prototype.unregister_block = function(name){
+	this._plugins.Block[name] = false;
 }
 /** unregister_function **/
-JSmarty.prototype.unregister_function = function(func){
-	delete this._plugins.Function[func];
+JSmarty.prototype.unregister_function = function(name){
+	this._plugins.Function[name] = false;
 }
 /** unregister_modifier **/
-JSmarty.prototype.unregister_modifier = function(modifier){
-	delete this._plugins.Modifier[modifier];
+JSmarty.prototype.unregister_modifier = function(name){
+	this._plugins.Modifier[name] = false;
 }
 /** unregister_compiler_function **/
-JSmarty.prototype.unregister_compiler_function = function(compiler){
-	delete this._plugins.Compiler[compiler];
+JSmarty.prototype.unregister_compiler_function = function(name){
+	this._plugins.Compiler[name] = false;
 }
