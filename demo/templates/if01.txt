@@ -1,3 +1,9 @@
-{if $hoge}
-Hello, World!!
+{if $hoge==1}
+Hello, World!! Part1.
+{elsif $hoge==2}
+Hello, World!! Part2.
+{elsif $hoge==3}
+Hello, World!! Part3.
+{else}
+Hello, World!! Part4.
 {/if}

@@ -14,7 +14,7 @@
 
 <h2>if01.txt</h2>
 <pre>
-smarty.assign('hoge', true);
+smarty.assign('hoge', 2);
 </pre>
 <div class='result' id='idIf01'>
 </div>
@@ -24,7 +24,7 @@ JSAN.includePath = ['../libs','../../jslib'];
 
 JSAN.use('JSmarty');
 var smarty = new JSmarty();
-smarty.assign('hoge', true);
+smarty.assign('hoge', 1);
 smarty.display('if01.txt', document.getElementById('idIf01'));
 </script>
 

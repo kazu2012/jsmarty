@@ -1,41 +1,24 @@
-JSmarty.Block.Foreach = function(params, content, JSmarty)
+JSmarty.Block.Foreach = function($params, $content, $smarty)
 {
-	var HTMLStr = '', loop;
+	var $retval = '';
+	var $from, $item, $key, $name;
 
-	params.key	= (params.key) ? params.key : false;
-	params.from = JSmarty.get_template_vars(params.from);
+	$key  = $params['key']  || false;
+	$item = $params['item'] || false;
 
-	if(params.name)
+//	for(var i=0;i<$content;i++) $content[i] = $content[i];
+
+	if(!$params['from']) return '';
+
+	$from = $smarty._tpl_vars[$params['from']];
+
+	for(var i in $from)
 	{
-		loop = JSmarty._jsmarty_vars.foreach[params.name];
-		loop.show  = true;
-		loop.last  = false;
-		loop.first = true;
-		loop.total = params.from.length;
-		loop.iteration = 0;
+		if($key) $smarty.assign($key, i);
+
+		$smarty.assign($item, $from[i]);
+		$retval += $smarty.parser($content);
 	}
 
-	for(i in params.from)
-	{
-		if(params.name)
-		{
-			loop.iteration++;
-			if(loop.first && (loop.iteration != 1)) loop.first = false;
-			if(loop.iteration == loop.total) loop.last = true;
-		}
-		if(params.key) JSmarty.assign(params.key, i);
-
-		JSmarty.assign(params.item, params.from[i]);
-		HTMLStr += JSmarty.parser(content);
-	}
-
-	if(params.name)
-	{
-		delete loop.show;
-		delete loop.last;
-		delete loop.first;
-		delete loop.iteration;
-	}
-
-	return HTMLStr;
+	return $retval;
 }
