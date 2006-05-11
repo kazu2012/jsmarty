@@ -3,7 +3,6 @@ JSmarty.Block.If = function($params, $content, $smarty)
 	var $express, $point = 0;
 	var $L = $smarty.left_delimiter, $R = $smarty.right_delimiter;
 
-	$content = $content.split($L+$R);
 	$express = eval($params.replace(/(\$.*)/g, '$smarty._tpl_vars.$1'));
 
 	for(var i=0;i<$content.length;i++)
@@ -22,5 +21,5 @@ JSmarty.Block.If = function($params, $content, $smarty)
 		}
 	}
 
-	return $content.slice($point, i).join($L+$R);
+	return $smarty.parser($content.slice($point, i));
 }

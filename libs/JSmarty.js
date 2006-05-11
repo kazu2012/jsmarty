@@ -143,10 +143,10 @@ JSmarty.prototype.parser = function(src, initial)
 	if(initial)
 	{
 		src = this._filter('Prefilter', src);
-		src = src.replace(pattern, L+R+L+'$1$2'+R+L+R);
+		src = src.replace(pattern, L+R+L+'$1$2'+R+L+R).split(L+R);
 	}
-
-	src = src.split(L+R);
+	else
+		src = src.join(L+R).split(L+R);
 
 	for(var i=0;i<src.length;i++)
 	{
@@ -156,7 +156,7 @@ JSmarty.prototype.parser = function(src, initial)
 		{
 			if(count > 0) count--;
 			else
-				src.splice(point, i, this._function('Block', block, src.splice(point+1, i-2).join(L+R)));
+				src.splice(point, i, this._function('Block', block, src.splice(point+1, i-2)));
 			continue;
 		}
 
