@@ -14,7 +14,7 @@ JSmarty.Block.If = function($params, $content, $smarty)
 			$express = $content[i].slice($L.length+5, -$R.length);
 			$express = eval($express.replace(/(\$.*)/g, '$smarty._tpl_vars.$1'));
 		}
-		if($L+'else'+$R == $content[i])
+		if('else' == $content[i].substr($L.length, 4))
 		{
 			if($express) break;
 			$point = i+1;

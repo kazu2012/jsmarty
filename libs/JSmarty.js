@@ -27,8 +27,8 @@ JSmarty.prototype =
 	_ajax: new JSmarty.Core.Ajax(),
 	_result:'',
 	_pattern: new RegExp(),
-	_tpl_vars:{},
 	_isblock:{},
+	_tpl_vars:{},
 	_plugins:
 	{
 		Modifier: {}, Function:  {}, Block:       {},
@@ -60,12 +60,10 @@ JSmarty.prototype.toParams = function(string)
 
 	return params;
 }
-JSmarty.prototype.variables = function(string, array, prefix)
+JSmarty.prototype._variable = function(string, array, prefix)
 {
-	var result;
-	var L = this.left_delimiter;
-	var R = this.right_delimiter;
-	var pattern = this._pattern;
+	var result, pattern = this._pattern;
+	var L = this.left_delimiter, R = this.right_delimiter;
 
 	if(!array)	array  = this._tpl_vars;
 	if(!prefix) prefix = '';
@@ -96,6 +94,15 @@ JSmarty.prototype.variables = function(string, array, prefix)
 
 	return string;
 }
+
+JSmarty.prototype._var = function(result)
+{
+	var tpl_var;
+	tpl_var = 'this.tpl_vars.' + result[0];
+
+	return eval(tpl_var);
+}
+
 /** _filter **/
 JSmarty.prototype._filter = function(type, src)
 {
@@ -114,7 +121,7 @@ JSmarty.prototype._function = function(type, result, content)
 
 	plugin = this._plugins[type];
 	func   = result[1].charAt(0).toUpperCase() + result[1].substring(1);
-	param  = (func == 'If') ? result[2] : this.toParams(result[2]) ;
+	param  = (func == 'If') ? result[2] : this.toParams(result[2]);
 
 	if(typeof plugin[func] == 'undefined')
 		plugin[func] = JSAN.require('JSmarty.'+ type +'.'+ func);
@@ -126,27 +133,22 @@ JSmarty.prototype._function = function(type, result, content)
 	return content;
 }
 /** parser **/
-JSmarty.prototype.parser = function(src, initial)
+JSmarty.prototype.parser = function(src)
 {
-	var isblock = this._isblock, pattern = this._pattern;
 	var L = this.left_delimiter, R = this.right_delimiter;
 	var result, count = 0, flag = false, block = [], point = 0;
-
-	if(initial)
-	{
-		pattern.compile(L+'\\/(.*?)'+R,'g');
-		while(result = pattern.exec(src)) isblock[result[1]] = true;
-	}
+	var regexp, isblock = this._isblock, pattern = this._pattern;
 
 	pattern.compile(L+'([\\w/]+)([^'+L+']*?)'+R, 'g');
 
-	if(initial)
+	if(typeof src == 'object') src = src.join(L+R).split(L+R);
+	else
 	{
+		regexp = new RegExp(L+'\\/(.*?)'+R,'g');
+		while(result = regexp.exec(src)) isblock[result[1]] = true;
 		src = this._filter('Prefilter', src);
 		src = src.replace(pattern, L+R+L+'$1$2'+R+L+R).split(L+R);
 	}
-	else
-		src = src.join(L+R).split(L+R);
 
 	for(var i=0;i<src.length;i++)
 	{
@@ -170,7 +172,7 @@ JSmarty.prototype.parser = function(src, initial)
 		if(!flag) src[i] = this._function('Function', result);
 	}
 
-	return this.variables(src.join(''));
+	return this._variable(src.join(''));
 }
 /* --------------------------------------------------------------------
  # Template Variables
@@ -213,7 +215,7 @@ JSmarty.prototype.clear_all_assign = function(){
 }
 /** get_template_vars **/
 JSmarty.prototype.get_template_vars = function(tpl_var){
-	return (tpl_var) ? this._tpl_vars[tpl_var] : this._tpl_vars;
+	return (tpl_var) ? this._tpl_vars['$'+tpl_var] : this._tpl_vars;
 }
 /* --------------------------------------------------------------------
  # Template Process
@@ -235,7 +237,11 @@ JSmarty.prototype.fetch = function(file, element, display)
 	result = xmlhttp.file_get_contents(this.template_dir + file);
 	if(this.debugging) s =(new Date()).getTime();
 	result = this.parser(result, true);
-	if(this.debugging) e =(new Date()).getTime(), alert('HTML Convert Time :\t'+ (e-s)/1000 +'.sec');
+	if(this.debugging)
+	{
+		e =(new Date()).getTime();
+		alert('HTML Convert Time :\t'+ (e-s)/1000 +'.sec');
+	}
 
 	if(display === true)
 	{
