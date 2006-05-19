@@ -26,8 +26,6 @@ JSmarty.prototype =
 	autoload_filters: {},
 	_ajax: new JSmarty.Core.Ajax(),
 	_result:'',
-	_pattern: new RegExp(),
-	_isblock:{},
 	_tpl_vars:{},
 	_plugins:
 	{
@@ -41,70 +39,57 @@ JSmarty.prototype =
 		foreach: {}, sections:{}, capture:{},
 		ldelim : this.left_delimiter, rdelim: this.right_delimiter,
 		version: JSmarty.VERSION, template: ''
-	}
+	},
+	_isBlocks: null,
+	_blockElements: null,
+	_pattern: new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g')
 }
 /* --------------------------------------------------------------------
  # Parser
  -------------------------------------------------------------------- */
 // toParams
-JSmarty.prototype.toParams = function(string)
+JSmarty.prototype.toParams = function(param)
 {
-	var result;
-	var params	= new Array();
-	var pattern = new RegExp();
+	var result, params = [], pattern = this._pattern;
 
-	pattern.compile('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g');
-	while((result = pattern.exec(string)) != null){
+	while((result = pattern.exec(param)) != null){
 		params[result[1]] = result[3];
 	}
 
 	return params;
 }
-JSmarty.prototype._variable = function(string, array, prefix)
+/** _var **/
+JSmarty.prototype._var = function(src, array)
 {
-	var result, pattern = this._pattern;
-	var L = this.left_delimiter, R = this.right_delimiter;
+	if(!array) array = this._tpl_vars;
 
-	if(!array)	array  = this._tpl_vars;
-	if(!prefix) prefix = '';
-
-	switch(prefix)
+	if(typeof src == 'string')
 	{
-		case '$smarty\\.':
-			array = this.$smarty;
-			break;
+		if(src.split('.').length > 1)
+			return this._var(src, array[src.split('.')[0]]);
+		return array[src];
 	}
 
-	prefix = prefix.replace(/^\$/,'\\$');
-	pattern.compile(L+prefix+'([\\w\.$]+)'+R,'');
-	while((result = pattern.exec(string)) != null)
-	{
-		if(result[1].split('.').length > 1)
-		{
-			string = this.variables
-					(
-						string,
-						array[result[1].split('.')[0]],
-						result[1].split('.')[0]+'\\.'
-					);
-			continue;
-		}
-		string = string.replace(result[0], array[result[1]]);
-	}
+	if(src[0].split('.').length > 1)
+		return this._var(src, array[src[0].split('.')[0]]);
 
-	return string;
+	return array[src[0]];
 }
-
-JSmarty.prototype._var = function(result)
+/** _attr **/
+JSmarty.prototype._attr = function(src)
 {
-	var tpl_var;
-	tpl_var = 'this.tpl_vars.' + result[0];
+	var attr = new Array(3);
+	var S = src.indexOf(' '), D = src.indexOf('|');
 
-	return eval(tpl_var);
+	if(D>=0) attr[2] = src.slice(D), src = src.slice(0, D);
+	if(S>=0) attr[1] = src.slice(S), src = src.slice(0, S);
+
+	attr[0] = src;
+
+	return attr;
 }
-
 /** _filter **/
-JSmarty.prototype._filter = function(type, src)
+JSmarty.prototype._filter = function(src, type)
 {
 	var filter;
 	return src;
@@ -115,64 +100,82 @@ JSmarty.prototype._modifier = function()
 	var modifier;
 }
 /** _function **/
-JSmarty.prototype._function = function(type, result, content)
+JSmarty.prototype._function = function(result, src, type)
 {
 	var plugin, func, param;
 
 	plugin = this._plugins[type];
-	func   = result[1].charAt(0).toUpperCase() + result[1].substring(1);
-	param  = (func == 'If') ? result[2] : this.toParams(result[2]);
+	param  = (func == 'If') ? result[1] : this.toParams(result[1]);
+	func   = result[0].charAt(0).toUpperCase() + result[0].substring(1);
 
 	if(typeof plugin[func] == 'undefined')
 		plugin[func] = JSAN.require('JSmarty.'+ type +'.'+ func);
 	if(!plugin[func]) return '';
 
-	content = (!content) ? plugin[func](param, this):
-	                       plugin[func](param, content, this);
-
-	return content;
+	return (src) ? plugin[func](param, src, this):
+	               plugin[func](param, this);
 }
 /** parser **/
 JSmarty.prototype.parser = function(src)
 {
+	var result, S, E = -1, P = 0;
+	var regexp, isBlocks = this._isBlocks;
+	var count = 0, flag = false, point = 0, content = '';
 	var L = this.left_delimiter, R = this.right_delimiter;
-	var result, count = 0, flag = false, block = [], point = 0;
-	var regexp, isblock = this._isblock, pattern = this._pattern;
-
-	pattern.compile(L+'([\\w/]+)([^'+L+']*?)'+R, 'g');
-
-	if(typeof src == 'object') src = src.join(L+R).split(L+R);
-	else
+ 
+	if(!isBlocks)
 	{
-		regexp = new RegExp(L+'\\/(.*?)'+R,'g');
-		while(result = regexp.exec(src)) isblock[result[1]] = true;
-		src = this._filter('Prefilter', src);
-		src = src.replace(pattern, L+R+L+'$1$2'+R+L+R).split(L+R);
+		isBlocks = {};
+		src = this._filter(src, 'Prefilter');
+		regexp = new RegExp(L+'\\/(.+?)'+R,'g');
+		while(result = regexp.exec(src)) isBlocks[result[1]] = true;
 	}
 
-	for(var i=0;i<src.length;i++)
+	while(E != src.lastIndexOf(R))
 	{
-		if((result = pattern.exec(src[i])) == null) continue;
+		S = src.indexOf(L, P), E = src.indexOf(R, P);
 
-		if(src[i] == (L+'/'+block[1]+R))
+		if(flag)
 		{
-			if(count > 0) count--;
-			else
-				src.splice(point, i, this._function('Block', block, src.splice(point+1, i-2)));
+			P = E + R.length;
+
+			switch(this._attr(src.slice(S + L.length, E))[0])
+			{
+				case result[0]:
+					count++;
+					break;
+				case '/'+result[0]:
+					if(count>0) count--;
+					else
+					{
+						flag = false;
+						content += this._function(result, src.slice(point, S), 'Block');
+					}
+					break;
+			}
 			continue;
 		}
 
-		if(isblock[result[1]])
+		content += src.slice(P, S);
+		result = this._attr(src.slice(S + L.length, E));
+
+		switch(result[0].charAt(0))
 		{
-			if(flag) count--;
-			else     point = i, flag = true, block = result.toString().split(',');
-			continue;
+			case '#':
+				break;
+			case '$':
+				content += this._var(result);
+				break;
+			default:
+				if(isBlocks[result[0]]) flag = true, point = E + R.length;
+				else content += this._function(result, null, 'Function');
+				break;
 		}
 
-		if(!flag) src[i] = this._function('Function', result);
+		P = E + R.length;
 	}
-
-	return this._variable(src.join(''));
+	content += src.slice(E + R.length);
+	return (regexp) ? this._filter(content, 'Postfilter') : content;
 }
 /* --------------------------------------------------------------------
  # Template Variables
