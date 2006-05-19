@@ -5,7 +5,7 @@ JSmarty.Block.Capture = function($params, $content, $smarty)
 	$name	= $params['name']	|| 'default';
 	$assign = $params['assign'] || '';
 
-	$smarty._smarty_vars.capture[$name] = $content.join('');
+	$smarty._smarty_vars.capture[$name] = $content;
 
 	return '';
 }
