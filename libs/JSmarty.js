@@ -24,7 +24,7 @@ JSmarty.prototype =
 	left_delimiter : '{',
 	right_delimiter : '}',
 	autoload_filters: {},
-	_ajax: new JSmarty.Core.Ajax(),
+	_xmlhttp: new JSmarty.Core.Ajax(),
 	_result:'',
 	_tpl_vars:{},
 	_plugins:
@@ -40,23 +40,18 @@ JSmarty.prototype =
 		ldelim : this.left_delimiter, rdelim: this.right_delimiter,
 		version: JSmarty.VERSION, template: ''
 	},
-	_isBlocks: null,
 	_blockElements: null,
 	_pattern: new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g')
 }
 /* --------------------------------------------------------------------
  # Parser
  -------------------------------------------------------------------- */
-// toParams
-JSmarty.prototype.toParams = function(param)
+// toParam
+JSmarty.prototype.toParam = function(src)
 {
-	var result, params = [], pattern = this._pattern;
-
-	while((result = pattern.exec(param)) != null){
-		params[result[1]] = result[3];
-	}
-
-	return params;
+	var res, rex = this._pattern, array = [];
+	while(res = rex.exec(src)) array[res[1]] = res[3];
+	return array;
 }
 /** _var **/
 JSmarty.prototype._var = function(src, array)
@@ -78,13 +73,20 @@ JSmarty.prototype._var = function(src, array)
 /** _attr **/
 JSmarty.prototype._attr = function(src)
 {
-	var attr = new Array(3);
+	var attr = [src,'',''];
 	var S = src.indexOf(' '), D = src.indexOf('|');
 
-	if(D>=0) attr[2] = src.slice(D), src = src.slice(0, D);
-	if(S>=0) attr[1] = src.slice(S), src = src.slice(0, S);
-
-	attr[0] = src;
+	if(D>=0)
+	{
+		attr[0] = src.slice(0,D);
+		attr[2] = src.slice(D+1);
+	}
+	if(S>=0)
+	{
+		attr[0] = src.slice(0,S);
+		attr[1] = (attr[0] == 'if') ? src.slice(S+1):
+						this.toParam(src.slice(S+1));
+	}
 
 	return attr;
 }
@@ -100,82 +102,75 @@ JSmarty.prototype._modifier = function()
 	var modifier;
 }
 /** _function **/
-JSmarty.prototype._function = function(result, src, type)
+JSmarty.prototype._plugin = function(attr, src, type)
 {
-	var plugin, func, param;
+	var plugin = this._plugins[type];
 
-	plugin = this._plugins[type];
-	param  = (func == 'If') ? result[1] : this.toParams(result[1]);
-	func   = result[0].charAt(0).toUpperCase() + result[0].substring(1);
+	attr[0] = attr[0].charAt(0).toUpperCase() + attr[0].slice(1);
 
-	if(typeof plugin[func] == 'undefined')
-		plugin[func] = JSAN.require('JSmarty.'+ type +'.'+ func);
-	if(!plugin[func]) return '';
+	if(typeof plugin[attr[0]] == 'undefined')
+		plugin[attr[0]] = JSAN.require('JSmarty.'+ type +'.'+ attr[0]);
+	if(!plugin[attr[0]]) return '';
 
-	return (src) ? plugin[func](param, src, this):
-	               plugin[func](param, this);
+	return (src) ? plugin[attr[0]](attr[1], src, this):
+	               plugin[attr[0]](attr[1], this);
 }
 /** parser **/
 JSmarty.prototype.parser = function(src)
 {
-	var result, S, E = -1, P = 0;
-	var regexp, isBlocks = this._isBlocks;
-	var count = 0, flag = false, point = 0, content = '';
 	var L = this.left_delimiter, R = this.right_delimiter;
- 
-	if(!isBlocks)
+	var count = 0, flag = false, blocks = this._blockElements;
+	var res, rex, isp, iep = -1, iap = ibp = 0, txt = '', attr;
+
+	if(!blocks)
 	{
-		isBlocks = {};
-		src = this._filter(src, 'Prefilter');
-		regexp = new RegExp(L+'\\/(.+?)'+R,'g');
-		while(result = regexp.exec(src)) isBlocks[result[1]] = true;
+		rex = new RegExp(L+'\\/(.+?)'+R,'g');
+		src = this._filter(src,'pre'), blocks = {};
+		while(res = rex.exec(src)) blocks[res[1]] = true;
 	}
 
-	while(E != src.lastIndexOf(R))
+	while(iep != src.lastIndexOf(R))
 	{
-		S = src.indexOf(L, P), E = src.indexOf(R, P);
+		isp = src.indexOf(L, iap);
+		iep = src.indexOf(R, iap);
+		res = src.slice(isp + L.length, iep);
 
 		if(flag)
 		{
-			P = E + R.length;
-
-			switch(this._attr(src.slice(S + L.length, E))[0])
+			iap = iep + R.length;
+			switch(this._attr(res)[0])
 			{
-				case result[0]:
-					count++;
-					break;
-				case '/'+result[0]:
-					if(count>0) count--;
-					else
-					{
-						flag = false;
-						content += this._function(result, src.slice(point, S), 'Block');
-					}
+				case attr[0]: count++; break;
+				case '/'+attr[0]:
+					flag = false;
+					txt += this._plugin(attr, src.slice(ibp, isp), 'Block');
 					break;
 			}
 			continue;
 		}
 
-		content += src.slice(P, S);
-		result = this._attr(src.slice(S + L.length, E));
+		attr = this._attr(res);
+		txt += src.slice(iap, isp);
 
-		switch(result[0].charAt(0))
+		switch(attr[0].charAt(0))
 		{
-			case '#':
-				break;
 			case '$':
-				content += this._var(result);
+				txt += this._var(attr);
 				break;
 			default:
-				if(isBlocks[result[0]]) flag = true, point = E + R.length;
-				else content += this._function(result, null, 'Function');
+				if(blocks[attr[0]])
+					flag = true, ibp = iep + R.length;
+				else
+					txt += this._plugin(attr, null, 'Function');
 				break;
 		}
 
-		P = E + R.length;
+		iap = iep + R.length;
 	}
-	content += src.slice(E + R.length);
-	return (regexp) ? this._filter(content, 'Postfilter') : content;
+
+	txt += src.slice(iap);
+
+	return (rex) ? this._filter(txt,'post') : txt;
 }
 /* --------------------------------------------------------------------
  # Template Variables
@@ -226,33 +221,28 @@ JSmarty.prototype.get_template_vars = function(tpl_var){
 /** fetch **/
 JSmarty.prototype.fetch = function(file, element, display)
 {
-	var e,s;
-	var result, xmlhttp = this._ajax;
+	var eot, sot, res, http = this._xmlhttp;
 
 	this.$smarty.template = file;
 
 	if(element)
 	{
-		xmlhttp.display(this.template_dir + file, element, this);
+		http.display(this.template_dir + file, element, this);
 		return;
 	}
 
-	result = xmlhttp.file_get_contents(this.template_dir + file);
-	if(this.debugging) s =(new Date()).getTime();
-	result = this.parser(result, true);
+	res = http.file_get_contents(this.template_dir + file);
+	if(this.debugging) sot =(new Date()).getTime();
+	res = this.parser(res);
 	if(this.debugging)
 	{
-		e =(new Date()).getTime();
-		alert('HTML Convert Time :\t'+ (e-s)/1000 +'.sec');
+		eot =(new Date()).getTime();
+		alert('HTML Convert Time :\t'+ (eot-sot)/1000 +'.sec');
 	}
 
-	if(display === true)
-	{
-		document.write(result);
-		return;
-	}
+	if(display) document.write(res);
 
-	return result;
+	return res;
 }
 /** display **/
 JSmarty.prototype.display = function(file, element){
