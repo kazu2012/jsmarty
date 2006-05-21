@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////
 JSmarty = function(){};
-JSmarty.Core = {};
 JSmarty.Block = {};
+JSmarty.Shared = {};
 JSmarty.Insert = {};
 JSmarty.Modifier = {};
 JSmarty.Compiler = {};
@@ -11,7 +11,7 @@ JSmarty.Prefilter = {};
 JSmarty.Postfilter = {};
 JSmarty.Outputfilter = {};
 /////////////////////////////////////////////////////////**NAME SPACES**
-JSAN.use('JSmarty.Core.Ajax');
+JSAN.use('JSmarty.Shared.Ajax');
 ////////////////////////////////////////////////////////////**INCLUDES**
 JSmarty.AUTHOR	= 'shogo';
 JSmarty.VERSION = 'dev0.0.1';
@@ -24,7 +24,7 @@ JSmarty.prototype =
 	left_delimiter : '{',
 	right_delimiter : '}',
 	autoload_filters: {},
-	_xmlhttp: new JSmarty.Core.Ajax(),
+	_xmlhttp: new JSmarty.Shared.Ajax(),
 	_result:'',
 	_tpl_vars:{},
 	_plugins:
@@ -46,12 +46,38 @@ JSmarty.prototype =
 /* --------------------------------------------------------------------
  # Parser
  -------------------------------------------------------------------- */
-// toParam
-JSmarty.prototype.toParam = function(src)
+/** _param **/
+JSmarty.prototype._param = function(src, func)
 {
-	var res, rex = this._pattern, array = [];
-	while(res = rex.exec(src)) array[res[1]] = res[3];
-	return array;
+	var res, rex = this._pattern, attr = [];
+
+	switch(func)
+	{
+		case 'if':
+			return src;
+		default:
+			while(res = rex.exec(src)) attr[res[1]] = res[3];
+			return attr;
+	}
+}
+/** _attr **/
+JSmarty.prototype._attr = function(src)
+{
+	var attr = [src,'',''];
+	var ipp = src.indexOf(' '), imp = src.indexOf('|');
+
+	if(imp >= 0)
+	{
+		attr[0] = src.slice(0,imp);
+		attr[2] = src.slice(imp+1);
+	}
+	if(ipp >= 0)
+	{
+		attr[0] = src.slice(0,ipp);
+		attr[1] = this._param(src.slice(ipp+1), attr[0]);
+	}
+
+	return attr;
 }
 /** _var **/
 JSmarty.prototype._var = function(src, array)
@@ -70,26 +96,6 @@ JSmarty.prototype._var = function(src, array)
 
 	return array[src[0]];
 }
-/** _attr **/
-JSmarty.prototype._attr = function(src)
-{
-	var attr = [src,'',''];
-	var S = src.indexOf(' '), D = src.indexOf('|');
-
-	if(D>=0)
-	{
-		attr[0] = src.slice(0,D);
-		attr[2] = src.slice(D+1);
-	}
-	if(S>=0)
-	{
-		attr[0] = src.slice(0,S);
-		attr[1] = (attr[0] == 'if') ? src.slice(S+1):
-						this.toParam(src.slice(S+1));
-	}
-
-	return attr;
-}
 /** _filter **/
 JSmarty.prototype._filter = function(src, type)
 {
@@ -104,7 +110,7 @@ JSmarty.prototype._modifier = function()
 /** _function **/
 JSmarty.prototype._plugin = function(attr, src, type)
 {
-	var plugin = this._plugins[type];
+	var args, plugin = this._plugins[type];
 
 	attr[0] = attr[0].charAt(0).toUpperCase() + attr[0].slice(1);
 
@@ -112,8 +118,19 @@ JSmarty.prototype._plugin = function(attr, src, type)
 		plugin[attr[0]] = JSAN.require('JSmarty.'+ type +'.'+ attr[0]);
 	if(!plugin[attr[0]]) return '';
 
-	return (src) ? plugin[attr[0]](attr[1], src, this):
-	               plugin[attr[0]](attr[1], this);
+	switch(type)
+	{
+		case 'Prefilter':
+		case 'Postfilter':
+		case 'Outputfilter':
+			return plugin[attr[0]](src, this);
+		case 'Function':
+			return plugin[attr[0]](attr[1], this);
+		case 'Block':
+			return plugin[attr[0]](attr[1], src, this);
+		case 'Modifier':
+			return plugin[attr[0]].apply(null, attr[2]);
+	}
 }
 /** parser **/
 JSmarty.prototype.parser = function(src)
@@ -221,17 +238,17 @@ JSmarty.prototype.get_template_vars = function(tpl_var){
 /** fetch **/
 JSmarty.prototype.fetch = function(file, element, display)
 {
-	var eot, sot, res, http = this._xmlhttp;
+	var eot, sot, res, xmlhttp = this._xmlhttp;
 
 	this.$smarty.template = file;
 
 	if(element)
 	{
-		http.display(this.template_dir + file, element, this);
+		xmlhttp.display(this.template_dir + file, element, this);
 		return;
 	}
 
-	res = http.file_get_contents(this.template_dir + file);
+	res = xmlhttp.file_get_contents(this.template_dir + file);
 	if(this.debugging) sot =(new Date()).getTime();
 	res = this.parser(res);
 	if(this.debugging)
