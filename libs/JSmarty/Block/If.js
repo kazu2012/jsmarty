@@ -5,6 +5,12 @@ JSmarty.Block.If = function($params, $content, $smarty)
 
 	$express = eval($params.replace(/(\$.*)/g, '$smarty._tpl_vars.$1'));
 
+	for(var i=-1;i<$content.lastIndexOf(R);i=iep+$R.length)
+	{
+		
+	}
+
+/*
 	for(var i=0;i<$content.length;i++)
 	{
 		if('elsif' == $content[i].substr($L.length, 5))
@@ -20,6 +26,7 @@ JSmarty.Block.If = function($params, $content, $smarty)
 			$point = i+1;
 		}
 	}
+*/
 
 	return $smarty.parser($content.slice($point, i));
 }

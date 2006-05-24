@@ -99,7 +99,14 @@ JSmarty.prototype._var = function(src, array)
 /** _filter **/
 JSmarty.prototype._filter = function(src, type)
 {
-	var filter;
+	var filters = this.autoload_filters;
+
+	if(filters[type])
+	{
+		type = type.charAt(0).toUpperCase() + type.slice(1) + 'filters';
+		for(var i in filters) src = this._plugin([i], src, type);
+	}
+
 	return src;
 }
 /** _modifier **/
@@ -135,9 +142,9 @@ JSmarty.prototype._plugin = function(attr, src, type)
 /** parser **/
 JSmarty.prototype.parser = function(src)
 {
+	var res, rex, isp, iep, ibp = 0, txt = '', attr;
 	var L = this.left_delimiter, R = this.right_delimiter;
 	var count = 0, flag = false, blocks = this._blockElements;
-	var res, rex, isp, iep = -1, iap = ibp = 0, txt = '', attr;
 
 	if(!blocks)
 	{
@@ -146,15 +153,14 @@ JSmarty.prototype.parser = function(src)
 		while(res = rex.exec(src)) blocks[res[1]] = true;
 	}
 
-	while(iep != src.lastIndexOf(R))
+	for(var i=0;i<src.lastIndexOf(R);i=iep+R.length)
 	{
-		isp = src.indexOf(L, iap);
-		iep = src.indexOf(R, iap);
+		isp = src.indexOf(L, i);
+		iep = src.indexOf(R, i);
 		res = src.slice(isp + L.length, iep);
 
 		if(flag)
 		{
-			iap = iep + R.length;
 			switch(this._attr(res)[0])
 			{
 				case attr[0]: count++; break;
@@ -167,7 +173,7 @@ JSmarty.prototype.parser = function(src)
 		}
 
 		attr = this._attr(res);
-		txt += src.slice(iap, isp);
+		txt += src.slice(i, isp);
 
 		switch(attr[0].charAt(0))
 		{
@@ -181,11 +187,9 @@ JSmarty.prototype.parser = function(src)
 					txt += this._plugin(attr, null, 'Function');
 				break;
 		}
-
-		iap = iep + R.length;
 	}
 
-	txt += src.slice(iap);
+	txt += src.slice(i);
 
 	return (rex) ? this._filter(txt,'post') : txt;
 }
