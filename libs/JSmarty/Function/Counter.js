@@ -1,7 +1,7 @@
 JSmarty.Function.Counter = function($params, $smarty)
 {
-	var $counters = JSmarty.Function.Counter.$counters;
 	var $retval, $name, $counter;
+	var $counters = JSmarty.Function.Counter.$counters;
 
 	$name = ($params['name']) ? $params['name'] : 'default';
 
@@ -18,7 +18,7 @@ JSmarty.Function.Counter = function($params, $smarty)
 	$counter = $counters[$name];
 
 	if($params['start'])
-		$counter['start'] = $counter['count'] = $params['start'];
+		$counter['start'] = $counter['count'] = new Number($params['start']);
 
 	if($params['assign'] != '')
 		$counter['assign'] = $params['assign'];
@@ -32,7 +32,7 @@ JSmarty.Function.Counter = function($params, $smarty)
 	if($params['print'])
 		$print = new Boolean($params['print']);
 	else
-		$print = (!$counter['assign'] || $counter['assign'] == 0) ? false : true; // ‹““®‰ö‚µ‚¢‚©‚àc
+		$print = (!$counter['assign'] || $counter['assign'] == 0) ? true : false; // ‹““®‰ö‚µ‚¢‚©‚àc
 
 	if($print)
 		$retval = $counter['count'];
@@ -46,9 +46,9 @@ JSmarty.Function.Counter = function($params, $smarty)
 		$counter['direction'] = $params['direction'];
 
 	if($counter['direction'] == 'down')
-		$counter['count'] -= $counter['skip'];
+		$counter['count'] -= new Number($counter['skip']);
 	else
-		$counter['count'] += $counter['skip'];
+		$counter['count'] += new Number($counter['skip']);
 
 	return $retval;
 }

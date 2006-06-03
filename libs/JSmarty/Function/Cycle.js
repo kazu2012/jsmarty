@@ -1,9 +1,8 @@
 JSmarty.Function.Cycle = function($params, $smarty)
 {
-	var $cycle_vars = JSmarty.Function.Cycle.$cycle_vars;
-
 	var $retval, $cycle_array;
 	var $name, $print, $advance, $reset;
+	var $cycle_vars = JSmarty.Function.Cycle.$cycle_vars;
 
 	$name	 = $params['name']	  || 'default';
 	$print	 = $params['print']   || true;

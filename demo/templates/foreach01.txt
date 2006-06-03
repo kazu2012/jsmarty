@@ -1,3 +1,3 @@
 {foreach from=$hoge item='datum' key='key'}
-{$key}:{$datum}:{cycle values='one,two,tree,four,five'}<br />
+{$key}:{$datum}<br />
 {/foreach}

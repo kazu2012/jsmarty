@@ -33,14 +33,15 @@ JSmarty.prototype =
 		Prefilter:{}, Postfilter:{}, Outputfilter:{},
 		Resource: {}, Insert:    {}, Compiler:    {}
 	},
-	$smarty:
+	$smarty:'',
+	_smarty_vars:
 	{
 		get:{},
 		foreach: {}, sections:{}, capture:{},
 		ldelim : this.left_delimiter, rdelim: this.right_delimiter,
 		version: JSmarty.VERSION, template: ''
 	},
-	_blockElements: null,
+	_blockElements:null,
 	_pattern: new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g')
 }
 /* --------------------------------------------------------------------
@@ -99,12 +100,12 @@ JSmarty.prototype._var = function(src, array)
 /** _filter **/
 JSmarty.prototype._filter = function(src, type)
 {
-	var filters = this.autoload_filters;
+	var auto = this.autoload_filters[type];
 
-	if(filters[type])
+	if(auto)
 	{
 		type = type.charAt(0).toUpperCase() + type.slice(1) + 'filters';
-		for(var i in filters) src = this._plugin([i], src, type);
+		for(var i in auto) src = this._plugin(auto[i], src, type);
 	}
 
 	return src;
@@ -117,7 +118,7 @@ JSmarty.prototype._modifier = function()
 /** _function **/
 JSmarty.prototype._plugin = function(attr, src, type)
 {
-	var args, plugin = this._plugins[type];
+	var plugin = this._plugins[type];
 
 	attr[0] = attr[0].charAt(0).toUpperCase() + attr[0].slice(1);
 
@@ -151,6 +152,7 @@ JSmarty.prototype.parser = function(src)
 		rex = new RegExp(L+'\\/(.+?)'+R,'g');
 		src = this._filter(src,'pre'), blocks = {};
 		while(res = rex.exec(src)) blocks[res[1]] = true;
+		this._blockElements = blocks;
 	}
 
 	for(var i=0;i<src.lastIndexOf(R);i=iep+R.length)
@@ -163,7 +165,9 @@ JSmarty.prototype.parser = function(src)
 		{
 			switch(this._attr(res)[0])
 			{
-				case attr[0]: count++; break;
+				case attr[0]:
+					count++;
+					break;
 				case '/'+attr[0]:
 					flag = false;
 					txt += this._plugin(attr, src.slice(ibp, isp), 'Block');
@@ -177,6 +181,8 @@ JSmarty.prototype.parser = function(src)
 
 		switch(attr[0].charAt(0))
 		{
+			case '#':
+				break;
 			case '$':
 				txt += this._var(attr);
 				break;
@@ -189,9 +195,7 @@ JSmarty.prototype.parser = function(src)
 		}
 	}
 
-	txt += src.slice(i);
-
-	return (rex) ? this._filter(txt,'post') : txt;
+	return (rex) ? this._filter(txt + src.slice(i), 'post') : txt + src.slice(i);
 }
 /* --------------------------------------------------------------------
  # Template Variables
@@ -278,7 +282,7 @@ JSmarty.prototype.template_exists = function(){
 /** _register **/
 JSmarty.prototype._register = function(name, impl, type)
 {
-	name = name.charAt(0).toUpperCase() + name.substring(1);
+	name = name.charAt(0).toUpperCase() + name.slice(1);
 	this._plugins[type][name] = impl;
 }
 /** register_block **/
