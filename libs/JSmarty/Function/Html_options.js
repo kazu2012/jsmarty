@@ -1,4 +1,26 @@
 JSmarty.Function.Html_options = function($params, $smarty)
 {
-	return '';
+	var option = JSmarty.Function.Html_options.option;
+
+	var $html, $option;
+	var $name, $values, $options, $selected;
+
+	$name    = $params['name'] || '';
+	$options = $params['options'];
+
+	$html = '<select><!--__OPTION__--></select>'
+
+	for(var i in $options)
+	{
+		$option  = '<option value="'+ i +'">'+ $options[i] +'</option>';
+		$html    = $html.replace('<!--__OPTION__-->', $option + '<!--__OPTION__-->');
+	}
+
+	return $html.replace('<!--__OPTION__-->','');
+}
+
+JSmarty.Function.Html_options.option = function()
+{
+	var $option = '';
+	return $option;
 }

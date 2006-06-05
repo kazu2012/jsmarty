@@ -57,7 +57,13 @@ JSmarty.prototype._param = function(src, func)
 		case 'if':
 			return src;
 		default:
-			while(res = rex.exec(src)) attr[res[1]] = res[3];
+			while(res = rex.exec(src))
+			{
+				if(res[2] == '')
+					attr[res[1]] = this._tpl_vars[res[3]];
+				else
+					attr[res[1]] = res[3];
+			}
 			return attr;
 	}
 }
@@ -115,7 +121,7 @@ JSmarty.prototype._modifier = function()
 {
 	var modifier;
 }
-/** _function **/
+/** _plugin **/
 JSmarty.prototype._plugin = function(attr, src, type)
 {
 	var plugin = this._plugins[type];
@@ -179,7 +185,7 @@ JSmarty.prototype.parser = function(src)
 		attr = this._attr(res);
 		txt += src.slice(i, isp);
 
-		switch(attr[0].charAt(0))
+		switch(res.charAt(0))
 		{
 			case '#':
 				break;
@@ -321,7 +327,7 @@ JSmarty.prototype.unregister_compiler_function = function(name){
  # Filter
  -------------------------------------------------------------------- */
 /** load_filter**/
-JSmarty.prototype.load_filter = function(){
+JSmarty.prototype.load_filter = function(type, name){
 }
 /** register_prefilter **/
 JSmarty.prototype.register_prefilter = function(func){
