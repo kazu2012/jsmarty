@@ -1,8 +1,8 @@
 JSmarty.Modifier.Default = function($string, $default)
 {
-	if(typeof $default == 'undefined') $default = '';
+	if($default == (void 0)) $default = '';
 
-	if(typeof $string == 'undefined' || $string == '')
+	if($string == (void 0) || $string == '')
 		return $default;
 	else
 		return $string;

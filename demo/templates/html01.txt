@@ -1,0 +1,7 @@
+checkboxes:<br />
+{html_checkboxes name='checkbox001' options=$data selected="003"}
+<hr />
+radio:<br />
+{html_radios name='radio001' options=$data selected="002"}<hr />
+options:<br />
+{html_options name='select001' options=$data selected="001"}
