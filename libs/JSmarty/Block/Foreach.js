@@ -8,7 +8,7 @@ JSmarty.Block.Foreach = function($params, $content, $smarty)
 	$key  = $params['key']  || false;
 	$item = $params['item'] || false;
 	$name = $params['name'] || false;
-	$from = $smarty._tpl_vars[$params['from']];
+	$from = $params['from'];
 
 	if($params['name'])
 	{

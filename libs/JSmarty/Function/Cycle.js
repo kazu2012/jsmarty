@@ -4,12 +4,13 @@ JSmarty.Function.Cycle = function($params, $smarty)
 	var $name, $print, $advance, $reset;
 	var $cycle_vars = JSmarty.Function.Cycle.$cycle_vars;
 
-	$name	 = $params['name']	  || 'default';
-	$print	 = $params['print']   || true;
-	$reset	 = $params['reset']   || false;
-	$advance = $params['advance'] || true;
+	$name    = $params['name'] || 'default';
+	$print   = ($params['print'] == (void 0)) ? true  : $params['print'];
+	$reset   = ($params['reset'] == (void 0)) ? false : $params['reset'];
+	$advance = ($params['advance']==(void 0)) ? true  : $params['advance'];
 
-	if(typeof $cycle_vars[$name] == 'undefined') $cycle_vars[$name] = {};
+	if($cycle_vars[$name] == (void 0))
+		$cycle_vars[$name] = {};
 
 	if(!$params['values'])
 	{
@@ -26,13 +27,12 @@ JSmarty.Function.Cycle = function($params, $smarty)
 		$cycle_vars[$name]['values'] = $params['values'];
 	}
 
-	if(typeof $cycle_vars[$name] == 'undefined')
+	if($cycle_vars[$name] == (void 0))
 		$cycle_vars[$name] = {index:0,values:''};
 
 	$cycle_vars[$name]['delimiter'] = ($params['delimiter']) ? $params['delimiter'] : ',';
 
-	// à»â∫ÇÃãììÆâˆÇµÇ¢Ç©Ç‡Åc
-	if($cycle_vars[$name]['values'].constructor == 'array')
+	if(typeof $cycle_vars[$name]['values'] == 'array')
 		$cycle_array = $cycle_vars[$name]['values'];
 	else
 		$cycle_array = $cycle_vars[$name]['values'].split($cycle_vars[$name]['delimiter']);

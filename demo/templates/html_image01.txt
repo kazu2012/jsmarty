@@ -1,1 +1,2 @@
-{html_image file=$img}
+{html_image file=$img}<br />
+{mailto address='shogo@starmsg.net' encode='JavaScript'}

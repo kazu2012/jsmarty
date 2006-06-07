@@ -1,4 +1,4 @@
-JSmarty.Block.Section = function(params, content, jsmarty)
+JSmarty.Block.Section = function($params, $content, $smarty)
 {
 	return content;
 }

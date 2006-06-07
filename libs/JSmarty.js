@@ -128,7 +128,7 @@ JSmarty.prototype._plugin = function(attr, src, type)
 
 	attr[0] = attr[0].charAt(0).toUpperCase() + attr[0].slice(1);
 
-	if(typeof plugin[attr[0]] == 'undefined')
+	if(plugin[attr[0]] == (void 0))
 		plugin[attr[0]] = JSAN.require('JSmarty.'+ type +'.'+ attr[0]);
 	if(!plugin[attr[0]]) return '';
 
@@ -209,7 +209,7 @@ JSmarty.prototype.parser = function(src)
 /** assign **/
 JSmarty.prototype.assign = function(tpl_var, value)
 {
-	if(typeof value == 'undefined') value = null;
+	if(value == (void 0)) value = null;
 
 	if(typeof tpl_var == 'string')
 	{
