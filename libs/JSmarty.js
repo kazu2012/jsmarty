@@ -52,20 +52,15 @@ JSmarty.prototype._param = function(src, func)
 {
 	var res, rex = this._pattern, attr = [];
 
-	switch(func)
+	while(res = rex.exec(src))
 	{
-		case 'if':
-			return src;
-		default:
-			while(res = rex.exec(src))
-			{
-				if(res[2] == '')
-					attr[res[1]] = this._tpl_vars[res[3]];
-				else
-					attr[res[1]] = res[3];
-			}
-			return attr;
+		if(res[2] == '')
+			attr[res[1]] = this._tpl_vars[res[3]];
+		else
+			attr[res[1]] = res[3];
 	}
+
+	return attr;
 }
 /** _attr **/
 JSmarty.prototype._attr = function(src)
@@ -125,8 +120,6 @@ JSmarty.prototype._modifier = function()
 JSmarty.prototype._plugin = function(attr, src, type)
 {
 	var plugin = this._plugins[type];
-
-	attr[0] = attr[0].charAt(0).toUpperCase() + attr[0].slice(1);
 
 	if(plugin[attr[0]] == void(0))
 		plugin[attr[0]] = JSAN.require('JSmarty.'+ type +'.'+ attr[0]);
@@ -209,7 +202,7 @@ JSmarty.prototype.parser = function(src)
 /** assign **/
 JSmarty.prototype.assign = function(tpl_var, value)
 {
-	if(void(0) == value) value = null;
+	if(value == void(0)) value = null;
 
 	if(typeof tpl_var == 'string')
 	{
@@ -285,27 +278,21 @@ JSmarty.prototype.template_exists = function(){
 /* --------------------------------------------------------------------
  # Plugins
  -------------------------------------------------------------------- */
-/** _register **/
-JSmarty.prototype._register = function(name, impl, type)
-{
-	name = name.charAt(0).toUpperCase() + name.slice(1);
-	this._plugins[type][name] = impl;
-}
 /** register_block **/
 JSmarty.prototype.register_block = function(name, impl){
-	this._register(name, impl, 'Block');
+	this._plugins.Block[name] = impl;
 }
 /** register_function **/
 JSmarty.prototype.register_function = function(name, impl){
-	this._register(name, impl, 'Functions');
+	this._plugins.Function[name] = impl;
 }
 /** register_modifier **/
 JSmarty.prototype.register_modifier = function(name, impl){
-	this._register(name, impl, 'Modifier');
+	this._plguins.Modifier[name] = impl;
 }
 /** register_compiler_function **/
 JSmarty.prototype.register_compiler_function = function(name, impl){
-	this._register(name, impl, 'Compiler');
+	this._plugins.Compiler[name] = impl;
 }
 /** unregister_block **/
 JSmarty.prototype.unregister_block = function(name){
