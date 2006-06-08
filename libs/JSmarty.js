@@ -48,13 +48,13 @@ JSmarty.prototype =
  # Parser
  -------------------------------------------------------------------- */
 /** _param **/
-JSmarty.prototype._param = function(src, func)
+JSmarty.prototype._param = function(src)
 {
 	var res, rex = this._pattern, attr = [];
 
 	while(res = rex.exec(src))
 	{
-		if(res[2] == '')
+		if('$' == res[3].charAt(0))
 			attr[res[1]] = this._tpl_vars[res[3]];
 		else
 			attr[res[1]] = res[3];
@@ -76,7 +76,7 @@ JSmarty.prototype._attr = function(src)
 	if(ipp >= 0)
 	{
 		attr[0] = src.slice(0,ipp);
-		attr[1] = this._param(src.slice(ipp+1), attr[0]);
+		attr[1] = this._param(src.slice(ipp+1));
 	}
 
 	return attr;
@@ -105,7 +105,7 @@ JSmarty.prototype._filter = function(src, type)
 
 	if(auto)
 	{
-		type = type.charAt(0).toUpperCase() + type.slice(1) + 'filters';
+		type = type.charAt(0).toUpperCase() + type.slice(1) + 'filter';
 		for(var i in auto) src = this._plugin(auto[i], src, type);
 	}
 
@@ -164,6 +164,10 @@ JSmarty.prototype.parser = function(src)
 		{
 			switch(this._attr(res)[0])
 			{
+				case 'else':
+					break;
+				case 'elsif':
+					break;
 				case attr[0]:
 					count++;
 					break;
@@ -180,6 +184,8 @@ JSmarty.prototype.parser = function(src)
 
 		switch(res.charAt(0))
 		{
+			case '*':
+				break;
 			case '#':
 				break;
 			case '$':
@@ -202,7 +208,12 @@ JSmarty.prototype.parser = function(src)
 /** assign **/
 JSmarty.prototype.assign = function(tpl_var, value)
 {
-	if(value == void(0)) value = null;
+	switch(typeof value)
+	{
+		case 'undefined':
+			value = null;
+			break;
+	}
 
 	if(typeof tpl_var == 'string')
 	{
@@ -221,14 +232,14 @@ JSmarty.prototype.clear_assign = function(tpl_var)
 {
 	if(typeof tpl_var == 'string')
 	{
-		delete this._tpl_vars['$'+tpl_var];
+		delete this._tpl_vars[tpl_var];
 		return;
 	}
 
 	for(var i in tpl_var)
 	{
 		if(i == '') continue;
-		delete this._tpl_vars['$'+tpl_var[i]];
+		delete this._tpl_vars[tpl_var[i]];
 	}
 }
 /** clear_all_assign **/
@@ -237,7 +248,7 @@ JSmarty.prototype.clear_all_assign = function(){
 }
 /** get_template_vars **/
 JSmarty.prototype.get_template_vars = function(tpl_var){
-	return (tpl_var) ? this._tpl_vars['$'+tpl_var] : this._tpl_vars;
+	return (tpl_var) ? this._tpl_vars[tpl_var] : this._tpl_vars;
 }
 /* --------------------------------------------------------------------
  # Template Process
