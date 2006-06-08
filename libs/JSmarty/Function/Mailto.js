@@ -1,4 +1,4 @@
-JSmarty.Function.Mailto = function($params, $smarty)
+JSmarty.Function.mailto = function($params, $smarty)
 {
 	var $args, $text, $html, $extra, $encode;
 

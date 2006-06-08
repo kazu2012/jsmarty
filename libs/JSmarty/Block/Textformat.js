@@ -1,4 +1,4 @@
-JSmarty.Block.Textformat = function($params, $content, $smarty)
+JSmarty.Block.textformat = function($params, $content, $smarty)
 {
 	var $retval, $style, $assign;
 	var $wrap, $wrap_char, $wrap_cut;

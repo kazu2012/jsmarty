@@ -1,6 +1,6 @@
-JSmarty.Function.Html_options = function($params, $smarty)
+JSmarty.Function.html_options = function($params, $smarty)
 {
-	var option = JSmarty.Function.Html_options.option;
+	var option = JSmarty.Function.html_options.option;
 
 	var $html, $option;
 	var $name, $values, $options, $selected;
@@ -19,7 +19,7 @@ JSmarty.Function.Html_options = function($params, $smarty)
 	return $html.replace('<!--__OPTION__-->','');
 }
 
-JSmarty.Function.Html_options.option = function()
+JSmarty.Function.html_options.option = function()
 {
 	var $option = '';
 	return $option;

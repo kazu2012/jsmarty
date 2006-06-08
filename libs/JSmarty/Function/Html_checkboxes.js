@@ -1,4 +1,4 @@
-JSmarty.Function.Html_checkboxes = function($params, $smarty)
+JSmarty.Function.html_checkboxes = function($params, $smarty)
 {
 	var $html = '', $selected = '';
 	var $name, $values, $options, $separator;

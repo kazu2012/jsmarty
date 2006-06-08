@@ -1,4 +1,4 @@
-JSmarty.Function.Html_select_date = function($params, $smarty)
+JSmarty.Function.html_select_date = function($params, $smarty)
 {
 	return '';
 }

@@ -1,4 +1,4 @@
-JSmarty.Function.Math = function($params, $smarty)
+JSmarty.Function.math = function($params, $smarty)
 {
 	return '';
 }

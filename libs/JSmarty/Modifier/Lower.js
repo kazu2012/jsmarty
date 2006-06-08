@@ -1,4 +1,4 @@
-JSmarty.Modifier.Lower = function($string)
+JSmarty.Modifier.lower = function($string)
 {
 	return $string.toLowerCase();
 }

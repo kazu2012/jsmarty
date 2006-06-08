@@ -1,4 +1,4 @@
-JSmarty.Function.Html_table = function($params, $smarty)
+JSmarty.Function.html_table = function($params, $smarty)
 {
 	return '';
 }

@@ -1,4 +1,4 @@
-JSmarty.Function.Ldelim = function($params, $smarty)
+JSmarty.Function.ldelim = function($params, $smarty)
 {
 	return $smarty.left_delimiter;
 }

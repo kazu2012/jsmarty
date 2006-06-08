@@ -1,4 +1,4 @@
-JSmarty.Function.Html_image = function($params, $smarty)
+JSmarty.Function.html_image = function($params, $smarty)
 {
 	if(typeof $params['file'] == 'undefined') return '';
 

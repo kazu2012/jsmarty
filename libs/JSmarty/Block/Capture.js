@@ -1,4 +1,4 @@
-JSmarty.Block.Capture = function($params, $content, $smarty)
+JSmarty.Block.capture = function($params, $content, $smarty)
 {
 	var $name, $assign;
 

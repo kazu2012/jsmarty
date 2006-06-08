@@ -1,7 +1,7 @@
-JSmarty.Function.Counter = function($params, $smarty)
+JSmarty.Function.counter = function($params, $smarty)
 {
 	var $retval, $name, $counter;
-	var $counters = JSmarty.Function.Counter.$counters;
+	var $counters = JSmarty.Function.counter.$counters;
 
 	$name = $params['name'] || 'default';
 
@@ -52,4 +52,4 @@ JSmarty.Function.Counter = function($params, $smarty)
 
 	return $retval;
 }
-JSmarty.Function.Counter.$counters = {};
+JSmarty.Function.counter.$counters = {};

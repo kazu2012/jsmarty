@@ -1,4 +1,4 @@
-JSmarty.Modifier.Upper = function($string)
+JSmarty.Modifier.upper = function($string)
 {
 	return $string.toUpperCase();
 }

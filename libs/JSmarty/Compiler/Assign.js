@@ -1,4 +1,4 @@
-JSmarty.Compiler.Assign = function(params, jsmarty)
+JSmarty.Compiler.assign = function($params, $smarty)
 {
 	return '';
 }
