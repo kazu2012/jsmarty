@@ -128,7 +128,7 @@ JSmarty.prototype._plugin = function(attr, src, type)
 
 	attr[0] = attr[0].charAt(0).toUpperCase() + attr[0].slice(1);
 
-	if(plugin[attr[0]] == (void 0))
+	if(plugin[attr[0]] == void(0))
 		plugin[attr[0]] = JSAN.require('JSmarty.'+ type +'.'+ attr[0]);
 	if(!plugin[attr[0]]) return '';
 
@@ -209,7 +209,7 @@ JSmarty.prototype.parser = function(src)
 /** assign **/
 JSmarty.prototype.assign = function(tpl_var, value)
 {
-	if(value == (void 0)) value = null;
+	if(void(0) == value) value = null;
 
 	if(typeof tpl_var == 'string')
 	{
@@ -240,7 +240,7 @@ JSmarty.prototype.clear_assign = function(tpl_var)
 }
 /** clear_all_assign **/
 JSmarty.prototype.clear_all_assign = function(){
-	this._tpl_vars = new Array();
+	this._tpl_vars = {};
 }
 /** get_template_vars **/
 JSmarty.prototype.get_template_vars = function(tpl_var){
@@ -330,20 +330,26 @@ JSmarty.prototype.unregister_compiler_function = function(name){
 JSmarty.prototype.load_filter = function(type, name){
 }
 /** register_prefilter **/
-JSmarty.prototype.register_prefilter = function(func){
+JSmarty.prototype.register_prefilter = function(name){
+	this._plugins.Prefilter[name] = eval(name);
 }
 /** register_postfilter **/
-JSmarty.prototype.register_postfilter = function(func){
+JSmarty.prototype.register_postfilter = function(name){
+	this._plugins.Postfilter[name] = eval(name);
 }
 /** register_outputfilter **/
-JSmarty.prototype.register_outputfilter = function(func){
+JSmarty.prototype.register_outputfilter = function(name){
+	this._plugins.Outputfilter[name] = false;
 }
 /** unregister_prefilter **/
-JSmarty.prototype.unregister_prefilter = function(func){
+JSmarty.prototype.unregister_prefilter = function(name){
+	this._plugins.Prefilter[name] = false;
 }
 /** unregister_postfilter **/
-JSmarty.prototype.unregister_postfilter = function(func){
+JSmarty.prototype.unregister_postfilter = function(name){
+	this._plugins.Postfilter[name] = false;
 }
 /** unregister_outputfilter **/
-JSmarty.prototype.unregister_outputfilter = function(func){
+JSmarty.prototype.unregister_outputfilter = function(name){
+	this._plugins.Outputfilter[name] = false;
 }
