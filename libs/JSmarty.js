@@ -65,8 +65,8 @@ JSmarty.prototype._param = function(src)
 /** _tag **/
 JSmarty.prototype._tag = function(src, key)
 {
-	var t = { mod:'', name:src, param:'' };
 	var ipp = src.indexOf(' '), imp = src.indexOf('|');
+	var t = { mod:'', name:src, param:'', type: src.charAt(0)};
 
 	if(imp >= 0)
 	{
@@ -161,12 +161,14 @@ JSmarty.prototype._func = function(src, cnt)
 {
 	var t = this._tag(src);
 
-	switch(t.name.charAt(0))
+	switch(t.type)
 	{
 		case '*':
 			return '';
 		case '$':
 			src = this._var(t.name);
+			break;
+		case '#':
 			break;
 		default:
 			if(cnt)
@@ -220,8 +222,8 @@ JSmarty.prototype.parser = function(src)
 			continue;
 		}
 
-		name = this._tag(res, 'name');
 		txt += src.slice(i, isp);
+		name = this._tag(res, 'name');
 
 		if(blocks[name])
 			flag = true, ibp = iep + R.length, tag = res;
