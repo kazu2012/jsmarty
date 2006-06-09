@@ -50,36 +50,36 @@ JSmarty.prototype =
 /** _param **/
 JSmarty.prototype._param = function(src)
 {
-	var res, rex = this._pattern, attr = [];
+	var res, rex = this._pattern, p = {};
 
 	while(res = rex.exec(src))
 	{
 		if('$' == res[3].charAt(0))
-			attr[res[1]] = this._tpl_vars[res[3]];
+			p[res[1]] = this._tpl_vars[res[3]];
 		else
-			attr[res[1]] = res[3];
+			p[res[1]] = res[3];
 	}
 
-	return attr;
+	return p;
 }
-/** _attr **/
-JSmarty.prototype._attr = function(src)
+/** _tag **/
+JSmarty.prototype._tag = function(src, key)
 {
-	var attr = [src,'',''];
+	var t = { mod:'', name:src, param:'' };
 	var ipp = src.indexOf(' '), imp = src.indexOf('|');
 
 	if(imp >= 0)
 	{
-		attr[0] = src.slice(0,imp);
-		attr[2] = src.slice(imp+1);
+		t.mod  = src.slice(imp+1);
+		t.name = src.slice(0,imp);
 	}
 	if(ipp >= 0)
 	{
-		attr[0] = src.slice(0,ipp);
-		attr[1] = this._param(src.slice(ipp+1));
+		t.name = src.slice(0,ipp);
+		t.param= this._param(src.slice(ipp+1));
 	}
 
-	return attr;
+	return (key) ? t[key] : t;
 }
 /** _var **/
 JSmarty.prototype._var = function(src, array)
@@ -112,37 +112,76 @@ JSmarty.prototype._filter = function(src, type)
 	return src;
 }
 /** _modifier **/
-JSmarty.prototype._modifier = function()
+JSmarty.prototype._modifier = function(src, mod)
 {
-	var modifier;
+	if(!mod) return src;
+
+	mod = mod.split('|');
+
+	for(var i=0;i<mod.length;i++)
+	{
+		par = mod[i].split(':');
+		switch(par[0])
+		{
+			case 'default':
+				par[0] = par[0] + 's';
+				break;
+		}
+		src = this._plugin(par[0], par.slice(1), src, 'Modifier');
+	}
+
+	return src;
 }
 /** _plugin **/
-JSmarty.prototype._plugin = function(attr, src, type)
+JSmarty.prototype._plugin = function(name, param, src, type)
 {
 	var plugin = this._plugins[type];
 
-	if(plugin[attr[0]] == void(0))
-		plugin[attr[0]] = JSAN.require('JSmarty.'+ type +'.'+ attr[0]);
-	if(!plugin[attr[0]]) return '';
+	if(plugin[name] == void(0))
+		plugin[name] = JSAN.require('JSmarty.'+ type +'.'+ name);
+	if(!plugin[name]) return '';
 
 	switch(type)
 	{
 		case 'Prefilter':
 		case 'Postfilter':
 		case 'Outputfilter':
-			return plugin[attr[0]](src, this);
+			return plugin[name](src, this);
 		case 'Function':
-			return plugin[attr[0]](attr[1], this);
+			return plugin[name](param, this);
 		case 'Block':
-			return plugin[attr[0]](attr[1], src, this);
+			return plugin[name](param, src, this);
 		case 'Modifier':
-			return plugin[attr[0]].apply(null, attr[2]);
+			param.unshift(src);
+			return plugin[name].apply(null, param);
 	}
+}
+/** _func **/
+JSmarty.prototype._func = function(src, cnt)
+{
+	var t = this._tag(src);
+
+	switch(t.name.charAt(0))
+	{
+		case '*':
+			return '';
+		case '$':
+			src = this._var(t.name);
+			break;
+		default:
+			if(cnt)
+				src = this._plugin(t.name, t.param,  cnt, 'Block');
+			else
+				src = this._plugin(t.name, t.param, null, 'Function');
+			break;
+	}
+
+	return this._modifier(src, t.mod);
 }
 /** parser **/
 JSmarty.prototype.parser = function(src)
 {
-	var res, rex, isp, iep, ibp = 0, txt = '', attr;
+	var tag, res, rex, isp, iep, ibp = 0, txt = '', name;
 	var L = this.left_delimiter, R = this.right_delimiter;
 	var count = 0, flag = false, blocks = this._blockElements;
 
@@ -162,42 +201,32 @@ JSmarty.prototype.parser = function(src)
 
 		if(flag)
 		{
-			switch(this._attr(res)[0])
+			switch(this._tag(res, 'name'))
 			{
+				case name:
+					count++;
+					break;
 				case 'else':
 					break;
 				case 'elsif':
 					break;
-				case attr[0]:
-					count++;
+				case '/if':
 					break;
-				case '/'+attr[0]:
+				case '/'+ name:
 					flag = false;
-					txt += this._plugin(attr, src.slice(ibp, isp), 'Block');
+					txt += this._func(tag, src.slice(ibp, isp));
 					break;
 			}
 			continue;
 		}
 
-		attr = this._attr(res);
+		name = this._tag(res, 'name');
 		txt += src.slice(i, isp);
 
-		switch(res.charAt(0))
-		{
-			case '*':
-				break;
-			case '#':
-				break;
-			case '$':
-				txt += this._var(attr);
-				break;
-			default:
-				if(blocks[attr[0]])
-					flag = true, ibp = iep + R.length;
-				else
-					txt += this._plugin(attr, null, 'Function');
-				break;
-		}
+		if(blocks[name])
+			flag = true, ibp = iep + R.length, tag = res;
+		else
+			txt += this._func(res);
 	}
 
 	return (rex) ? this._filter(txt + src.slice(i), 'post') : txt + src.slice(i);
@@ -206,7 +235,7 @@ JSmarty.prototype.parser = function(src)
  # Template Variables
  -------------------------------------------------------------------- */
 /** assign **/
-JSmarty.prototype.assign = function(tpl_var, value)
+JSmarty.prototype.assign = function(key, value)
 {
 	switch(typeof value)
 	{
@@ -215,31 +244,31 @@ JSmarty.prototype.assign = function(tpl_var, value)
 			break;
 	}
 
-	if(typeof tpl_var == 'string')
+	if(typeof key == 'string')
 	{
-		this._tpl_vars['$'+tpl_var] = value;
+		this._tpl_vars['$'+key] = value;
 		return;
 	}
 
-	for(var i in tpl_var)
+	for(var i in key)
 	{
 		if(i == '') continue;
-		this._tpl_vars[i] = tpl_var[i];
+		this._tpl_vars[i] = key[i];
 	}
 }
 /** clear_assign **/
-JSmarty.prototype.clear_assign = function(tpl_var)
+JSmarty.prototype.clear_assign = function(key)
 {
-	if(typeof tpl_var == 'string')
+	if(typeof key == 'string')
 	{
-		delete this._tpl_vars[tpl_var];
+		delete this._tpl_vars[key];
 		return;
 	}
 
-	for(var i in tpl_var)
+	for(var i in key)
 	{
 		if(i == '') continue;
-		delete this._tpl_vars[tpl_var[i]];
+		delete this._tpl_vars[key[i]];
 	}
 }
 /** clear_all_assign **/
@@ -247,8 +276,8 @@ JSmarty.prototype.clear_all_assign = function(){
 	this._tpl_vars = {};
 }
 /** get_template_vars **/
-JSmarty.prototype.get_template_vars = function(tpl_var){
-	return (tpl_var) ? this._tpl_vars[tpl_var] : this._tpl_vars;
+JSmarty.prototype.get_template_vars = function(key){
+	return (key) ? this._tpl_vars[key] : this._tpl_vars;
 }
 /* --------------------------------------------------------------------
  # Template Process
