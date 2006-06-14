@@ -1,21 +1,20 @@
 JSmarty.Block.foreach = function($params, $content, $smarty)
 {
-	if(!$params['from']) return '';
-
 	var $from, $item, $key, $name;
-	var $loop = false, $retval = '', $total = 0;
+	if(!($from = $params['from'])) return '';
+
+	var $loop = false, $html = '', $total = 0;
 
 	$key  = $params['key']  || false;
 	$item = $params['item'] || false;
 	$name = $params['name'] || false;
-	$from = $params['from'];
 
-	if($params['name'])
+	if($name)
 	{
 		for(var i in $from) $total++;
 
-		$loop = $smarty.$smarty.foreach[$params['name']];
-
+		$smarty._smarty._smarty_vars.foreach[$name] = {};
+		$loop = $smarty._smarty_vars.foreach[$name];
 		$loop['iteration'] = 0;
 		$loop['show']  = true, $loop['last']  = false;
 		$loop['first'] = true, $loop['total'] = $total;
@@ -23,7 +22,6 @@ JSmarty.Block.foreach = function($params, $content, $smarty)
 
 	for(var i in $from)
 	{
-		if($key ) $smarty.assign($key, i);
 		if($loop)
 		{
 			$loop['iteration']++;
@@ -31,9 +29,10 @@ JSmarty.Block.foreach = function($params, $content, $smarty)
 			if($loop['first'] && ($loop['iteration'] != 1)) $loop['first'] = false;
 		}
 
+		if($key) $smarty.assign($key, i);
 		$smarty.assign($item, $from[i]);
-		$retval += $smarty.parser($content);
+		$html += $smarty.parser($content);
 	}
 
-	return $retval;
+	return $html;
 }
