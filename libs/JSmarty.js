@@ -11,228 +11,22 @@ JSmarty.Prefilter = {};
 JSmarty.Postfilter = {};
 JSmarty.Outputfilter = {};
 /////////////////////////////////////////////////////////**NAME SPACES**
+JSAN.use('JSmarty.Parser');
 JSAN.use('JSmarty.Shared.Ajax');
-////////////////////////////////////////////////////////////**INCLUDES**
+/////////////////////////////////////////////////
+///////////**INCLUDES**
 JSmarty.AUTHOR	= 'shogo';
 JSmarty.VERSION = 'dev0.0.1';
 JSmarty.LICENSE = 'LGPL';
 
-JSmarty.prototype =
-{
-	debugging : false,
-	template_dir : './templates/',
-	left_delimiter : '{',
-	right_delimiter : '}',
-	autoload_filters: {},
-	_xmlhttp: new JSmarty.Shared.Ajax(),
-	_result:'',
-	_tpl_vars:{},
-	_plugins:
-	{
-		Modifier: {}, Function:  {}, Block:       {},
-		Prefilter:{}, Postfilter:{}, Outputfilter:{},
-		Resource: {}, Insert:    {}, Compiler:    {}
-	},
-	$smarty:'',
-	_smarty_vars:
-	{
-		get:{},
-		foreach: {}, sections:{}, capture:{},
-		ldelim : this.left_delimiter, rdelim: this.right_delimiter,
-		version: JSmarty.VERSION, template: ''
-	},
-	_blockElements:null,
-	_pattern: new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g')
-}
-/* --------------------------------------------------------------------
- # Parser
- -------------------------------------------------------------------- */
-/** _param **/
-JSmarty.prototype._param = function(src)
-{
-	var res, rex = this._pattern, p = {};
+JSmarty.prototype = new JSmarty.Parser();
+JSmarty.prototype.debugging = false;
+JSmarty.prototype.template_dir = './templates/';
+JSmarty.prototype.autoload_fils = '';
+JSmarty.prototype.left_delimiter = '{',
+JSmarty.prototype.right_delimiter = '}',
+JSmarty.prototype._xmlhttp = new JSmarty.Shared.Ajax();
 
-	while(res = rex.exec(src))
-	{
-		if('$' == res[3].charAt(0))
-			p[res[1]] = this._tpl_vars[res[3]];
-		else
-			p[res[1]] = res[3];
-	}
-
-	return p;
-}
-/** _tag **/
-JSmarty.prototype._tag = function(src, key)
-{
-	var ipp = src.indexOf(' '), imp = src.indexOf('|');
-	var t = { mod:'', name:src, param:'', type: src.charAt(0)};
-
-	if(imp >= 0)
-	{
-		t.mod  = src.slice(imp+1);
-		t.name = src.slice(0,imp);
-	}
-	if(ipp >= 0)
-	{
-		t.name = src.slice(0,ipp);
-		t.param= this._param(src.slice(ipp+1));
-	}
-
-	return (key) ? t[key] : t;
-}
-/** _var **/
-JSmarty.prototype._var = function(src, array)
-{
-	if(!array) array = this._tpl_vars;
-
-	if(typeof src == 'string')
-	{
-		if(src.split('.').length > 1)
-			return this._var(src, array[src.split('.')[0]]);
-		return array[src];
-	}
-
-	if(src[0].split('.').length > 1)
-		return this._var(src, array[src[0].split('.')[0]]);
-
-	return array[src[0]];
-}
-/** _filter **/
-JSmarty.prototype._filter = function(src, type)
-{
-	var auto = this.autoload_filters[type];
-
-	if(auto)
-	{
-		type = type.charAt(0).toUpperCase() + type.slice(1) + 'filter';
-		for(var i in auto) src = this._plugin(auto[i], src, type);
-	}
-
-	return src;
-}
-/** _modifier **/
-JSmarty.prototype._modifier = function(src, mod)
-{
-	if(!mod) return src;
-
-	mod = mod.split('|');
-
-	for(var i=0;i<mod.length;i++)
-	{
-		par = mod[i].split(':');
-		switch(par[0])
-		{
-			case 'default':
-				par[0] = par[0] + 's';
-				break;
-		}
-		src = this._plugin(par[0], par.slice(1), src, 'Modifier');
-	}
-
-	return src;
-}
-/** _plugin **/
-JSmarty.prototype._plugin = function(name, param, src, type)
-{
-	var plugin = this._plugins[type];
-
-	if(plugin[name] == void(0))
-		plugin[name] = JSAN.require('JSmarty.'+ type +'.'+ name);
-	if(!plugin[name]) return '';
-
-	switch(type)
-	{
-		case 'Prefilter':
-		case 'Postfilter':
-		case 'Outputfilter':
-			return plugin[name](src, this);
-		case 'Function':
-			return plugin[name](param, this);
-		case 'Block':
-			return plugin[name](param, src, this);
-		case 'Modifier':
-			param.unshift(src);
-			return plugin[name].apply(null, param);
-	}
-}
-/** _func **/
-JSmarty.prototype._func = function(src, cnt)
-{
-	var t = this._tag(src);
-
-	switch(t.type)
-	{
-		case '*':
-			return '';
-		case '$':
-			src = this._var(t.name);
-			break;
-		case '#':
-			break;
-		default:
-			if(cnt)
-				src = this._plugin(t.name, t.param,  cnt, 'Block');
-			else
-				src = this._plugin(t.name, t.param, null, 'Function');
-			break;
-	}
-
-	return this._modifier(src, t.mod);
-}
-/** parser **/
-JSmarty.prototype.parser = function(src)
-{
-	var tag, res, rex, isp, iep, ibp = 0, txt = '', name;
-	var L = this.left_delimiter, R = this.right_delimiter;
-	var count = 0, flag = false, blocks = this._blockElements;
-
-	if(!blocks)
-	{
-		rex = new RegExp(L+'\\/(.+?)'+R,'g');
-		src = this._filter(src,'pre'), blocks = {};
-		while(res = rex.exec(src)) blocks[res[1]] = true;
-		this._blockElements = blocks;
-	}
-
-	for(var i=0;i<src.lastIndexOf(R);i=iep+R.length)
-	{
-		isp = src.indexOf(L, i);
-		iep = src.indexOf(R, i);
-		res = src.slice(isp + L.length, iep);
-
-		if(flag)
-		{
-			switch(this._tag(res, 'name'))
-			{
-				case name:
-					count++;
-					break;
-				case 'else':
-					break;
-				case 'elsif':
-					break;
-				case '/if':
-					break;
-				case '/'+ name:
-					flag = false;
-					txt += this._func(tag, src.slice(ibp, isp));
-					break;
-			}
-			continue;
-		}
-
-		txt += src.slice(i, isp);
-		name = this._tag(res, 'name');
-
-		if(blocks[name])
-			flag = true, ibp = iep + R.length, tag = res;
-		else
-			txt += this._func(res);
-	}
-
-	return (rex) ? this._filter(txt + src.slice(i), 'post') : txt + src.slice(i);
-}
 /* --------------------------------------------------------------------
  # Template Variables
  -------------------------------------------------------------------- */
@@ -289,8 +83,6 @@ JSmarty.prototype.fetch = function(file, element, display)
 {
 	var eot, sot, res, xmlhttp = this._xmlhttp;
 
-	this.$smarty.template = file;
-
 	if(element)
 	{
 		xmlhttp.display(this.template_dir + file, element, this);
@@ -328,8 +120,8 @@ JSmarty.prototype.register_block = function(name, impl){
 JSmarty.prototype.register_function = function(name, impl){
 	this._plugins.Function[name] = impl;
 }
-/** register_modifier **/
-JSmarty.prototype.register_modifier = function(name, impl){
+/** register_mod **/
+JSmarty.prototype.register_mod = function(name, impl){
 	this._plguins.Modifier[name] = impl;
 }
 /** register_compiler_function **/
@@ -344,7 +136,7 @@ JSmarty.prototype.unregister_block = function(name){
 JSmarty.prototype.unregister_function = function(name){
 	this._plugins.Function[name] = false;
 }
-/** unregister_modifier **/
+/** unregister_mod **/
 JSmarty.prototype.unregister_modifier = function(name){
 	this._plugins.Modifier[name] = false;
 }
@@ -355,7 +147,7 @@ JSmarty.prototype.unregister_compiler_function = function(name){
 /* ---------------------------------------------------------------------
  # Filter
  -------------------------------------------------------------------- */
-/** load_filter**/
+/** load_fil**/
 JSmarty.prototype.load_filter = function(type, name){
 }
 /** register_prefilter **/
