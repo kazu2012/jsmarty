@@ -5,10 +5,6 @@ JSmarty.Parser.MAPFILT = {
 	pre:'Prefilter', post:'Postfilter', output:'Outputfilter'
 };
 JSmarty.Parser.REXPARM = new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g');
-JSmarty.Parser.toParam = function()
-{
-	
-};
 
 JSmarty.Parser.prototype =
 {
@@ -48,40 +44,54 @@ JSmarty.Parser.prototype.exec = function(src)
 /** parser **/
 JSmarty.Parser.prototype.parser = function(src)
 {
-	var tag, res, rex, isp, iep, ibp = 0, txt = '', name;
+	var isp, iep, ipp, imp, inp, ibp, irp;
 	var L = this.left_delimiter, R = this.right_delimiter;
-	var count = 0, flag = false, fin = src.lastIndexOf(R);
+	var n = 0, l = L.length, r = R.length, nested = false;
+	var txt = '', S = ' ', M = '|', list = JSmarty.Parser.BELEMNT;
 
-	for(var i=0;i<fin;i=iep+R.length)
+	for(var i=0,fin=src.lastIndexOf(R);i<fin;i=iep+r)
 	{
-		isp = src.indexOf(L, i), iep = src.indexOf(R, i);
-		res = this._tag(src.slice(isp + L.length, iep), null, flag);
+		isp = src.indexOf(L,i)+l, iep = src.indexOf(R,i);
 
-		if(flag)
+		if(nested)
 		{
-			switch(res.src)
+			switch(src.indexOf(name, isp))
 			{
-				case name:
-					count++;
+				case isp:
 					break;
-				case '/'+ name:
-					flag = false;
-					txt += this._tag(tag, src.slice(ibp, isp))['src'];
+				case isp+1:
+					if(name == 'if')
+						name += 's', parm = src.slice(ipp+1, irp);
+					txt += this._plugin(name, parm, src.slice(ibp, isp-l), 'Block');
+					break;
+				default:
 					break;
 			}
+
 			continue;
 		}
 
-		switch(res.type)
+		inp = irp = iep;
+		ipp = src.indexOf(S,isp), imp = src.indexOf(M,isp);
+		if(modf = (imp < iep && imp != -1)) inp = imp, irp = imp;
+		if(parm = (ipp < iep && ipp != -1)) inp = ipp;
+
+		txt += src.slice(i, isp-l);
+
+		switch(src.charAt(isp))
 		{
-			case 'block':
-				ibp = iep + R.length;
-				name= res.src, flag = true;
-				tag = src.slice(isp + L.length, iep);
-				txt += src.slice(i, isp);
+			case '*': break;
+			case '#': break;
+			case '$':
+				txt += this._var(src.slice(isp+1, inp));
 				break;
 			default:
-				txt += src.slice(i, isp) + res.src;
+				name = src.slice(isp, inp);
+				parm = (parm) ? this._param(src.slice(ipp+1, irp)) : {};
+				if(nested = list[name])
+					ibp = iep+r;
+				else
+					txt += this._plugin(name, parm, null, 'Function');
 				break;
 		}
 	}
@@ -89,7 +99,7 @@ JSmarty.Parser.prototype.parser = function(src)
 	return txt + src.slice(i);
 };
 // -- par
-JSmarty.Parser.prototype._par = function(src)
+JSmarty.Parser.prototype._param = function(src)
 {
 	var res, obj = {}, rex = JSmarty.Parser.REXPARM;
 
@@ -102,42 +112,6 @@ JSmarty.Parser.prototype._par = function(src)
 	}
 
 	return obj;
-};
-/** _tag **/
-JSmarty.Parser.prototype._tag = function(src, cnt, name)
-{
-	var ipp = src.indexOf(' '), imp = src.indexOf('|');
-	var mod, par = {}, iep = src.length, list = JSmarty.Parser.BELEMNT;
-
-	if(imp >= 0)
-		mod = src.slice(imp+1), iep = imp;
-	if(ipp >= 0)
-		par = this._par(src.slice(ipp+1)), iep = ipp;
-
-	if(name)
-		return {src:src.slice(0,iep), type:'name'};
-
-	switch(src.charAt(0))
-	{
-		case '*':
-			return {src:'', type:'comment'};
-		case '$':
-			src = this._var(src.slice(1,iep));
-			break;
-		case '#':
-			src = '';
-			break;
-		default:
-			src = src.slice(0, iep);
-			if(list[src] && !cnt) return {src:src, type:'block'};
-			src = this._plugin(src, par, cnt, (cnt) ? 'Block' : 'Function');
-			break;
-	}
-
-	if(imp >= 0)
-		src = this._modifier(src, mod);
-
-	return {src:src, type:'var'};
 };
 /** _var **/
 JSmarty.Parser.prototype._var = function(src, array)
@@ -159,12 +133,12 @@ JSmarty.Parser.prototype._var = function(src, array)
 /** _filter **/
 JSmarty.Parser.prototype._filter = function(src, type)
 {
-	var i, list;
+	var list;
 
 	if(list = this.autoload_filters[type])
 	{
 		type = JSmarty.Parser.MAPFILT[type];
-		for(i in list)
+		for(var i in list)
 			src = this._plugin(list[i], src, type);
 	}
 
@@ -183,9 +157,7 @@ JSmarty.Parser.prototype._modifier = function(src, mod)
 		name = parm.shift();
 		parm.unshift(src);
 
-		if(name == 'default')
-			name = name + 's';
-
+		if(name == 'default') name = name + 's';
 		src = this._plugin(name, parm, null, 'Modifier');
 	}
 
