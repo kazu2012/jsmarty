@@ -2,8 +2,7 @@ JSmarty.Block.foreach = function($params, $content, $smarty)
 {
 	var $from, $item, $key, $name;
 	if(!($from = $params['from'])) return '';
-
-	var $loop = false, $html = '', $total = 0;
+	var $loop = false, $html = [], $total = 0;
 
 	$key  = $params['key']  || false;
 	$item = $params['item'] || false;
@@ -31,8 +30,8 @@ JSmarty.Block.foreach = function($params, $content, $smarty)
 
 		if($key) $smarty.assign($key, i);
 		$smarty.assign($item, $from[i]);
-		$html += $smarty.parser($content);
+		$html.push($smarty.parser($content));
 	}
 
-	return $html;
+	return $html.join('');
 }

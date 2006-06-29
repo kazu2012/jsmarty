@@ -16,7 +16,7 @@
 
 	for(var i=0;i<1000;i++) array[i] = i;
 
-	smarty.assign('hoge', array);
+	smarty.assign_by_ref('hoge', array);
 	smarty.debugging = true;
 	</script>
 </head>
