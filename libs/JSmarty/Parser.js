@@ -14,6 +14,8 @@ JSmarty.Parser.prototype =
 	right_delimiter:'}',
 
 	_tpl_vars:{},
+	_foreach:{},
+	_section:{},
 	_plugins:
 	{
 		Modifier: {}, Function:  {}, Block:       {},
@@ -37,7 +39,7 @@ JSmarty.Parser.prototype.exec = function(src)
 	src = this._filter(src, 'pre');
 	src = this.parser(src);
 	src = this._filter(src, 'post');
-	src= this._filter(src, 'output');
+	src = this._filter(src, 'output');
 
 	return src;
 }
@@ -147,17 +149,17 @@ JSmarty.Parser.prototype._filter = function(src, type)
 /** _modifier **/
 JSmarty.Parser.prototype._modifier = function(src, mod)
 {
-	var i, name, parm;
+	var name, parm;
 
 	mod = mod.split('|');
 
-	for(i=mod.length-1;i>=0;i--)
+	for(var i=mod.length-1;i>=0;i--)
 	{
 		parm = mod[i].split(':');
 		name = parm.shift();
 		parm.unshift(src);
 
-		if(name == 'default') name = name + 's';
+		if(name == 'default') name += 's';
 		src = this._plugin(name, parm, null, 'Modifier');
 	}
 

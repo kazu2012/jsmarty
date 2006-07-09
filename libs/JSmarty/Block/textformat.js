@@ -1,12 +1,20 @@
 JSmarty.Block.textformat = function($params, $content, $smarty)
 {
-	var $retval, $style, $assign;
-	var $wrap, $wrap_char, $wrap_cut;
-	var $indent, $indent_first, $indent_char;
+	var $text, $wraps, $indents, $style, $assign
 
-	$indent = $params['indent'] || 0;
-	$indent_char = $params['indent_char'] || ' ';
-	$indent_first = $params['indent_first'] || 0;
+	$indents =
+	{
+		char: $params['indent_char'] || ' ',
+		first: $params['indent_first'] || 0,
+		indent: $params['indent'] || 0,
+	}
+
+	$wraps =
+	{
+		wrap: $params['wrap'],
+		cut : $params['wrap_cut'],
+		char: $params['wrap_char']
+	}
 
 	$wrap = $params['wrap'] || 80;
 

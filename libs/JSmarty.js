@@ -23,12 +23,17 @@ JSAN.use('JSmarty.Shared.Ajax');
 JSmarty.prototype = new JSmarty.Parser;
 JSmarty.prototype.debugging = false;
 JSmarty.prototype.template_dir = './templates/';
-JSmarty.prototype.autoload_fils = '';
 JSmarty.prototype._xmlhttp = new JSmarty.Shared.Ajax;
 
 /* --------------------------------------------------------------------
  # Template Variables
  -------------------------------------------------------------------- */
+/** append **/
+JSmarty.prototype.append = function(){
+};
+/** **/
+JSmarty.prototype.append_by_ref = function(){
+};
 /** assign **/
 JSmarty.prototype.assign = function(key, value)
 {
@@ -38,14 +43,15 @@ JSmarty.prototype.assign = function(key, value)
 			value = null;
 			break;
 		case 'string':
-			value = value + '';
+			value += '';
 			break;
 		case 'object':
 			if(value instanceof Array)
 			{
-				var L = this.left_delimiter;
-				var R = this.right_delimiter;
-				value = value.join(L+R).split(L+R);
+				var LR =
+					this.left_delimiter +
+					this.right_delimiter;
+				value = value.join(LR).split(LR);
 				break;
 			}
 			for(var i in value) value[i] = value[i];
@@ -165,16 +171,16 @@ JSmarty.prototype.unregister_compiler_function = function(name){
 /* ---------------------------------------------------------------------
  # Filter
  -------------------------------------------------------------------- */
-/** load_fil**/
+/** load_filter **/
 JSmarty.prototype.load_filter = function(type, name){
 };
 /** register_prefilter **/
 JSmarty.prototype.register_prefilter = function(name){
-	this._plugins.Prefilter[name] = eval(name);
+	this._plugins.Prefilter[name] = window[name];
 };
 /** register_postfilter **/
 JSmarty.prototype.register_postfilter = function(name){
-	this._plugins.Postfilter[name] = eval(name);
+	this._plugins.Postfilter[name] = window[name];
 };
 /** register_outputfilter **/
 JSmarty.prototype.register_outputfilter = function(name){

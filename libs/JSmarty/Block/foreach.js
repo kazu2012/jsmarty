@@ -12,11 +12,16 @@ JSmarty.Block.foreach = function($params, $content, $smarty)
 	{
 		for(var i in $from) $total++;
 
-		$smarty._smarty._smarty_vars.foreach[$name] = {};
-		$loop = $smarty._smarty_vars.foreach[$name];
-		$loop['iteration'] = 0;
-		$loop['show']  = true, $loop['last']  = false;
-		$loop['first'] = true, $loop['total'] = $total;
+		$loop =
+		{
+			show :true,
+			last :0,
+			first:true,
+			total:$total,
+			iteration : 0
+		}
+
+		$smarty._foreach[$name] = $loop;
 	}
 
 	for(var i in $from)

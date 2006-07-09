@@ -6,7 +6,7 @@ JSmarty.Block.ifs = function($params, $content, $smarty)
 	$exp = eval($params.replace(/(\$.*)/g, '$smarty._tpl_vars.$1'));
 
 	mainloop:
-	for(var i=0;i<$content.lastIndexOf($R);i=$iep+$R.length)
+	for(var i=0,fin=$content.lastIndexOf($R);i<fin;i=$iep+$R.length)
 	{
 		$isp = $content.indexOf($L, i);
 		$iep = $content.indexOf($R, i);
