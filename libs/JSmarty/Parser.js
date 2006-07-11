@@ -8,10 +8,11 @@ JSmarty.Parser.REXPARM = new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g');
 
 JSmarty.Parser.prototype =
 {
-	autoload_filters:{},
-
-	left_delimiter: '{',
+	left_delimiter:'{',
 	right_delimiter:'}',
+
+	autoload_filters:{},
+	default_modifiers:null,
 
 	_tpl_vars:{},
 	_foreach:{},
@@ -26,12 +27,10 @@ JSmarty.Parser.prototype =
 /** exec **/
 JSmarty.Parser.prototype.exec = function(src)
 {
-	var res, rex, list;
+	var res, rex, list = JSmarty.Parser.BELEMNT;
 	var L = this.left_delimiter, R = this.right_delimiter;
 
 	rex  = new RegExp(L+'\\/(.+?)'+R,'g');
-	list = JSmarty.Parser.BELEMNT;
-
 	while(res = rex.exec(src)){
 		list[res[1]] = true;
 	}

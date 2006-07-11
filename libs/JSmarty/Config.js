@@ -1,2 +1,8 @@
 JSmarty.Config = function(){};
-JSmarty.Config.prototype = {};
+JSmarty.Config.prototype =
+{
+	parse:function()
+	{
+		
+	}
+};

@@ -2,7 +2,7 @@ JSmarty.Shared.Ajax = function(){};
 JSmarty.Shared.Ajax.prototype =
 {
 	onLine : (document.URL.indexOf('http')==0) ? true : false
-}
+};
 JSmarty.Shared.Ajax.prototype.create = function()
 {
 	var msxmls = [
@@ -18,7 +18,7 @@ JSmarty.Shared.Ajax.prototype.create = function()
 	}
 	catch(e)
 	{
-		for(var i=0; i<msxmls[i].length; ++i)
+		for(var i=0,fin=msxmls.length;i<fin;i++)
 		{
 			try{
 				return new ActiveXObject(msxmls[i]);
@@ -27,7 +27,7 @@ JSmarty.Shared.Ajax.prototype.create = function()
 		}
 	}
 	return null;
-}
+};
 JSmarty.Shared.Ajax.prototype.display = function(url, element, smarty)
 {
 	var xmlhttp = this.create();
@@ -38,7 +38,7 @@ JSmarty.Shared.Ajax.prototype.display = function(url, element, smarty)
 	else
 		xmlhttp.onreadystatechange = this._handler(xmlhttp, element, smarty);
 	xmlhttp.send('');
-}
+};
 JSmarty.Shared.Ajax.prototype.file_get_contents = function(filename)
 {
 	var xmlhttp = this.create();
@@ -47,11 +47,11 @@ JSmarty.Shared.Ajax.prototype.file_get_contents = function(filename)
 	xmlhttp.send('');
 
 	return xmlhttp.responseText;
-}
-JSmarty.Shared.Ajax.prototype.file_exists = function(filename)
+};
+JSmarty.Shared.Ajax.prototype.file_exists = function()
 {
 	return true;
-}
+};
 JSmarty.Shared.Ajax.prototype._handler = function(xmlhttp, element, smarty)
 {
 	return function()
@@ -60,4 +60,4 @@ JSmarty.Shared.Ajax.prototype._handler = function(xmlhttp, element, smarty)
 		element.innerHTML = smarty.parser(xmlhttp.responseText, true);
 		xmlhttp = null;
 	}
-}
+};

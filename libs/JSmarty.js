@@ -23,6 +23,8 @@ JSAN.use('JSmarty.Shared.Ajax');
 JSmarty.prototype = new JSmarty.Parser;
 JSmarty.prototype.debugging = false;
 JSmarty.prototype.template_dir = './templates/';
+JSmarty.prototype.default_resource_type = 'file';
+JSmarty.prototype.default_template_handler_func = null;
 JSmarty.prototype._xmlhttp = new JSmarty.Shared.Ajax;
 
 /* --------------------------------------------------------------------
@@ -31,7 +33,7 @@ JSmarty.prototype._xmlhttp = new JSmarty.Shared.Ajax;
 /** append **/
 JSmarty.prototype.append = function(){
 };
-/** **/
+/** append_by_ref **/
 JSmarty.prototype.append_by_ref = function(){
 };
 /** assign **/
@@ -42,18 +44,7 @@ JSmarty.prototype.assign = function(key, value)
 		case 'undefined':
 			value = null;
 			break;
-		case 'string':
-			value += '';
-			break;
 		case 'object':
-			if(value instanceof Array)
-			{
-				var LR =
-					this.left_delimiter +
-					this.right_delimiter;
-				value = value.join(LR).split(LR);
-				break;
-			}
 			for(var i in value) value[i] = value[i];
 			break;
 	}
