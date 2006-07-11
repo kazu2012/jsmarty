@@ -1,11 +1,9 @@
 JSmarty.Parser = function(){};
-
 JSmarty.Parser.BELEMNT = {};
 JSmarty.Parser.MAPFILT = {
 	pre:'Prefilter', post:'Postfilter', output:'Outputfilter'
 };
 JSmarty.Parser.REXPARM = new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g');
-
 JSmarty.Parser.prototype =
 {
 	left_delimiter:'{',
@@ -146,15 +144,18 @@ JSmarty.Parser.prototype._filter = function(src, type)
 	return src;
 };
 /** _modifier **/
-JSmarty.Parser.prototype._modifier = function(src, mod)
+JSmarty.Parser.prototype._modifier = function(src, modf)
 {
 	var name, parm;
 
-	mod = mod.split('|');
+	modf = (modf) ? [] : modf.split('|');
 
-	for(var i=mod.length-1;i>=0;i--)
+	if(this.default_modifiers)
+		modf = modf.concat(this.default_modifiers);
+
+	for(var i=modf.length-1;i>=0;i--)
 	{
-		parm = mod[i].split(':');
+		parm = modf[i].split(':');
 		name = parm.shift();
 		parm.unshift(src);
 
