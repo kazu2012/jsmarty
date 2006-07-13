@@ -1,18 +1,21 @@
-jsmarty_resource_file = {};
-jsmarty_resource_file.source = function(name, temp, smarty)
+jsmarty_resource_file =
 {
-	var http;
+	source:function(name, template, smarty)
+	{
+		var http;
 
-	http = jsmarty_resource_file._create();
-	http.open('GET', smarty.template_dir + name, false);
-	http.send('');
-	temp[name] = http.responseText;
+		http = jsmarty_resource_file._create();
+		http.open('GET', smarty.template_dir +'/'+ name, false);
+		http.send('');
+		template[name] = http.responseText;
 
-	return true;
+		return true;
+	},
+	timestamp:function(){},
+	secure:function(){ return true; },
+	trusted:function(){}
 };
-jsmarty_resource_file.secure = function(){return true;};
-jsmarty_resource_file.trusted = function(){};
-jsmarty_resource_file.timestamp = function(){};
+
 jsmarty_resource_file._create = function()
 {
 	var msxmls = [

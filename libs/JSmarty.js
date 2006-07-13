@@ -11,7 +11,7 @@ JSmarty.template = {};
 JSmarty.prototype = new JSmarty_Parser;
 JSmarty.prototype.debugging = false;
 JSmarty.prototype.plugins_dir = './plugins';
-JSmarty.prototype.template_dir = './templates/';
+JSmarty.prototype.template_dir = './templates';
 JSmarty.prototype.default_resource_type = 'file';
 JSmarty.prototype.default_template_handler_func = function(){};
 
@@ -79,6 +79,21 @@ JSmarty.prototype.get_template_vars = function(key){
 	return (key) ? this._tpl_vars[key] : this._tpl_vars;
 };
 /* --------------------------------------------------------------------
+ # Cashing
+ -------------------------------------------------------------------- */
+JSmarty.prototype.clear_all_cache = function(){
+	JSmarty[this.cashe_dir] = {};
+};
+JSmarty.prototype.clear_cache = function(name){
+	delete JSmarty[this.cashe_dir][name];
+};
+JSmarty.prototype.is_cashed = function(name){
+	return JSmarty[this.cashe_dir][name] != void(0);
+};
+JSmarty.prototype.crear_compiled_tpl = function(file){
+	delete JSmarty.template[file];
+};
+/* --------------------------------------------------------------------
  # Template Process
  -------------------------------------------------------------------- */
 /** fetch **/
@@ -135,6 +150,13 @@ JSmarty.prototype.register_function = function(name, impl){
 JSmarty.prototype.register_modifier = function(name, impl){
 	this._plguins.Modifier[name] = impl;
 };
+/** register_resource **/
+JSmarty.prototype.register_resource = function(name, impl)
+{
+	this._plugin.Resource[name] = {
+		source:impl[0],timestamp:impl[1],secure:impl[2],trusted:impl[3]
+	};
+};
 /** register_compiler_function **/
 JSmarty.prototype.register_compiler_function = function(name, impl){
 	this._plugins.Compiler[name] = impl;
@@ -150,6 +172,10 @@ JSmarty.prototype.unregister_function = function(name){
 /** unregister_modifier **/
 JSmarty.prototype.unregister_modifier = function(name){
 	this._plugins.Modifier[name] = false;
+};
+/** unregister_resource **/
+JSmarty.prototype.unregister_resource = function(name){
+	this._plugins.Resource[name] = false;
 };
 /** unregister_compiler_function **/
 JSmarty.prototype.unregister_compiler_function = function(name){
@@ -171,7 +197,7 @@ JSmarty.prototype.register_postfilter = function(name){
 };
 /** register_outputfilter **/
 JSmarty.prototype.register_outputfilter = function(name){
-	this._plugins.Outputfilter[name] = false;
+	this._plugins.Outputfilter[name] = windows[name];
 };
 /** unregister_prefilter **/
 JSmarty.prototype.unregister_prefilter = function(name){

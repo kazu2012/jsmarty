@@ -1,0 +1,1 @@
+jsmarty_shared_xmlhttp = {};
