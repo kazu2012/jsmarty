@@ -1,8 +1,10 @@
+// if(typeof JSmarty_Parser == 'undefined') JSAN.use("JSmarty_Parser");
+
 JSmarty = function(){};
 
 // [*STATIC VARIABLES*] ////////////////////////////////////////////////
-JSmarty.AUTHOR  = 'shogo';
-JSmarty.VERSION = 'dev0.0.1';
+JSmarty.AUTHORS = ['shogo'];
+JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
 // [*NAMESPACES*] //////////////////////////////////////////////////////
 JSmarty.Block = {};
@@ -15,6 +17,9 @@ JSmarty.Function = {};
 JSmarty.Prefilter = {};
 JSmarty.Postfilter = {};
 JSmarty.Outputfilter = {};
+
+JSmarty.template = {};
+
 // [*INCLUDE*] /////////////////////////////////////////////////////////
 JSAN.use('JSmarty.Parser');
 JSAN.use('JSmarty.Shared.Ajax');
