@@ -5,6 +5,7 @@ JSmarty = function(){};
 JSmarty.AUTHORS = ['shogo'];
 JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
+
 JSmarty.template = {};
 
 JSmarty.prototype = new JSmarty_Parser;
@@ -93,13 +94,20 @@ JSmarty.prototype.fetch = function(file)
 
 	if(!temp[file])
 	{
-		var icp, plugin;
+		var icp, rex, plugin, list = JSmarty_Parser.BELEMNT;
+		var L = this.left_delimiter, R = this.right_delimiter;
 
 		if((icp = file.indexOf(':')) >= 0)
 			name = file.slice(icp+1), type = file.slice(0,icp);
 
 		plugin = this._plugin(type, null, null, 'Resource');
-		plugin.source(name, temp, this);
+
+		if(!plugin.source(name, temp, this))
+			this.default_template_handler_func();
+
+		rex = new RegExp(L+'\\/(.+?)'+R,'g');
+		while(res = rex.exec(temp[file])) list[res[1]] = true;
+		temp[file] = this._filter(temp[file], 'pre');
 	}
 
 	return this.exec(temp[file]);
@@ -109,7 +117,8 @@ JSmarty.prototype.display = function(file){
 	document.write(this.fetch(file));
 };
 /** templete_exists **/
-JSmarty.prototype.template_exists = function(){
+JSmarty.prototype.template_exists = function(file){
+	return this._plugin('file', null, null, 'Resource').source(file, {}, this);
 };
 /* --------------------------------------------------------------------
  # Plugins
@@ -138,7 +147,7 @@ JSmarty.prototype.unregister_block = function(name){
 JSmarty.prototype.unregister_function = function(name){
 	this._plugins.Function[name] = false;
 };
-/** unregister_mod **/
+/** unregister_modifier **/
 JSmarty.prototype.unregister_modifier = function(name){
 	this._plugins.Modifier[name] = false;
 };

@@ -25,15 +25,6 @@ JSmarty_Parser.prototype =
 /** exec **/
 JSmarty_Parser.prototype.exec = function(src)
 {
-	var res, rex, list = JSmarty_Parser.BELEMNT;
-	var L = this.left_delimiter, R = this.right_delimiter;
-
-	rex  = new RegExp(L+'\\/(.+?)'+R,'g');
-	while(res = rex.exec(src)){
-		list[res[1]] = true;
-	}
-
-	src = this._filter(src, 'pre');
 	src = this.parser(src);
 	src = this._filter(src, 'post');
 	src = this._filter(src, 'output');
@@ -59,8 +50,7 @@ JSmarty_Parser.prototype.parser = function(src)
 				case isp:
 					break;
 				case isp+1:
-					if(name == 'if')
-						name += 's', parm = src.slice(ipp+1, irp);
+					if(name == 'if') parm = src.slice(ipp+1, irp);
 					txt += this._plugin(name, parm, src.slice(ibp, isp-l), 'Block');
 					break;
 				default:
@@ -159,7 +149,6 @@ JSmarty_Parser.prototype._modifier = function(src, modf)
 		name = parm.shift();
 		parm.unshift(src);
 
-		if(name == 'default') name += 's';
 		src = this._plugin(name, parm, null, 'Modifier');
 	}
 
