@@ -1,8 +1,8 @@
-JSmarty.Function.html_select_time = function($params, $smarty)
+jsmarty_function_html_select_time = function($params, $smarty)
 {
 	var $html = '';
 	var $time , $ivals, $extras, $displays;
-	var options = JSmarty.Function.html_select_time.options;
+	var options = jsmarty_function_html_select_time.options;
 
 	$time     = (typeof $params['time'] == 'undefined') ? new Date() : new Date($params['time']);
 	$ivals    = {hour:'',minute:'',second:''};
@@ -42,7 +42,7 @@ JSmarty.Function.html_select_time = function($params, $smarty)
 	return $html;
 }
 
-JSmarty.Function.html_select_time.options = function($type, $extra, $time, $ival, $24)
+jsmarty_function_html_select_time.options = function($type, $extra, $time, $ival, $24)
 {
 	var $ckd, $num, $max, $html = '';
 

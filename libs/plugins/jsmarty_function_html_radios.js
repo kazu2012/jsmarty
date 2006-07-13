@@ -1,4 +1,4 @@
-JSmarty.Function.html_radios = function($params, $smarty)
+jsmarty_function_html_radios = function($params, $smarty)
 {
 	var $html = '', $selected = '';
 	var $name, $values, $options, $separator;

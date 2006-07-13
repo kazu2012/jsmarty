@@ -1,4 +1,4 @@
-JSmarty.Block.ifs = function($params, $content, $smarty)
+jsmarty_block_if = function($params, $content, $smarty)
 {
 	var $isp, $iep, $ibp, $res, $exp, $flag = false, $count = 0;
 	var $L = $smarty.left_delimiter, $R = $smarty.right_delimiter;

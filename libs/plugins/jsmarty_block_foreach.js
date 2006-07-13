@@ -1,4 +1,4 @@
-JSmarty.Block.foreach = function($params, $content, $smarty)
+jsmarty_block_foreach = function($params, $content, $smarty)
 {
 	var $from, $item, $key, $name;
 	if(!($from = $params['from'])) return '';
