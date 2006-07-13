@@ -1,35 +1,22 @@
-// if(typeof JSmarty_Parser == 'undefined') JSAN.use("JSmarty_Parser");
+if(typeof JSmarty_Parser == 'undefined') JSAN.use("JSmarty_Parser");
 
 JSmarty = function(){};
 
-// [*STATIC VARIABLES*] ////////////////////////////////////////////////
 JSmarty.AUTHORS = ['shogo'];
 JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
-// [*NAMESPACES*] //////////////////////////////////////////////////////
-JSmarty.Block = {};
-JSmarty.Shared = {};
-JSmarty.Insert = {};
-JSmarty.Modifier = {};
-JSmarty.Compiler = {};
-JSmarty.Resource = {};
-JSmarty.Function = {};
-JSmarty.Prefilter = {};
-JSmarty.Postfilter = {};
-JSmarty.Outputfilter = {};
 
+JSmarty.Shared = {};
 JSmarty.template = {};
 
-// [*INCLUDE*] /////////////////////////////////////////////////////////
-JSAN.use('JSmarty.Parser');
 JSAN.use('JSmarty.Shared.Ajax');
-////////////////////////////////////////////////////////////////////////
 
-JSmarty.prototype = new JSmarty.Parser;
+JSmarty.prototype = new JSmarty_Parser;
 JSmarty.prototype.debugging = false;
+JSmarty.prototype.plugins_dir = './plugins';
 JSmarty.prototype.template_dir = './templates/';
 JSmarty.prototype.default_resource_type = 'file';
-JSmarty.prototype.default_template_handler_func = null;
+JSmarty.prototype.default_template_handler_func = function(){};
 JSmarty.prototype._xmlhttp = new JSmarty.Shared.Ajax;
 
 /* --------------------------------------------------------------------
@@ -102,6 +89,8 @@ JSmarty.prototype.get_template_vars = function(key){
 JSmarty.prototype.fetch = function(file, element, display)
 {
 	var eot, sot, res, xmlhttp = this._xmlhttp;
+
+	JSAN.addRepository(this.plugins_dir);
 
 	if(element)
 	{

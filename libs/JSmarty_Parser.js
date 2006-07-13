@@ -1,10 +1,10 @@
-JSmarty.Parser = function(){};
-JSmarty.Parser.BELEMNT = {};
-JSmarty.Parser.MAPFILT = {
+JSmarty_Parser = function(){};
+JSmarty_Parser.BELEMNT = {};
+JSmarty_Parser.MAPFILT = {
 	pre:'Prefilter', post:'Postfilter', output:'Outputfilter'
 };
-JSmarty.Parser.REXPARM = new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g');
-JSmarty.Parser.prototype =
+JSmarty_Parser.REXPARM = new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g');
+JSmarty_Parser.prototype =
 {
 	left_delimiter:'{',
 	right_delimiter:'}',
@@ -23,9 +23,9 @@ JSmarty.Parser.prototype =
 	}
 };
 /** exec **/
-JSmarty.Parser.prototype.exec = function(src)
+JSmarty_Parser.prototype.exec = function(src)
 {
-	var res, rex, list = JSmarty.Parser.BELEMNT;
+	var res, rex, list = JSmarty_Parser.BELEMNT;
 	var L = this.left_delimiter, R = this.right_delimiter;
 
 	rex  = new RegExp(L+'\\/(.+?)'+R,'g');
@@ -41,12 +41,12 @@ JSmarty.Parser.prototype.exec = function(src)
 	return src;
 }
 /** parser **/
-JSmarty.Parser.prototype.parser = function(src)
+JSmarty_Parser.prototype.parser = function(src)
 {
 	var isp, iep, ipp, imp, inp, ibp, irp;
 	var L = this.left_delimiter, R = this.right_delimiter;
 	var n = 0, l = L.length, r = R.length, nested = false;
-	var txt = '', S = ' ', M = '|', list = JSmarty.Parser.BELEMNT;
+	var txt = '', S = ' ', M = '|', list = JSmarty_Parser.BELEMNT;
 
 	for(var i=0,fin=src.lastIndexOf(R);i<fin;i=iep+r)
 	{
@@ -98,9 +98,9 @@ JSmarty.Parser.prototype.parser = function(src)
 	return txt + src.slice(i);
 };
 // -- par
-JSmarty.Parser.prototype._param = function(src)
+JSmarty_Parser.prototype._param = function(src)
 {
-	var res, obj = {}, rex = JSmarty.Parser.REXPARM;
+	var res, obj = {}, rex = JSmarty_Parser.REXPARM;
 
 	while(res = rex.exec(src))
 	{
@@ -113,7 +113,7 @@ JSmarty.Parser.prototype._param = function(src)
 	return obj;
 };
 /** _var **/
-JSmarty.Parser.prototype._var = function(src, array)
+JSmarty_Parser.prototype._var = function(src, array)
 {
 	if(!array) array = this._tpl_vars;
 
@@ -130,13 +130,13 @@ JSmarty.Parser.prototype._var = function(src, array)
 	return array[src[0]];
 };
 /** _filter **/
-JSmarty.Parser.prototype._filter = function(src, type)
+JSmarty_Parser.prototype._filter = function(src, type)
 {
 	var list;
 
 	if(list = this.autoload_filters[type])
 	{
-		type = JSmarty.Parser.MAPFILT[type];
+		type = JSmarty_Parser.MAPFILT[type];
 		for(var i in list)
 			src = this._plugin(list[i], src, type);
 	}
@@ -144,7 +144,7 @@ JSmarty.Parser.prototype._filter = function(src, type)
 	return src;
 };
 /** _modifier **/
-JSmarty.Parser.prototype._modifier = function(src, modf)
+JSmarty_Parser.prototype._modifier = function(src, modf)
 {
 	var name, parm;
 
@@ -166,25 +166,25 @@ JSmarty.Parser.prototype._modifier = function(src, modf)
 	return src;
 };
 /** plugin **/
-JSmarty.Parser.prototype._plugin = function(name, parm, src, type)
+JSmarty_Parser.prototype._plugin = function(name, parm, src, type)
 {
-	var plugin = this._plugins[type][name];
+	var plugin = this._plugins[type];
 
-	if(plugin == void(0))
-		plugin = JSAN.require('JSmarty.'+ type +'.'+ name);
-	if(!plugin) return '';
+	if(plugin[name] == void(0))
+		plugin[name] = JSAN.require('smarty_'+ type.toLowerCase() +'_'+ name);
+	if(!plugin[name]) return '';
 
 	switch(type)
 	{
 		case 'Prefilter':
 		case 'Postfilter':
 		case 'Outputfilter':
-			return plugin(src, this);
+			return plugin[name](src, this);
 		case 'Function':
-			return plugin(parm, this);
+			return plugin[name](parm, this);
 		case 'Block':
-			return plugin(parm, src, this);
+			return plugin[name](parm, src, this);
 		case 'Modifier':
-			return plugin.apply(null, parm);
+			return plugin[name].apply(null, parm);
 	}
 };
