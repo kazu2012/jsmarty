@@ -5,11 +5,7 @@ JSmarty = function(){};
 JSmarty.AUTHORS = ['shogo'];
 JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
-
-JSmarty.Shared = {};
 JSmarty.template = {};
-
-JSAN.use('JSmarty.Shared.Ajax');
 
 JSmarty.prototype = new JSmarty_Parser;
 JSmarty.prototype.debugging = false;
@@ -17,7 +13,6 @@ JSmarty.prototype.plugins_dir = './plugins';
 JSmarty.prototype.template_dir = './templates/';
 JSmarty.prototype.default_resource_type = 'file';
 JSmarty.prototype.default_template_handler_func = function(){};
-JSmarty.prototype._xmlhttp = new JSmarty.Shared.Ajax;
 
 /* --------------------------------------------------------------------
  # Template Variables
@@ -86,34 +81,32 @@ JSmarty.prototype.get_template_vars = function(key){
  # Template Process
  -------------------------------------------------------------------- */
 /** fetch **/
-JSmarty.prototype.fetch = function(file, element, display)
+JSmarty.prototype.fetch = function(file)
 {
-	var eot, sot, res, xmlhttp = this._xmlhttp;
+	var temp, type, name = file;
 
-	JSAN.addRepository(this.plugins_dir);
+	temp = JSmarty.template;
+	type = this.default_resource_type;
 
-	if(element)
+	if(!JSAN.includePath[this.plugins_dir])
+		JSAN.addRepository(this.plugins_dir);
+
+	if(!temp[file])
 	{
-		xmlhttp.display(this.template_dir + file, element, this);
-		return;
+		var icp, plugin;
+
+		if((icp = file.indexOf(':')) >= 0)
+			name = file.slice(icp+1), type = file.slice(0,icp);
+
+		plugin = this._plugin(type, null, null, 'Resource');
+		plugin.source(name, temp, this);
 	}
 
-	res = xmlhttp.file_get_contents(this.template_dir + file);
-	if(this.debugging) sot =(new Date()).getTime();
-	res = this.exec(res);
-	if(this.debugging)
-	{
-		eot =(new Date()).getTime();
-		alert('HTML Convert Time :\t'+ (eot-sot)/1000 +'.sec');
-	}
-
-	if(display) document.write(res);
-
-	return res;
+	return this.exec(temp[file]);
 };
 /** display **/
-JSmarty.prototype.display = function(file, element){
-	this.fetch(file, element, true);
+JSmarty.prototype.display = function(file){
+	document.write(this.fetch(file));
 };
 /** templete_exists **/
 JSmarty.prototype.template_exists = function(){
@@ -129,8 +122,8 @@ JSmarty.prototype.register_block = function(name, impl){
 JSmarty.prototype.register_function = function(name, impl){
 	this._plugins.Function[name] = impl;
 };
-/** register_mod **/
-JSmarty.prototype.register_mod = function(name, impl){
+/** register_modifier **/
+JSmarty.prototype.register_modifier = function(name, impl){
 	this._plguins.Modifier[name] = impl;
 };
 /** register_compiler_function **/

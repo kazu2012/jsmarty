@@ -8,11 +8,12 @@
 	<link rel='stylesheet' type='text/css' href='default.css' />
 	<script type='text/javascript' charset='UTF-8' src='JSAN.js'></script>
 	<script type='text/javascript'>
-	JSAN.includePath = ['../libs','../../jslib'];
-	JSAN.use('JSmarty');
+	JSAN.addRepository("../libs");
+	JSAN.use("JSmarty");
 
 	var array  = new Array;
 	var smarty = new JSmarty;
+	smarty.plugins_dir = "../libs/plugins";
 
 	for(var i=0;i<1000;i++) array[i] = i;
 

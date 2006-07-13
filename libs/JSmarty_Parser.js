@@ -171,11 +171,13 @@ JSmarty_Parser.prototype._plugin = function(name, parm, src, type)
 	var plugin = this._plugins[type];
 
 	if(plugin[name] == void(0))
-		plugin[name] = JSAN.require('smarty_'+ type.toLowerCase() +'_'+ name);
+		plugin[name] = JSAN.require('jsmarty_'+ type.toLowerCase() +'_'+ name);
 	if(!plugin[name]) return '';
 
 	switch(type)
 	{
+		case 'Resource':
+			return plugin[name];
 		case 'Prefilter':
 		case 'Postfilter':
 		case 'Outputfilter':
