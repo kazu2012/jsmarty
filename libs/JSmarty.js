@@ -7,11 +7,12 @@ JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
 
 JSmarty.template = {};
+JSmarty.timestamp = {};
 
 JSmarty.prototype = new JSmarty_Parser;
 JSmarty.prototype.debugging = false;
-JSmarty.prototype.plugins_dir = './plugins';
-JSmarty.prototype.template_dir = './templates';
+JSmarty.prototype.plugins_dir = 'plugins';
+JSmarty.prototype.template_dir = 'templates';
 JSmarty.prototype.default_resource_type = 'file';
 JSmarty.prototype.default_template_handler_func = function(){};
 
@@ -99,33 +100,36 @@ JSmarty.prototype.crear_compiled_tpl = function(file){
 /** fetch **/
 JSmarty.prototype.fetch = function(file)
 {
-	var temp, type, name = file;
+	var rtpl, type, name = file;
 
-	temp = JSmarty.template;
+	rtpl = JSmarty.template;
 	type = this.default_resource_type;
 
 	if(!JSAN.includePath[this.plugins_dir])
 		JSAN.addRepository(this.plugins_dir);
 
-	if(!temp[file])
+	if(!rtpl[file])
 	{
-		var icp, rex, plugin, list = JSmarty_Parser.BELEMNT;
+		var icp, rex, time, list, plugin;
 		var L = this.left_delimiter, R = this.right_delimiter;
+
+		time = JSmarty.timestamp;
+		list = JSmarty_Parser.BELEMNT;
 
 		if((icp = file.indexOf(':')) >= 0)
 			name = file.slice(icp+1), type = file.slice(0,icp);
 
 		plugin = this._plugin(type, null, null, 'Resource');
 
-		if(!plugin.source(name, temp, this))
-			this.default_template_handler_func();
+		if(!plugin.source(name, rtpl, this))
+			this.default_template_handler_func(type, name, rtpl, time, this);
 
 		rex = new RegExp(L+'\\/(.+?)'+R,'g');
-		while(res = rex.exec(temp[file])) list[res[1]] = true;
-		temp[file] = this._filter(temp[file], 'pre');
+		while(res = rex.exec(rtpl[file])) list[res[1]] = true;
+		rtpl[file] = this._filter(rtpl[file], 'pre');
 	}
 
-	return this.exec(temp[file]);
+	return this.exec(rtpl[file]);
 };
 /** display **/
 JSmarty.prototype.display = function(file){
@@ -133,7 +137,7 @@ JSmarty.prototype.display = function(file){
 };
 /** templete_exists **/
 JSmarty.prototype.template_exists = function(file){
-	return this._plugin('file', null, null, 'Resource').source(file, {}, this);
+	return this._plugin('file', null, null, 'Resource').source(file, null, this);
 };
 /* --------------------------------------------------------------------
  # Plugins

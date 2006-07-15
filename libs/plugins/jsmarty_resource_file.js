@@ -1,43 +1,52 @@
-jsmarty_resource_file =
+if(typeof jsmarty_shared_xmlhttp == 'undefined')
+	JSAN.require('jsmarty_shared_xmlhttp');
+
+jsmarty_resource_file = {_modf:''};
+jsmarty_resource_file.source = function(name, rtpl, smarty)
 {
-	source:function(name, template, smarty)
+	var self, http, slsh = '/';
+
+	self = jsmarty_resource_file;
+	http = jsmarty_shared_xmlhttp.create();
+
+	try
 	{
-		var http;
+		http.abort();
 
-		http = jsmarty_resource_file._create();
-		http.open('GET', smarty.template_dir +'/'+ name, false);
-		http.send('');
-		template[name] = http.responseText;
-
-		return true;
-	},
-	timestamp:function(){},
-	secure:function(){ return true; },
-	trusted:function(){}
-};
-
-jsmarty_resource_file._create = function()
-{
-	var msxmls = [
-		'Msxml2.XMLHTTP.5.0',
-		'Msxml2.XMLHTTP.4.0',
-		'Msxml2.XMLHTTP.3.0',
-		'Msxml2.XMLHTTP',
-		'Microsoft.XMLHTTP'
-	]
-
-	try{
-		return new XMLHttpRequest();
-	}
-	catch(e)
-	{
-		for(var i=0,fin=msxmls.length;i<fin;i++)
+		switch(name.indexOf(slsh))
 		{
-			try{
-				return new ActiveXObject(msxmls[i]);
-			}
-			catch(e){}
+			default:
+				http.open('GET', name, false);
+				break;
+			case -1:
+				http.open('GET', smarty.template_dir + slsh + name, false);
+				break;
 		}
+
+		http.send('');
+		rtpl[name] = http.responseText;
+
+		self._modf = http.getResponseHeader('Last-Modified');
+		return true;
 	}
-	return null;
+	catch(e){}
+
+	return false;
+};
+jsmarty_resource_file.timestamp = function(name, time, smarty)
+{
+	if(JSmarty.template[name])
+	{
+		var self = jsmarty_resource_file;
+		time[name] = self._modf;
+		return true;
+	}
+
+	return false;
+};
+jsmarty_resource_file.secure = function(){
+	return true;
+};
+jsmarty_resource_file.trusted = function(){
+	return true;
 };

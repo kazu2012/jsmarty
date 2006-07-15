@@ -17,6 +17,7 @@ JSmarty_Parser.prototype =
 	_section:{},
 	_plugins:
 	{
+		Shared:   {},
 		Modifier: {}, Function:  {}, Block:       {},
 		Prefilter:{}, Postfilter:{}, Outputfilter:{},
 		Resource: {}, Insert:    {}, Compiler:    {}
@@ -165,6 +166,7 @@ JSmarty_Parser.prototype._plugin = function(name, parm, src, type)
 
 	switch(type)
 	{
+		case 'Shared':
 		case 'Resource':
 			return plugin[name];
 		case 'Prefilter':
