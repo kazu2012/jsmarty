@@ -20,10 +20,37 @@ JSmarty.prototype.default_template_handler_func = function(){};
  # Template Variables
  -------------------------------------------------------------------- */
 /** append **/
-JSmarty.prototype.append = function(){
+JSmarty.prototype.append = function(tvar, value, merge)
+{
+	var object = 'object';
+
+	if(typeof tvar == object)
+	{
+		for(var key in tvar)
+		{
+			if(!key) continue;
+			if(typeof this._tpl_vars[key] != object)
+				this._tpl_vars[key] = {};
+			if(merge && (typeof tvar[key] == object))
+			{
+				for(var mkey in tvar[key])
+					this._tpl_vars[key][mkey] = tvar[key][mkey];
+			}
+		//	else
+		//		this._tpl_vars[key][] = tval[key];
+		}
+	}
+	else
+	{
+		if(!tvar && !value) return;
+		if(typeof this._tpl_vars[tvar] != object)
+			this._tpl_vars[key] = {};
+	}
 };
 /** append_by_ref **/
-JSmarty.prototype.append_by_ref = function(){
+JSmarty.prototype.append_by_ref = function()
+{
+	
 };
 /** assign **/
 JSmarty.prototype.assign = function(key, value)
@@ -45,16 +72,11 @@ JSmarty.prototype.assign = function(key, value)
 	}
 
 	for(var i in key)
-	{
-		if(i == '') continue;
-		this._tpl_vars[i] = key[i];
-	}
+		if(i) this._tpl_vars[i] = key[i];
 };
 /** assign_by_ref **/
-JSmarty.prototype.assign_by_ref = function(key, value)
-{
-	if(key != '')
-		this._tpl_vars[key] = value;
+JSmarty.prototype.assign_by_ref = function(key, value){
+	if(key) this._tpl_vars[key] = value;
 };
 /** clear_assign **/
 JSmarty.prototype.clear_assign = function(key)
@@ -66,10 +88,7 @@ JSmarty.prototype.clear_assign = function(key)
 	}
 
 	for(var i in key)
-	{
-		if(i == '') continue;
-		delete this._tpl_vars[key[i]];
-	}
+		if(i) this._tpl_vars[key[i]];
 };
 /** clear_all_assign **/
 JSmarty.prototype.clear_all_assign = function(){
