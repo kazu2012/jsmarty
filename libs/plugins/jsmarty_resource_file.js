@@ -4,20 +4,20 @@ if(typeof jsmarty_shared_xmlhttp == 'undefined')
 jsmarty_resource_file = {_modf:''};
 jsmarty_resource_file.source = function(name, rtpl, smarty)
 {
-	var self, http, slsh = '/';
+	var self, http;
 
 	self = jsmarty_resource_file;
 	http = jsmarty_shared_xmlhttp.create();
 
 	try
 	{
-		switch(name.indexOf(slsh))
+		switch(name.indexOf('/'))
 		{
 			default:
 				http.open('GET', name, false);
 				break;
 			case -1:
-				http.open('GET', smarty.template_dir + slsh + name, false);
+				http.open('GET', smarty.template_dir + '/' + name, false);
 				break;
 		}
 

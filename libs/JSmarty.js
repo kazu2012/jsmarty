@@ -1,4 +1,4 @@
-if(typeof JSmarty_Parser == 'undefined') JSAN.use("JSmarty_Parser");
+if(typeof JSmarty_Parser == 'undefined') JSAN.use('JSmarty_Parser');
 
 JSmarty = function(){};
 
@@ -22,35 +22,48 @@ JSmarty.prototype.default_template_handler_func = function(){};
 /** append **/
 JSmarty.prototype.append = function(tvar, value, merge)
 {
-	var object = 'object';
-
-	if(typeof tvar == object)
+	if(typeof tvar == 'object')
 	{
-		for(var key in tvar)
+		for(var i in tvar)
 		{
-			if(!key) continue;
-			if(typeof this._tpl_vars[key] != object)
-				this._tpl_vars[key] = {};
-			if(merge && (typeof tvar[key] == object))
+			if(this._tpl_vars[i] instanceof Array)
+				this._tpl_vars[i] = [];
+			if(merge && tvar[i] instanceof Object)
 			{
-				for(var mkey in tvar[key])
-					this._tpl_vars[key][mkey] = tvar[key][mkey];
+				for(var j in tvar[i])
+					this._tpl_vars[i][j] = tvar[i][j];
+				return;
 			}
-		//	else
-		//		this._tpl_vars[key][] = tval[key];
+			this._tpl_vars[i].push(tval[i]);
 		}
 	}
 	else
 	{
 		if(!tvar && !value) return;
-		if(typeof this._tpl_vars[tvar] != object)
-			this._tpl_vars[key] = {};
+		if(this._tpl_vars[tvar] instanceof Array)
+			this._tpl_vars[tvar] = [];
+		if(merge && value instanceof Object)
+		{
+			for(var i in value)
+				this._tpl_vars[tvar][i] = value[i];
+			return;
+		}
+		this._tpl_vars[tvar].push(value);
 	}
 };
 /** append_by_ref **/
-JSmarty.prototype.append_by_ref = function()
+JSmarty.prototype.append_by_ref = function(tvar, value, merge)
 {
-	
+	if(!tvar && !value) return;
+	if(this._tpl_vars[tvar] instanceof Array)
+		this._tpl_vars[tvar] = [];
+	if(merge && value instanceof Object)
+	{
+		for(var i in value)
+			this._tpl_vars[tvar][i] = value[i];
+		return;
+	}
+	this._tpl_vars[tvar].push(value);
 };
 /** assign **/
 JSmarty.prototype.assign = function(key, value)
@@ -65,14 +78,14 @@ JSmarty.prototype.assign = function(key, value)
 			break;
 	}
 
-	if(typeof key == 'string')
+	if(typeof key == 'object')
 	{
-		this._tpl_vars[key] = value;
+		for(var i in key)
+			this._tpl_vars[i] = key[i];
 		return;
 	}
 
-	for(var i in key)
-		if(i) this._tpl_vars[i] = key[i];
+	this._tpl_vars[key] = value;
 };
 /** assign_by_ref **/
 JSmarty.prototype.assign_by_ref = function(key, value){
@@ -81,14 +94,14 @@ JSmarty.prototype.assign_by_ref = function(key, value){
 /** clear_assign **/
 JSmarty.prototype.clear_assign = function(key)
 {
-	if(typeof key == 'string')
+	if(typeof key == 'object')
 	{
-		delete this._tpl_vars[key];
+		for(var i in key)
+			delete this._tpl_vars[key[i]];
 		return;
 	}
 
-	for(var i in key)
-		if(i) this._tpl_vars[key[i]];
+	if(!key) delete this._tpl_vars[key];
 };
 /** clear_all_assign **/
 JSmarty.prototype.clear_all_assign = function(){
@@ -177,7 +190,7 @@ JSmarty.prototype.register_modifier = function(name, impl){
 JSmarty.prototype.register_resource = function(name, impl)
 {
 	this._plugin.resource[name] = {
-		source:impl[0],timestamp:impl[1],secure:impl[2],trusted:impl[3]
+		source:impl[0], timestamp:impl[1], secure:impl[2], trusted:impl[3]
 	};
 };
 /** register_compiler_function **/

@@ -1,18 +1,15 @@
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-	<meta http-equiv='Content-Style-Type'  content='text/css' />
-	<meta http-equiv='Content-Script-Type' content='text/javascript' />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type"  content="text/css" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	<title>JSmarty.Function.Html_options</title>
-	<link rel='stylesheet' type='text/css' href='default.css' />
-	<script type='text/javascript' charset='UTF-8' src='JSAN.js'></script>
-	<script type='text/javascript'>
-	JSAN.includePath = ['../libs','../../jslib'];
-	JSAN.use('JSmarty');
-
-	var smarty = new JSmarty();
-	smarty.assign('data', {'001':'tanaka','002':'suzuki','003':'kato'});
+	<link rel="stylesheet" type="text/css" href="default.css" />
+	<script type="text/javascript" charset="UTF-8" src="JSAN.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="shared.js"></script>
+	<script type="text/javascript">
+	smarty.assign("data", {"001":"tanaka","002":"suzuki","003":"kato"});
 	</script>
 </head>
 <body>
@@ -22,11 +19,11 @@
 
 <h2>html01.txt</h2>
 <pre>
-smarty.assign('data', {'001':'tanaka','002':'suzuki','003':'kato'});
+smarty.assign("data", {"001":"tanaka","002":"suzuki","003":"kato"});
 </pre>
-<div class='result'>
-<script type='text/javascript'>
-smarty.display('html01.txt');
+<div class="result">
+<script type="text/javascript">
+smarty.display("html01.txt");
 </script>
 </div>
 
