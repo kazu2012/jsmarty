@@ -1,8 +1,5 @@
 JSmarty_Parser = function(){};
 JSmarty_Parser.BELEMNT = {};
-JSmarty_Parser.MAPFILT = {
-	pre:'Prefilter', post:'Postfilter', output:'Outputfilter'
-};
 JSmarty_Parser.REXPARM = new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g');
 JSmarty_Parser.prototype =
 {
@@ -17,10 +14,10 @@ JSmarty_Parser.prototype =
 	_section:{},
 	_plugins:
 	{
-		Shared:   {},
-		Modifier: {}, Function:  {}, Block:       {},
-		Prefilter:{}, Postfilter:{}, Outputfilter:{},
-		Resource: {}, Insert:    {}, Compiler:    {}
+		shared:   {},
+		modifier: {}, 'function':{}, block:       {},
+		prefilter:{}, postfilter:{}, outputfilter:{},
+		resource: {}, insert:    {}, compiler:    {}
 	}
 };
 /** exec **/
@@ -52,7 +49,7 @@ JSmarty_Parser.prototype.parser = function(src)
 					break;
 				case isp+1:
 					if(name == 'if') parm = src.slice(ipp+1, irp);
-					txt += this._plugin(name, parm, src.slice(ibp, isp-l), 'Block');
+					txt += this._plugin(name, parm, src.slice(ibp, isp-l), 'block');
 					break;
 				default:
 					break;
@@ -81,7 +78,7 @@ JSmarty_Parser.prototype.parser = function(src)
 				if(nested = list[name])
 					ibp = iep+r;
 				else
-					txt += this._plugin(name, parm, null, 'Function');
+					txt += this._plugin(name, parm, null, 'function');
 				break;
 		}
 	}
@@ -127,9 +124,8 @@ JSmarty_Parser.prototype._filter = function(src, type)
 
 	if(list = this.autoload_filters[type])
 	{
-		type = JSmarty_Parser.MAPFILT[type];
 		for(var i in list)
-			src = this._plugin(list[i], src, type);
+			src = this._plugin(list[i], src, type + 'filter');
 	}
 
 	return src;
@@ -150,7 +146,7 @@ JSmarty_Parser.prototype._modifier = function(src, modf)
 		name = parm.shift();
 		parm.unshift(src);
 
-		src = this._plugin(name, parm, null, 'Modifier');
+		src = this._plugin(name, parm, null, 'modifier');
 	}
 
 	return src;
@@ -161,23 +157,23 @@ JSmarty_Parser.prototype._plugin = function(name, parm, src, type)
 	var plugin = this._plugins[type];
 
 	if(plugin[name] == void(0))
-		plugin[name] = JSAN.require('jsmarty_'+ type.toLowerCase() +'_'+ name);
+		plugin[name] = JSAN.require('jsmarty_'+ type +'_'+ name);
 	if(!plugin[name]) return '';
 
 	switch(type)
 	{
-		case 'Shared':
-		case 'Resource':
+		case 'shared':
+		case 'resource':
 			return plugin[name];
-		case 'Prefilter':
-		case 'Postfilter':
-		case 'Outputfilter':
+		case 'prefilter':
+		case 'postfilter':
+		case 'outputfilter':
 			return plugin[name](src, this);
-		case 'Function':
+		case 'function':
 			return plugin[name](parm, this);
-		case 'Block':
+		case 'block':
 			return plugin[name](parm, src, this);
-		case 'Modifier':
+		case 'modifier':
 			return plugin[name].apply(null, parm);
 	}
 };

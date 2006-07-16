@@ -11,8 +11,6 @@ jsmarty_resource_file.source = function(name, rtpl, smarty)
 
 	try
 	{
-		http.abort();
-
 		switch(name.indexOf(slsh))
 		{
 			default:
@@ -25,8 +23,9 @@ jsmarty_resource_file.source = function(name, rtpl, smarty)
 
 		http.send('');
 		rtpl[name] = http.responseText;
-
 		self._modf = http.getResponseHeader('Last-Modified');
+		http.abort();
+
 		return true;
 	}
 	catch(e){}

@@ -119,7 +119,7 @@ JSmarty.prototype.fetch = function(file)
 		if((icp = file.indexOf(':')) >= 0)
 			name = file.slice(icp+1), type = file.slice(0,icp);
 
-		plugin = this._plugin(type, null, null, 'Resource');
+		plugin = this._plugin(type, null, null, 'resource');
 
 		if(!plugin.source(name, rtpl, this))
 			this.default_template_handler_func(type, name, rtpl, time, this);
@@ -137,53 +137,53 @@ JSmarty.prototype.display = function(file){
 };
 /** templete_exists **/
 JSmarty.prototype.template_exists = function(file){
-	return this._plugin('file', null, null, 'Resource').source(file, null, this);
+	return this._plugin('file', null, null, 'resource').source(file, null, this);
 };
 /* --------------------------------------------------------------------
  # Plugins
  -------------------------------------------------------------------- */
 /** register_block **/
 JSmarty.prototype.register_block = function(name, impl){
-	this._plugins.Block[name] = impl;
+	this._plugins.block[name] = impl;
 };
 /** register_function **/
 JSmarty.prototype.register_function = function(name, impl){
-	this._plugins.Function[name] = impl;
+	this._plugins['function'][name] = impl;
 };
 /** register_modifier **/
 JSmarty.prototype.register_modifier = function(name, impl){
-	this._plguins.Modifier[name] = impl;
+	this._plguins.modifier[name] = impl;
 };
 /** register_resource **/
 JSmarty.prototype.register_resource = function(name, impl)
 {
-	this._plugin.Resource[name] = {
+	this._plugin.resource[name] = {
 		source:impl[0],timestamp:impl[1],secure:impl[2],trusted:impl[3]
 	};
 };
 /** register_compiler_function **/
 JSmarty.prototype.register_compiler_function = function(name, impl){
-	this._plugins.Compiler[name] = impl;
+	this._plugins.compiler[name] = impl;
 };
 /** unregister_block **/
 JSmarty.prototype.unregister_block = function(name){
-	this._plugins.Block[name] = false;
+	this._plugins.block[name] = false;
 };
 /** unregister_function **/
 JSmarty.prototype.unregister_function = function(name){
-	this._plugins.Function[name] = false;
+	this._plugins['function'][name] = false;
 };
 /** unregister_modifier **/
 JSmarty.prototype.unregister_modifier = function(name){
-	this._plugins.Modifier[name] = false;
+	this._plugins.modifier[name] = false;
 };
 /** unregister_resource **/
 JSmarty.prototype.unregister_resource = function(name){
-	this._plugins.Resource[name] = false;
+	this._plugins.resource[name] = false;
 };
 /** unregister_compiler_function **/
 JSmarty.prototype.unregister_compiler_function = function(name){
-	this._plugins.Compiler[name] = false;
+	this._plugins.compiler[name] = false;
 };
 /* ---------------------------------------------------------------------
  # Filter
@@ -193,25 +193,25 @@ JSmarty.prototype.load_filter = function(type, name){
 };
 /** register_prefilter **/
 JSmarty.prototype.register_prefilter = function(name){
-	this._plugins.Prefilter[name] = window[name];
+	this._plugins.prefilter[name] = window[name];
 };
 /** register_postfilter **/
 JSmarty.prototype.register_postfilter = function(name){
-	this._plugins.Postfilter[name] = window[name];
+	this._plugins.postfilter[name] = window[name];
 };
 /** register_outputfilter **/
 JSmarty.prototype.register_outputfilter = function(name){
-	this._plugins.Outputfilter[name] = windows[name];
+	this._plugins.outputfilter[name] = windows[name];
 };
 /** unregister_prefilter **/
 JSmarty.prototype.unregister_prefilter = function(name){
-	this._plugins.Prefilter[name] = false;
+	this._plugins.prefilter[name] = false;
 };
 /** unregister_postfilter **/
 JSmarty.prototype.unregister_postfilter = function(name){
-	this._plugins.Postfilter[name] = false;
+	this._plugins.postfilter[name] = false;
 };
 /** unregister_outputfilter **/
 JSmarty.prototype.unregister_outputfilter = function(name){
-	this._plugins.Outputfilter[name] = false;
+	this._plugins.outputfilter[name] = false;
 };
