@@ -1,11 +1,13 @@
 if(typeof jsmarty_shared_xmlhttp == 'undefined')
 	JSAN.require('jsmarty_shared_xmlhttp');
 
-jsmarty_resource_file = {_modf:''};
+jsmarty_resource_file = { http:null };
 jsmarty_resource_file.source = function(name, rtpl, smarty)
 {
 	var self = jsmarty_resource_file;
-	var http = jsmarty_shared_xmlhttp.create();
+	var http = (self.http) ? self.http : jsmarty_shared_xmlhttp();
+
+	if(!self.http) self.http = http;
 
 	try
 	{
@@ -21,8 +23,6 @@ jsmarty_resource_file.source = function(name, rtpl, smarty)
 
 		http.send('');
 		rtpl[name] = http.responseText;
-		self._modf = http.getResponseHeader('Last-Modified');
-		http.abort();
 
 		return true;
 	}
@@ -35,7 +35,11 @@ jsmarty_resource_file.timestamp = function(name, time, smarty)
 	if(JSmarty.template[name])
 	{
 		var self = jsmarty_resource_file;
-		time[name] = self._modf;
+		var http = self.http;
+
+		time[name] = http.getResponseHeader('Last-Modified');
+		http.abort();
+
 		return true;
 	}
 

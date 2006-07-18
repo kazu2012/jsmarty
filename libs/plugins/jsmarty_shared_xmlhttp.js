@@ -1,5 +1,4 @@
-jsmarty_shared_xmlhttp = {};
-jsmarty_shared_xmlhttp.create = function()
+jsmarty_shared_xmlhttp = function()
 {
 	var msxmls = [
 		'Msxml2.XMLHTTP.5.0',
