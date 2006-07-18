@@ -20,50 +20,54 @@ JSmarty.prototype.default_template_handler_func = function(){};
  # Template Variables
  -------------------------------------------------------------------- */
 /** append **/
-JSmarty.prototype.append = function(tvar, value, merge)
+JSmarty.prototype.append = function(key, value, merge)
 {
-	if(typeof tvar == 'object')
+	var vars = this._tpl_vars;
+
+	if(typeof key == 'object')
 	{
-		for(var i in tvar)
+		for(var i in key)
 		{
-			if(this._tpl_vars[i] instanceof Array)
-				this._tpl_vars[i] = [];
-			if(merge && tvar[i] instanceof Object)
+			if(!vars[i] || !(vars[i] instanceof Array))
+				vars[i] = [];
+			if(merge && key[i] instanceof Object)
 			{
-				for(var j in tvar[i])
-					this._tpl_vars[i][j] = tvar[i][j];
+				for(var j in key[i])
+					vars[i][j] = key[i][j];
 				return;
 			}
-			this._tpl_vars[i].push(tval[i]);
+			vars[i].push(key[i]);
 		}
 	}
 	else
 	{
-		if(!tvar && !value) return;
-		if(this._tpl_vars[tvar] instanceof Array)
-			this._tpl_vars[tvar] = [];
+		if(!key && !value) return;
+		if(!vars[key] || !(vars[key] instanceof Array))
+			vars[key] = [];
 		if(merge && value instanceof Object)
 		{
 			for(var i in value)
-				this._tpl_vars[tvar][i] = value[i];
+				vars[key][i] = value[i];
 			return;
 		}
-		this._tpl_vars[tvar].push(value);
+		vars[key].push(value);
 	}
 };
 /** append_by_ref **/
-JSmarty.prototype.append_by_ref = function(tvar, value, merge)
+JSmarty.prototype.append_by_ref = function(key, value, merge)
 {
-	if(!tvar && !value) return;
-	if(this._tpl_vars[tvar] instanceof Array)
-		this._tpl_vars[tvar] = [];
+	var vars = this._tpl_vars;
+
+	if(!key && !value) return;
+	if(vars[key] && vars[key] instanceof Array)
+		vars[key] = [];
 	if(merge && value instanceof Object)
 	{
 		for(var i in value)
-			this._tpl_vars[tvar][i] = value[i];
+			vars[key][i] = value[i];
 		return;
 	}
-	this._tpl_vars[tvar].push(value);
+	vars[key].push(value);
 };
 /** assign **/
 JSmarty.prototype.assign = function(key, value)
@@ -85,7 +89,7 @@ JSmarty.prototype.assign = function(key, value)
 		return;
 	}
 
-	this._tpl_vars[key] = value;
+	if(key) this._tpl_vars[key] = value;
 };
 /** assign_by_ref **/
 JSmarty.prototype.assign_by_ref = function(key, value){
@@ -101,7 +105,7 @@ JSmarty.prototype.clear_assign = function(key)
 		return;
 	}
 
-	if(!key) delete this._tpl_vars[key];
+	if(key) delete this._tpl_vars[key];
 };
 /** clear_all_assign **/
 JSmarty.prototype.clear_all_assign = function(){
@@ -233,7 +237,7 @@ JSmarty.prototype.register_postfilter = function(name){
 };
 /** register_outputfilter **/
 JSmarty.prototype.register_outputfilter = function(name){
-	this._plugins.outputfilter[name] = windows[name];
+	this._plugins.outputfilter[name] = window[name];
 };
 /** unregister_prefilter **/
 JSmarty.prototype.unregister_prefilter = function(name){
