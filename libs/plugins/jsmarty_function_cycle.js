@@ -1,64 +1,81 @@
-jsmarty_function_cycle = function($params, $smarty)
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
+/**
+ * JSmarty {cycle} function plugin
+ *
+ * Type:     function<br />
+ * Name:     cycle<br />
+ * Purpose:  cycle through given values<br />
+ * Original: Smarty {cycle} function plugin
+ * @author   shogo <shogo4405 at gmail dot com>
+ * @version  1.0
+ * @param    array
+ * @param    JSmarty
+ * @return   string
+ */
+jsmarty_function_cycle = function(params, smarty)
 {
-	var $retval, $cycle_array;
-	var $name, $print, $advance, $reset;
-	var $cycle_vars = jsmarty_function_cycle.$cycle_vars;
+	var cycle_vars = jsmarty_function_cycle.cycle_vars;
+	var name, reset, print, advance, cycle_var, cycle_array;
+	var retval, values = params.values, assign = params.assign;
 
-	$name    = $params['name'] || 'default';
-	$print   = ($params['print'] == (void 0)) ? true  : $params['print'];
-	$reset   = ($params['reset'] == (void 0)) ? false : $params['reset'];
-	$advance = ($params['advance']==(void 0)) ? true  : $params['advance'];
+	name    = params.name || 'default';
+	print   = (params.print   == void(0)) ? true  : params.print;
+	reset   = (params.reset   == void(0)) ? false : params.reset;
+	advance = (params.advance == void(0)) ? true  : params.advance;
 
-	if($cycle_vars[$name] == (void 0))
-		$cycle_vars[$name] = {};
+	if(!(cycle_var = cycle_vars[name]))
+		cycle_var = cycle_vars[name] = { index:0, values:'' };
 
-	if(!$params['values'])
+	if(!values)
 	{
-		if(!$cycle_vars[$name]['values'])
+		if(!cycle_var.values)
 		{
-			$smarty.trigger_error("cycle: missing 'values' parameter");
+			smarty.trigger_error("cycle: missing 'values' parameter");
 			return '';
 		}
 	}
 	else
 	{
-		if(!$cycle_vars[$name]['values'] && $cycle_vars[$name]['values'] != $params['values'])
-			$cycle_vars[$name]['index'] = 0;
-		$cycle_vars[$name]['values'] = $params['values'];
+		if(!cycle_var.values && cycle_var.values != values)
+			cycle_var.index = 0;
+		cycle_var.values = values;
 	}
 
-	if($cycle_vars[$name] == (void 0))
-		$cycle_vars[$name] = {index:0,values:''};
+	cycle_var.delimiter = (params.delimiter) ? params.delimiter : ',';
 
-	$cycle_vars[$name]['delimiter'] = ($params['delimiter']) ? $params['delimiter'] : ',';
-
-	if(typeof $cycle_vars[$name]['values'] == 'array')
-		$cycle_array = $cycle_vars[$name]['values'];
+	if(cycle_var.values && cycle_var.values instanceof Array)
+		cycle_array = cycle_var.values;
 	else
-		$cycle_array = $cycle_vars[$name]['values'].split($cycle_vars[$name]['delimiter']);
+		cycle_array = cycle_var.values.split(cycle_var.delimiter);
 
-	if(!$cycle_vars[$name]['index'] || $reset)
-		$cycle_vars[$name]['index'] = 0;
+	if(!cycle_var.index || reset)
+		cycle_var.index = 0;
 
-	if($params['assign'])
+	if(assign)
 	{
-		$print = false;
-		$smarty.assign($params['assign'], $cycle_array[$cycle_vars[$name]['index']]);
+		print = false;
+		smarty.assign(assign, cycle_array[cycle_var.index]);
 	}
 
-	if($print)
- 		$retval = $cycle_array[$cycle_vars[$name]['index']];
+	if(print)
+		retval = cycle_array[cycle_var.index];
 	else
-		$retval = '';
+		retval = '';
 
-	if($advance)
+	if(advance)
 	{
-		if($cycle_vars[$name]['index'] >= $cycle_array.length - 1)
-			$cycle_vars[$name]['index'] = 0;
+		if(cycle_var.index >= cycle_array.length - 1)
+			cycle_var.index = 0;
 		else
-			$cycle_vars[$name]['index']++;
+			cycle_var.index++;
 	}
 
-	return $retval;
+	return retval;
 }
-jsmarty_function_cycle.$cycle_vars = {};
+/** static cycle_vars **/
+jsmarty_function_cycle.cycle_vars = {};

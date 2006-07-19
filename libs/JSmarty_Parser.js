@@ -20,17 +20,8 @@ JSmarty_Parser.prototype =
 		resource: {}, insert:    {}, compiler:    {}
 	}
 };
-/** exec **/
-JSmarty_Parser.prototype.exec = function(src)
-{
-	src = this.parser(src);
-	src = this._filter(src, 'post');
-	src = this._filter(src, 'output');
-
-	return src;
-}
 /** parser **/
-JSmarty_Parser.prototype.parser = function(src)
+JSmarty_Parser.prototype.parse = function(src)
 {
 	var isp, iep, ipp, imp, inp, ibp, irp;
 	var L = this.left_delimiter, R = this.right_delimiter;

@@ -11,7 +11,7 @@ JSmarty.timestamp = {};
 
 JSmarty.prototype = new JSmarty_Parser;
 JSmarty.prototype.debugging = false;
-JSmarty.prototype.plugins_dir = 'plugins';
+JSmarty.prototype.plugins_dir = ['plugins'];
 JSmarty.prototype.template_dir = 'templates';
 JSmarty.prototype.default_resource_type = 'file';
 JSmarty.prototype.default_template_handler_func = function(){};
@@ -22,17 +22,17 @@ JSmarty.prototype.default_template_handler_func = function(){};
 /** append **/
 JSmarty.prototype.append = function(key, value, merge)
 {
-	var vars = this._tpl_vars;
+	var i, j, vars = this._tpl_vars;
 
-	if(typeof key == 'object')
+	if(typeof(key) == 'object')
 	{
-		for(var i in key)
+		for(i in key)
 		{
 			if(!vars[i] || !(vars[i] instanceof Array))
 				vars[i] = [];
 			if(merge && key[i] instanceof Object)
 			{
-				for(var j in key[i])
+				for(j in key[i])
 					vars[i][j] = key[i][j];
 				return;
 			}
@@ -46,7 +46,7 @@ JSmarty.prototype.append = function(key, value, merge)
 			vars[key] = [];
 		if(merge && value instanceof Object)
 		{
-			for(var i in value)
+			for(i in value)
 				vars[key][i] = value[i];
 			return;
 		}
@@ -82,7 +82,7 @@ JSmarty.prototype.assign = function(key, value)
 			break;
 	}
 
-	if(typeof key == 'object')
+	if(typeof(key) == 'object')
 	{
 		for(var i in key)
 			this._tpl_vars[i] = key[i];
@@ -141,9 +141,6 @@ JSmarty.prototype.fetch = function(file)
 	rtpl = JSmarty.template;
 	type = this.default_resource_type;
 
-	if(!JSAN.includePath[this.plugins_dir])
-		JSAN.addRepository(this.plugins_dir);
-
 	if(!rtpl[file])
 	{
 		var icp, rex, time, list, plugin;
@@ -151,6 +148,12 @@ JSmarty.prototype.fetch = function(file)
 
 		time = JSmarty.timestamp;
 		list = JSmarty_Parser.BELEMNT;
+
+		if(this.plugins_dir)
+		{
+			JSAN.addRepository(this.plugins_dir);
+			this.plugins_dir = null;
+		}
 
 		if((icp = file.indexOf(':')) >= 0)
 			name = file.slice(icp+1), type = file.slice(0,icp);
@@ -162,10 +165,12 @@ JSmarty.prototype.fetch = function(file)
 
 		rex = new RegExp(L+'\\/(.+?)'+R,'g');
 		while(res = rex.exec(rtpl[file])) list[res[1]] = true;
+
 		rtpl[file] = this._filter(rtpl[file], 'pre');
+		rtpl[file] = this._filter(rtpl[file], 'post');
 	}
 
-	return this.exec(rtpl[file]);
+	return this._filter(this.parse(rtpl[file]), 'output');
 };
 /** display **/
 JSmarty.prototype.display = function(file){

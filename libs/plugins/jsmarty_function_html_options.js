@@ -1,12 +1,12 @@
-jsmarty_function_html_options = function($params, $smarty)
+jsmarty_function_html_options = function(params, $smarty)
 {
-	var option = JSmarty.Function.html_options.option;
+	var option = jsmarty_function_html_options.option;
 
 	var $html, $option;
 	var $name, $values, $options, $selected;
 
-	$name    = $params['name'] || '';
-	$options = $params['options'];
+	$name    = params.name || '';
+	$options = params.options;
 
 	$html = '<select><!--__OPTION__--></select>'
 
