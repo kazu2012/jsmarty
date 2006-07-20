@@ -256,3 +256,9 @@ JSmarty.prototype.unregister_postfilter = function(name){
 JSmarty.prototype.unregister_outputfilter = function(name){
 	this._plugins.outputfilter[name] = false;
 };
+/* ---------------------------------------------------------------------
+ # Error
+ -------------------------------------------------------------------- */
+JSmarty.prototype.trigger_error = function(msg){
+	if(this.debugging) alert(msg);
+};

@@ -1,4 +1,4 @@
-JSmarty.Modifier.cat = function($string, $cat)
+jsmarty_modifier_cat = function(string, cat)
 {
-	return $string + $cat;
+	return string + cat;
 }

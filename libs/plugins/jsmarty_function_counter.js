@@ -1,55 +1,52 @@
-jsmarty_function_counter = function($params, $smarty)
+jsmarty_function_counter = function(params, smarty)
 {
-	var $retval, $name, $counter;
-	var $counters = jsmarty_function_counter.$counters;
+	var counters = jsmarty_function_counter.counters;
+	var retval, print, counter, name = params.name || 'default';
 
-	$name = $params['name'] || 'default';
-
-	if($counters[$name] == void(0))
+	if(!counters[name])
 	{
-		$counters[$name] = {
+		counters[name] =
+		{
 			start: 1,
 			skip : 1,
 			count: 1,
 			direction : 'up'
-			};
+		};
 	}
 
-	$counter = $counters[$name];
+	counter = counters[name];
 
-	if($params['start'])
-		$counter['start'] = $counter['count'] = $params['start'] - 0;
+	if(params.start != void(0))
+		counter.start = counter.count = params.start - 0;
 
-	if($params['assign'] != '')
-		$counter['assign'] = $params['assign'];
+	if(!params.assign)
+		counter.assign = params.assign;
 
-	if($params['assign'])
-		$counter['assign'] = $params['assign'];
+	if(counter.assign)
+		smarty.assign(counter.assign, counter.count);
 
-	if($counter['assign'])
-		$smarty.assign($counter['assign'], $counter['count']);
-
-	if($params['print'])
-		$print = new Boolean($params['print']);
+	if(params.print)
+		print = new Boolean(params.print);
 	else
-		$print = (!$counter['assign'] || $counter['assign'] == 0) ? true : false;
+		print = (counter.assign != 0 && !counter.assign) ? true : false;
 
-	if($print)
-		$retval = $counter['count'];
+	if(print)
+		retval = counter.count;
 	else
-		$retval = '';
+		retval = '';
 
-	if($params['skip'])
-		$counter['skip'] = $params['skip'];
+	if(params.skip)
+		counter.skip = params.skip;
 
-	if($params['direction'])
-		$counter['direction'] = $params['direction'];
+	if(params.direction)
+		counter.direction = params.direction;
 
-	if($counter['direction'] == 'down')
-		$counter['count'] -= $counter['skip'];
+	if(counter.direction == 'down')
+		counter.count -= counter.skip - 0;
 	else
-		$counter['count'] += $counter['skip'];
+		counter.count += counter.skip - 0;
 
-	return $retval;
+	return retval;
 }
-jsmarty_function_counter.$counters = {};
+/** static counters **/
+jsmarty_function_counter.counters = {};
