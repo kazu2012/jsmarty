@@ -1,20 +1,33 @@
-if(typeof JSmarty_Parser == 'undefined') JSAN.use('JSmarty_Parser');
-
 JSmarty = function(){};
 
 JSmarty.AUTHORS = ['shogo'];
 JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
 
+JSmarty.BELEMENT = [];
 JSmarty.template = {};
 JSmarty.timestamp = {};
 
-JSmarty.prototype = new JSmarty_Parser;
-JSmarty.prototype.debugging = false;
-JSmarty.prototype.plugins_dir = ['plugins'];
-JSmarty.prototype.template_dir = 'templates';
-JSmarty.prototype.default_resource_type = 'file';
-JSmarty.prototype.default_template_handler_func = function(){};
+JSmarty.prototype = 
+{
+	debugging : false,
+	left_delimiter : '{',
+	right_delimiter : '}',
+	plugins_dir : ['plugins'],
+	template_dir : 'templates',
+	compiler_class : 'JSmarty_Compiler',
+	autoload_filters : {},
+	default_resource_type : 'file',
+	default_template_handler_func : function(){},
+
+	_plugins :
+	{
+		modifier: {}, 'function':{}, block:       {},
+		resource: {}, insert:    {}, compiler:    {},
+		prefilter:{}, postfilter:{}, outputfilter:{}
+	},
+	_compiler : null
+};
 
 /* --------------------------------------------------------------------
  # Template Variables
@@ -148,19 +161,19 @@ JSmarty.prototype.fetch = function(file)
 	rtpl = JSmarty.template;
 	type = this.default_resource_type;
 
+	if(this.plugins_dir)
+	{
+		JSAN.addRepository(this.plugins_dir);
+		this.plugins_dir = null;
+	}
+
 	if(!rtpl[file])
 	{
 		var icp, rex, time, list, plugin;
 		var L = this.left_delimiter, R = this.right_delimiter;
 
 		time = JSmarty.timestamp;
-		list = JSmarty_Parser.BELEMNT;
-
-		if(this.plugins_dir)
-		{
-			JSAN.addRepository(this.plugins_dir);
-			this.plugins_dir = null;
-		}
+		list = JSmarty.BELEMNT;
 
 		if((icp = file.indexOf(':')) >= 0)
 			name = file.slice(icp+1), type = file.slice(0,icp);
@@ -174,10 +187,13 @@ JSmarty.prototype.fetch = function(file)
 		while(res = rex.exec(rtpl[file])) list[res[1]] = true;
 
 		rtpl[file] = this._filter(rtpl[file], 'pre');
+		rtpl[file] = this._compile(rtpl[file]);
 		rtpl[file] = this._filter(rtpl[file], 'post');
+
+		rtpl[file] = new Function(rtpl[file]);
 	}
 
-	return this._filter(this.parse(rtpl[file]), 'output');
+	return rtpl[file].call(this);
 };
 /** display **/
 JSmarty.prototype.display = function(file){
@@ -269,13 +285,6 @@ JSmarty.prototype.unregister_outputfilter = function(name){
 JSmarty.prototype.trigger_error = function(msg){
 	if(this.debugging) alert(msg);
 };
-
-/** _compile_resource **/
-JSmarty.prototype._compile_resource = function()
-{
-	
-};
-
 /** _plugin **/
 JSmarty.prototype._plugin = function(name, parm, src, type)
 {
@@ -300,4 +309,55 @@ JSmarty.prototype._plugin = function(name, parm, src, type)
 		case 'modifier':
 			return plugin[name].apply(null, parm);
 	}
+};
+/** _filter **/
+JSmarty.prototype._filter = function(src, type)
+{
+	var list;
+
+	if(list = this.autoload_filters[type])
+	{
+		for(var i in list)
+			src = this._plugin(list[i], src, type + 'filter');
+	}
+
+	return src;
+};
+/** _modifier **/
+JSmarty.prototype._modifier = function(src, modf)
+{
+	var name, parm;
+
+	modf = (modf) ? [] : modf.split('|');
+
+	if(this.default_modifiers)
+		modf = modf.concat(this.default_modifiers);
+
+	for(var i=modf.length-1;i>=0;i--)
+	{
+		parm = modf[i].split(':');
+		name = parm.shift();
+		parm.unshift(src);
+
+		src = this._plugin(name, parm, null, 'modifier');
+	}
+
+	return src;
+};
+
+JSmarty.prototype._compile = function(src)
+{
+	var compiler;
+
+	if(!(compiler = this._compiler))
+	{
+		if(!window[this.compiler_class])
+			JSAN.require(this.compiler_class);
+		compiler = this._compiler = new window[this.compiler_class];
+	}
+
+	compiler.left_delimiter = this.left_delimiter;
+	compiler.right_delimiter= this.right_delimiter;
+
+	return compiler.compile(src);
 };

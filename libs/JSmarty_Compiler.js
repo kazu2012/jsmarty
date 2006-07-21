@@ -1,7 +1,4 @@
-JSmarty_Compiler = function(smarty){
-	this.smarty = smarty || null;
-};
-
+JSmarty_Compiler = function(){};
 JSmarty_Compiler.prototype =
 {
 	SQUOT : '"',
@@ -13,18 +10,23 @@ JSmarty_Compiler.prototype =
 	SHEAD : 'var otpt, vars = this._tpl_vars, func = "function",'+
 			'blck = "block";\notpt = ""',
 	RBLCK : new RegExp(),
-	RPARM : new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g')
+	RCRLF : new RegExp('\r?\n','g'),
+	RPARM : new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g'),
+
+	left_delimiter : '{',
+	right_delimiter : '}'
 };
 
 JSmarty_Compiler.prototype.compile = function(src)
 {
+	var list = JSmarty.BELEMENT;
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
-	var L = "{", R = "}";
-	var l = L.length, r = R.length, nested = false;
-	var txt = [], list = JSmarty.BELEMENT;
 	var Q = this.SQUOT, S = this.SSPAC, M = this.SSQRT;
+	var L = this.left_delimiter , R = this.right_delimiter;
+	var l = L.length, r = R.length, nested = false, txt = [];
 
 	txt.push(this.SHEAD);
+	src = src.replace(this.RCRLF,'');
 
 	for(var i=0,fin=src.lastIndexOf(R);i<fin;i=iep+r)
 	{
@@ -50,27 +52,29 @@ JSmarty_Compiler.prototype.compile = function(src)
 
 		inp = irp = iep;
 		ipp = src.indexOf(S,isp), imp = src.indexOf(M,isp);
-		if(imp < iep && imp != -1) inp = imp, irp = imp;
-		if(ipp < iep && ipp != -1) inp = ipp;
+		if(modf = (imp < iep && imp != -1)) inp = imp, irp = imp;
+		if(parm = (ipp < iep && ipp != -1)) inp = ipp;
 
 		switch(src.charAt(isp))
 		{
 			case '*': break;
 			case '#':
-			//	txt.push();
+			//	txt.push(this.toVar(src.slice()));
 				break;
 			case '$':
 				txt.push(this.toVar(src.slice(isp + 1, iep)));
 				break;
 			default:
 				name = src.slice(isp, inp);
-				parm = src.slice(ipp + 1, irp);
+				parm = (parm) ? src.slice(ipp + 1, irp) : '';
 				txt.push(this.toTag(name, parm, null));
 				break;
 		}
 	}
 
-	txt.push(src.slice(i) + this.SFOOT);
+	txt.push(Q + src.slice(i) + Q);
+	txt.push(this.SFOOT);
+
 	return txt.join(' + ');
 };
 JSmarty_Compiler.prototype.toVar = function(src){
@@ -106,6 +110,6 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 			return 'this.right_delimiter';
 		default:
 			name = Q + name + Q;
-			return 'this._plugin('+ name +','+ parm +','+ src +','+ type +')';
+			return 'this._plugin('+ name +', '+ parm +', '+ src +', '+ type +')';
 	}
 };
