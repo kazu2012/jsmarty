@@ -277,6 +277,9 @@ JSmarty.prototype.unregister_outputfilter = function(name){
 JSmarty.prototype.trigger_error = function(msg){
 	if(this.debugging) alert(msg);
 };
+/* ---------------------------------------------------------------------
+ # Wrapper
+ -------------------------------------------------------------------- */
 /** _plugin **/
 JSmarty.prototype._plugin = function(name, parm, src, type)
 {
@@ -360,6 +363,8 @@ JSmarty.prototype._compile = function(src)
 		src = this._filter(src, 'pre');
 
 	src = compiler.compile(src);
+
+	alert(src);
 
 	if(this.autoload_filters['post'])
 		src = this._filter(src, 'post');

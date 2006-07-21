@@ -4,12 +4,16 @@ JSmarty_Compiler.prototype =
 	SQUOT : '"',
 	SSPAC : ' ',
 	SSPRT : '|',
+	SPROD : ', ',
 	SVARS : 'vars.',
 	SOTPT : 'output += ',
-	SFOOT : '"";\nreturn otpt;',
-	SHEAD : 'var otpt, vars = this._tpl_vars, func = "function",'+
-			'blck = "block";\notpt = ""',
+	SFOOT : '"";\nreturn output;',
+	SFUNC : 'function(){',
+	SPGIN : 'this._plugin(',
+	SHEAD : 'var output, vars = this._tpl_vars, func = "function",'+
+			'blck = "block";\noutput = ""',
 	RBLCK : new RegExp(),
+	RVARS : new RegExp('\\$','g'),
 	RCRLF : new RegExp('\r?\n','g'),
 	RPARM : new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g'),
 
@@ -21,12 +25,12 @@ JSmarty_Compiler.prototype.compile = function(src)
 {
 	var list = this._holded_blocks;
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
-	var Q = this.SQUOT, S = this.SSPAC, M = this.SSQRT;
+	var Q = this.SQUOT, S = this.SSPAC, M = this.SSPRT;
 	var L = this.left_delimiter , R = this.right_delimiter;
 	var l = L.length, r = R.length, nested = false, txt = [];
 
 	txt.push(this.SHEAD);
-	src = src.replace(this.RCRLF,'');
+	src = src.replace(this.RCRLF,'\\n');
 
 	for(var i=0,fin=src.lastIndexOf(R);i<fin;i=iep+r)
 	{
@@ -73,7 +77,9 @@ JSmarty_Compiler.prototype.compile = function(src)
 		}
 	}
 
-	txt.push(Q + src.slice(i) + Q);
+	if(i != src.length)
+		txt.push(this.toString(src.slice(i)));
+
 	txt.push(this.SFOOT);
 
 	return txt.join(" + ");
@@ -97,20 +103,65 @@ JSmarty_Compiler.prototype.toParm = function(src)
 };
 JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 {
-	var type, Q = this.SQUOT;
-
-	src  = (src) ? "function(){" + this.compile(src) + "}" : null;
-	parm = this.toParm(parm);
-	type = (src) ? 'block': 'func';
-
 	switch(name)
 	{
+		case 'if':
+			var head, foot;
+			parm = this.toExp(parm);
+			head = this.SHEAD, foot = this.SFOOT;
+			this.SHEAD = '', this.SFOOT = '';
+			src = this.toIfThen('if', parm, this.compile(src))
+			this.SHEAD = head, this.SFOOT = foot;
+			return src;
+		case 'else':
+		case 'elsif':
+			parm = this.toExp(parm);
+			return this.toIfThen(name, parm);
 		case 'ldelim':
-			return 'this.left_delimiter';
+			return this.toString(this.left_delimiter);
 		case 'rdelim':
-			return 'this.right_delimiter';
+			return this.toString(this.right_delimiter);
+		case 'literal':
+			return this.toString(src);
 		default:
-			name = Q + name + Q;
-			return 'this._plugin('+ name +', '+ parm +', '+ src +', '+ type +')';
+			parm = this.toParm(parm);
+			name = this.toString(name);
+			src  = this.toFunction(src);
+			return this.toPlugin(name, parm, src);
 	}
+};
+JSmarty_Compiler.prototype.toExp = function(src)
+{
+	src = src.replace(this.RVARS, this.SVARS);
+	return src;
+};
+JSmarty_Compiler.prototype.toIfThen = function(name, parm, src)
+{
+	switch(name)
+	{
+		case 'if':
+			return '"";\nif('+ parm +'){output += ""'+ src +'"";}\noutput += ""';
+		case 'elsif':
+			return '"";}\nelse if('+ parm +'){ output += ""';
+		case 'else':
+			return '"";}\nelse{ output += ""';
+	}
+};
+JSmarty_Compiler.prototype.toPlugin = function(name, parm, src)
+{
+	var type = (src) ? 'blck' : 'func', P = this.SPROD;
+	return this.SPGIN + name + P + parm + P + src + P + type +')';
+};
+JSmarty_Compiler.prototype.toString = function(src)
+{
+	if(!src) return '';
+	return this.SQUOT + src + this.SQUOT;
+};
+JSmarty_Compiler.prototype.toInclude = function(parm)
+{
+};
+JSmarty_Compiler.prototype.toFunction = function(src)
+{
+	if(!src) return null;
+	return this.SFUNC + this.compile(src) +'}';
 };

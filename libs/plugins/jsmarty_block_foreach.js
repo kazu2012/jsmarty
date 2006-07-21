@@ -18,7 +18,7 @@ jsmarty_block_foreach = function(params, content, smarty)
 	{
 		if(key) smarty.assign(key, i);
 		smarty.assign(item, from[i]);
-		html.push(smarty.parser(content));
+		html.push(content.call(smarty));
 	}
 
 	return html.join('');
