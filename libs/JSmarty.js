@@ -4,7 +4,7 @@ JSmarty.AUTHORS = ['shogo'];
 JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
 
-JSmarty.BELEMENT = [];
+JSmarty.BELEMENT = {};
 JSmarty.template = {};
 JSmarty.timestamp = {};
 
@@ -26,7 +26,8 @@ JSmarty.prototype =
 		resource: {}, insert:    {}, compiler:    {},
 		prefilter:{}, postfilter:{}, outputfilter:{}
 	},
-	_compiler : null
+	_compiler : null,
+	_tpl_vars : {}
 };
 
 /* --------------------------------------------------------------------
@@ -169,11 +170,9 @@ JSmarty.prototype.fetch = function(file)
 
 	if(!rtpl[file])
 	{
-		var icp, rex, time, list, plugin;
-		var L = this.left_delimiter, R = this.right_delimiter;
+		var icp, time, plugin;
 
 		time = JSmarty.timestamp;
-		list = JSmarty.BELEMNT;
 
 		if((icp = file.indexOf(':')) >= 0)
 			name = file.slice(icp+1), type = file.slice(0,icp);
@@ -183,14 +182,7 @@ JSmarty.prototype.fetch = function(file)
 		if(!plugin.source(name, rtpl, this))
 			this.default_template_handler_func(type, name, rtpl, time, this);
 
-		rex = new RegExp(L+'\\/(.+?)'+R,'g');
-		while(res = rex.exec(rtpl[file])) list[res[1]] = true;
-
-		rtpl[file] = this._filter(rtpl[file], 'pre');
 		rtpl[file] = this._compile(rtpl[file]);
-		rtpl[file] = this._filter(rtpl[file], 'post');
-
-		rtpl[file] = new Function(rtpl[file]);
 	}
 
 	return rtpl[file].call(this);
@@ -347,7 +339,8 @@ JSmarty.prototype._modifier = function(src, modf)
 
 JSmarty.prototype._compile = function(src)
 {
-	var compiler;
+	var res, compiler;
+	var L = this.left_delimiter, R = this.right_delimiter;
 
 	if(!(compiler = this._compiler))
 	{
@@ -356,8 +349,20 @@ JSmarty.prototype._compile = function(src)
 		compiler = this._compiler = new window[this.compiler_class];
 	}
 
-	compiler.left_delimiter = this.left_delimiter;
-	compiler.right_delimiter= this.right_delimiter;
+	compiler.left_delimiter  = L;
+	compiler.right_delimiter = R;
+	compiler.RBLCK.compile(L+'\\/(.+?)'+R,'g');
 
-	return compiler.compile(src);
+	while(res = compiler.RBLCK.exec(src))
+		compiler._holded_blocks[res[1]] = true;
+
+	if(this.autoload_filters['pre'])
+		src = this._filter(src, 'pre');
+
+	src = compiler.compile(src);
+
+	if(this.autoload_filters['post'])
+		src = this._filter(src, 'post');
+
+	return new Function(src);
 };

@@ -14,12 +14,12 @@ JSmarty_Compiler.prototype =
 	RPARM : new RegExp('(\\w+)=(\'|\"|)([^\\s]+|[^\\2]+?)\\2','g'),
 
 	left_delimiter : '{',
-	right_delimiter : '}'
+	right_delimiter: '}',
+	_holded_blocks : {}
 };
-
 JSmarty_Compiler.prototype.compile = function(src)
 {
-	var list = JSmarty.BELEMENT;
+	var list = this._holded_blocks;
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
 	var Q = this.SQUOT, S = this.SSPAC, M = this.SSQRT;
 	var L = this.left_delimiter , R = this.right_delimiter;
@@ -67,7 +67,8 @@ JSmarty_Compiler.prototype.compile = function(src)
 			default:
 				name = src.slice(isp, inp);
 				parm = (parm) ? src.slice(ipp + 1, irp) : '';
-				txt.push(this.toTag(name, parm, null));
+				if(nested = list[name]) ibp = iep + r;
+				else txt.push(this.toTag(name, parm, null));
 				break;
 		}
 	}
@@ -75,7 +76,7 @@ JSmarty_Compiler.prototype.compile = function(src)
 	txt.push(Q + src.slice(i) + Q);
 	txt.push(this.SFOOT);
 
-	return txt.join(' + ');
+	return txt.join(" + ");
 };
 JSmarty_Compiler.prototype.toVar = function(src){
 	return this.SVARS + src;
@@ -98,7 +99,7 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 {
 	var type, Q = this.SQUOT;
 
-	src  = (src) ? this.compile(src) : null;
+	src  = (src) ? "function(){" + this.compile(src) + "}" : null;
 	parm = this.toParm(parm);
 	type = (src) ? 'block': 'func';
 
