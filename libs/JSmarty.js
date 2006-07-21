@@ -269,3 +269,35 @@ JSmarty.prototype.unregister_outputfilter = function(name){
 JSmarty.prototype.trigger_error = function(msg){
 	if(this.debugging) alert(msg);
 };
+
+/** _compile_resource **/
+JSmarty.prototype._compile_resource = function()
+{
+	
+};
+
+/** _plugin **/
+JSmarty.prototype._plugin = function(name, parm, src, type)
+{
+	var plugin = this._plugins[type];
+
+	if(plugin[name] == void(0))
+		plugin[name] = JSAN.require('jsmarty_'+ type +'_'+ name);
+	if(!plugin[name]) return '';
+
+	switch(type)
+	{
+		case 'resource':
+			return plugin[name];
+		case 'prefilter':
+		case 'postfilter':
+		case 'outputfilter':
+			return plugin[name](src, this);
+		case 'function':
+			return plugin[name](parm, this);
+		case 'block':
+			return plugin[name](parm, src, this);
+		case 'modifier':
+			return plugin[name].apply(null, parm);
+	}
+};
