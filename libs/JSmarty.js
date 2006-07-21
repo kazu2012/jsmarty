@@ -22,52 +22,59 @@ JSmarty.prototype.default_template_handler_func = function(){};
 /** append **/
 JSmarty.prototype.append = function(key, value, merge)
 {
-	var i, j, vars = this._tpl_vars;
+	var i, j, vars, mkey;
 
 	if(typeof(key) == 'object')
 	{
 		for(i in key)
 		{
-			if(!vars[i] || !(vars[i] instanceof Array))
-				vars[i] = [];
-			if(merge && key[i] instanceof Object)
+			mkey = key[i];
+			vars = this._tpl_vars[i];
+
+			if(vars && vars instanceof Array)
+				vars = this._tpl_vars[i] = [];
+			if(merge && mkey instanceof Object)
 			{
-				for(j in key[i])
-					vars[i][j] = key[i][j];
+				for(j in mkey)
+					vars[j] = mkey[j];
 				return;
 			}
-			vars[i].push(key[i]);
+			vars.push(mkey);
 		}
 	}
 	else
 	{
 		if(!key && !value) return;
-		if(!vars[key] || !(vars[key] instanceof Array))
-			vars[key] = [];
+
+		vars = this._tpl_vars[key];
+
+		if(vars && vars instanceof Array)
+			vars = this._tpl_vars[key] = [];
 		if(merge && value instanceof Object)
 		{
 			for(i in value)
-				vars[key][i] = value[i];
+				vars[i] = value[i];
 			return;
 		}
-		vars[key].push(value);
+		vars.push(value);
 	}
 };
 /** append_by_ref **/
 JSmarty.prototype.append_by_ref = function(key, value, merge)
 {
-	var vars = this._tpl_vars;
-
 	if(!key && !value) return;
-	if(vars[key] && vars[key] instanceof Array)
-		vars[key] = [];
+
+	var i, vars = this._tpl_vars[key];
+
+	if(vars && vars instanceof Array)
+		vars = this._tpl_vars[key] = [];
 	if(merge && value instanceof Object)
 	{
-		for(var i in value)
-			vars[key][i] = value[i];
+		for(i in value)
+			vars[i] = value[i];
 		return;
 	}
-	vars[key].push(value);
+	vars.push(value);
 };
 /** assign **/
 JSmarty.prototype.assign = function(key, value)
