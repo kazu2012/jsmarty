@@ -26,8 +26,11 @@ JSmarty.prototype =
 		resource: {}, insert:    {}, compiler:    {},
 		prefilter:{}, postfilter:{}, outputfilter:{}
 	},
+	_foreach : {},
+	_section : {},
 	_compiler : null,
-	_tpl_vars : {}
+	_tpl_vars : {},
+	_smarty_vars : {}
 };
 
 /* --------------------------------------------------------------------
@@ -43,9 +46,7 @@ JSmarty.prototype.append = function(key, value, merge)
 		for(i in key)
 		{
 			mkey = key[i];
-			vars = this._tpl_vars[i];
-
-			if(vars && vars instanceof Array)
+			if((vars = this._tpl_vars[i]) && vars instanceof Array)
 				vars = this._tpl_vars[i] = [];
 			if(merge && mkey instanceof Object)
 			{
@@ -59,10 +60,7 @@ JSmarty.prototype.append = function(key, value, merge)
 	else
 	{
 		if(!key && !value) return;
-
-		vars = this._tpl_vars[key];
-
-		if(vars && vars instanceof Array)
+		if((vars = this._tpl_vars[key]) && vars instanceof Array)
 			vars = this._tpl_vars[key] = [];
 		if(merge && value instanceof Object)
 		{
@@ -78,13 +76,11 @@ JSmarty.prototype.append_by_ref = function(key, value, merge)
 {
 	if(!key && !value) return;
 
-	var i, vars = this._tpl_vars[key];
-
-	if(vars && vars instanceof Array)
+	if((vars = this._tpl_vars[key]) && vars instanceof Array)
 		vars = this._tpl_vars[key] = [];
 	if(merge && value instanceof Object)
 	{
-		for(i in value)
+		for(var i in value)
 			vars[i] = value[i];
 		return;
 	}

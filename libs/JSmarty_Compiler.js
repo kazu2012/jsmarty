@@ -1,15 +1,9 @@
 JSmarty_Compiler = function(){};
 JSmarty_Compiler.prototype =
 {
-	SQUOT : '"',
-	SSPAC : ' ',
-	SSPRT : '|',
-	SPROD : ', ',
 	SVARS : 'vars.',
 	SOTPT : 'output += ',
 	SFOOT : '"";\nreturn output;',
-	SFUNC : 'function(){',
-	SPGIN : 'this._plugin(',
 	SHEAD : 'var output, vars = this._tpl_vars, func = "function",'+
 			'blck = "block";\noutput = ""',
 	RBLCK : new RegExp(),
@@ -23,9 +17,8 @@ JSmarty_Compiler.prototype =
 };
 JSmarty_Compiler.prototype.compile = function(src)
 {
-	var list = this._holded_blocks;
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
-	var Q = this.SQUOT, S = this.SSPAC, M = this.SSPRT;
+	var S = ' ', M = '|', list = this._holded_blocks;
 	var L = this.left_delimiter , R = this.right_delimiter;
 	var l = L.length, r = R.length, nested = false, txt = [];
 
@@ -52,7 +45,7 @@ JSmarty_Compiler.prototype.compile = function(src)
 		}
 
 		if(i != (icp = isp-l))
-			txt.push(Q + src.slice(i, icp) + Q);
+			txt.push(this.toString(src.slice(i, icp)));
 
 		inp = irp = iep;
 		ipp = src.indexOf(S,isp), imp = src.indexOf(M,isp);
@@ -82,7 +75,28 @@ JSmarty_Compiler.prototype.compile = function(src)
 
 	txt.push(this.SFOOT);
 
-	return txt.join(" + ");
+	return txt.join(" + ").replace(/"" \+|(\+ "")/g,'');
+};
+
+JSmarty_Compiler.prototype.JSmarty_Compiler = function()
+{
+};
+
+JSmarty_Compiler.prototype.setBlocks = function(src)
+{
+	var res, rex = this.RBLCK, list = this._folded_blocks;
+	var L = this.left_delimiter, R = this.right_delimiter;
+
+	rex.compile(L + '\\/(.+?)' + R,'g');
+	while(res = rex.exec(src)) list[res[1]] = true;
+};
+JSmarty_Compiler.prototype.setHeader = function()
+{
+	
+};
+JSmarty_Compiler.prototype.setFooter = function()
+{
+	
 };
 JSmarty_Compiler.prototype.toVar = function(src){
 	return this.SVARS + src;
@@ -105,29 +119,29 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 {
 	switch(name)
 	{
+		default:
+			parm = this.toParm(parm);
+			name = this.toString(name);
+			src  = this.toFunction(src);
+			return this.toPlugin(name, parm, src);
 		case 'if':
 			var head, foot;
-			parm = this.toExp(parm);
 			head = this.SHEAD, foot = this.SFOOT;
+			parm = this.toExp(parm);
 			this.SHEAD = '', this.SFOOT = '';
-			src = this.toIfThen('if', parm, this.compile(src))
+			src = '"";\nif('+ parm +'){ output += ""'+ this.compile(src) +'"";}\noutput += ""';
 			this.SHEAD = head, this.SFOOT = foot;
 			return src;
 		case 'else':
+			return '"";}\nelse { output += ""';
 		case 'elsif':
-			parm = this.toExp(parm);
-			return this.toIfThen(name, parm);
+			return '"";}\nelse if ('+ this.toExp(parm) +'){ output += ""';
 		case 'ldelim':
 			return this.toString(this.left_delimiter);
 		case 'rdelim':
 			return this.toString(this.right_delimiter);
 		case 'literal':
 			return this.toString(src);
-		default:
-			parm = this.toParm(parm);
-			name = this.toString(name);
-			src  = this.toFunction(src);
-			return this.toPlugin(name, parm, src);
 	}
 };
 JSmarty_Compiler.prototype.toExp = function(src)
@@ -135,33 +149,26 @@ JSmarty_Compiler.prototype.toExp = function(src)
 	src = src.replace(this.RVARS, this.SVARS);
 	return src;
 };
-JSmarty_Compiler.prototype.toIfThen = function(name, parm, src)
-{
-	switch(name)
-	{
-		case 'if':
-			return '"";\nif('+ parm +'){output += ""'+ src +'"";}\noutput += ""';
-		case 'elsif':
-			return '"";}\nelse if('+ parm +'){ output += ""';
-		case 'else':
-			return '"";}\nelse{ output += ""';
-	}
-};
 JSmarty_Compiler.prototype.toPlugin = function(name, parm, src)
 {
-	var type = (src) ? 'blck' : 'func', P = this.SPROD;
-	return this.SPGIN + name + P + parm + P + src + P + type +')';
+	var P = ', ', type = (src) ? 'blck' : 'func';
+	return 'this._plugin(' + name + P + parm + P + src + P + type + ')';
 };
 JSmarty_Compiler.prototype.toString = function(src)
 {
 	if(!src) return '';
-	return this.SQUOT + src + this.SQUOT;
+	return '"' + src + '"';
 };
 JSmarty_Compiler.prototype.toInclude = function(parm)
 {
 };
+JSmarty_Compiler.prototype.toVar2 = function()
+{
+	if(!src) return '';
+	return 'this._var('+ src +')';
+};
 JSmarty_Compiler.prototype.toFunction = function(src)
 {
 	if(!src) return null;
-	return this.SFUNC + this.compile(src) +'}';
+	return 'function(){' + this.compile(src) + '}';
 };
