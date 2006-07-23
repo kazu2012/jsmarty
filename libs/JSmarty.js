@@ -338,32 +338,22 @@ JSmarty.prototype._modifier = function(src, modf)
 
 JSmarty.prototype._compile = function(src)
 {
-	var res, compiler;
-	var L = this.left_delimiter, R = this.right_delimiter;
+	var comp;
 
-	if(!(compiler = this._compiler))
+	if(!(comp = this._compiler))
 	{
 		if(!window[this.compiler_class])
 			JSAN.require(this.compiler_class);
-		compiler = this._compiler = new window[this.compiler_class];
+		comp = this._compiler = new window[this.compiler_class];
 	}
 
-	compiler.left_delimiter  = L;
-	compiler.right_delimiter = R;
-	compiler.RBLCK.compile(L+'\\/(.+?)'+R,'g');
+	comp[this.compiler_class](this);
 
-	while(res = compiler.RBLCK.exec(src))
-		compiler._holded_blocks[res[1]] = true;
-
-	if(this.autoload_filters['pre'])
-		src = this._filter(src, 'pre');
-
-	src = compiler.compile(src);
+	src = this._filter(src, 'pre');
+	src = comp.exec(src);
+	src = this._filter(src, 'post');
 
 	alert(src);
-
-	if(this.autoload_filters['post'])
-		src = this._filter(src, 'post');
 
 	return new Function(src);
 };

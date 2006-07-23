@@ -1,7 +1,6 @@
 JSmarty_Compiler = function(){};
 JSmarty_Compiler.prototype =
 {
-	SVARS : 'vars.',
 	SOTPT : 'output += ',
 	SFOOT : '"";\nreturn output;',
 	SHEAD : 'var output, vars = this._tpl_vars, func = "function",'+
@@ -15,7 +14,15 @@ JSmarty_Compiler.prototype =
 	right_delimiter: '}',
 	_holded_blocks : {}
 };
-JSmarty_Compiler.prototype.compile = function(src)
+JSmarty_Compiler.prototype.JSmarty_Compiler = function()
+{
+	var res, rex = this.RBLCK, list = this._folded_blocks;
+	var L = this.left_delimiter, R = this.right_delimiter;
+
+	rex.exec(L + '\\/(.+?)' + R,'g');
+	while(res = rex.exec(src)) list[res[1]] = true;
+}
+JSmarty_Compiler.prototype.exec = function(src, option)
 {
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
 	var S = ' ', M = '|', list = this._holded_blocks;
@@ -77,29 +84,11 @@ JSmarty_Compiler.prototype.compile = function(src)
 
 	return txt.join(" + ").replace(/"" \+|(\+ "")/g,'');
 };
-
-JSmarty_Compiler.prototype.JSmarty_Compiler = function()
-{
-};
-
-JSmarty_Compiler.prototype.setBlocks = function(src)
-{
-	var res, rex = this.RBLCK, list = this._folded_blocks;
-	var L = this.left_delimiter, R = this.right_delimiter;
-
-	rex.compile(L + '\\/(.+?)' + R,'g');
-	while(res = rex.exec(src)) list[res[1]] = true;
-};
 JSmarty_Compiler.prototype.setHeader = function()
 {
-	
 };
 JSmarty_Compiler.prototype.setFooter = function()
 {
-	
-};
-JSmarty_Compiler.prototype.toVar = function(src){
-	return this.SVARS + src;
 };
 JSmarty_Compiler.prototype.toParm = function(src)
 {
@@ -127,26 +116,37 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 		case 'if':
 			var head, foot;
 			head = this.SHEAD, foot = this.SFOOT;
-			parm = this.toExp(parm);
+			parm = this.toValue(parm);
 			this.SHEAD = '', this.SFOOT = '';
-			src = '"";\nif('+ parm +'){ output += ""'+ this.compile(src) +'"";}\noutput += ""';
+			src = '"";\nif('+ parm +'){ output += ""'+ this.exec(src) +'"";}\noutput += ""';
 			this.SHEAD = head, this.SFOOT = foot;
 			return src;
+		case 'literal':
+			return this.toString(src);
 		case 'else':
 			return '"";}\nelse { output += ""';
-		case 'elsif':
-			return '"";}\nelse if ('+ this.toExp(parm) +'){ output += ""';
 		case 'ldelim':
 			return this.toString(this.left_delimiter);
 		case 'rdelim':
 			return this.toString(this.right_delimiter);
-		case 'literal':
-			return this.toString(src);
+		case 'elsif':
+			return '"";}\nelse if ('+ this.toValue(parm) +'){ output += ""';
 	}
 };
-JSmarty_Compiler.prototype.toExp = function(src)
+JSmarty_Compiler.prototype.toVar = function(src)
 {
-	src = src.replace(this.RVARS, this.SVARS);
+	var prefix = 'vars.';
+	return prefix + src;
+};
+JSmarty_Compiler.prototype.toVar2 = function()
+{
+	if(!src) return '';
+	var prefix = 'vars.' : 'svar.';
+	return 'this._var('+ prefix + src + ')';
+};
+JSmarty_Compiler.prototype.toValue = function(src)
+{
+	src = src.replace(this.RVARS, 'vars.');
 	return src;
 };
 JSmarty_Compiler.prototype.toPlugin = function(name, parm, src)
@@ -159,16 +159,8 @@ JSmarty_Compiler.prototype.toString = function(src)
 	if(!src) return '';
 	return '"' + src + '"';
 };
-JSmarty_Compiler.prototype.toInclude = function(parm)
-{
-};
-JSmarty_Compiler.prototype.toVar2 = function()
-{
-	if(!src) return '';
-	return 'this._var('+ src +')';
-};
 JSmarty_Compiler.prototype.toFunction = function(src)
 {
 	if(!src) return null;
-	return 'function(){' + this.compile(src) + '}';
+	return 'function(){' + this.exec(src) + '}';
 };
