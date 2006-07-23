@@ -14,7 +14,7 @@ JSmarty_Compiler.prototype =
 	right_delimiter: '}',
 	_holded_blocks : {}
 };
-JSmarty_Compiler.prototype.JSmarty_Compiler = function()
+JSmarty_Compiler.prototype.JSmarty_Compiler = function(smarty)
 {
 	var res, rex = this.RBLCK, list = this._folded_blocks;
 	var L = this.left_delimiter, R = this.right_delimiter;
