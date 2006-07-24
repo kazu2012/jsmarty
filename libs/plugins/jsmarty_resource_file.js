@@ -1,11 +1,9 @@
-if(typeof jsmarty_shared_xmlhttp == 'undefined')
-	JSAN.require('jsmarty_shared_xmlhttp');
-
-jsmarty_resource_file = { http:null };
-jsmarty_resource_file.source = function(name, rtpl, smarty)
+jsmarty_resource_file = [];
+jsmarty_resource_file.http = null;
+jsmarty_resource_file[0] = function(name, rtpl, smarty)
 {
 	var self = jsmarty_resource_file;
-	var http = (self.http) ? self.http : jsmarty_shared_xmlhttp();
+	var http = (self.http) ? self.http : JSmarty.exec('xmlhttp')();
 
 	if(!self.http) self.http = http;
 
@@ -30,7 +28,7 @@ jsmarty_resource_file.source = function(name, rtpl, smarty)
 
 	return false;
 };
-jsmarty_resource_file.timestamp = function(name, time, smarty)
+jsmarty_resource_file[1] = function(name, time, smarty)
 {
 	if(JSmarty.template[name])
 	{
@@ -45,9 +43,9 @@ jsmarty_resource_file.timestamp = function(name, time, smarty)
 
 	return false;
 };
-jsmarty_resource_file.secure = function(){
+jsmarty_resource_file[2] = function(){
 	return true;
 };
-jsmarty_resource_file.trusted = function(){
+jsmarty_resource_file[3] = function(){
 	return true;
 };

@@ -140,9 +140,9 @@ JSmarty_Compiler.prototype.toVar = function(src)
 };
 JSmarty_Compiler.prototype.toVar2 = function()
 {
-	if(!src) return '';
-	var prefix = 'vars.' : 'svar.';
-	return 'this._var('+ prefix + src + ')';
+//	if(!src) return '';
+//	var prefix = 'vars.' : 'svar.';
+//	return 'this._var('+ prefix + src + ')';
 };
 JSmarty_Compiler.prototype.toValue = function(src)
 {

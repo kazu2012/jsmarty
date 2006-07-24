@@ -70,7 +70,7 @@ JSmarty.prototype =
 //	config_read_hidden  : false,
 //	config_fix_newlines : true
 
-	default_template_handler_func : function(){},
+	default_template_handler_func : null,
 
 	compiler_class : 'JSmarty_Compiler',
 	config_class   : 'Config_File',
@@ -210,12 +210,10 @@ JSmarty.prototype.clear_compiled_tpl = function(file){
 /* --------------------------------------------------------------------
  # Template Process
  -------------------------------------------------------------------- */
-JSmarty.prototype.fetch = function(name)
+JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 {
 	var params, compid, results, filter, filters;
 	var cache = this.caching, debug = this.debugging;
-
-	display = true;
 
 	JSAN.addRepository(this.plugins_dir);
 
@@ -241,7 +239,7 @@ JSmarty.prototype.fetch = function(name)
 		}
 	}
 
-	if(this._is_compiled(name, null) || this._compiler(name, null))
+	if(this._is_compiled(name) || this._compile_resource(name))
 	{
 		if(debug) info.compile_time = new Date().getTime() - dst;
 		results = JSmarty.templates_c[name].call(this);
@@ -260,8 +258,8 @@ JSmarty.prototype.fetch = function(name)
 
 	return results || '';
 };
-JSmarty.prototype.display = function(file){
-	this.fetch(file);
+JSmarty.prototype.display = function(name, ccid, cpid){
+	this.fetch(name, ccid, cpid, true);
 };
 JSmarty.prototype.template_exists = function(file){
 	return this._plugin('file', null, null, 'resource').source(file, null, this);
@@ -278,11 +276,8 @@ JSmarty.prototype.register_function = function(name, impl){
 JSmarty.prototype.register_modifier = function(name, impl){
 	this._plguins.modifier[name] = impl;
 };
-JSmarty.prototype.register_resource = function(name, impl)
-{
-	this._plugin.resource[name] = {
-		source:impl[0], timestamp:impl[1], secure:impl[2], trusted:impl[3]
-	};
+JSmarty.prototype.register_resource = function(name, impl){
+	this._plugin.resource[name] = impl;
 };
 JSmarty.prototype.register_compiler_function = function(name, impl){
 	this._plugins.compiler[name] = impl;
@@ -334,20 +329,16 @@ JSmarty.prototype.trigger_error = function(msg){
 /* ---------------------------------------------------------------------
  # Process
  -------------------------------------------------------------------- */
-JSmarty.prototype._compiler = function(name, path)
+JSmarty.prototype._compile_resource = function(name)
 {
-	var compiler;
+	var parms = { resource_name : name };
+	if(!this._fetch_resource_info(parms)) return false;
 
-	if(!(compiler = this._compiler))
-	{
-		if(!window[this.compiler_class])
-			JSAN.require(this.compiler_class);
-		compiler = this._compiler = new window[this.compiler_class];
-	}
-
-	JSmarty.templates_c[name] = function(){};
-
-	return true;
+	return false;
+};
+JSmarty.prototype._compile_source = function(name)
+{
+	
 };
 JSmarty.prototype._is_compiled = function(name)
 {
@@ -358,32 +349,78 @@ JSmarty.prototype._is_compiled = function(name)
 
 	return false;
 };
+JSmarty.prototype._fetch_resource_info(params)
+{
+	var flag = false;
+	if(params.get_source == void(0)) params.get_source = true;
+	if(params.quiet == void(0)) params.quiet = false;
+
+	if(this._parse_resource_name(params))
+	{
+		var sret, tret;
+		var type = params.resource_type;
+		var name = params.resource_name;
+		var call = this._plugin(name, null, null, 'resource');
+
+		if(params.get_source)
+			sret = call[0](name, params.source_content, this);
+		else
+			sret = true;
+		tret = call[1](name, params.resource_timestamp, this);
+		flag = sret && tret;
+	}
+
+	if(!flag)
+	{
+		if(!(call = this.default_template_handler_func))
+			this.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
+		else
+			flag = call(type, name, src, timestamp, this);
+	}
+
+	return flag;
+};
+JSmarty.prototype._parse_resource_name(parm)
+{
+	var name = parm.resource_name;
+	var part = name.indexOf(':');
+
+	if(part > 1)
+	{
+		parm.resource_type = name.split(0, part);
+		parm.resource_name = name.split(part + 1);
+	}
+	else
+		type = parm.resource_type = this.default_resource_type;
+
+	return true;
+};
 /* ---------------------------------------------------------------------
  # Wrapper
  -------------------------------------------------------------------- */
 /** _plugin **/
 JSmarty.prototype._plugin = function(name, parm, src, type)
 {
-	var plugin = this._plugins[type];
+	var call = this._plugins[type];
 
-	if(plugin[name] == void(0))
-		plugin[name] = JSAN.require('jsmarty_'+ type +'_'+ name);
-	if(!plugin[name]) return '';
+	if(call[name] == void(0))
+		call[name] = JSAN.require('jsmarty_'+ type +'_'+ name);
+	if(!call[name]) return '';
 
 	switch(type)
 	{
 		case 'resource':
-			return plugin[name];
+			return call[name];
 		case 'prefilter':
 		case 'postfilter':
 		case 'outputfilter':
-			return plugin[name](src, this);
+			return call[name](src, this);
 		case 'function':
-			return plugin[name](parm, this);
+			return call[name](parm, this);
 		case 'block':
-			return plugin[name](parm, src, this);
+			return call[name](parm, src, this);
 		case 'modifier':
-			return plugin[name].apply(null, parm);
+			return call[name].apply(null, parm);
 	}
 };
 
