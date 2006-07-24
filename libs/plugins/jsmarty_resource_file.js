@@ -24,7 +24,6 @@ jsmarty_resource_file[0] = function(name, rtpl, smarty)
 
 		return true;
 	}
-	catch(e){}
 
 	return false;
 };

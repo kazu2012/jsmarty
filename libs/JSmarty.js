@@ -21,7 +21,7 @@ JSmarty.exec = function(name)
 /**
  * Purpose: setup namespaces
  *
- * @param strings 
+ * @param strings
  * @return void
  */
 JSmarty.namespace = function()
@@ -331,12 +331,23 @@ JSmarty.prototype.trigger_error = function(msg){
  -------------------------------------------------------------------- */
 JSmarty.prototype._compile_resource = function(name)
 {
-	var parms = { resource_name : name };
-	if(!this._fetch_resource_info(parms)) return false;
+	var parm = { name:name };
+	if(!this._fetch_resource_info(parm)) return false;
+	if(src = this._compile_source(name, parm.src))
+	{
+		try
+		{
+			JSmarty.templates_c[name] = new Function(src);
+			JSmarty.templates_c[name].timestamp = parm.time;
+			return true;
+		}
+		catch(e){}
+		return false;
+	}
 
 	return false;
 };
-JSmarty.prototype._compile_source = function(name)
+JSmarty.prototype._compile_source = function(name, src)
 {
 	
 };
@@ -349,24 +360,22 @@ JSmarty.prototype._is_compiled = function(name)
 
 	return false;
 };
-JSmarty.prototype._fetch_resource_info(params)
+JSmarty.prototype._fetch_resource_info = function(parm)
 {
 	var flag = false;
-	if(params.get_source == void(0)) params.get_source = true;
-	if(params.quiet == void(0)) params.quiet = false;
+	if(parm.get == void(0)) parm.get = true;
+	if(parm.bye == void(0)) parm.bye = false;
 
-	if(this._parse_resource_name(params))
+	if(this._parse_resource_name(param))
 	{
-		var sret, tret;
-		var type = params.resource_type;
-		var name = params.resource_name;
+		var sret, tret, type = parm.type, name = parm.name;
 		var call = this._plugin(name, null, null, 'resource');
 
-		if(params.get_source)
-			sret = call[0](name, params.source_content, this);
+		if(parm.get)
+			sret = call[0](name, parm, this);
 		else
 			sret = true;
-		tret = call[1](name, params.resource_timestamp, this);
+		tret = call[1](name, parm, this);
 		flag = sret && tret;
 	}
 
@@ -375,23 +384,25 @@ JSmarty.prototype._fetch_resource_info(params)
 		if(!(call = this.default_template_handler_func))
 			this.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
 		else
-			flag = call(type, name, src, timestamp, this);
+			flag = call(type, name, parm, this);
 	}
 
 	return flag;
 };
-JSmarty.prototype._parse_resource_name(parm)
+JSmarty.prototype._parse_resource_name = function(param)
 {
-	var name = parm.resource_name;
+	var name = param.resource_name;
 	var part = name.indexOf(':');
 
 	if(part > 1)
 	{
-		parm.resource_type = name.split(0, part);
-		parm.resource_name = name.split(part + 1);
+		param.resource_type = name.split(0, part);
+		param.resource_name = name.split(part + 1);
 	}
 	else
-		type = parm.resource_type = this.default_resource_type;
+	{
+		param.resource_type = this.default_resource_type;
+	}
 
 	return true;
 };
