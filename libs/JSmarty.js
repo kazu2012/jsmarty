@@ -5,6 +5,20 @@ JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
 
 /**
+ * Purpose: Execute 'shared' function
+ *
+ * @param string name of function
+ * @return function
+ */
+JSmarty.exec = function(name)
+{
+	var func = 'jsmarty_shared_' + name;
+	if(window[func] == void(0))
+		window[func] = JSAN.require(func);
+	return window[func] || function(){};
+};
+
+/**
  * Purpose: setup namespaces
  *
  * @param strings 
@@ -31,7 +45,7 @@ JSmarty.prototype =
 //	debug_tpl : '',
 
 //	compile_check : true,
-//	force_compile : false,
+	force_compile : false,
 
 //	cache_dir : 'cache',
 //	cache_lifetime : 3600,
@@ -75,7 +89,9 @@ JSmarty.prototype =
 	_section : {},
 	_compiler : null,
 	_tpl_vars : {},
-	_smarty_vars : {}
+	_smarty_vars : {},
+	_version : JSmarty.version,
+	_smarty_debug_info : []
 };
 
 /* --------------------------------------------------------------------
@@ -199,6 +215,10 @@ JSmarty.prototype.fetch = function(name)
 	var params, compid, results, filter, filters;
 	var cache = this.caching, debug = this.debugging;
 
+	display = true;
+
+	JSAN.addRepository(this.plugins_dir);
+
 	if(debug)
 	{
 		var dst  = new Date().getTime();
@@ -221,29 +241,27 @@ JSmarty.prototype.fetch = function(name)
 		}
 	}
 
-	if(results = this._isCompiled(name, null))
+	if(this._is_compiled(name, null) || this._compiler(name, null))
 	{
-		results = this._compiler(name, null);
-		if(debug) info['compile_time'] = new Date().getTime() - dst;
+		if(debug) info.compile_time = new Date().getTime() - dst;
+		results = JSmarty.templates_c[name].call(this);
 	}
-
-	results = results.call(this);
 
 	if(display)
 	{
-		document.write(results);
+		if(results) document.write(results);
 		if(debug)
 		{
-			info['exec_time'] = new Date().getTime() - dst;
-			document.write(this._displayDebugConsol([], this)));
+			info.exec_time = new Date().getTime() - dst;
+			document.write(JSmarty.exec('display_debug_consol')([], this));
 		}
 		return;
 	}
 
-	return results;
+	return results || '';
 };
 JSmarty.prototype.display = function(file){
-	document.write(this.fetch(file));
+	this.fetch(file);
 };
 JSmarty.prototype.template_exists = function(file){
 	return this._plugin('file', null, null, 'resource').source(file, null, this);
@@ -316,7 +334,7 @@ JSmarty.prototype.trigger_error = function(msg){
 /* ---------------------------------------------------------------------
  # Process
  -------------------------------------------------------------------- */
-JSmarty.prototype._compile = function(src)
+JSmarty.prototype._compiler = function(name, path)
 {
 	var compiler;
 
@@ -327,23 +345,18 @@ JSmarty.prototype._compile = function(src)
 		compiler = this._compiler = new window[this.compiler_class];
 	}
 
-	compiler[this.compiler_class](this);
+	JSmarty.templates_c[name] = function(){};
 
-	src = this._filter(src, 'pre');
-	src = compiler.exec(src);
-	src = this._filter(src, 'post');
+	return true;
+};
+JSmarty.prototype._is_compiled = function(name)
+{
+	if(!this.force_compile && !JSmarty.templates_c[name])
+	{
+		if(this.compile_check) return true;
+	}
 
-	return new Function(src);
-};
-JSmarty.prototype._isCompiled = function(name)
-{
-	
-};
-JSmarty.prototype._read_file = function(name)
-{
-	var plugin;
-	if(!plugin = this._plugin('file',null,null,'resource')) return false;
-	return plugin.source(name);
+	return false;
 };
 /* ---------------------------------------------------------------------
  # Wrapper
