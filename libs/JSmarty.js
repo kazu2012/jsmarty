@@ -127,19 +127,19 @@ JSmarty.prototype.assign_by_ref = function(key, value){
 
 JSmarty.prototype.append = function(key, value, merge)
 {
-	var i, j, vars, mkey;
+	var i, k, vars, mkey;
 
 	if(typeof(key) == 'object')
 	{
 		for(i in key)
 		{
 			mkey = key[i];
-			if((vars = this._tpl_vars[i]) && vars instanceof Array)
+			if(!((vars = this._tpl_vars[i]) instanceof Array))
 				vars = this._tpl_vars[i] = [];
 			if(merge && mkey instanceof Object)
 			{
-				for(j in mkey)
-					vars[j] = mkey[j];
+				for(k in mkey)
+					vars[k] = mkey[k];
 				return;
 			}
 			vars.push(mkey);
@@ -148,7 +148,7 @@ JSmarty.prototype.append = function(key, value, merge)
 	else
 	{
 		if(!key && !value) return;
-		if((vars = this._tpl_vars[key]) && vars instanceof Array)
+		if(!((vars = this._tpl_vars[key]) instanceof Array))
 			vars = this._tpl_vars[key] = [];
 		if(merge && value instanceof Object)
 		{
@@ -164,7 +164,7 @@ JSmarty.prototype.append_by_ref = function(key, value, merge)
 {
 	if(!key && !value) return;
 
-	if((vars = this._tpl_vars[key]) && vars instanceof Array)
+	if(!((vars = this._tpl_vars[key]) instanceof Array))
 		vars = this._tpl_vars[key] = [];
 	if(merge && value instanceof Object)
 	{
@@ -214,7 +214,7 @@ JSmarty.prototype.clear_compiled_tpl = function(file){
  -------------------------------------------------------------------- */
 JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 {
-	var params, compid, results, filter, filters;
+	var params, filter, results, filters;
 	var cache = this.caching, debug = this.debugging;
 
 	JSAN.addRepository(this.plugins_dir);
@@ -244,18 +244,22 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 			   };
 	}
 
-	for(var types in this.autoload_filter)
-	{
-		filters = types[i];
-		for(filter in filters){
-			this.load_filter(filter, filters[filter]);
-		}
-	}
+//	for(var types in this.autoload_filter)
+//	{
+//		filters = types[i];
+//		for(filter in filters){
+//			this.load_filter(filter, filters[filter]);
+//		}
+//	}
 
 	if(this._is_compiled(name) || this._compile_resource(name))
 	{
 		if(debug) info.compile_time = new Date().getTime() - dst;
 		results = JSmarty.templates_c[name].call(this);
+
+		filters = this._plugins.outputfilter;
+		for(i in filters)
+			results = filters[i](results, this);
 	}
 
 	if(display)
@@ -313,7 +317,10 @@ JSmarty.prototype.unregister_compiler_function = function(name){
 /* ---------------------------------------------------------------------
  # Filter
  -------------------------------------------------------------------- */
-JSmarty.prototype.load_filter = function(type, name){
+JSmarty.prototype.load_filter = function(type, name)
+{
+	if(!this._plugins[type + 'filter'][name])
+		this._plugin(name, null, null, type + 'filter');
 };
 JSmarty.prototype.register_prefilter = function(name){
 	this._plugins.prefilter[name] = window[name];
@@ -443,12 +450,12 @@ JSmarty.prototype._plugin = function(name, parm, src, type)
 
 	switch(type)
 	{
-		case 'resource':
-			return call[name];
 		case 'prefilter':
 		case 'postfilter':
 		case 'outputfilter':
-			return call[name](src, this);
+			return true;
+		case 'resource':
+			return call[name];
 		case 'function':
 			return call[name](parm, this);
 		case 'block':
@@ -458,17 +465,9 @@ JSmarty.prototype._plugin = function(name, parm, src, type)
 	}
 };
 
-JSmarty.prototype._filter = function(src, type)
+JSmarty.prototype._modf = function(src, modf)
 {
-	var list;
-
-	if(list = this.autoload_filters[type])
-	{
-		for(var i in list)
-			src = this._plugin(list[i], src, type + 'filter');
-	}
-
-	return src;
+	
 };
 
 JSmarty.prototype._modifier = function(src, modf)
