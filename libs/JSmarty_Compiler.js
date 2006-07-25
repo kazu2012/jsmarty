@@ -12,20 +12,20 @@ JSmarty_Compiler.prototype =
 
 	left_delimiter : '{',
 	right_delimiter: '}',
-	_holded_blocks : {}
+	_folded_blocks : {}
 };
-JSmarty_Compiler.prototype.JSmarty_Compiler = function(smarty)
+JSmarty_Compiler.prototype.JSmarty_Compiler = function(src, smarty)
 {
 	var res, rex = this.RBLCK, list = this._folded_blocks;
 	var L = this.left_delimiter, R = this.right_delimiter;
 
-	rex.exec(L + '\\/(.+?)' + R,'g');
+	rex.compile(L + '\\/(.+?)' + R,'g');
 	while(res = rex.exec(src)) list[res[1]] = true;
 }
 JSmarty_Compiler.prototype.exec = function(src, option)
 {
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
-	var S = ' ', M = '|', list = this._holded_blocks;
+	var S = ' ', M = '|', list = this._folded_blocks;
 	var L = this.left_delimiter , R = this.right_delimiter;
 	var l = L.length, r = R.length, nested = false, txt = [];
 

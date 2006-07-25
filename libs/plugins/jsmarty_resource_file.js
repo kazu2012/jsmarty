@@ -1,6 +1,6 @@
 jsmarty_resource_file = [];
 jsmarty_resource_file.http = null;
-jsmarty_resource_file[0] = function(name, rtpl, smarty)
+jsmarty_resource_file[0] = function(name, param, smarty)
 {
 	var self = jsmarty_resource_file;
 	var http = (self.http) ? self.http : JSmarty.exec('xmlhttp')();
@@ -20,27 +20,16 @@ jsmarty_resource_file[0] = function(name, rtpl, smarty)
 		}
 
 		http.send('');
-		rtpl[name] = http.responseText;
+		param.src = http.responseText;
 
 		return true;
 	}
+	catch(e){};
 
 	return false;
 };
-jsmarty_resource_file[1] = function(name, time, smarty)
-{
-	if(JSmarty.template[name])
-	{
-		var self = jsmarty_resource_file;
-		var http = self.http;
-
-		time[name] = http.getResponseHeader('Last-Modified');
-		http.abort();
-
-		return true;
-	}
-
-	return false;
+jsmarty_resource_file[1] = function(name, param, smarty){
+	return true;
 };
 jsmarty_resource_file[2] = function(){
 	return true;

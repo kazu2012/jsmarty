@@ -41,8 +41,9 @@ JSmarty.prototype =
 	plugins_dir  : ['plugins'],
 	template_dir : 'templates',
 
+	debug_tpl : '',
 	debugging : false,
-//	debug_tpl : '',
+	debugging_ctrl : 'URL',
 
 //	compile_check : true,
 	force_compile : false,
@@ -90,6 +91,7 @@ JSmarty.prototype =
 	_compiler : null,
 	_tpl_vars : {},
 	_smarty_vars : {},
+	_smarty_debug_id : '#JSMARTYDEBUG',
 	_version : JSmarty.version,
 	_smarty_debug_info : []
 };
@@ -217,6 +219,17 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 
 	JSAN.addRepository(this.plugins_dir);
 
+	if(!debug && this.debugging_ctrl == 'URL')
+	{
+		var hash = location.hash;
+		var dbid = this._smarty_debug_id;
+
+		if(hash === dbid + '=on')
+			debug = true;
+		else if(hash === dbid + '=off')
+			debug = false;
+	}
+
 	if(debug)
 	{
 		var dst  = new Date().getTime();
@@ -247,7 +260,7 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 
 	if(display)
 	{
-		if(results) document.write(results);
+		if(results){ document.write(results); }
 		if(debug)
 		{
 			info.exec_time = new Date().getTime() - dst;
@@ -349,7 +362,17 @@ JSmarty.prototype._compile_resource = function(name)
 };
 JSmarty.prototype._compile_source = function(name, src)
 {
-	
+	var cpir, name = this.compiler_class;
+
+	if(!(cpir = this._compiler))
+	{
+		if(window[name] === void(0)) JSAN.use(name);
+		if(window[name] === void(0)) return false;
+		cpir = this._compiler = new window[name];
+	}
+
+	cpir[name](src, this);
+	return cpir.exec(src);
 };
 JSmarty.prototype._is_compiled = function(name)
 {
@@ -366,10 +389,10 @@ JSmarty.prototype._fetch_resource_info = function(parm)
 	if(parm.get == void(0)) parm.get = true;
 	if(parm.bye == void(0)) parm.bye = false;
 
-	if(this._parse_resource_name(param))
+	if(this._parse_resource_name(parm))
 	{
 		var sret, tret, type = parm.type, name = parm.name;
-		var call = this._plugin(name, null, null, 'resource');
+		var call = this._plugin(type, null, null, 'resource');
 
 		if(parm.get)
 			sret = call[0](name, parm, this);
@@ -391,17 +414,17 @@ JSmarty.prototype._fetch_resource_info = function(parm)
 };
 JSmarty.prototype._parse_resource_name = function(param)
 {
-	var name = param.resource_name;
+	var name = param.name;
 	var part = name.indexOf(':');
 
 	if(part > 1)
 	{
-		param.resource_type = name.split(0, part);
-		param.resource_name = name.split(part + 1);
+		param.type = name.split(0, part);
+		param.name = name.split(part + 1);
 	}
 	else
 	{
-		param.resource_type = this.default_resource_type;
+		param.type = this.default_resource_type;
 	}
 
 	return true;
