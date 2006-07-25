@@ -7,12 +7,14 @@
 	<title>Foreach Examples</title>
 	<link rel='stylesheet' type='text/css' href='default.css' />
 	<script type='text/javascript' charset='UTF-8' src='JSAN.js'></script>
-	<script type='text/javascript' charset='UTF-8' src='shared.js'></script>
+	<script type='text/javascript' charset='UTF-8' src='../libs/JSmarty.js'></script>
 	<script type='text/javascript'>
+	var smarty = new JSmarty();
 	var array  = new Array;
 	for(var i=0;i<1000;i++) array[i] = i;
 	smarty.assign_by_ref('hoge', array);
 	smarty.debugging = true;
+	smarty.plugins_dir = ['../libs/plugins','../libs/'];
 	</script>
 </head>
 <body>
