@@ -63,7 +63,7 @@ JSmarty.prototype =
 	default_modifiers : [],
 	default_resource_type : 'file',
 
-	cache_handler_func : function(){},
+	cache_handler_func : null,
 	autoload_filters   : {},
 
 //	config_overwrite    : true,
@@ -293,8 +293,12 @@ JSmarty.prototype.register_function = function(name, impl){
 JSmarty.prototype.register_modifier = function(name, impl){
 	this._plguins.modifier[name] = impl;
 };
-JSmarty.prototype.register_resource = function(name, impl){
-	this._plugin.resource[name] = impl;
+JSmarty.prototype.register_resource = function(type, impl)
+{
+	if(impl instanceof Array && impl.length == 4)
+		this._plugin.resource[type] = impl;
+	else
+		this.trigger_error("malformed function-list for 'type' in register_resource");
 };
 JSmarty.prototype.register_compiler_function = function(name, impl){
 	this._plugins.compiler[name] = impl;
@@ -373,8 +377,8 @@ JSmarty.prototype._compile_source = function(name, src)
 
 	if(!(cpir = this._compiler))
 	{
-		if(window[name] === void(0)) JSAN.use(name);
-		if(window[name] === void(0)) return false;
+		if(window[name] == void(0)) JSAN.use(name);
+		if(window[name] == void(0)) return false;
 		cpir = this._compiler = new window[name];
 	}
 
