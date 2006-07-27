@@ -1,20 +1,30 @@
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
 jsmarty_block_foreach = function(params, content, smarty)
 {
-	var key, from, item, name;
-	var loop = false, html = [], total = 0;
+	if(!params.from) return '';
 
-	if(!(from = params.from)) return '';
-
-	key = params.key  || false;
-	item= params.item || false;
-	name= params.name || false;
+	var i, html = [];
+	var from = params.from;
+	var key  = params.key  || false;
+	var item = params.item || false;
+	var name = params.name || false;
 
 	if(name)
 	{
+		var total = 0;
+
+		for(i in from)
+		{
+		}
 		return html.join('');
 	}
 
-	for(var i in from)
+	for(i in from)
 	{
 		if(key) smarty.assign(key, i);
 		smarty.assign(item, from[i]);

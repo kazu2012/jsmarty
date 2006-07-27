@@ -1,11 +1,18 @@
-jsmarty_resource_file = [];
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
+jsmarty_resource_file = new Array(4);
 jsmarty_resource_file.http = null;
 jsmarty_resource_file[0] = function(name, param, smarty)
 {
 	var self = jsmarty_resource_file;
 	var http = (self.http) ? self.http : JSmarty.exec('xmlhttp')();
 
-	if(!self.http) self.http = http;
+	if(!self.http)
+		self.http = http;
 
 	try
 	{
@@ -21,6 +28,8 @@ jsmarty_resource_file[0] = function(name, param, smarty)
 
 		http.send('');
 		param.src = http.responseText;
+		param.time= http.getResponseHeader('Last-Modified');
+		http.abort();
 
 		return true;
 	}
@@ -28,7 +37,9 @@ jsmarty_resource_file[0] = function(name, param, smarty)
 
 	return false;
 };
-jsmarty_resource_file[1] = function(name, param, smarty){
+jsmarty_resource_file[1] = function(name, param, smarty)
+{
+	param.time = new Date(param.time).getTime();
 	return true;
 };
 jsmarty_resource_file[2] = function(){

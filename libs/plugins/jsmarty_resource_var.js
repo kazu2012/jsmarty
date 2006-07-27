@@ -4,19 +4,19 @@
  * @subpackage plugins
  */
 
-jsmarty_resource_var = {};
-jsmarty_resource_var.source = function(name, rtpl, smarty)
+jsmarty_resource_var = [];
+jsmarty_resource_var[0] = function(name, param, smarty)
 {
-	rtpl[name] = name;
+	param.src = name;
 	return true;
 };
-jsmarty_resource_var.timestamp = function(name, time, smarty)
+jsmarty_resource_var[1] = function(name, param, smarty)
 {
-	time[name] = new Date().getTime();
+	param.time = new Date().getTime();
 	return true;
 };
-jsmarty_resource_secure = function(){
+jsmarty_resource_var[2] = function(){
 	return true;
 };
-jsmarty_resource_trusted = function(){
+jsmarty_resource_var[3] = function(){
 };

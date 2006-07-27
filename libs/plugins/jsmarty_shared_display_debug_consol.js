@@ -1,11 +1,32 @@
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
 jsmarty_shared_display_debug_consol = function(params, smarty)
 {
-	var info = smarty._smarty_debug_info[0];
+	var compid, ldelim, rdelim, result;
 
-	alert
-	(
-		"compile_time\t:"+ info['compile_time']+"\nexec_time\t:"+ info['exec_time']
-	);
+	if(!smarty.debug_tpl)
+		smarty.debug_tpl = 'debug.tpl';
+
+	ldelim = smarty.left_delimiter;
+	rdelim = smarty.right_delimiter;
+	compid = smarty._compile_id;
+
+	smarty._compile_id = null;
+	smarty.left_delimiter = '{';
+	smarty.right_delimiter = '}';
+
+	smarty._compile_id = compid;
+	smarty.left_delimiter = ldelim;
+	smarty.right_delimiter = rdelim;
+
+	if(smarty._compile_source(smarty.debug_tpl))
+		result = JSmarty.templates_c[smarty.debug_tpl].call(smarty);
+	else
+		result = '';
 
 	return '';
 };
