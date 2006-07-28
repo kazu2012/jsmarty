@@ -1,11 +1,17 @@
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
 jsmarty_shared_xmlhttp = function()
 {
-	var msxmls = [
-		'Msxml2.XMLHTTP.5.0',
-		'Msxml2.XMLHTTP.4.0',
-		'Msxml2.XMLHTTP.3.0',
+	var xmls = [
+		'Microsoft.XMLHTTP',
 		'Msxml2.XMLHTTP',
-		'Microsoft.XMLHTTP'
+		'Msxml2.XMLHTTP.3.0',
+		'Msxml2.XMLHTTP.4.0',
+		'Msxml2.XMLHTTP.5.0'
 	];
 
 	try{
@@ -13,10 +19,10 @@ jsmarty_shared_xmlhttp = function()
 	}
 	catch(e)
 	{
-		for(var i=0,fin=msxmls.length;i<fin;i++)
+		for(var i=xmls.length-1;i>=0;i--)
 		{
 			try{
-				return new ActiveXObject(msxmls[i]);
+				return new ActiveXObject(xmls[i]);
 			}
 			catch(e){}
 		}

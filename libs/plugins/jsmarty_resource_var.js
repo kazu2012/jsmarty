@@ -4,7 +4,8 @@
  * @subpackage plugins
  */
 
-jsmarty_resource_var = [];
+jsmarty_resource_var = new Array(4);
+
 jsmarty_resource_var[0] = function(name, param, smarty)
 {
 	param.src = name;

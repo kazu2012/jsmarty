@@ -36,7 +36,7 @@ JSmarty.prototype =
 /**#@+
  * JSmarty Configuration Section
  */
-	config_dir   : 'configs',
+//	config_dir   : 'configs',
 	compile_dir  : 'templates_c',
 	plugins_dir  : ['plugins'],
 	template_dir : 'templates',
@@ -279,7 +279,7 @@ JSmarty.prototype.display = function(name, ccid, cpid){
 	this.fetch(name, ccid, cpid, true);
 };
 JSmarty.prototype.template_exists = function(file){
-	return this._plugin('file', null, null, 'resource').source(file, null, this);
+	return this._call('file', null, null, 'resource').source(file, null, this);
 };
 /* --------------------------------------------------------------------
  # Plugins
@@ -296,7 +296,7 @@ JSmarty.prototype.register_modifier = function(name, impl){
 JSmarty.prototype.register_resource = function(type, impl)
 {
 	if(impl instanceof Array && impl.length == 4)
-		this._plugin.resource[type] = impl;
+		this._plugins.resource[type] = impl;
 	else
 		this.trigger_error("malformed function-list for 'type' in register_resource");
 };
@@ -324,7 +324,7 @@ JSmarty.prototype.unregister_compiler_function = function(name){
 JSmarty.prototype.load_filter = function(type, name)
 {
 	if(!this._plugins[type + 'filter'][name])
-		this._plugin(name, null, null, type + 'filter');
+		this._call(name, null, null, type + 'filter');
 };
 JSmarty.prototype.register_prefilter = function(name){
 	this._plugins.prefilter[name] = window[name];
@@ -355,14 +355,14 @@ JSmarty.prototype.trigger_error = function(msg){
  -------------------------------------------------------------------- */
 JSmarty.prototype._compile_resource = function(name)
 {
-	var parm = { name:name };
-	if(!this._fetch_resource_info(parm)) return false;
-	if(src = this._compile_source(name, parm.src))
+	var src, data = { name:name };
+	if(!this._fetch_resource_info(data)) return false;
+	if(src = this._compile_source(name, data.src))
 	{
 		try
 		{
 			JSmarty.templates_c[name] = new Function(src);
-			JSmarty.templates_c[name].timestamp = parm.time;
+			JSmarty.templates_c[name].timestamp = data.time;
 			return true;
 		}
 		catch(e){}
@@ -394,22 +394,22 @@ JSmarty.prototype._is_compiled = function(name)
 
 	return false;
 };
-JSmarty.prototype._fetch_resource_info = function(parm)
+JSmarty.prototype._fetch_resource_info = function(data)
 {
 	var flag = false;
-	if(parm.get == void(0)) parm.get = true;
-	if(parm.bye == void(0)) parm.bye = false;
+	if(data.get == void(0)) data.get = true;
+	if(data.bye == void(0)) data.bye = false;
 
-	if(this._parse_resource_name(parm))
+	if(this._parse_resource_name(data))
 	{
-		var sret, tret, type = parm.type, name = parm.name;
-		var call = this._plugin(type, null, null, 'resource');
+		var sret, tret, type = data.type, name = data.name;
+		var call = this_call(type, null, null, 'resource');
 
-		if(parm.get)
-			sret = call[0](name, parm, this);
+		if(data.get)
+			sret = call[0](name, data, this);
 		else
 			sret = true;
-		tret = call[1](name, parm, this);
+		tret = call[1](name, data, this);
 		flag = sret && tret;
 	}
 
@@ -418,24 +418,24 @@ JSmarty.prototype._fetch_resource_info = function(parm)
 		if(!(call = this.default_template_handler_func))
 			this.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
 		else
-			flag = call(type, name, parm, this);
+			flag = call(type, name, data, this);
 	}
 
 	return flag;
 };
-JSmarty.prototype._parse_resource_name = function(param)
+JSmarty.prototype._parse_resource_name = function(data)
 {
-	var name = param.name;
+	var name = data.name;
 	var part = name.indexOf(':');
 
 	if(part > 1)
 	{
-		param.type = name.split(0, part);
-		param.name = name.split(part + 1);
+		data.type = name.split(0, part);
+		data.name = name.split(part + 1);
 	}
 	else
 	{
-		param.type = this.default_resource_type;
+		data.type = this.default_resource_type;
 	}
 
 	return true;
@@ -443,8 +443,13 @@ JSmarty.prototype._parse_resource_name = function(param)
 /* ---------------------------------------------------------------------
  # Wrapper
  -------------------------------------------------------------------- */
-/** _plugin **/
-JSmarty.prototype._plugin = function(name, parm, src, type)
+
+JSmarty.prototype._svar = function()
+{
+	
+};
+
+JSmarty.prototype._call = function(name, parm, src, type)
 {
 	var call = this._plugins[type];
 
@@ -471,25 +476,22 @@ JSmarty.prototype._plugin = function(name, parm, src, type)
 
 JSmarty.prototype._modf = function(src, modf)
 {
-	
-};
-
-JSmarty.prototype._modifier = function(src, modf)
-{
-	var name, parm;
+	var name, args;
 
 	modf = (modf) ? [] : modf.split('|');
 
 	if(this.default_modifiers)
 		modf = modf.concat(this.default_modifiers);
 
+	if(modf.length == 0) return '';
+
 	for(var i=modf.length-1;i>=0;i--)
 	{
-		parm = modf[i].split(':');
-		name = parm.shift();
+		args = modf[i].split(':');
+		name = args.shift();
 		parm.unshift(src);
 
-		src = this._plugin(name, parm, null, 'modifier');
+		src = this._call(name, args, null, 'modifier');
 	}
 
 	return src;

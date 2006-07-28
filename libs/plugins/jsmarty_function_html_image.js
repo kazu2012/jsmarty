@@ -1,32 +1,26 @@
-jsmarty_function_html_image = function($params, $smarty)
+jsmarty_function_html_image = function(params, smarty)
 {
-	if(typeof $params['file'] == 'undefined') return '';
-
-	var $img, $html;
-	var $alt, $file, $href, $width, $height, $border, $basedir;
-
-	$alt    = $params['alt']    || '';
-	$file   = $params['file'];
-	$href   = $params['href']   || '';
-	$width  = $params['width']  || 0;
-	$height = $params['height'] || 0;
-	$border = $params['border'] || 0;
-	$basedir= $params['basedir']|| '.';
-
-	if(!$width || !$height)
+	if(params.file)
 	{
-		$img = new Image();
-		$img.src = $file;
-		$width = $img.width;
-		$height= $img.height;
+		smarty.trigger_error("html_image: missing 'file' parameter");
+		return '';
 	}
 
-	$html =
-		'<img src="'+ $file +'" width="'+ $width +'" height="'+
-		$height +'"'+' border="'+ $border +'" alt="'+ $alt +'" />';
+	var img, html, attr = [];
 
-	if($href)
-		$html = '<a href="'+ $href +'">'+ $html + '</a>';
+	foreach(var i in params)
+	{
+		case 'dpi':
+		case 'file':
+		case 'width':
+		case 'height':
+		case 'basedir':
+		case 'path_prefix':
+			break;
+		default:
+			attr.push(i +'="'+ params[i] +'"');
+			break;
+	}
 
-	return $html;
+	return html;
 }
