@@ -403,7 +403,7 @@ JSmarty.prototype._fetch_resource_info = function(data)
 	if(this._parse_resource_name(data))
 	{
 		var sret, tret, type = data.type, name = data.name;
-		var call = this_call(type, null, null, 'resource');
+		var call = this._call(type, null, null, 'resource');
 
 		if(data.get)
 			sret = call[0](name, data, this);

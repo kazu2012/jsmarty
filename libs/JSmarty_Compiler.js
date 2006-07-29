@@ -1,4 +1,9 @@
+/**
+ * Template compiling class
+ * @package JSmarty
+ */
 JSmarty_Compiler = function(){};
+
 JSmarty_Compiler.prototype =
 {
 	SOTPT : 'output += ',
@@ -12,16 +17,28 @@ JSmarty_Compiler.prototype =
 
 	left_delimiter : '{',
 	right_delimiter: '}',
-	_folded_blocks : {}
+
+	_folded_blocks : {},
+	_is_defaultmod : null
 };
 JSmarty_Compiler.prototype.JSmarty_Compiler = function(src, smarty)
 {
 	var res, rex = this.RBLCK, list = this._folded_blocks;
-	var L = this.left_delimiter, R = this.right_delimiter;
+
+	var L = this.left_delimiter  = smarty.left_delimiter;
+	var R = this.right_delimiter = smarty.right_delimiter;
 
 	rex.compile(L + '\\/(.+?)' + R,'g');
 	while(res = rex.exec(src)) list[res[1]] = true;
 }
+
+/**
+ * compile a resource
+ * 
+ * @param  string
+ * @param  string
+ * @return string
+ */
 JSmarty_Compiler.prototype.exec = function(src, option)
 {
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
@@ -47,7 +64,6 @@ JSmarty_Compiler.prototype.exec = function(src, option)
 				default:
 					break;
 			}
-
 			continue;
 		}
 
@@ -90,20 +106,16 @@ JSmarty_Compiler.prototype.setHeader = function()
 JSmarty_Compiler.prototype.setFooter = function()
 {
 };
-JSmarty_Compiler.prototype.toParm = function(src)
-{
-	var res, obj = [], rex = this.RPARM;
 
-	while(res = rex.exec(src))
-	{
-		if('$' == res[3].charAt(0))
-			obj.push(res[1] +':'+ this.toVar(res[3].slice(1)));
-		else
-			obj.push('"'+ res[1] +'"' +':'+ res[2] + res[3] + res[2]);
-	}
+/**
+ * toTag
+ *
+ * @param  string
+ * @param  string
+ * @param  string
+ * @return string
+ */
 
-	return '{'+ obj.join(',') +'}';
-};
 JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 {
 	switch(name)
@@ -133,34 +145,85 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 			return '"";}\nelse if ('+ this.toValue(parm) +'){ output += ""';
 	}
 };
-JSmarty_Compiler.prototype.toVar = function(src)
-{
-	var prefix = 'vars.';
-	return prefix + src;
-};
-JSmarty_Compiler.prototype.toVar2 = function()
-{
-//	if(!src) return '';
-//	var prefix = 'vars.' : 'svar.';
-//	return 'this._var('+ prefix + src + ')';
-};
-JSmarty_Compiler.prototype.toValue = function(src)
-{
-	src = src.replace(this.RVARS, 'vars.');
-	return src;
-};
-JSmarty_Compiler.prototype.toPlugin = function(name, parm, src)
-{
-	var P = ', ', type = (src) ? 'blck' : 'func';
-	return 'this._plugin(' + name + P + parm + P + src + P + type + ')';
-};
-JSmarty_Compiler.prototype.toString = function(src)
-{
-	if(!src) return '';
-	return '"' + src + '"';
-};
+
+/**
+ * 
+ *
+ * @param  string
+ * @return string|null
+ */
 JSmarty_Compiler.prototype.toFunction = function(src)
 {
 	if(!src) return null;
 	return 'function(){' + this.exec(src) + '}';
+};
+
+/**
+ * 
+ *
+ * @param  string
+ * @return string
+ */
+ JSmarty_Compiler.prototype.toString = function(src)
+{
+	if(!src) return '';
+	return '"' + src + '"';
+};
+
+/**
+ * 
+ *
+ * @param  string
+ * @return srting
+ */
+JSmarty_Compiler.prototype.toPlugin = function(name, parm, src)
+{
+	var P = ', ', type = (src) ? 'blck' : 'func';
+	return 'this._call(' + name + P + parm + P + src + P + type + ')';
+};
+
+/**
+ * 
+ *
+ * @param  string
+ * @return string
+ */
+JSmarty_Compiler.prototype.toValue = function(src)
+{
+	src = src.replace(this.RVARS, 'vars.');
+	return src;
+}
+
+/**
+ * 
+ *
+ * @param  string
+ * @return string
+ */
+JSmarty_Compiler.prototype.toVar = function(src, modf)
+{
+//	if(modf || this._is_defaultmod)
+//		return 'this._modf(vars.'+ src +','+ modf +')';
+	return 'vars.'+ src;
+};
+
+/**
+ * 
+ *
+ * @param  string
+ * @return string
+ */
+JSmarty_Compiler.prototype.toParm = function(src)
+{
+	var res, obj = [], rex = this.RPARM;
+
+	while(res = rex.exec(src))
+	{
+		if('$' == res[3].charAt(0))
+			obj.push(res[1] +':'+ this.toVar(res[3].slice(1)));
+		else
+			obj.push('"'+ res[1] +'"' +':'+ res[2] + res[3] + res[2]);
+	}
+
+	return '{'+ obj.join(',') +'}';
 };
