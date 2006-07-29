@@ -42,8 +42,8 @@ JSmarty.prototype =
 	template_dir : 'templates',
 
 	debug_tpl : '',
-	debugging : false,
-	debugging_ctrl : 'URL',
+	debugging : true,
+	debugging_ctrl : 'NONE',
 
 //	compile_check : true,
 	force_compile : false,
@@ -224,9 +224,9 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 		var hash = location.hash;
 		var dbid = this._smarty_debug_id;
 
-		if(hash === dbid + '=on')
+		if(hash == dbid + '=on')
 			debug = true;
-		else if(hash === dbid + '=off')
+		else if(hash == dbid + '=off')
 			debug = false;
 	}
 
@@ -478,18 +478,17 @@ JSmarty.prototype._modf = function(src, modf)
 {
 	var name, args;
 
-	modf = (modf) ? [] : modf.split('|');
+	modf = (modf) ? modf.split('|') : [];
 
 	if(this.default_modifiers)
 		modf = modf.concat(this.default_modifiers);
-
-	if(modf.length == 0) return '';
+	if(modf.length == 0) return src;
 
 	for(var i=modf.length-1;i>=0;i--)
 	{
 		args = modf[i].split(':');
 		name = args.shift();
-		parm.unshift(src);
+		args.unshift(src);
 
 		src = this._call(name, args, null, 'modifier');
 	}

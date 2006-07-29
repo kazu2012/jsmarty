@@ -19,14 +19,21 @@ jsmarty_shared_display_debug_consol = function(params, smarty)
 	smarty.left_delimiter = '{';
 	smarty.right_delimiter = '}';
 
-	smarty._compile_id = compid;
-	smarty.left_delimiter = ldelim;
-	smarty.right_delimiter = rdelim;
-
+/*
 	if(smarty._compile_source(smarty.debug_tpl))
 		result = JSmarty.templates_c[smarty.debug_tpl].call(smarty);
 	else
 		result = '';
+*/
+	alert
+	(
+		'COMPILETIME : '+ smarty._smarty_debug_info[0]['compile_time'] + '\n' +
+		'EXECUTETIME : '+ smarty._smarty_debug_info[0]['exec_time']
+	);
+
+	smarty._compile_id = compid;
+	smarty.left_delimiter = ldelim;
+	smarty.right_delimiter = rdelim;
 
 	return '';
 };

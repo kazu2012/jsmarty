@@ -39,7 +39,7 @@ JSmarty_Compiler.prototype.JSmarty_Compiler = function(src, smarty)
  * @param  string
  * @return string
  */
-JSmarty_Compiler.prototype.exec = function(src, option)
+JSmarty_Compiler.prototype.exec = function(src)
 {
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
 	var S = ' ', M = '|', list = this._folded_blocks;
@@ -59,7 +59,8 @@ JSmarty_Compiler.prototype.exec = function(src, option)
 			{
 				case isp+1:
 					txt.push(this.toTag(name, parm, src.slice(ibp, isp-l)));
-					nested = false;
+					if(modf && !(nested = false))
+						txt[txt.length-1] = this.toModf(txt[txt.length-1], this.toString(src.slice(imp+1, ibp-r)));
 					break;
 				default:
 					break;
@@ -78,9 +79,7 @@ JSmarty_Compiler.prototype.exec = function(src, option)
 		switch(src.charAt(isp))
 		{
 			case '*': break;
-			case '#':
-			//	txt.push(this.toVar(src.slice()));
-				break;
+			case '#': break;
 			case '$':
 				txt.push(this.toVar(src.slice(isp + 1, iep)));
 				break;
@@ -91,6 +90,7 @@ JSmarty_Compiler.prototype.exec = function(src, option)
 				else txt.push(this.toTag(name, parm, null));
 				break;
 		}
+
 	}
 
 	if(i != src.length)
@@ -100,13 +100,15 @@ JSmarty_Compiler.prototype.exec = function(src, option)
 
 	return txt.join(" + ").replace(/"" \+|(\+ "")/g,'');
 };
-JSmarty_Compiler.prototype.setHeader = function()
-{
-};
-JSmarty_Compiler.prototype.setFooter = function()
-{
-};
 
+JSmarty_Compiler.prototype.setHeader = function(src){
+};
+JSmarty_Compiler.prototype.setFooter = function(src){
+};
+JSmarty_Compiler.prototype.clearHeader = function(){
+}
+JSmarty_Compiler.prototype.clearFooter = function(){
+}
 /**
  * toTag
  *
@@ -195,20 +197,28 @@ JSmarty_Compiler.prototype.toValue = function(src)
 }
 
 /**
- * 
+ * String to JSmarty variable
  *
  * @param  string
  * @return string
  */
-JSmarty_Compiler.prototype.toVar = function(src, modf)
-{
-//	if(modf || this._is_defaultmod)
-//		return 'this._modf(vars.'+ src +','+ modf +')';
+JSmarty_Compiler.prototype.toVar = function(src){
 	return 'vars.'+ src;
 };
 
 /**
- * 
+ * String to modifier
+ *
+ * @param  string
+ * @param  string
+ * @return string
+ */
+JSmarty_Compiler.prototype.toModf = function(src, modf){
+	return 'this._modf('+ src +','+ modf +')';
+};
+
+/**
+ * String to Parameter
  *
  * @param  string
  * @return string
