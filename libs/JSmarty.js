@@ -5,7 +5,7 @@ JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
 
 /**
- * Purpose: Execute 'shared' function
+ * Execute 'shared' function
  *
  * @param string name of function
  * @return function
@@ -19,10 +19,9 @@ JSmarty.exec = function(name)
 };
 
 /**
- * Purpose: setup namespaces
+ * Setup namespaces
  *
  * @param strings
- * @return void
  */
 JSmarty.namespace = function()
 {
@@ -31,6 +30,9 @@ JSmarty.namespace = function()
 	}
 };
 
+/**
+ * @package JSmarty
+ */
 JSmarty.prototype = 
 {
 /**#@+
@@ -129,7 +131,7 @@ JSmarty.prototype.append = function(key, value, merge)
 {
 	var i, k, vars, mkey;
 
-	if(typeof(key) == 'object')
+	if(key instanceof Object)
 	{
 		for(i in key)
 		{
@@ -298,7 +300,7 @@ JSmarty.prototype.register_resource = function(type, impl)
 	if(impl instanceof Array && impl.length == 4)
 		this._plugins.resource[type] = impl;
 	else
-		this.trigger_error("malformed function-list for 'type' in register_resource");
+		this.trigger_error("malformed function-list for '"+ type +"' in register_resource");
 };
 JSmarty.prototype.register_compiler_function = function(name, impl){
 	this._plugins.compiler[name] = impl;

@@ -39,15 +39,22 @@ JSmarty_Compiler.prototype.JSmarty_Compiler = function(src, smarty)
  * @param  string
  * @return string
  */
-JSmarty_Compiler.prototype.exec = function(src)
+JSmarty_Compiler.prototype.exec = function(src, mode)
 {
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
 	var S = ' ', M = '|', list = this._folded_blocks;
 	var L = this.left_delimiter , R = this.right_delimiter;
 	var l = L.length, r = R.length, nested = false, txt = [];
 
-	txt.push(this.SHEAD);
-	src = src.replace(this.RCRLF,'\\n');
+	switch(mode)
+	{
+		case 'if':
+		case 'function':
+			break;
+		default:
+			src = src.replace(this.RCRLF,'\\n');
+			break;
+	}
 
 	for(var i=0,fin=src.lastIndexOf(R);i<fin;i=iep+r)
 	{
@@ -96,19 +103,16 @@ JSmarty_Compiler.prototype.exec = function(src)
 	if(i != src.length)
 		txt.push(this.toString(src.slice(i)));
 
-	txt.push(this.SFOOT);
-
-	return txt.join(" + ").replace(/"" \+|(\+ "")/g,'');
+	switch(mode)
+	{
+		case 'if':
+			return txt.join(" + ");
+		default:
+			txt.unshift(this.SHEAD);
+			txt.push(this.SFOOT);
+			return txt.join(" + ").replace(/"" \+|(\+ "")/g, '');
+	}
 };
-
-JSmarty_Compiler.prototype.setHeader = function(src){
-};
-JSmarty_Compiler.prototype.setFooter = function(src){
-};
-JSmarty_Compiler.prototype.clearHeader = function(){
-}
-JSmarty_Compiler.prototype.clearFooter = function(){
-}
 /**
  * toTag
  *
@@ -128,13 +132,8 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 			src  = this.toFunction(src);
 			return this.toPlugin(name, parm, src);
 		case 'if':
-			var head, foot;
-			head = this.SHEAD, foot = this.SFOOT;
 			parm = this.toValue(parm);
-			this.SHEAD = '', this.SFOOT = '';
-			src = '"";\nif('+ parm +'){ output += ""'+ this.exec(src) +'"";}\noutput += ""';
-			this.SHEAD = head, this.SFOOT = foot;
-			return src;
+			return '"";\nif('+ parm +'){ output += '+ this.exec(src, 'if') +';}\noutput += ""';
 		case 'literal':
 			return this.toString(src);
 		case 'else':
@@ -149,7 +148,7 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 };
 
 /**
- * 
+ * String to function
  *
  * @param  string
  * @return string|null
@@ -161,7 +160,7 @@ JSmarty_Compiler.prototype.toFunction = function(src)
 };
 
 /**
- * 
+ * String to quoted string
  *
  * @param  string
  * @return string
@@ -173,7 +172,7 @@ JSmarty_Compiler.prototype.toFunction = function(src)
 };
 
 /**
- * 
+ * String to plugin
  *
  * @param  string
  * @return srting
@@ -185,7 +184,7 @@ JSmarty_Compiler.prototype.toPlugin = function(name, parm, src)
 };
 
 /**
- * 
+ * String to value of expression
  *
  * @param  string
  * @return string
@@ -218,7 +217,7 @@ JSmarty_Compiler.prototype.toModf = function(src, modf){
 };
 
 /**
- * String to Parameter
+ * String to parameter
  *
  * @param  string
  * @return string
