@@ -2,7 +2,7 @@
  * Template compiling class
  * @package JSmarty
  */
-JSmarty_Compiler = function(){};
+function JSmarty_Compiler(){};
 
 JSmarty_Compiler.prototype =
 {
@@ -148,6 +148,23 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 };
 
 /**
+ * String to JSmarty Vars
+ *
+ * @param  string
+ * @return string|null
+ */
+JSmarty_Compiler.prototype.toJSmartyVars = function(src)
+{
+	switch(src)
+	{
+		case 'version':
+			return this.toString(this._version);
+		default:
+			return this.toString('');
+	};
+};
+
+/**
  * String to function
  *
  * @param  string
@@ -167,7 +184,7 @@ JSmarty_Compiler.prototype.toFunction = function(src)
  */
  JSmarty_Compiler.prototype.toString = function(src)
 {
-	if(!src) return '';
+	if(!src) return '""';
 	return '"' + src + '"';
 };
 

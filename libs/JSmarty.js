@@ -66,9 +66,7 @@ JSmarty.prototype =
 	_section : {},
 	_compiler : null,
 	_tpl_vars : {},
-	_smarty_vars : {},
 	_smarty_debug_id : '#JSMARTY_DEBUG',
-	_version : JSmarty.version,
 	_smarty_debug_info : []
 };
 
@@ -511,13 +509,11 @@ JSmarty.load = function(path)
 	var http = JSmarty.XMLHTTP;
 };
 
-JSmarty.Connect = function(){};
-JSmarty.Connect.prototype =
+JSmarty.Connect =
 {
-	http : JSmarty.XMLHTTP,
 	getText : function()
 	{
-		
+		var http = JSmarty.XMLHTTP;
 	}
 };
 
