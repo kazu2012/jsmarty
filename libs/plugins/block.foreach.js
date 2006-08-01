@@ -4,7 +4,7 @@
  * @subpackage plugins
  */
 
-jsmarty_block_foreach = function(params, content, smarty)
+function jsmarty_block_foreach(params, content, smarty)
 {
 	if(!params.from) return '';
 

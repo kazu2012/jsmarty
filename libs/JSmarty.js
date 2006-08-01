@@ -419,17 +419,12 @@ JSmarty.prototype._parse_resource_name = function(data)
  # Wrapper
  -------------------------------------------------------------------- */
 
-JSmarty.prototype._svar = function()
-{
-	
-};
-
 JSmarty.prototype._call = function(name, parm, src, type)
 {
 	var call = this._plugins[type];
 
 	if(call[name] == void(0))
-		call[name] = JSAN.require('jsmarty_'+ type +'_'+ name);
+		call[name] = JSmarty.load(type +'.'+ name, this.plugins_dir);
 	if(!call[name]) return '';
 
 	switch(type)
@@ -500,20 +495,37 @@ JSmarty.namespace = function()
 /**
  * Load Plugins
  * 
- * @param  
- * @param  
- * @return 
+ * @param  name
+ * @param  repos
+ * @param  scope
+ * @return function | null
  */
-JSmarty.load = function(path)
+JSmarty.load = function(name, repos, scope)
 {
-	var http = JSmarty.XMLHTTP;
+	if(!scope) scope = JSmarty.plugins;
+	var text, getText = JSmarty.Connect.getText;
+
+	for(var i=repos.length-1;i>=0;i--)
+		if(text = getText(repos[i] + '/' + name + '.js')) break;
+
+	eval(text + "; scope[name] = jsmarty_"+ name.replace('.','_') +";");
+	return scope[name] || null;
 };
 
 JSmarty.Connect =
 {
-	getText : function()
+	getText : function(path)
 	{
-		var http = JSmarty.XMLHTTP;
+		var text, http = JSmarty.XMLHTTP;
+		http.open('GET', path, false);
+		try
+		{
+			http.send('');
+			if(http.status == 200 || http.status == 0)
+				return http.responseText;
+		}
+		catch(e){ return null };
+		return null;
 	}
 };
 

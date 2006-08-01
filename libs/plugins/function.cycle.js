@@ -17,7 +17,7 @@
  * @param    JSmarty
  * @return   string
  */
-jsmarty_function_cycle = function(params, smarty)
+function jsmarty_function_cycle(params, smarty)
 {
 	var cycle_vars = jsmarty_function_cycle.cycle_vars;
 	var name, reset, print, advance, cycle_var, cycle_array;
