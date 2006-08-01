@@ -1,1 +1,1 @@
-Config_File = function(){};
+function Config_File();

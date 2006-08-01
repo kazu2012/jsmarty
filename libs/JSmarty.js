@@ -1,13 +1,8 @@
-function JSmarty(){};
-
-JSmarty.AUTHORS = ['shogo'];
-JSmarty.VERSION = '0.0.1M1';
-JSmarty.LICENSE = 'LGPL';
-
 /**
  * @package JSmarty
  */
-JSmarty.prototype = 
+function JSmarty(){};
+JSmarty.prototype =
 {
 /**#@+
  * JSmarty Configuration Section
@@ -21,10 +16,9 @@ JSmarty.prototype =
 	debugging : true,
 	debugging_ctrl : 'NONE',
 
-//	compile_check : true,
+	compile_check : true,
 	force_compile : false,
 
-//	cache_dir : 'cache',
 //	cache_lifetime : 3600,
 //	cache_modified_check : false,
 
@@ -191,8 +185,6 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 	var i, filter, results, filters;
 	var cache = this.caching, debug = this.debugging;
 
-	JSAN.addRepository(this.plugins_dir);
-
 	if(!debug && this.debugging_ctrl == 'URL')
 	{
 		var hash = location.hash;
@@ -331,6 +323,9 @@ JSmarty.prototype.trigger_error = function(msg){
 JSmarty.prototype._compile_resource = function(name)
 {
 	var src, data = { name:name };
+	
+	alert("hoge");
+	
 	if(!this._fetch_resource_info(data)) return false;
 	if(src = this._compile_source(name, data.src))
 	{
@@ -424,7 +419,7 @@ JSmarty.prototype._call = function(name, parm, src, type)
 	var call = this._plugins[type];
 
 	if(call[name] == void(0))
-		call[name] = JSmarty.load(type +'.'+ name, this.plugins_dir);
+		call[name] = JSmarty.require(type, name, this.plugins_dir);
 	if(!call[name]) return '';
 
 	switch(type)
@@ -474,10 +469,6 @@ JSmarty.prototype._modf = function(src, modf)
  */
 JSmarty.exec = function(name)
 {
-	var func = 'jsmarty_shared_' + name;
-	if(window[func] == void(0))
-		window[func] = JSAN.require(func);
-	return window[func] || function(){};
 };
 
 /**
@@ -493,25 +484,33 @@ JSmarty.namespace = function()
 };
 
 /**
- * Load Plugins
- * 
+ * Require JSmarty plugin
+ *
  * @param  name
  * @param  repos
  * @param  scope
  * @return function | null
  */
-JSmarty.load = function(name, repos, scope)
+
+JSmarty.require = function(type, name, path)
 {
-	if(!scope) scope = JSmarty.plugins;
+	alert(type);
+
+	var plugin = JSmarty.plugins;
+	var script = type + "." + name;
+	if(plugin[script]) return plugin[script];
 	var text, getText = JSmarty.Connect.getText;
-
-	for(var i=repos.length-1;i>=0;i--)
-		if(text = getText(repos[i] + '/' + name + '.js')) break;
-
-	eval(text + "; scope[name] = jsmarty_"+ name.replace('.','_') +";");
-	return scope[name] || null;
+	for(var i=path.length-1;i>=0;i--)
+		if(text = getText(path[i] + '/' + script + '.js')) break;
+	eval(text + "; plugin[script] = "+ ['jsmarty', type, name].join('_') +" || null;");
+	return plugin[script] || null;
 };
 
+/**
+ * HTTP Connection
+ *
+ * @var object
+ */
 JSmarty.Connect =
 {
 	getText : function(path)

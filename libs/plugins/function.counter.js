@@ -1,4 +1,4 @@
-jsmarty_function_counter = function(params, smarty)
+function jsmarty_function_counter(params, smarty)
 {
 	var counters = jsmarty_function_counter.counters;
 	var retval, print, counter, name = params.name || 'default';
