@@ -1,34 +1,8 @@
-JSmarty = function(){};
+function JSmarty(){};
 
 JSmarty.AUTHORS = ['shogo'];
 JSmarty.VERSION = '0.0.1M1';
 JSmarty.LICENSE = 'LGPL';
-
-/**
- * Execute 'shared' function
- *
- * @param string name of function
- * @return function
- */
-JSmarty.exec = function(name)
-{
-	var func = 'jsmarty_shared_' + name;
-	if(window[func] == void(0))
-		window[func] = JSAN.require(func);
-	return window[func] || function(){};
-};
-
-/**
- * Setup namespaces
- *
- * @param strings
- */
-JSmarty.namespace = function()
-{
-	for(var i=arguments.length-1;i>=0;i--){
-		JSmarty[arguments[i]] = {};
-	}
-};
 
 /**
  * @package JSmarty
@@ -39,7 +13,7 @@ JSmarty.prototype =
  * JSmarty Configuration Section
  */
 //	config_dir   : 'configs',
-	compile_dir  : 'templates_c',
+//	compile_dir  : 'templates_c',
 	plugins_dir  : ['plugins'],
 	template_dir : 'templates',
 
@@ -59,7 +33,7 @@ JSmarty.prototype =
 	left_delimiter  : '{',
 	right_delimiter : '}',
 
-//	compile_id : null,
+	compile_id : null,
 //	use_sub_dirs : false,
 
 	default_modifiers : [],
@@ -93,7 +67,7 @@ JSmarty.prototype =
 	_compiler : null,
 	_tpl_vars : {},
 	_smarty_vars : {},
-	_smarty_debug_id : '#JSMARTYDEBUG',
+	_smarty_debug_id : '#JSMARTY_DEBUG',
 	_version : JSmarty.version,
 	_smarty_debug_info : []
 };
@@ -113,18 +87,18 @@ JSmarty.prototype.assign = function(key, value)
 			break;
 	}
 
-	if(typeof(key) == 'object')
+	if(key instanceof Object)
 	{
 		for(var i in key)
 			this._tpl_vars[i] = key[i];
 		return;
 	}
 
-	if(key) this._tpl_vars[key] = value;
+	if(key != '') this._tpl_vars[key] = value;
 };
 
 JSmarty.prototype.assign_by_ref = function(key, value){
-	if(key) this._tpl_vars[key] = value;
+	if(key != '') this._tpl_vars[key] = value;
 };
 
 JSmarty.prototype.append = function(key, value, merge)
@@ -149,7 +123,7 @@ JSmarty.prototype.append = function(key, value, merge)
 	}
 	else
 	{
-		if(!key && !value) return;
+		if(key != '' && value != void(0)) return;
 		if(!((vars = this._tpl_vars[key]) instanceof Array))
 			vars = this._tpl_vars[key] = [];
 		if(merge && value instanceof Object)
@@ -164,7 +138,7 @@ JSmarty.prototype.append = function(key, value, merge)
 
 JSmarty.prototype.append_by_ref = function(key, value, merge)
 {
-	if(!key && !value) return;
+	if(key != '' && value != void(0)) return;
 
 	if(!((vars = this._tpl_vars[key]) instanceof Array))
 		vars = this._tpl_vars[key] = [];
@@ -179,14 +153,14 @@ JSmarty.prototype.append_by_ref = function(key, value, merge)
 
 JSmarty.prototype.clear_assign = function(key)
 {
-	if(typeof key == 'object')
+	if(key instanceof Object)
 	{
 		for(var i in key)
 			delete this._tpl_vars[key[i]];
 		return;
 	}
 
-	if(key) delete this._tpl_vars[key];
+	if(key != '') delete this._tpl_vars[key];
 };
 
 JSmarty.prototype.clear_all_assign = function(){
@@ -194,7 +168,7 @@ JSmarty.prototype.clear_all_assign = function(){
 };
 
 JSmarty.prototype.get_template_vars = function(key){
-	return (key) ? this._tpl_vars[key] : this._tpl_vars;
+	return (key == void(0)) ? this._tpl_vars[key] : this._tpl_vars;
 };
 /* --------------------------------------------------------------------
  # Cashing
@@ -216,7 +190,7 @@ JSmarty.prototype.clear_compiled_tpl = function(file){
  -------------------------------------------------------------------- */
 JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 {
-	var params, filter, results, filters;
+	var i, filter, results, filters;
 	var cache = this.caching, debug = this.debugging;
 
 	JSAN.addRepository(this.plugins_dir);
@@ -246,21 +220,22 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 			   };
 	}
 
-//	for(var types in this.autoload_filter)
-//	{
-//		filters = types[i];
-//		for(filter in filters){
-//			this.load_filter(filter, filters[filter]);
-//		}
-//	}
+	if(cpid == void(0))
+		cpid = this.compile_id;
+
+	for(i in (types = this.autoload_filter))
+	{
+		filters = types[i];
+		for(filter in filters){
+			this.load_filter(filter, filters[filter]);
+		}
+	}
 
 	if(this._is_compiled(name) || this._compile_resource(name))
 	{
 		if(debug) info.compile_time = new Date().getTime() - dst;
 		results = JSmarty.templates_c[name].call(this);
-
-		filters = this._plugins.outputfilter;
-		for(i in filters)
+		for(i in (filters = this._plugins.outputfilter))
 			results = filters[i](results, this);
 	}
 
@@ -498,4 +473,65 @@ JSmarty.prototype._modf = function(src, modf)
 	return src;
 };
 
-JSmarty.namespace('cache','templates_c');
+/**
+ * Execute 'shared' function
+ *
+ * @param string name of function
+ * @return function
+ */
+JSmarty.exec = function(name)
+{
+	var func = 'jsmarty_shared_' + name;
+	if(window[func] == void(0))
+		window[func] = JSAN.require(func);
+	return window[func] || function(){};
+};
+
+/**
+ * Setup namespaces
+ *
+ * @param strings
+ */
+JSmarty.namespace = function()
+{
+	for(var i=arguments.length-1;i>=0;i--){
+		JSmarty[arguments[i]] = {};
+	}
+};
+
+/**
+ * Load Plugins
+ * 
+ * @param  
+ * @param  
+ * @return 
+ */
+JSmarty.load = function(path)
+{
+	var http = JSmarty.XMLHTTP;
+};
+
+JSmarty.Connect = function(){};
+JSmarty.Connect.prototype =
+{
+	http : JSmarty.XMLHTTP,
+	getText : function()
+	{
+		
+	}
+};
+
+/**
+ * Create XMLHttpRequest Object
+ *
+ * @var object
+ */
+JSmarty.XMLHTTP = new function()
+{
+	if(window['XMLHttpRequest'])
+		return new XMLHttpRequest;
+	else
+		return new ActiveXObject('Microsoft.XMLHTTP');
+};
+
+JSmarty.namespace('templates_c','plugins');
