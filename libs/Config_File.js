@@ -1,1 +1,1 @@
-function Config_File();
+function Config_File(){};

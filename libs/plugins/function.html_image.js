@@ -8,18 +8,21 @@ jsmarty_function_html_image = function(params, smarty)
 
 	var img, html, attr = [];
 
-	foreach(var i in params)
+	for(var i in params)
 	{
-		case 'dpi':
-		case 'file':
-		case 'width':
-		case 'height':
-		case 'basedir':
-		case 'path_prefix':
-			break;
-		default:
-			attr.push(i +'="'+ params[i] +'"');
-			break;
+		switch(params[i])
+		{
+			case 'dpi':
+			case 'file':
+			case 'width':
+			case 'height':
+			case 'basedir':
+			case 'path_prefix':
+				break;
+			default:
+				attr.push(i +'="'+ params[i] +'"');
+				break;			
+		}		
 	}
 
 	return html;
