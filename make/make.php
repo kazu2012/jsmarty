@@ -1,5 +1,5 @@
 <?php
-require 'smarty/Smarty.class.php';
+require 'Smarty.class.php';
 
 $list = glob('templates/html/*.html');
 $smarty = new Smarty();

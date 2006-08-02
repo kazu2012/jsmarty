@@ -9,7 +9,7 @@ jsmarty_resource_file.http = null;
 jsmarty_resource_file[0] = function(name, param, smarty)
 {
 	var self = jsmarty_resource_file;
-	var http = (self.http) ? self.http : JSmarty.exec('xmlhttp')();
+	var http = (self.http) ? self.http : JSmarty.Connect.XMLHTTP;
 
 	if(!self.http)
 		self.http = http;

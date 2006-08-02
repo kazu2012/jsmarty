@@ -16,7 +16,7 @@ JSmarty.prototype =
 	debugging : true,
 	debugging_ctrl : 'NONE',
 
-	compile_check : true,
+//	compile_check : true,
 	force_compile : false,
 
 //	cache_lifetime : 3600,
@@ -235,7 +235,7 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 		if(debug)
 		{
 			info.exec_time = new Date().getTime() - dst;
-			document.write(JSmarty.exec('display_debug_consol')([], this));
+	//		document.write(JSmarty.use('display_debug_consol')([], this));
 		}
 		return;
 	}
@@ -323,9 +323,6 @@ JSmarty.prototype.trigger_error = function(msg){
 JSmarty.prototype._compile_resource = function(name)
 {
 	var src, data = { name:name };
-	
-	alert("hoge");
-	
 	if(!this._fetch_resource_info(data)) return false;
 	if(src = this._compile_source(name, data.src))
 	{
@@ -419,7 +416,7 @@ JSmarty.prototype._call = function(name, parm, src, type)
 	var call = this._plugins[type];
 
 	if(call[name] == void(0))
-		call[name] = JSmarty.require(type, name, this.plugins_dir);
+		call[name] = JSmarty.use(name, type, this.plugins_dir);
 	if(!call[name]) return '';
 
 	switch(type)
@@ -462,16 +459,6 @@ JSmarty.prototype._modf = function(src, modf)
 };
 
 /**
- * Execute 'shared' function
- *
- * @param string name of function
- * @return function
- */
-JSmarty.exec = function(name)
-{
-};
-
-/**
  * Setup namespaces
  *
  * @param strings
@@ -484,26 +471,56 @@ JSmarty.namespace = function()
 };
 
 /**
- * Require JSmarty plugin
+ * Load plugin
  *
+ * @param  type
  * @param  name
- * @param  repos
- * @param  scope
+ * @param  path
  * @return function | null
  */
-
-JSmarty.require = function(type, name, path)
+JSmarty.use = function(name, type, path)
 {
-	alert(type);
+	var pgin = JSmarty.plugins;
+	var scpt = '/' + type + '.' + name + '.js';
+	var func = JSmarty.toPluginName(name, type);
+	var rest, getText = JSmarty.Connect.getText;
 
-	var plugin = JSmarty.plugins;
-	var script = type + "." + name;
-	if(plugin[script]) return plugin[script];
-	var text, getText = JSmarty.Connect.getText;
 	for(var i=path.length-1;i>=0;i--)
-		if(text = getText(path[i] + '/' + script + '.js')) break;
-	eval(text + "; plugin[script] = "+ ['jsmarty', type, name].join('_') +" || null;");
-	return plugin[script] || null;
+	{
+		if(text = getText(path[i] + scpt))
+		{
+			rest = JSmarty.addFunction(text, pgin, func);
+			break;
+		}
+	}
+
+	return (rest) ? pgin[func] : null ;
+};
+
+JSmarty.addFunction = function(code, scope, func)
+{
+	if(scope && func)
+		code = code.concat(";scope[func] ="+ func +"|| null;");
+
+	try
+	{
+		eval(code);
+		return true;
+	}
+	catch(e){
+		return false;
+	}
+};
+
+/**
+ * Arguments to plugin name
+ *
+ * @return string
+ */
+JSmarty.toPluginName = function(name, type)
+{
+	if(!type) type = 'shared';
+	return ['jsmarty', type, name].join('_');
 };
 
 /**
@@ -513,9 +530,16 @@ JSmarty.require = function(type, name, path)
  */
 JSmarty.Connect =
 {
+	XMLHTTP : new function()
+	{
+		if(window['XMLHttpRequest'])
+			return new XMLHttpRequest;
+		else
+			return new ActiveXObject('Microsoft.XMLHTTP');
+	},
 	getText : function(path)
 	{
-		var text, http = JSmarty.XMLHTTP;
+		var text, http = JSmarty.Connect.XMLHTTP;
 		http.open('GET', path, false);
 		try
 		{
@@ -526,19 +550,6 @@ JSmarty.Connect =
 		catch(e){ return null };
 		return null;
 	}
-};
-
-/**
- * Create XMLHttpRequest Object
- *
- * @var object
- */
-JSmarty.XMLHTTP = new function()
-{
-	if(window['XMLHttpRequest'])
-		return new XMLHttpRequest;
-	else
-		return new ActiveXObject('Microsoft.XMLHTTP');
 };
 
 JSmarty.namespace('templates_c','plugins');

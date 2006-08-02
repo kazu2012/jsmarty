@@ -10,6 +10,7 @@ function smarty_function_jsmarty($params, &$smarty)
 	<script type="text/javascript" charset="UTF-8" src="{$include}/JSmarty_Compiler.js"></script>
 	<script type="text/javascript">
 	var {$instance} = new JSmarty;
+	{$instance}.plugins_dir = ['$include/plugins'];
 	</script>
 __EOT__;
 
