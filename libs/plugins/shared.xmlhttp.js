@@ -24,7 +24,7 @@ function jsmarty_shared_xmlhttp()
 			try{
 				return new ActiveXObject(xmls[i]);
 			}
-			catch(e){}
+			catch(e){ /* empty */ };
 		}
 	}
 

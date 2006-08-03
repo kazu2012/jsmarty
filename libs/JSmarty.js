@@ -13,7 +13,7 @@ JSmarty.prototype =
 	template_dir : 'templates',
 
 	debug_tpl : '',
-	debugging : true,
+	debugging : false,
 	debugging_ctrl : 'NONE',
 
 //	compile_check : true,
@@ -483,34 +483,31 @@ JSmarty.use = function(name, type, path)
 {
 	var pgin = JSmarty.prototype._plugins[type];
 	var scpt = '/' + type + '.' + name + '.js';
-	var func = JSmarty.toPluginName(name, type);
 
 	for(var i=path.length-1;i>=0;i--)
 	{
 		if(text = new JSmarty.Connect().getText(path[i] + scpt))
-			return JSmarty.addFunction(text, pgin, func);
+			return JSmarty.addFunction(text, name, type);
 	}
 
 	return false;
 };
 
-JSmarty.addFunction = function(code, scope, func)
+JSmarty.addFunction = function(code, name, type)
 {
-	var name;
-	if(scope && func)
-	{
-		name = func.split('_')[2];
-		code = code.concat("scope[name] ="+ func +"|| null;");
-	}
+	var parent = JSmarty.prototype._plugins[type];
+	parent[name] = JSmarty.evalScript(code, name, type);
+	parent = parent[name];
+	return true;
+};
 
-	try
-	{
-		eval(code);
-		return true;
-	}
-	catch(e){
-		return false;
-	}
+JSmarty.evalScript = function(code, name, type)
+{
+	eval(code);
+	var $script = eval(JSmarty.toPluginName(name, type));
+
+	$script.ptotype = {};
+	return $script;
 };
 
 /**
@@ -518,9 +515,7 @@ JSmarty.addFunction = function(code, scope, func)
  *
  * @return string
  */
-JSmarty.toPluginName = function(name, type)
-{
-	if(!type) type = 'shared';
+JSmarty.toPluginName = function(name, type){
 	return ['jsmarty', type, name].join('_');
 };
 
@@ -531,10 +526,9 @@ JSmarty.Connect.prototype =
 	{
 		if(window.XMLHttpRequest)
 			return new XMLHttpRequest;
-		else if(window.ActiveXObject)
+		if(window.ActiveXObject)
 			return new ActiveXObject('Microsoft.XMLHTTP');
-		else
-			return null;
+		return null;
 	}(),
 	getText : function(url)
 	{
@@ -545,7 +539,6 @@ JSmarty.Connect.prototype =
 	{
 		var http = this.XMLHTTP;
 		http.open('GET', data.url, false);
-
 		try
 		{
 			http.send('')
