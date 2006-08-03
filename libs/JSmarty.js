@@ -479,11 +479,10 @@ JSmarty.use = function(name, type, path)
 	var pgin = JSmarty.prototype._plugins[type];
 	var scpt = '/' + type + '.' + name + '.js';
 	var func = JSmarty.toPluginName(name, type);
-	var rest, getText = new JSmarty.Connect().getText;
 
 	for(var i=path.length-1;i>=0;i--)
 	{
-		if(text = getText(path[i] + scpt))
+		if(text = new JSmarty.Connect().getText(path[i] + scpt))
 		{
 			rest = JSmarty.addFunction(text, pgin, func);
 			break;
