@@ -343,11 +343,7 @@ JSmarty.prototype._compile_source = function(name, src)
 	var cpir, name = this.compiler_class;
 
 	if(!(cpir = this._compiler))
-	{
-		if(window[name] == void(0)) JSAN.use(name);
-		if(window[name] == void(0)) return false;
 		cpir = this._compiler = new window[name];
-	}
 
 	cpir[name](src, this);
 	return cpir.exec(src);
@@ -416,7 +412,7 @@ JSmarty.prototype._call = function(name, parm, src, type)
 	var call = this._plugins[type];
 
 	if(call[name] == void(0))
-		call[name] = JSmarty.use(name, type, this.plugins_dir);
+		JSmarty.use(name, type, this.plugins_dir);
 	if(!call[name]) return '';
 
 	switch(type)
@@ -480,10 +476,10 @@ JSmarty.namespace = function()
  */
 JSmarty.use = function(name, type, path)
 {
-	var pgin = JSmarty.plugins;
+	var pgin = JSmarty.prototype._plugins[type];
 	var scpt = '/' + type + '.' + name + '.js';
 	var func = JSmarty.toPluginName(name, type);
-	var rest, getText = JSmarty.Connect.getText;
+	var rest, getText = new JSmarty.Connect().getText;
 
 	for(var i=path.length-1;i>=0;i--)
 	{
@@ -494,13 +490,17 @@ JSmarty.use = function(name, type, path)
 		}
 	}
 
-	return (rest) ? pgin[func] : null ;
+	return rest;
 };
 
 JSmarty.addFunction = function(code, scope, func)
 {
+	var name;
 	if(scope && func)
-		code = code.concat(";scope[func] ="+ func +"|| null;");
+	{
+		name = func.split('_')[2];
+		code = code.concat("scope[name] ="+ func +"|| null;");
+	}
 
 	try
 	{
@@ -523,33 +523,35 @@ JSmarty.toPluginName = function(name, type)
 	return ['jsmarty', type, name].join('_');
 };
 
-/**
- * HTTP Connection
- *
- * @var object
- */
-JSmarty.Connect =
+JSmarty.Connect = function(){};
+JSmarty.Connect.prototype =
 {
-	XMLHTTP : new function()
+	XMLHTTP : function()
 	{
-		if(window['XMLHttpRequest'])
+		if(window.XMLHttpRequest)
 			return new XMLHttpRequest;
-		else
+		else if(window.ActiveXObject)
 			return new ActiveXObject('Microsoft.XMLHTTP');
-	},
-	getText : function(path)
+		else
+			return null;
+	}(),
+	getText : function(url)
 	{
-		var text, http = JSmarty.Connect.XMLHTTP;
-		http.open('GET', path, false);
+		var http = this.XMLHTTP;
+		http.open('GET', url, false);
+
 		try
 		{
 			http.send('');
 			if(http.status == 200 || http.status == 0)
-				return http.responseText;
+				var text = http.responseText;
+			http.abort();
+			return text;
 		}
-		catch(e){ return null };
-		return null;
+		catch(e){
+			return '';
+		}
 	}
 };
 
-JSmarty.namespace('templates_c','plugins');
+JSmarty.namespace('templates_c','shared');

@@ -4,15 +4,10 @@
  * @subpackage plugins
  */
 
-jsmarty_resource_file = new Array(4);
-jsmarty_resource_file.http = null;
+var jsmarty_resource_file = new Array(4);
 jsmarty_resource_file[0] = function(name, param, smarty)
 {
-	var self = jsmarty_resource_file;
-	var http = (self.http) ? self.http : JSmarty.Connect.XMLHTTP;
-
-	if(!self.http)
-		self.http = http;
+	var http = new JSmarty.Connect().XMLHTTP;
 
 	try
 	{
@@ -30,7 +25,9 @@ jsmarty_resource_file[0] = function(name, param, smarty)
 		param.src = http.responseText;
 		param.time= http.getResponseHeader('Last-Modified');
 		http.abort();
-
+		
+		http = null;
+		
 		return true;
 	}
 	catch(e){};
