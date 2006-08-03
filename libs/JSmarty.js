@@ -359,21 +359,26 @@ JSmarty.prototype._is_compiled = function(name)
 };
 JSmarty.prototype._fetch_resource_info = function(data)
 {
-	var flag = false;
+	var flag = true;
 	if(data.get == void(0)) data.get = true;
 	if(data.bye == void(0)) data.bye = false;
 
 	if(this._parse_resource_name(data))
 	{
-		var sret, tret, type = data.type, name = data.name;
-		var call = this._call(type, null, null, 'resource');
-
-		if(data.get)
-			sret = call[0](name, data, this);
-		else
-			sret = true;
-		tret = call[1](name, data, this);
-		flag = sret && tret;
+		switch((type = data.type))
+		{
+			case 'file':
+				data.url = this.template_dir +'/' + data.name;
+				if(data.get)
+					new JSmarty.Connect().setData(data);
+				break;
+			default:
+				var name = data.name;
+				var call = this._call(type, null, null, 'resource');
+				var sret = (data.get) ? call[1](name, data, this) : true;
+				flag = sret && call[1](name, data, this);
+				break;
+		}
 	}
 
 	if(!flag)
@@ -533,20 +538,27 @@ JSmarty.Connect.prototype =
 	}(),
 	getText : function(url)
 	{
+		var data = { url:url };
+		return (this.setData(data)) ? data.src : '';
+	},
+	setData : function(data)
+	{
 		var http = this.XMLHTTP;
-		http.open('GET', url, false);
+		http.open('GET', data.url, false);
 
 		try
 		{
-			http.send('');
+			http.send('')
 			if(http.status == 200 || http.status == 0)
-				var text = http.responseText;
+			{
+				data.src  = http.responseText;
+				data.time = new Date(http.getResponseHeader('Last-Modified')).getTime();
+			}
 			http.abort();
-			return text;
+			return true;
 		}
-		catch(e){
-			return '';
-		}
+		catch(e){ /* empty */ };
+		return false;
 	}
 };
 
