@@ -4,7 +4,7 @@
  * @subpackage plugins
  */
 
-jsmarty_shared_display_debug_consol = function(params, smarty)
+function jsmarty_shared_display_debug_consol(params, smarty)
 {
 	var compid, ldelim, rdelim, result;
 

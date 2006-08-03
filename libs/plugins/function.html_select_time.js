@@ -1,4 +1,4 @@
-jsmarty_function_html_select_time = function($params, $smarty)
+function jsmarty_function_html_select_time($params, $smarty)
 {
 	var $html = '';
 	var $time , $ivals, $extras, $displays;

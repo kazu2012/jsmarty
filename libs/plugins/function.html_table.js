@@ -1,4 +1,4 @@
-jsmarty_function_html_table = function(params, smarty)
+function jsmarty_function_html_table(params, smarty)
 {
 	return '';
 }

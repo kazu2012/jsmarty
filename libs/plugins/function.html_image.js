@@ -1,4 +1,4 @@
-jsmarty_function_html_image = function(params, smarty)
+function smarty_function_html_image(params, smarty)
 {
 	if(params.file)
 	{

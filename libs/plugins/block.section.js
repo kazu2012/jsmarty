@@ -4,7 +4,7 @@
  * @subpackage plugins
  */
 
-jsmarty_block_section = function(params, content, smarty)
+function jsmarty_block_section(params, content, smarty)
 {
 	var html = [];
 	var name = params.name;

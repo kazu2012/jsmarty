@@ -1,8 +1,8 @@
-jsmarty_modifier_default = function(string, default)
+function jsmarty_modifier_default(string, defaults)
 {
-	if(default == void(0)) default = '';
-	if(string == void(0) || string = '')
-		return default;
+	if(defaults == void(0)) defaults = '';
+	if(string == void(0) || string == '')
+		return defaults;
 	else
 		return string;
 }

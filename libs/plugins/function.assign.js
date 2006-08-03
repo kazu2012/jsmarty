@@ -1,4 +1,4 @@
-jsmarty_function_assign = function(params, smarty)
+function jsmarty_function_assign(params, smarty)
 {
 	return '';
 }

@@ -1,4 +1,4 @@
-jsmarty_modifier_truncate = function(string, length, etc, break_words, middle)
+function jsmarty_modifier_truncate(string, length, etc, break_words, middle)
 {
 	length = (length) ? length - 0 : 80;
 

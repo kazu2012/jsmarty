@@ -11,7 +11,7 @@
  * Name:     cycle<br />
  * Purpose:  cycle through given values<br />
  * Original: Smarty {cycle} function plugin
- * @author   shogo <shogo4405 at gmail dot com>
+ * @author   shogo [shogo4405 at gmail dot com]
  * @version  1.0
  * @param    array
  * @param    JSmarty

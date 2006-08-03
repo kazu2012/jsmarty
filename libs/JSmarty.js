@@ -483,13 +483,10 @@ JSmarty.use = function(name, type, path)
 	for(var i=path.length-1;i>=0;i--)
 	{
 		if(text = new JSmarty.Connect().getText(path[i] + scpt))
-		{
-			rest = JSmarty.addFunction(text, pgin, func);
-			break;
-		}
+			return JSmarty.addFunction(text, pgin, func);
 	}
 
-	return rest;
+	return false;
 };
 
 JSmarty.addFunction = function(code, scope, func)

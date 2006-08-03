@@ -4,7 +4,7 @@
  * @subpackage plugins
  */
 
-jsmarty_shared_xmlhttp = function()
+function jsmarty_shared_xmlhttp()
 {
 	var xmls = [
 		'Microsoft.XMLHTTP',

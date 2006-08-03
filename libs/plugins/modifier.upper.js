@@ -16,7 +16,7 @@
  * @param    string
  * @return   string
  */
-jsmarty_modifier_upper = function(string)
+function jsmarty_modifier_upper(string)
 {
 	return string.toUpperCase();
 }
