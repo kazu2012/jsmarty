@@ -493,6 +493,31 @@ JSmarty.use = function(name, type, path)
 	return false;
 };
 
+/**
+ * import shared plugins
+ 
+ * @param string
+ */
+JSmarty.importer = function()
+{
+	for(var func in arguments)
+		window[func] = JSmarty.shared[func];
+};
+
+JSmarty.addPlugin = function(name, type, path)
+{
+	var plugin = JSmarty.toPluginName(name, type);
+	switch(type)
+	{
+		case 'shared':
+			var parent = JSmarty.shared;
+			break;
+		default:
+			var parent = JSmarty.prototype._plugins[type];
+			break;
+	}
+};
+
 JSmarty.addFunction = function(code, name, type)
 {
 	var parent = JSmarty.prototype._plugins[type];

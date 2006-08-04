@@ -42,9 +42,10 @@ JSmarty_Compiler.prototype.JSmarty_Compiler = function(src, smarty)
 JSmarty_Compiler.prototype.exec = function(src, mode)
 {
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
-	var S = ' ', M = '|', list = this._folded_blocks;
+	var S = ' ', M = '|', list = this._folded_blocks
 	var L = this.left_delimiter , R = this.right_delimiter;
 	var l = L.length, r = R.length, nested = false, txt = [];
+	var name, modf, parm;
 
 	switch(mode)
 	{
@@ -97,7 +98,6 @@ JSmarty_Compiler.prototype.exec = function(src, mode)
 				else txt.push(this.toTag(name, parm, null));
 				break;
 		}
-
 	}
 
 	if(i != src.length)
@@ -136,6 +136,10 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 			return '"";\nif('+ parm +'){ output += '+ this.exec(src, 'if') +';}\noutput += ""';
 		case 'literal':
 			return this.toString(src);
+		case 'strip':
+			return this.toString(src.replace(/\r?\n|\t?/g,''))
+		case 'capture':
+			return this.toString();
 		case 'else':
 			return '"";}\nelse { output += ""';
 		case 'ldelim':
@@ -160,7 +164,7 @@ JSmarty_Compiler.prototype.toJSmartyVars = function(src)
 		case 'version':
 			return this.toString(this._version);
 		default:
-			return this.toString('');
+			return this.toString();
 	};
 };
 
