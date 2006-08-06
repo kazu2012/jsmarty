@@ -1,4 +1,4 @@
-function jsmarty_function_counter(params, smarty)
+function jsmarty_function_counter(params, jsmarty)
 {
 	var counters = jsmarty_function_counter.counters;
 	var retval, print, counter, name = params.name || 'default';
@@ -23,7 +23,7 @@ function jsmarty_function_counter(params, smarty)
 		counter.assign = params.assign;
 
 	if(counter.assign)
-		smarty.assign(counter.assign, counter.count);
+		jsmarty.assign(counter.assign, counter.count);
 
 	if(params.print)
 		print = new Boolean(params.print);

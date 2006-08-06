@@ -17,7 +17,7 @@
  * @param    JSmarty
  * @return   string
  */
-function jsmarty_function_cycle(params, smarty)
+function jsmarty_function_cycle(params, jsmarty)
 {
 	var cycle_vars = jsmarty_function_cycle.cycle_vars;
 	var name, reset, print, advance, cycle_var, cycle_array;
@@ -35,7 +35,7 @@ function jsmarty_function_cycle(params, smarty)
 	{
 		if(!cycle_var.values)
 		{
-			smarty.trigger_error("cycle: missing 'values' parameter");
+			jsmarty.trigger_error("cycle: missing 'values' parameter");
 			return '';
 		}
 	}
@@ -59,7 +59,7 @@ function jsmarty_function_cycle(params, smarty)
 	if(assign)
 	{
 		print = false;
-		smarty.assign(assign, cycle_array[cycle_var.index]);
+		jsmarty.assign(assign, cycle_array[cycle_var.index]);
 	}
 
 	if(print)

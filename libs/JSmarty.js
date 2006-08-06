@@ -58,6 +58,7 @@ JSmarty.prototype =
 	},
 	_foreach : {},
 	_section : {},
+	_capture : {},
 	_compiler : null,
 	_tpl_vars : {},
 	_smarty_debug_id : '#JSMARTY_DEBUG',
@@ -174,8 +175,8 @@ JSmarty.prototype.clear_cache = function(name){
 JSmarty.prototype.is_cashed = function(name){
 	return false;
 };
-JSmarty.prototype.clear_compiled_tpl = function(file){
-	delete JSmarty.templates_c[file];
+JSmarty.prototype.clear_compiled_tpl = function(name){
+	delete JSmarty.templates_c[name];
 };
 /* --------------------------------------------------------------------
  # Template Process
@@ -417,7 +418,7 @@ JSmarty.prototype._call = function(name, parm, src, type)
 	var call = this._plugins[type];
 
 	if(call[name] == void(0))
-		JSmarty.use(name, type, this.plugins_dir);
+		JSmarty.addPlugin(name, type, this.plugins_dir);
 	if(!call[name]) return '';
 
 	switch(type)
@@ -472,28 +473,6 @@ JSmarty.namespace = function()
 };
 
 /**
- * Load plugin
- *
- * @param  type
- * @param  name
- * @param  path
- * @return function | null
- */
-JSmarty.use = function(name, type, path)
-{
-	var pgin = JSmarty.prototype._plugins[type];
-	var scpt = '/' + type + '.' + name + '.js';
-
-	for(var i=path.length-1;i>=0;i--)
-	{
-		if(text = new JSmarty.Connect().getText(path[i] + scpt))
-			return JSmarty.addFunction(text, name, type);
-	}
-
-	return false;
-};
-
-/**
  * import shared plugins
  
  * @param string
@@ -506,33 +485,35 @@ JSmarty.importer = function()
 
 JSmarty.addPlugin = function(name, type, path)
 {
-	var plugin = JSmarty.toPluginName(name, type);
-	switch(type)
+	var text;
+	var script = '/' + type +'.' + name +'.js';
+
+	for(var i=path.length-1;i>=0;i--)
 	{
-		case 'shared':
-			var parent = JSmarty.shared;
-			break;
-		default:
-			var parent = JSmarty.prototype._plugins[type];
-			break;
+		if(text = new JSmarty.Connect().getText(path[i] + script))
+			return JSmarty.addFunction(text, name, type);
 	}
+
+	return false;
 };
 
 JSmarty.addFunction = function(code, name, type)
 {
-	var parent = JSmarty.prototype._plugins[type];
-	parent[name] = JSmarty.evalScript(code, name, type);
-	parent = parent[name];
-	return true;
-};
+	var __script = null;
 
-JSmarty.evalScript = function(code, name, type)
-{
+	switch(type)
+	{
+		case 'shared':
+			var __parent = JSmarty.shared; break;
+		default:
+			var __parent = JSmarty.prototype._plugins[type]; break;
+	}
+
 	eval(code);
-	var $script = eval(JSmarty.toPluginName(name, type));
+	__script = eval(JSmarty.toPluginName(name, type));
+	__parent[name] = __script;
 
-	$script.ptotype = {};
-	return $script;
+	return (__script) ? true : false;
 };
 
 /**

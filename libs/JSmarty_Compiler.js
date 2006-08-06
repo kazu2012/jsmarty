@@ -138,6 +138,8 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
 			return this.toString(src);
 		case 'strip':
 			return this.toString(src.replace(/\r?\n|\t?/g,''))
+		case 'javascript':
+			return this.toEval(src)
 		case 'capture':
 			return this.toString();
 		case 'else':
