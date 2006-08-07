@@ -191,6 +191,7 @@ JSmarty_Compiler.prototype.toFunction = function(src)
  JSmarty_Compiler.prototype.toString = function(src)
 {
 	if(!src) return '""';
+	src = src.replace(/\"/g,'\\"'); // ‰¼ŽÀ‘•
 	return '"' + src + '"';
 };
 

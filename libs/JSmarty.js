@@ -214,20 +214,20 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 	if(cpid == void(0))
 		cpid = this.compile_id;
 
-	for(i in (types = this.autoload_filter))
-	{
-		filters = types[i];
-		for(filter in filters){
-			this.load_filter(filter, filters[filter]);
-		}
-	}
+//	for(i in (types = this.autoload_filter))
+//	{
+//		filters = types[i];
+//		for(filter in filters){
+//			this.load_filter(filter, filters[filter]);
+//		}
+//	}
 
 	if(this._is_compiled(name) || this._compile_resource(name))
 	{
 		if(debug) info.compile_time = new Date().getTime() - dst;
 		results = JSmarty.templates_c[name].call(this);
-		for(i in (filters = this._plugins.outputfilter))
-			results = filters[i](results, this);
+//		for(i in (filters = this._plugins.outputfilter))
+//			results = filters[i](results, this);
 	}
 
 	if(display)
