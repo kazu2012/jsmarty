@@ -7,7 +7,7 @@
 function jsmarty_shared_xmlhttp()
 {
 	if(window.XMLHttpRequest)
-		return new XMLHttpRequest();
+		return new XMLHttpRequest;
 
 	if(window.ActiveXObject)
 	{

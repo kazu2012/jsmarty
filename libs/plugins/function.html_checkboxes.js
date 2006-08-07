@@ -1,7 +1,26 @@
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
+/**
+ * JSmarty html_checkboxes function plugin
+ *
+ * Type:     function<br />
+ * Name:     html_checkboxes<br />
+ * Purpose:  <br />
+ * Credit :  
+ *
+ * @author   shogo < shogo4405 at gmail dot com>
+ * @version  1.00
+ * @param    string
+ * @return   string
+ */
 function jsmarty_function_html_checkboxes(params, jsmarty)
 {
 	var value, html = [];
-	var outputf = jsmarty_function_html_checkboxes.output;
+	var outputf = jsmarty_function_html_checkboxes.outputf;
 
 	var name      = 'checkbox';
 	var extra     = [];
@@ -17,9 +36,9 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 		{
 			case 'name':
 				name = params[i]; break;
-			case 'labels':// Boolean
+			case 'labels':
 				labels = params[i]; break; 
-			case 'options':// Hash
+			case 'options':
 				options = params[i]; break;
 			case 'values':
 				values = params[i]; break;
@@ -66,7 +85,7 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 		return html.join('\n');
 };
 
-jsmarty_function_html_checkboxes.output = function(name, value, output, selected, extra, separator, labels)
+jsmarty_function_html_checkboxes.outputf = function(name, value, output, selected, extra, separator, labels)
 {
 	var html = '';
 

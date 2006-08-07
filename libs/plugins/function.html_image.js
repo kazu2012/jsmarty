@@ -1,8 +1,8 @@
-function smarty_function_html_image(params, smarty)
+function jsmarty_function_html_image(params, jsmarty)
 {
 	if(params.file)
 	{
-		smarty.trigger_error("html_image: missing 'file' parameter");
+		jsmarty.trigger_error("html_image: missing 'file' parameter");
 		return '';
 	}
 
@@ -10,7 +10,7 @@ function smarty_function_html_image(params, smarty)
 
 	for(var i in params)
 	{
-		switch(params[i])
+		switch(i)
 		{
 			case 'dpi':
 			case 'file':
@@ -21,8 +21,8 @@ function smarty_function_html_image(params, smarty)
 				break;
 			default:
 				attr.push(i +'="'+ params[i] +'"');
-				break;			
-		}		
+				break;
+		}
 	}
 
 	return html;
