@@ -1,23 +1,5 @@
-jsmarty_function_html_radios = function($params, $smarty)
+function jsmarty_function_html_radios(params, jsmarty)
 {
-	var $html = '', $selected = '';
-	var $name, $values, $options, $separator;
-
-	$name      = $params['name'] || '';
-	$options   = $params['options'];
-	$separator = $params['separator'] || '';
-
-	if($name != '')
-		$name = ' name='+ $name;
-
-	for(var i in $options)
-	{
-		$selected = ($params['selected'] == i) ? ' checked' : '';
-
-		$html +=
-			'<input type="radio" value="+ i +"'+ $name + $selected +
-			' />' + $options[i] + $separator;
-	}
-
-	return $html;
-}
+	var html = '';
+	return html;
+};

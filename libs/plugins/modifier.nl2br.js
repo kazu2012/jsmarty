@@ -7,8 +7,8 @@
 /**
  * JSmarty nl2br modifier plugin
  *
- * Type:     modifier<br>
- * Name:     nl2br<br>
+ * Type:     modifier<br />
+ * Name:     nl2br<br />
  * Purpose:  convert \r?\n to <br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
