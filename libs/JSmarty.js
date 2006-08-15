@@ -2,6 +2,10 @@
  * @package JSmarty
  */
 function JSmarty(){};
+
+JSmarty.GLOBALS = self; // global scope
+JSmarty.VERSION = '0.0.1M1';
+
 JSmarty.prototype =
 {
 /**#@+
@@ -42,8 +46,8 @@ JSmarty.prototype =
 //	config_fix_newlines : true
 
 	default_template_handler_func : null,
-
-	compiler_class : 'JSmarty_Compiler',
+//	compiler_file  : 'JSmarty_Compiler.js',
+	compiler_class : 'Compiler',
 	config_class   : 'Config_File',
 
 /**#@+
@@ -183,7 +187,9 @@ JSmarty.prototype.clear_compiled_tpl = function(name){
  -------------------------------------------------------------------- */
 JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 {
-	var i, filter, results, filters;
+	var i, filter, results;
+	var types = this.autoload_filter;
+	var filters = this._plugins.outputfilter;
 	var cache = this.caching, debug = this.debugging;
 
 	if(!debug && this.debugging_ctrl == 'URL')
@@ -214,20 +220,19 @@ JSmarty.prototype.fetch = function(name, ccid, cpid, display)
 	if(cpid == void(0))
 		cpid = this.compile_id;
 
-//	for(i in (types = this.autoload_filter))
-//	{
-//		filters = types[i];
-//		for(filter in filters){
-//			this.load_filter(filter, filters[filter]);
-//		}
-//	}
+	for(i in types)
+	{
+		filters = types[i];
+		for(filter in filters)
+			this.load_filter(filter, filters[filter]);
+	}
 
 	if(this._is_compiled(name) || this._compile_resource(name))
 	{
 		if(debug) info.compile_time = new Date().getTime() - dst;
 		results = JSmarty.templates_c[name].call(this);
-//		for(i in (filters = this._plugins.outputfilter))
-//			results = filters[i](results, this);
+		for(i in filters)
+			results = filters[i](results, this);
 	}
 
 	if(display)
@@ -291,8 +296,6 @@ JSmarty.prototype.unregister_compiler_function = function(name){
  -------------------------------------------------------------------- */
 JSmarty.prototype.load_filter = function(type, name)
 {
-	if(!this._plugins[type + 'filter'][name])
-		this._call(name, null, null, type + 'filter');
 };
 JSmarty.prototype.register_prefilter = function(name){
 	this._plugins.prefilter[name] = window[name];
@@ -341,19 +344,27 @@ JSmarty.prototype._compile_resource = function(name)
 };
 JSmarty.prototype._compile_source = function(name, src)
 {
-	var cpir, name = this.compiler_class;
+	var cpir = this._compiler;
+	var name = this.compiler_class;
 
-	if(!(cpir = this._compiler))
-		cpir = this._compiler = new window[name];
+	if(cpir == null)
+	{
+		if(JSmarty[name] == void(0)) /* JSAN.use(name) */;
+		cpir = this._compiler = new JSmarty[name];
+	}
 
 	cpir[name](src, this);
 	return cpir.exec(src);
 };
 JSmarty.prototype._is_compiled = function(name)
 {
+	var data;
+
 	if(!this.force_compile && !JSmarty.templates_c[name])
 	{
 		if(this.compile_check) return true;
+	//	data = {};
+	//	if(!this._fetch_resource_info(data)) return false;
 	}
 
 	return false;
@@ -442,8 +453,6 @@ JSmarty.prototype._modf = function(src, modf)
 {
 	var name, args;
 
-	modf = (modf) ? modf.split('|') : [];
-
 	if(this.default_modifiers)
 		modf = modf.concat(this.default_modifiers);
 	if(modf.length == 0) return src;
@@ -458,6 +467,15 @@ JSmarty.prototype._modf = function(src, modf)
 	}
 
 	return src;
+};
+
+JSmarty.prototype._eval = function(src)
+{
+	try{ eval(src) }
+	catch(e){
+		this.trigger_error('');
+	};
+	return '';
 };
 
 /**
@@ -479,8 +497,15 @@ JSmarty.namespace = function()
  */
 JSmarty.importer = function()
 {
-	for(var func in arguments)
-		window[func] = JSmarty.shared[func];
+	var i, func;
+	var parent = JSmarty.shared;
+	var global = JSmarty.GLOBALS
+
+	for(i=arguments.length-1;i>=0;i--)
+	{
+		func = arguments[i];
+		global[func] = shared[func];
+	}
 };
 
 JSmarty.addPlugin = function(name, type, path)
@@ -489,30 +514,32 @@ JSmarty.addPlugin = function(name, type, path)
 	var script = '/' + type +'.' + name +'.js';
 
 	for(var i=path.length-1;i>=0;i--)
-	{
-		if(text = new JSmarty.Connect().getText(path[i] + script))
-			return JSmarty.addFunction(text, name, type);
-	}
+		if(text = new JSmarty.Connect().getText(path[i] + script)) break;
 
-	return false;
+	return JSmarty.addFunction(text, name, type);
 };
 
 JSmarty.addFunction = function(code, name, type)
 {
+	var __parent;
 	var __script = null;
 
 	switch(type)
 	{
 		case 'shared':
-			var __parent = JSmarty.shared; break;
+			__parent = JSmarty.shared; break;
 		default:
-			var __parent = JSmarty.prototype._plugins[type]; break;
+			__parent = JSmarty.prototype._plugins[type]; break;
 	}
 
-	eval(code);
-	__script = eval(JSmarty.toPluginName(name, type));
-	__parent[name] = __script;
+	try
+	{
+		eval(code);
+		__script = eval(JSmarty.toPluginName(name, type));
+	}
+	catch(e){ /* empty */ };
 
+	__parent[name] = __script;
 	return (__script) ? true : false;
 };
 
@@ -530,9 +557,9 @@ JSmarty.Connect.prototype =
 {
 	XMLHTTP : function()
 	{
-		if(window.XMLHttpRequest)
+		if(JSmarty.GLOBALS.XMLHttpRequest)
 			return new XMLHttpRequest;
-		if(window.ActiveXObject)
+		if(JSmarty.GLOBALS.ActiveXObject)
 			return new ActiveXObject('Microsoft.XMLHTTP');
 		return null;
 	}(),
