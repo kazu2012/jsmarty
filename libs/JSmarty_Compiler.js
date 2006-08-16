@@ -2,9 +2,9 @@
  * Template compiling class
  * @package JSmarty
  */
-function JSmarty_Compiler(){};
+JSmarty.Compiler(){};
 
-JSmarty_Compiler.prototype =
+JSmarty.Compiler.prototype =
 {
 	SOTPT : 'output += ',
 	SFOOT : '"";\nreturn output;',
@@ -21,7 +21,7 @@ JSmarty_Compiler.prototype =
 	_folded_blocks : {},
 	_is_defaultmod : null
 };
-JSmarty_Compiler.prototype.JSmarty_Compiler = function(src, smarty)
+JSmarty.Compiler.prototype.JSmarty.Compiler = function(src, smarty)
 {
 	var res, rex = this.RBLCK, list = this._folded_blocks;
 
@@ -39,7 +39,7 @@ JSmarty_Compiler.prototype.JSmarty_Compiler = function(src, smarty)
  * @param  string
  * @return string
  */
-JSmarty_Compiler.prototype.exec = function(src, mode)
+JSmarty.Compiler.prototype.exec = function(src, mode)
 {
 	var isp, iep, icp, ipp, imp, inp, ibp, irp;
 	var S = ' ', M = '|', list = this._folded_blocks
@@ -122,7 +122,7 @@ JSmarty_Compiler.prototype.exec = function(src, mode)
  * @return string
  */
 
-JSmarty_Compiler.prototype.toTag = function(name, parm, src)
+JSmarty.Compiler.prototype.toTag = function(name, parm, src)
 {
 	switch(name)
 	{
@@ -159,7 +159,7 @@ JSmarty_Compiler.prototype.toTag = function(name, parm, src)
  * @param  string
  * @return string|null
  */
-JSmarty_Compiler.prototype.toJSmartyVars = function(src)
+JSmarty.Compiler.prototype.toJSmartyVars = function(src)
 {
 	switch(src)
 	{
@@ -176,7 +176,7 @@ JSmarty_Compiler.prototype.toJSmartyVars = function(src)
  * @param  string
  * @return string|null
  */
-JSmarty_Compiler.prototype.toFunction = function(src)
+JSmarty.Compiler.prototype.toFunction = function(src)
 {
 	if(!src) return null;
 	return 'function(){' + this.exec(src) + '}';
@@ -188,7 +188,7 @@ JSmarty_Compiler.prototype.toFunction = function(src)
  * @param  string
  * @return string
  */
- JSmarty_Compiler.prototype.toString = function(src)
+ JSmarty.Compiler.prototype.toString = function(src)
 {
 	if(!src) return '""';
 	src = src.replace(/\"/g,'\\"'); // ‰¼ŽÀ‘•
@@ -201,7 +201,7 @@ JSmarty_Compiler.prototype.toFunction = function(src)
  * @param  string
  * @return srting
  */
-JSmarty_Compiler.prototype.toPlugin = function(name, parm, src)
+JSmarty.Compiler.prototype.toPlugin = function(name, parm, src)
 {
 	var P = ', ', type = (src) ? 'blck' : 'func';
 	return 'this._call(' + name + P + parm + P + src + P + type + ')';
@@ -213,7 +213,7 @@ JSmarty_Compiler.prototype.toPlugin = function(name, parm, src)
  * @param  string
  * @return string
  */
-JSmarty_Compiler.prototype.toValue = function(src)
+JSmarty.Compiler.prototype.toValue = function(src)
 {
 	src = src.replace(this.RVARS, 'vars.');
 	return src;
@@ -225,7 +225,7 @@ JSmarty_Compiler.prototype.toValue = function(src)
  * @param  string
  * @return string
  */
-JSmarty_Compiler.prototype.toVar = function(src){
+JSmarty.Compiler.prototype.toVar = function(src){
 	return 'vars.'+ src;
 };
 
@@ -236,7 +236,7 @@ JSmarty_Compiler.prototype.toVar = function(src){
  * @param  string
  * @return string
  */
-JSmarty_Compiler.prototype.toModf = function(src, modf){
+JSmarty.Compiler.prototype.toModf = function(src, modf){
 	return 'this._modf('+ src +','+ modf +')';
 };
 
@@ -246,7 +246,7 @@ JSmarty_Compiler.prototype.toModf = function(src, modf){
  * @param  string
  * @return string
  */
-JSmarty_Compiler.prototype.toParm = function(src)
+JSmarty.Compiler.prototype.toParm = function(src)
 {
 	var res, obj = [], rex = this.RPARM;
 

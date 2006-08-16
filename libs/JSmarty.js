@@ -499,7 +499,7 @@ JSmarty.importer = function()
 {
 	var i, func;
 	var parent = JSmarty.shared;
-	var global = JSmarty.GLOBALS
+	var global = JSmarty.GLOBALS;
 
 	for(i=arguments.length-1;i>=0;i--)
 	{

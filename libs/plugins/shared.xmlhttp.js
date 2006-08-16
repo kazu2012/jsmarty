@@ -6,10 +6,10 @@
 
 function jsmarty_shared_xmlhttp()
 {
-	if(window.XMLHttpRequest)
+	if(JSmarty.GLOBALS.XMLHttpRequest)
 		return new XMLHttpRequest;
 
-	if(window.ActiveXObject)
+	if(JSmarty.GLOBALS.ActiveXObject)
 	{
 		var xmls = [
 			'Microsoft.XMLHTTP',
