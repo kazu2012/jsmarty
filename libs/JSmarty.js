@@ -385,7 +385,7 @@ JSmarty.prototype._fetch_resource_info = function(data)
 			case 'file':
 				data.url = this.template_dir +'/' + data.name;
 				if(data.get)
-					new JSmarty.Connect().setData(data);
+					new JSmarty.File().setData(data);
 				break;
 			default:
 				var name = data.name;
@@ -432,7 +432,7 @@ JSmarty.prototype._call = function(name, parm, src, type)
 	var call = this._plugins[type];
 
 	if(call[name] == void(0))
-		JSmarty.addPlugin(name, type, this.plugins_dir);
+		new JSmarty.Plugin().addPlugin(name, type, this.plugins_dir);
 	if(!call[name]) return '';
 
 	switch(type)
@@ -498,61 +498,19 @@ JSmarty.importer = function()
 	}
 };
 
-JSmarty.addPlugin = function(name, type, path)
-{
-	var text;
-	var script = '/' + type +'.' + name +'.js';
-
-	for(var i=path.length-1;i>=0;i--)
-		if(text = new JSmarty.Connect().getText(path[i] + script)) break;
-
-	return JSmarty.addFunction(text, name, type);
-};
-
-JSmarty.addFunction = function(code, name, type)
-{
-	var __parent;
-	var __script = null;
-
-	switch(type)
-	{
-		case 'shared':
-			__parent = JSmarty.shared; break;
-		default:
-			__parent = JSmarty.prototype._plugins[type]; break;
-	}
-
-	try
-	{
-		eval(code);
-		__script = eval(JSmarty.toPluginName(name, type));
-	}
-	catch(e){ /* empty */ };
-
-	__parent[name] = __script;
-	return (__script) ? true : false;
-};
-
-/**
- * Arguments ToPluginname
- * @return string
- */
-JSmarty.toPluginName = function(name, type){
-	return ['jsmarty', type, name].join('_');
-};
-
 /**
  * File I/O class
- * @package JSmarty.Connect
+ * @package JSmarty.File
  */
-JSmarty.Connect = function(){};
-JSmarty.Connect.prototype =
+JSmarty.File = function(){};
+JSmarty.File.prototype =
 {
 	XMLHTTP : function()
 	{
-		if(JSmarty.GLOBALS.XMLHttpRequest)
+		var global = JSmarty.GLOBALS;
+		if(global.XMLHttpRequest)
 			return new XMLHttpRequest;
-		if(JSmarty.GLOBALS.ActiveXObject)
+		if(global.ActiveXObject)
 			return new ActiveXObject('Microsoft.XMLHTTP');
 		return null;
 	}(),
@@ -580,20 +538,54 @@ JSmarty.Connect.prototype =
 		return false;
 	}
 };
-
 /**
  * JSmarty Plugin class
  * @package JSmarty.Plugin
  */
 JSmarty.Plugin = function(){};
-JSmarty.Plugin.prototype = JSmarty.Connect.prototype;
+JSmarty.Plugin.prototype = new JSmarty.File();
+with({ p : JSmarty.Plugin.prototype })
+{
+	p.parse = function(code, name, type)
+	{
+		var __parent, __script = null;
 
+		__parent = (type == 'shared') ?
+			JSmarty.shared :
+			JSmarty.prototype._plugins[type];
+
+		if(code)
+		{
+			try
+			{
+				eval(code);
+				__script = eval(['jsmarty', type, name].join('_'));
+			}
+			catch(e){ /* empty */ };
+		}
+
+		__parent[name] = __script;
+		return (__script) ? true : false;
+	};
+	p.addPlugin = function(name, type, path)
+	{
+		var code;
+		var script = [type, name, 'js'].join('.');
+
+		for(var i=path.length-1;i>=0;i--)
+		{
+			code = this.getText(path[i] + '/' + script);
+			if(code) break;
+		}
+
+		return this.parse(code, name, type);
+	};
+}
 /**
- * Trigger Error class
+ * Error class
  * @package JSmarty.Error
  */
 JSmarty.Error = function(){};
 JSmarty.Error.prototype =
 {
-	
 };

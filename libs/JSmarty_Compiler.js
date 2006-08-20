@@ -90,13 +90,13 @@ JSmarty.Compiler.prototype.exec = function(src, mode)
 	src.replace(new RegExp(L + '[^'+ R +']+' + R,'g'), (function(self)
 	{
 		var i = 0, ipp, imp, inp, irp;
-		var name, attr, L = L.length, R = R.length;
+		var name, attr, l = L.length, r = R.length;
 
 		return function(tag, isp, src)
 		{
 			ipp = tag.indexOf(' ');
 			imp = tag.indexOf('|');
-			inp = irp = tag.length - R;
+			inp = irp = tag.length - r;
 
 			if(imp > 0) inp = imp, irp = imp;
 			if(ipp > 0) inp = ipp;
@@ -104,21 +104,21 @@ JSmarty.Compiler.prototype.exec = function(src, mode)
 			// Normal Text
 			txt[i++] = self._string(src.slice(itp, isp));
 
-			switch(tag.charAt(L))
+			switch(tag.charAt(l))
 			{
 				case '*': break;
 				case '"':
 				case "'":
-					txt[i++] = self._string(tag.slice(L, inp));
+					txt[i++] = self._string(tag.slice(l, inp));
 					break;
 				case '$':
 					if(tag.indexOf('$smarty') >= 0)
-						txt[i++] = self._variable(tag.slice(L, inp));
+						txt[i++] = self._variable(tag.slice(l, inp));
 					else
-						txt[i++] = self._variable(tag.slice(L, inp));
+						txt[i++] = self._variable(tag.slice(l, inp));
 					break;
 				default:
-					name = tag.slice(L, inp);
+					name = tag.slice(l, inp);
 					attr = tag.slice(ipp + 1, irp);
 					txt[i++] = self.toTag(name, attr, null);
 					break;
