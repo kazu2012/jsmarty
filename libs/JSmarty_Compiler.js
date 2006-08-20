@@ -2,7 +2,12 @@
  * Template compiling class
  * @package JSmarty
  */
-JSmarty.Compiler(){};
+JSmarty.Compiler = function(){ /* empty */ };
+
+JSmarty.Compiler.STROPS =
+{
+	ne : '!=', eq : '==', lt : '>', gt : '<'
+};
 
 JSmarty.Compiler.prototype =
 {
@@ -19,9 +24,45 @@ JSmarty.Compiler.prototype =
 	right_delimiter: '}',
 
 	_folded_blocks : {},
-	_is_defaultmod : null
+	_is_defaultmod : null,
+
+	/**
+	 * ToString
+	 * @return string
+	 */
+	_string : function(src)
+	{
+		return "'"+ src + "'";
+	},
+
+	/**
+	 * ToPlugin
+	 * @return string
+	 */
+	_plugin : function(src)
+	{
+		
+	},
+
+	/**
+	 * ToVariable
+	 * @return string
+	 */
+	_variable : function()
+	{
+		
+	},
+
+	/**
+	 * ToModifier
+	 * @return string
+	 */
+	_modifier : function()
+	{
+		
+	}
 };
-JSmarty.Compiler.prototype.JSmarty.Compiler = function(src, smarty)
+JSmarty.Compiler.prototype.Compiler = function(src, smarty)
 {
 	var res, rex = this.RBLCK, list = this._folded_blocks;
 
@@ -41,86 +82,74 @@ JSmarty.Compiler.prototype.JSmarty.Compiler = function(src, smarty)
  */
 JSmarty.Compiler.prototype.exec = function(src, mode)
 {
-	var isp, iep, icp, ipp, imp, inp, ibp, irp;
-	var S = ' ', M = '|', list = this._folded_blocks
+	var itp = 0, txt = [];
 	var L = this.left_delimiter , R = this.right_delimiter;
-	var l = L.length, r = R.length, nested = false, txt = [];
-	var name, modf, parm;
 
-	switch(mode)
+	src = src.replace(this.RCRLF,'\\n');
+
+	src.replace(new RegExp(L + '[^'+ R +']+' + R,'g'), (function(self)
 	{
-		case 'if':
-		case 'function':
-			break;
-		default:
-			src = src.replace(this.RCRLF,'\\n');
-			break;
-	}
+		var i = 0, ipp, imp, inp, irp;
+		var name, attr, L = L.length, R = R.length;
 
-	for(var i=0,fin=src.lastIndexOf(R);i<fin;i=iep+r)
-	{
-		isp = src.indexOf(L, i)+l, iep = src.indexOf(R, i);
-
-		if(nested)
+		return function(tag, isp, src)
 		{
-			switch(src.indexOf(name, isp))
+			ipp = tag.indexOf(' ');
+			imp = tag.indexOf('|');
+			inp = irp = tag.length - R;
+
+			if(imp > 0) inp = imp, irp = imp;
+			if(ipp > 0) inp = ipp;
+
+			// Normal Text
+			txt[i++] = self._string(src.slice(itp, isp));
+
+			switch(tag.charAt(L))
 			{
-				case isp+1:
-					txt.push(this.toTag(name, parm, src.slice(ibp, isp-l)));
-					if(modf && !(nested = false))
-						txt[txt.length-1] = this.toModf(txt[txt.length-1], this.toString(src.slice(imp+1, ibp-r)));
+				case '*': break;
+				case '"':
+				case "'":
+					txt[i++] = self._string(tag.slice(L, inp));
+					break;
+				case '$':
+					if(tag.indexOf('$smarty') >= 0)
+						txt[i++] = self._variable(tag.slice(L, inp));
+					else
+						txt[i++] = self._variable(tag.slice(L, inp));
 					break;
 				default:
+					name = tag.slice(L, inp);
+					attr = tag.slice(ipp + 1, irp);
+					txt[i++] = self.toTag(name, attr, null);
 					break;
-			}
-			continue;
+			};
+
+			itp = isp + tag.length;
+			return '';
 		}
+	})(this));
 
-		if(i != (icp = isp-l))
-			txt.push(this.toString(src.slice(i, icp)));
+	// Normal Text
+	txt.push(this._string(src.slice(itp)));
 
-		inp = irp = iep;
-		ipp = src.indexOf(S,isp), imp = src.indexOf(M,isp);
-		if(modf = (imp < iep && imp != -1)) inp = imp, irp = imp;
-		if(parm = (ipp < iep && ipp != -1)) inp = ipp;
+	txt.unshift(this.SHEAD);
+	txt.push(this.SFOOT);
 
-		switch(src.charAt(isp))
-		{
-			case '*': break;
-			case '#': break;
-			case '$':
-				txt.push(this.toVar(src.slice(isp + 1, iep)));
-				break;
-			default:
-				name = src.slice(isp, inp);
-				parm = (parm) ? src.slice(ipp + 1, irp) : '';
-				if(nested = list[name]) ibp = iep + r;
-				else txt.push(this.toTag(name, parm, null));
-				break;
-		}
-	}
-
-	if(i != src.length)
-		txt.push(this.toString(src.slice(i)));
-
-	switch(mode)
-	{
-		case 'if':
-			return txt.join(" + ");
-		default:
-			txt.unshift(this.SHEAD);
-			txt.push(this.SFOOT);
-			return txt.join(" + ").replace(/"" \+|(\+ "")/g, '');
-	}
+	return txt.join(" + ");
 };
+
 /**
- * toTag
- *
- * @param  string
- * @param  string
- * @param  string
+ * ToTag
  * @return string
  */
+JSmarty.Compiler.prototype._tag = function(name, attr)
+{
+	switch(name)
+	{
+		case 'literal':
+			break;
+	}
+};
 
 JSmarty.Compiler.prototype.toTag = function(name, parm, src)
 {

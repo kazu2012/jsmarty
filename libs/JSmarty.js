@@ -6,6 +6,9 @@ function JSmarty(){};
 JSmarty.GLOBALS = self; // global scope
 JSmarty.VERSION = '0.0.1M1';
 
+JSmarty.shared = {};
+JSmarty.templates_c = {};
+
 JSmarty.prototype =
 {
 /**#@+
@@ -479,20 +482,7 @@ JSmarty.prototype._eval = function(src)
 };
 
 /**
- * Setup namespaces
- *
- * @param strings
- */
-JSmarty.namespace = function()
-{
-	for(var i=arguments.length-1;i>=0;i--){
-		JSmarty[arguments[i]] = {};
-	}
-};
-
-/**
  * import shared plugins
- 
  * @param string
  */
 JSmarty.importer = function()
@@ -544,14 +534,17 @@ JSmarty.addFunction = function(code, name, type)
 };
 
 /**
- * Arguments to plugin name
- *
+ * Arguments ToPluginname
  * @return string
  */
 JSmarty.toPluginName = function(name, type){
 	return ['jsmarty', type, name].join('_');
 };
 
+/**
+ * File I/O class
+ * @package JSmarty.Connect
+ */
 JSmarty.Connect = function(){};
 JSmarty.Connect.prototype =
 {
@@ -588,4 +581,19 @@ JSmarty.Connect.prototype =
 	}
 };
 
-JSmarty.namespace('templates_c','shared');
+/**
+ * JSmarty Plugin class
+ * @package JSmarty.Plugin
+ */
+JSmarty.Plugin = function(){};
+JSmarty.Plugin.prototype = JSmarty.Connect.prototype;
+
+/**
+ * Trigger Error class
+ * @package JSmarty.Error
+ */
+JSmarty.Error = function(){};
+JSmarty.Error.prototype =
+{
+	
+};
