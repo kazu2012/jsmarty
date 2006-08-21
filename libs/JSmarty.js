@@ -3,7 +3,8 @@
  */
 function JSmarty(){};
 
-JSmarty.GLOBALS = self; // global scope
+JSmarty.GLOBALS = self;
+JSmarty.ERLEVEL = 'none';
 JSmarty.VERSION = '0.0.1M1';
 
 JSmarty.shared = {};
@@ -507,10 +508,9 @@ JSmarty.File.prototype =
 {
 	XMLHTTP : function()
 	{
-		var global = JSmarty.GLOBALS;
-		if(global.XMLHttpRequest)
+		if(JSmarty.GLOBALS.XMLHttpRequest)
 			return new XMLHttpRequest;
-		if(global.ActiveXObject)
+		if(JSmarty.GLOBALS.ActiveXObject)
 			return new ActiveXObject('Microsoft.XMLHTTP');
 		return null;
 	}(),
@@ -544,48 +544,44 @@ JSmarty.File.prototype =
  */
 JSmarty.Plugin = function(){};
 JSmarty.Plugin.prototype = new JSmarty.File();
-with({ p : JSmarty.Plugin.prototype })
+JSmarty.Plugin.prototype.parse = function(code, name, type)
 {
-	p.parse = function(code, name, type)
+	var __parent, __script = null;
+
+	__parent = (type == 'shared') ?
+		JSmarty.shared :
+		JSmarty.prototype._plugins[type];
+
+	if(code)
 	{
-		var __parent, __script = null;
-
-		__parent = (type == 'shared') ?
-			JSmarty.shared :
-			JSmarty.prototype._plugins[type];
-
-		if(code)
+		try
 		{
-			try
-			{
-				eval(code);
-				__script = eval(['jsmarty', type, name].join('_'));
-			}
-			catch(e){ /* empty */ };
+			eval(code);
+			__script = eval(['jsmarty', type, name].join('_'));
 		}
+		catch(e){ /* empty */ };
+	}
 
-		__parent[name] = __script;
-		return (__script) ? true : false;
-	};
-	p.addPlugin = function(name, type, path)
+	__parent[name] = __script;
+	return (__script) ? true : false;
+};
+JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
+{
+	var code;
+	var script = [type, name, 'js'].join('.');
+
+	for(var i=path.length-1;i>=0;i--)
 	{
-		var code;
-		var script = [type, name, 'js'].join('.');
+		code = this.getText(path[i] + '/' + script);
+		if(code) break;
+	}
 
-		for(var i=path.length-1;i>=0;i--)
-		{
-			code = this.getText(path[i] + '/' + script);
-			if(code) break;
-		}
+	return this.parse(code, name, type);
+};
 
-		return this.parse(code, name, type);
-	};
-}
 /**
- * Error class
- * @package JSmarty.Error
+ * Error object
  */
-JSmarty.Error = function(){};
-JSmarty.Error.prototype =
+JSmarty.Error = function(msg, level)
 {
 };

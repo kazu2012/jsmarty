@@ -3,7 +3,6 @@
  * @package JSmarty
  */
 JSmarty.Compiler = function(){ /* empty */ };
-
 JSmarty.Compiler.STROPS =
 {
 	ne : '!=', eq : '==', lt : '>', gt : '<'
@@ -25,6 +24,8 @@ JSmarty.Compiler.prototype =
 
 	_folded_blocks : {},
 	_is_defaultmod : null,
+
+	_DEPTH : 0,
 
 	/**
 	 * ToString
@@ -142,12 +143,21 @@ JSmarty.Compiler.prototype.exec = function(src, mode)
  * ToTag
  * @return string
  */
-JSmarty.Compiler.prototype._tag = function(name, attr)
+JSmarty.Compiler.prototype._tag = function(name, attr, text)
 {
 	switch(name)
 	{
 		case 'literal':
-			break;
+			return this._string(text);
+		case 'strip':
+			return this._string(text.replace(/\r?\n|\t?/g,''));
+		case 'ldelim':
+			return this._string('this.left_delimiter');
+		default:
+			name = this._string(name);
+			attr = this._attribute(attr);
+			text = this._(text);
+			return this._plugin(name, parm, text);
 	}
 };
 
