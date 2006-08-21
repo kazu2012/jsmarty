@@ -4,7 +4,6 @@
 function JSmarty(){};
 
 JSmarty.GLOBALS = self;
-JSmarty.ERLEVEL = 'none';
 JSmarty.VERSION = '0.0.1M1';
 
 JSmarty.shared = {};
@@ -501,7 +500,7 @@ JSmarty.importer = function()
 
 /**
  * File I/O class
- * @package JSmarty.File
+ * @package JSmarty
  */
 JSmarty.File = function(){};
 JSmarty.File.prototype =
@@ -538,9 +537,10 @@ JSmarty.File.prototype =
 		return false;
 	}
 };
+
 /**
  * JSmarty Plugin class
- * @package JSmarty.Plugin
+ * @package JSmarty
  */
 JSmarty.Plugin = function(){};
 JSmarty.Plugin.prototype = new JSmarty.File();
@@ -584,4 +584,5 @@ JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
  */
 JSmarty.Error = function(msg, level)
 {
+	
 };
