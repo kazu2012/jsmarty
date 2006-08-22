@@ -72,424 +72,414 @@ JSmarty.prototype =
 	_smarty_debug_id : '#JSMARTY_DEBUG',
 	_smarty_debug_info : []
 };
-
-/* --------------------------------------------------------------------
- # Template Variables
- -------------------------------------------------------------------- */
-JSmarty.prototype.assign = function(key, value)
+(function(Class)
 {
-	switch(typeof(value))
+	Class.assign = function()
 	{
-		case 'undefined':
-			value = null;
-			break;
-		case 'object':
-			for(var i in value) value[i] = value[i];
-			break;
-	}
-
-	if(key instanceof Object)
-	{
-		for(var i in key)
-			this._tpl_vars[i] = key[i];
-		return;
-	}
-
-	if(key != '') this._tpl_vars[key] = value;
-};
-
-JSmarty.prototype.assign_by_ref = function(key, value){
-	if(key != '') this._tpl_vars[key] = value;
-};
-
-JSmarty.prototype.append = function(key, value, merge)
-{
-	var i, k, vars, mkey;
-
-	if(key instanceof Object)
-	{
-		for(i in key)
+		switch(typeof(value))
 		{
-			mkey = key[i];
-			if(!((vars = this._tpl_vars[i]) instanceof Array))
-				vars = this._tpl_vars[i] = [];
-			if(merge && mkey instanceof Object)
+			case 'undefined':
+				value = null;
+				break;
+			case 'object':
+				for(var i in value) value[i] = value[i];
+				break;
+		}
+
+		if(key instanceof Object)
+		{
+			for(var i in key)
+				this._tpl_vars[i] = key[i];
+			return;
+		}
+
+		if(key != '') this._tpl_vars[key] = value;
+	};
+	Class.assign_by_ref = function(key, value){
+		if(key != '') this._tpl_vars[key] = value;
+	};
+	Class.append = function(key, value, merge)
+	{
+		var i, k, vars, mkey;
+
+		if(key instanceof Object)
+		{
+			for(i in key)
 			{
-				for(k in mkey)
-					vars[k] = mkey[k];
+				mkey = key[i];
+				if(!((vars = this._tpl_vars[i]) instanceof Array))
+					vars = this._tpl_vars[i] = [];
+				if(merge && mkey instanceof Object)
+				{
+					for(k in mkey)
+						vars[k] = mkey[k];
+					return;
+				}
+				vars.push(mkey);
+			}
+		}
+		else
+		{
+			if(key != '' && value != void(0)) return;
+			if(!((vars = this._tpl_vars[key]) instanceof Array))
+				vars = this._tpl_vars[key] = [];
+			if(merge && value instanceof Object)
+			{
+				for(i in value)
+					vars[i] = value[i];
 				return;
 			}
-			vars.push(mkey);
+			vars.push(value);
 		}
-	}
-	else
+	};
+	Class.append_by_ref = function(key, value, merge)
 	{
 		if(key != '' && value != void(0)) return;
+
 		if(!((vars = this._tpl_vars[key]) instanceof Array))
 			vars = this._tpl_vars[key] = [];
 		if(merge && value instanceof Object)
 		{
-			for(i in value)
+			for(var i in value)
 				vars[i] = value[i];
 			return;
 		}
 		vars.push(value);
-	}
-};
+	};
 
-JSmarty.prototype.append_by_ref = function(key, value, merge)
-{
-	if(key != '' && value != void(0)) return;
-
-	if(!((vars = this._tpl_vars[key]) instanceof Array))
-		vars = this._tpl_vars[key] = [];
-	if(merge && value instanceof Object)
+	Class.clear_assign = function(key)
 	{
-		for(var i in value)
-			vars[i] = value[i];
-		return;
-	}
-	vars.push(value);
-};
+		if(key instanceof Object)
+		{
+			for(var i in key)
+				delete this._tpl_vars[key[i]];
+			return;
+		}
 
-JSmarty.prototype.clear_assign = function(key)
-{
-	if(key instanceof Object)
+		if(key != '') delete this._tpl_vars[key];
+	};
+
+	Class.clear_all_assign = function(){
+		this._tpl_vars = {};
+	};
+
+	Class.get_template_vars = function(key){
+		return (key == void(0)) ? this._tpl_vars[key] : this._tpl_vars;
+	};
+	/* -----------------------------------------------------------------
+	 # Cashing
+	 ---------------------------------------------------------------- */
+	Class.clear_all_cache = function(){
+		JSmarty.cache = {};
+	};
+	Class.clear_cache = function(name){
+		delete JSmarty.cache[name];
+	};
+	Class.is_cashed = function(name){
+		return false;
+	};
+	Class.clear_compiled_tpl = function(name){
+		delete JSmarty.templates_c[name];
+	};
+	/* -----------------------------------------------------------------
+	 # Template Process
+	 ---------------------------------------------------------------- */
+	Class.fetch = function(name, ccid, cpid, display)
 	{
-		for(var i in key)
-			delete this._tpl_vars[key[i]];
-		return;
-	}
+		var i, filter, results;
+		var types = this.autoload_filter;
+		var filters = this._plugins.outputfilter;
+		var cache = this.caching, debug = this.debugging;
 
-	if(key != '') delete this._tpl_vars[key];
-};
+		if(!debug && this.debugging_ctrl == 'URL')
+		{
+			var hash = location.hash;
+			var dbid = this._smarty_debug_id;
 
-JSmarty.prototype.clear_all_assign = function(){
-	this._tpl_vars = {};
-};
+			if(hash == dbid + '=on')
+				debug = true;
+			else if(hash == dbid + '=off')
+				debug = false;
+		}
 
-JSmarty.prototype.get_template_vars = function(key){
-	return (key == void(0)) ? this._tpl_vars[key] : this._tpl_vars;
-};
-/* --------------------------------------------------------------------
- # Cashing
- -------------------------------------------------------------------- */
-JSmarty.prototype.clear_all_cache = function(){
-	JSmarty.cache = {};
-};
-JSmarty.prototype.clear_cache = function(name){
-	delete JSmarty.cache[name];
-};
-JSmarty.prototype.is_cashed = function(name){
-	return false;
-};
-JSmarty.prototype.clear_compiled_tpl = function(name){
-	delete JSmarty.templates_c[name];
-};
-/* --------------------------------------------------------------------
- # Template Process
- -------------------------------------------------------------------- */
-JSmarty.prototype.fetch = function(name, ccid, cpid, display)
-{
-	var i, filter, results;
-	var types = this.autoload_filter;
-	var filters = this._plugins.outputfilter;
-	var cache = this.caching, debug = this.debugging;
-
-	if(!debug && this.debugging_ctrl == 'URL')
-	{
-		var hash = location.hash;
-		var dbid = this._smarty_debug_id;
-
-		if(hash == dbid + '=on')
-			debug = true;
-		else if(hash == dbid + '=off')
-			debug = false;
-	}
-
-	if(debug)
-	{
-		var dst  = new Date().getTime();
-		var info = this._smarty_debug_info;
-		var idx  = info.length;
-
-		info = info[idx] =
-			   {
-					type : 'template',
-					depth: 0,
-					filename : name
-			   };
-	}
-
-	if(cpid == void(0))
-		cpid = this.compile_id;
-
-	for(i in types)
-	{
-		filters = types[i];
-		for(filter in filters)
-			this.load_filter(filter, filters[filter]);
-	}
-
-	if(this._is_compiled(name) || this._compile_resource(name))
-	{
-		if(debug) info.compile_time = new Date().getTime() - dst;
-		results = JSmarty.templates_c[name].call(this);
-		for(i in filters)
-			results = filters[i](results, this);
-	}
-
-	if(display)
-	{
-		if(results){ document.write(results); }
 		if(debug)
 		{
-			info.exec_time = new Date().getTime() - dst;
-	//		document.write(JSmarty.use('display_debug_consol')([], this));
-		}
-		return;
-	}
+			var dst  = new Date().getTime();
+			var info = this._smarty_debug_info;
+			var idx  = info.length;
 
-	return results || '';
-};
-JSmarty.prototype.display = function(name, ccid, cpid){
-	this.fetch(name, ccid, cpid, true);
-};
-JSmarty.prototype.template_exists = function(file){
-	return this._call('file', null, null, 'resource').source(file, null, this);
-};
-/* --------------------------------------------------------------------
- # Plugins
- -------------------------------------------------------------------- */
-JSmarty.prototype.register_block = function(name, impl){
-	this._plugins.block[name] = impl;
-};
-JSmarty.prototype.register_function = function(name, impl){
-	this._plugins['function'][name] = impl;
-};
-JSmarty.prototype.register_modifier = function(name, impl){
-	this._plguins.modifier[name] = impl;
-};
-JSmarty.prototype.register_resource = function(type, impl)
-{
-	if(impl instanceof Array && impl.length == 4)
-		this._plugins.resource[type] = impl;
-	else
-		this.trigger_error("malformed function-list for '"+ type +"' in register_resource");
-};
-JSmarty.prototype.register_compiler_function = function(name, impl){
-	this._plugins.compiler[name] = impl;
-};
-JSmarty.prototype.unregister_block = function(name){
-	this._plugins.block[name] = false;
-};
-JSmarty.prototype.unregister_function = function(name){
-	this._plugins['function'][name] = false;
-};
-JSmarty.prototype.unregister_modifier = function(name){
-	this._plugins.modifier[name] = false;
-};
-JSmarty.prototype.unregister_resource = function(name){
-	this._plugins.resource[name] = false;
-};
-JSmarty.prototype.unregister_compiler_function = function(name){
-	this._plugins.compiler[name] = false;
-};
-/* ---------------------------------------------------------------------
- # Filter
- -------------------------------------------------------------------- */
-JSmarty.prototype.load_filter = function(type, name)
-{
-};
-JSmarty.prototype.register_prefilter = function(name){
-	this._plugins.prefilter[name] = JSmarty.GLOBALS[name];
-};
-JSmarty.prototype.register_postfilter = function(name){
-	this._plugins.postfilter[name] = JSmarty.GLOBALS[name];
-};
-JSmarty.prototype.register_outputfilter = function(name){
-	this._plugins.outputfilter[name] = JSmarty.GLOBALS[name];
-};
-JSmarty.prototype.unregister_prefilter = function(name){
-	this._plugins.prefilter[name] = false;
-};
-JSmarty.prototype.unregister_postfilter = function(name){
-	this._plugins.postfilter[name] = false;
-};
-JSmarty.prototype.unregister_outputfilter = function(name){
-	this._plugins.outputfilter[name] = false;
-};
-/* ---------------------------------------------------------------------
- # Error
- -------------------------------------------------------------------- */
-JSmarty.prototype.trigger_error = function(msg){
-	if(this.debugging) alert(msg);
-};
-/* ---------------------------------------------------------------------
- # Process
- -------------------------------------------------------------------- */
-JSmarty.prototype._compile_resource = function(name)
-{
-	var src, data = { name:name };
-	if(!this._fetch_resource_info(data)) return false;
-	if(src = this._compile_source(name, data.src))
-	{
-		try
+			info = info[idx] =
+				   {
+						type : 'template',
+						depth: 0,
+						filename : name
+				   };
+		}
+
+		if(cpid == void(0))
+			cpid = this.compile_id;
+
+		for(i in types)
 		{
-			JSmarty.templates_c[name] = new Function(src);
-			JSmarty.templates_c[name].timestamp = data.time;
-			return true;
+			filters = types[i];
+			for(filter in filters)
+				this.load_filter(filter, filters[filter]);
 		}
-		catch(e){}
-		return false;
-	}
 
-	return false;
-};
-JSmarty.prototype._compile_source = function(name, src)
-{
-	var cpir = this._compiler;
-	var name = this.compiler_class;
-
-	if(cpir == null)
-	{
-		if(JSmarty[name] == void(0)) /* JSAN.use(name) */;
-		cpir = this._compiler = new JSmarty[name];
-	}
-
-	cpir[name](src, this);
-	return cpir.exec(src);
-};
-JSmarty.prototype._is_compiled = function(name)
-{
-	var data;
-
-	if(!this.force_compile && !JSmarty.templates_c[name])
-	{
-		if(this.compile_check) return true;
-	//	data = {};
-	//	if(!this._fetch_resource_info(data)) return false;
-	}
-
-	return false;
-};
-JSmarty.prototype._fetch_resource_info = function(data)
-{
-	var flag = true;
-	if(data.get == void(0)) data.get = true;
-	if(data.bye == void(0)) data.bye = false;
-
-	if(this._parse_resource_name(data))
-	{
-		switch((type = data.type))
+		if(this._is_compiled(name) || this._compile_resource(name))
 		{
-			case 'file':
-				data.url = this.template_dir +'/' + data.name;
-				if(data.get)
-					new JSmarty.File().setData(data);
-				break;
-			default:
-				var name = data.name;
-				var call = this._call(type, null, null, 'resource');
-				var sret = (data.get) ? call[1](name, data, this) : true;
-				flag = sret && call[1](name, data, this);
-				break;
+			if(debug) info.compile_time = new Date().getTime() - dst;
+			results = JSmarty.templates_c[name].call(this);
+			for(i in filters)
+				results = filters[i](results, this);
 		}
-	}
 
-	if(!flag)
-	{
-		if(!(call = this.default_template_handler_func))
-			this.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
-		else
-			flag = call(type, name, data, this);
-	}
+		if(display)
+		{
+			if(results){ document.write(results); }
+			if(debug)
+			{
+				info.exec_time = new Date().getTime() - dst;
+		//		document.write(JSmarty.use('display_debug_consol')([], this));
+			}
+			return;
+		}
 
-	return flag;
-};
-JSmarty.prototype._parse_resource_name = function(data)
-{
-	var name = data.name;
-	var part = name.indexOf(':');
-
-	if(part > 1)
-	{
-		data.type = name.split(0, part);
-		data.name = name.split(part + 1);
-	}
-	else
-	{
-		data.type = this.default_resource_type;
-	}
-
-	return true;
-};
-/* ---------------------------------------------------------------------
- # Wrapper
- -------------------------------------------------------------------- */
-
-JSmarty.prototype._call = function(name, parm, src, type)
-{
-	var call = this._plugins[type];
-
-	if(call[name] == void(0))
-		new JSmarty.Plugin().addPlugin(name, type, this.plugins_dir);
-	if(!call[name]) return '';
-
-	switch(type)
-	{
-		case 'prefilter':
-		case 'postfilter':
-		case 'outputfilter':
-			return true;
-		case 'resource':
-			return call[name];
-		case 'function':
-			return call[name](parm, this);
-		case 'block':
-			return call[name](parm, src, this);
-		case 'modifier':
-			return call[name].apply(null, parm);
-	}
-};
-
-JSmarty.prototype._modf = function(src, modf)
-{
-	var name, args;
-
-	if(this.default_modifiers)
-		modf = modf.concat(this.default_modifiers);
-	if(modf.length == 0) return src;
-
-	for(var i=modf.length-1;i>=0;i--)
-	{
-		args = modf[i].split(':');
-		name = args.shift();
-		args.unshift(src);
-
-		src = this._call(name, args, null, 'modifier');
-	}
-
-	return src;
-};
-
-JSmarty.prototype._eval = function(src)
-{
-	try{ eval(src) }
-	catch(e){
-		this.trigger_error('');
+		return results || '';
 	};
-	return '';
-};
+	Class.display = function(name, ccid, cpid){
+		this.fetch(name, ccid, cpid, true);
+	};
+	Class.template_exists = function(file){
+		return this._call('file', null, null, 'resource').source(file, null, this);
+	};
+	/* -----------------------------------------------------------------
+	 # Plugins
+	 ---------------------------------------------------------------- */
+	Class.register_block = function(name, impl){
+		this._plugins.block[name] = impl;
+	};
+	Class.register_function = function(name, impl){
+		this._plugins['function'][name] = impl;
+	};
+	Class.register_modifier = function(name, impl){
+		this._plguins.modifier[name] = impl;
+	};
+	Class.register_resource = function(type, impl)
+	{
+		if(impl instanceof Array && impl.length == 4)
+			this._plugins.resource[type] = impl;
+		else
+			this.trigger_error("malformed function-list for '"+ type +"' in register_resource");
+	};
+	Class.register_compiler_function = function(name, impl){
+		this._plugins.compiler[name] = impl;
+	};
+	Class.unregister_block = function(name){
+		this._plugins.block[name] = false;
+	};
+	Class.unregister_function = function(name){
+		this._plugins['function'][name] = false;
+	};
+	Class.unregister_modifier = function(name){
+		this._plugins.modifier[name] = false;
+	};
+	Class.unregister_resource = function(name){
+		this._plugins.resource[name] = false;
+	};
+	Class.unregister_compiler_function = function(name){
+		this._plugins.compiler[name] = false;
+	};
+	/* -----------------------------------------------------------------
+	 # Filter
+	 ---------------------------------------------------------------- */
+	Class.load_filter = function(type, name)
+	{
+	};
+	Class.register_prefilter = function(name){
+		this._plugins.prefilter[name] = JSmarty.GLOBALS[name];
+	};
+	Class.register_postfilter = function(name){
+		this._plugins.postfilter[name] = JSmarty.GLOBALS[name];
+	};
+	Class.register_outputfilter = function(name){
+		this._plugins.outputfilter[name] = JSmarty.GLOBALS[name];
+	};
+	Class.unregister_prefilter = function(name){
+		this._plugins.prefilter[name] = false;
+	};
+	Class.unregister_postfilter = function(name){
+		this._plugins.postfilter[name] = false;
+	};
+	Class.unregister_outputfilter = function(name){
+		this._plugins.outputfilter[name] = false;
+	};
+	/* -----------------------------------------------------------------
+	 # Error
+	 ---------------------------------------------------------------- */
+	Class.trigger_error = function(msg){
+		if(this.debugging) alert(msg);
+	};
+	/* -----------------------------------------------------------------
+	 # Process
+	 ---------------------------------------------------------------- */
+	Class._compile_resource = function(name)
+	{
+		var src, data = { name:name };
+		if(!this._fetch_resource_info(data)) return false;
+		if(src = this._compile_source(name, data.src))
+		{
+			try
+			{
+				JSmarty.templates_c[name] = new Function(src);
+				JSmarty.templates_c[name].timestamp = data.time;
+				return true;
+			}
+			catch(e){}
+			return false;
+		}
+
+		return false;
+	};
+	Class._compile_source = function(name, src)
+	{
+		var cpir = this._compiler;
+		var name = this.compiler_class;
+
+		if(cpir == null)
+		{
+			if(JSmarty[name] == void(0)) /* JSAN.use(name) */;
+			cpir = this._compiler = new JSmarty[name];
+		}
+
+		cpir[name](src, this);
+		return cpir.exec(src);
+	};
+	Class._is_compiled = function(name)
+	{
+		var data;
+
+		if(!this.force_compile && !JSmarty.templates_c[name])
+		{
+			if(this.compile_check) return true;
+		//	data = {};
+		//	if(!this._fetch_resource_info(data)) return false;
+		}
+
+		return false;
+	};
+	Class._fetch_resource_info = function(data)
+	{
+		var flag = true;
+		if(data.get == void(0)) data.get = true;
+		if(data.bye == void(0)) data.bye = false;
+
+		if(this._parse_resource_name(data))
+		{
+			switch((type = data.type))
+			{
+				case 'file':
+					data.url = this.template_dir +'/' + data.name;
+					if(data.get)
+						new JSmarty.File().setData(data);
+					break;
+				default:
+					var name = data.name;
+					var call = this._call(type, null, null, 'resource');
+					var sret = (data.get) ? call[1](name, data, this) : true;
+					flag = sret && call[1](name, data, this);
+					break;
+			}
+		}
+
+		if(!flag)
+		{
+			if(!(call = this.default_template_handler_func))
+				this.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
+			else
+				flag = call(type, name, data, this);
+		}
+
+		return flag;
+	};
+	Class._parse_resource_name = function(data)
+	{
+		var name = data.name;
+		var part = name.indexOf(':');
+
+		if(part > 1)
+		{
+			data.type = name.split(0, part);
+			data.name = name.split(part + 1);
+		}
+		else
+		{
+			data.type = this.default_resource_type;
+		}
+
+		return true;
+	};
+	Class._call = function(name, parm, src, type)
+	{
+		var call = this._plugins[type];
+
+		if(call[name] == void(0))
+			new JSmarty.Plugin().addPlugin(name, type, this.plugins_dir);
+		if(!call[name]) return '';
+
+		switch(type)
+		{
+			case 'prefilter':
+			case 'postfilter':
+			case 'outputfilter':
+				return true;
+			case 'resource':
+				return call[name];
+			case 'function':
+				return call[name](parm, this);
+			case 'block':
+				return call[name](parm, src, this);
+			case 'modifier':
+				return call[name].apply(null, parm);
+		}
+	};
+	Class._modf = function(src, modf)
+	{
+		var name, args;
+
+		if(this.default_modifiers)
+			modf = modf.concat(this.default_modifiers);
+		if(modf.length == 0) return src;
+
+		for(var i=modf.length-1;i>=0;i--)
+		{
+			args = modf[i].split(':');
+			name = args.shift();
+			args.unshift(src);
+
+			src = this._call(name, args, null, 'modifier');
+		}
+
+		return src;
+	};
+	Class._eval = function(src)
+	{
+		try{ eval(src) }
+		catch(e){
+			this.trigger_error('');
+		};
+		return '';
+	};
+})(JSmarty.prototype);
 
 /**
  * File I/O class
  * @package JSmarty
  */
 JSmarty.File = function(){};
-(function(classdef)
+(function(Class)
 {
-	classdef.XMLHTTP = function()
+	Class.XMLHTTP = function()
 	{
 		var global = JSmarty.CLOBALS;
 		if(global.XMLHttpRequest)
@@ -499,13 +489,13 @@ JSmarty.File = function(){};
 		return null;
 	}();
 
-	classdef.getText = function(url)
+	Class.getText = function(url)
 	{
 		var data = { url:url };
 		return (this.setData(data)) ? data.src : '';
 	};
 
-	classdef.setData = function(data)
+	Class.setData = function(data)
 	{
 		var http = this.XMLHTTP;
 		http.open('GET', data.url, false);
@@ -524,12 +514,12 @@ JSmarty.File = function(){};
 		return false;
 	};
 
-	classdef.read = function()
+	Class.read = function()
 	{
 		
 	};
 
-	classdef.fput = function()
+	Class.fput = function()
 	{
 		
 	};
@@ -542,9 +532,9 @@ JSmarty.File = function(){};
  */
 JSmarty.Plugin = function(){};
 JSmarty.Plugin.prototype = new JSmarty.File;
-(function(classdef)
+(function(Class)
 {
-	classdef.parse = function(code, name, type)
+	Class.parse = function(code, name, type)
 	{
 		var __parent, __script = null;
 
@@ -565,7 +555,7 @@ JSmarty.Plugin.prototype = new JSmarty.File;
 		__parent[name] = __script;
 		return (__script) ? true : false;
 	};
-	classdef.addPlugin = function(name, type, path)
+	Class.addPlugin = function(name, type, path)
 	{
 		var code;
 		var script = [type, name, 'js'].join('.');
