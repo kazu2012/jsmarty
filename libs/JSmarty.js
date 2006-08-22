@@ -487,22 +487,25 @@ JSmarty.prototype._eval = function(src)
  * @package JSmarty
  */
 JSmarty.File = function(){};
-JSmarty.File.prototype =
+(function(classdef)
 {
-	XMLHTTP : function()
+	classdef.XMLHTTP = function()
 	{
-		if(JSmarty.GLOBALS.XMLHttpRequest)
+		var global = JSmarty.CLOBALS;
+		if(global.XMLHttpRequest)
 			return new XMLHttpRequest;
-		if(JSmarty.GLOBALS.ActiveXObject)
+		if(global.ActiveXObject)
 			return new ActiveXObject('Microsoft.XMLHTTP');
 		return null;
-	}(),
-	getText : function(url)
+	}();
+
+	classdef.getText = function(url)
 	{
 		var data = { url:url };
 		return (this.setData(data)) ? data.src : '';
-	},
-	setData : function(data)
+	};
+
+	classdef.setData = function(data)
 	{
 		var http = this.XMLHTTP;
 		http.open('GET', data.url, false);
@@ -519,49 +522,63 @@ JSmarty.File.prototype =
 		}
 		catch(e){ /* empty */ };
 		return false;
-	}
-};
+	};
+
+	classdef.read = function()
+	{
+		
+	};
+
+	classdef.fput = function()
+	{
+		
+	};
+
+})(JSmarty.File.prototype);
 
 /**
  * JSmarty Plugin class
  * @package JSmarty
  */
 JSmarty.Plugin = function(){};
-JSmarty.Plugin.prototype = new JSmarty.File();
-JSmarty.Plugin.prototype.parse = function(code, name, type)
+JSmarty.Plugin.prototype = new JSmarty.File;
+(function(classdef)
 {
-	var __parent, __script = null;
-
-	__parent = (type == 'shared') ?
-		JSmarty.shared :
-		JSmarty.prototype._plugins[type];
-
-	if(code)
+	classdef.parse = function(code, name, type)
 	{
-		try
+		var __parent, __script = null;
+
+		__parent = (type == 'shared') ?
+			JSmarty.shared :
+			JSmarty.prototype._plugins[type];
+
+		if(code)
 		{
-			eval(code);
-			__script = eval(['jsmarty', type, name].join('_'));
+			try
+			{
+				eval(code);
+				__script = eval(['jsmarty', type, name].join('_'));
+			}
+			catch(e){ /* empty */ };
 		}
-		catch(e){ /* empty */ };
-	}
 
-	__parent[name] = __script;
-	return (__script) ? true : false;
-};
-JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
-{
-	var code;
-	var script = [type, name, 'js'].join('.');
-
-	for(var i=path.length-1;i>=0;i--)
+		__parent[name] = __script;
+		return (__script) ? true : false;
+	};
+	classdef.addPlugin = function(name, type, path)
 	{
-		code = this.getText(path[i] + '/' + script);
-		if(code) break;
-	}
+		var code;
+		var script = [type, name, 'js'].join('.');
 
-	return this.parse(code, name, type);
-};
+		for(var i=path.length-1;i>=0;i--)
+		{
+			code = this.getText(path[i] + '/' + script);
+			if(code) break;
+		}
+
+		return this.parse(code, name, type);
+	};
+})(JSmarty.Plugin.prototype);
 
 /**
  * Error object
@@ -570,7 +587,6 @@ JSmarty.Error = function(msg, level)
 {
 	
 };
-
 
 /**
  * import shared plugins
@@ -588,4 +604,3 @@ JSmarty.importer = function()
 		global[func] = shared[func];
 	}
 };
-
