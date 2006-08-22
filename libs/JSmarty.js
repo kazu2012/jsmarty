@@ -1,7 +1,7 @@
 /**
  * @package JSmarty
  */
-function JSmarty(){};
+function JSmarty(){ /* empty */ };
 
 JSmarty.GLOBALS = self;
 JSmarty.VERSION = '0.0.1M1';
@@ -66,6 +66,7 @@ JSmarty.prototype =
 	_foreach : {},
 	_section : {},
 	_capture : {},
+	_version : JSmarty.VERSION,
 	_compiler : null,
 	_tpl_vars : {},
 	_smarty_debug_id : '#JSMARTY_DEBUG',
@@ -301,13 +302,13 @@ JSmarty.prototype.load_filter = function(type, name)
 {
 };
 JSmarty.prototype.register_prefilter = function(name){
-	this._plugins.prefilter[name] = window[name];
+	this._plugins.prefilter[name] = JSmarty.GLOBALS[name];
 };
 JSmarty.prototype.register_postfilter = function(name){
-	this._plugins.postfilter[name] = window[name];
+	this._plugins.postfilter[name] = JSmarty.GLOBALS[name];
 };
 JSmarty.prototype.register_outputfilter = function(name){
-	this._plugins.outputfilter[name] = window[name];
+	this._plugins.outputfilter[name] = JSmarty.GLOBALS[name];
 };
 JSmarty.prototype.unregister_prefilter = function(name){
 	this._plugins.prefilter[name] = false;
@@ -482,23 +483,6 @@ JSmarty.prototype._eval = function(src)
 };
 
 /**
- * import shared plugins
- * @param string
- */
-JSmarty.importer = function()
-{
-	var i, func;
-	var parent = JSmarty.shared;
-	var global = JSmarty.GLOBALS;
-
-	for(i=arguments.length-1;i>=0;i--)
-	{
-		func = arguments[i];
-		global[func] = shared[func];
-	}
-};
-
-/**
  * File I/O class
  * @package JSmarty
  */
@@ -586,3 +570,22 @@ JSmarty.Error = function(msg, level)
 {
 	
 };
+
+
+/**
+ * import shared plugins
+ * @param string
+ */
+JSmarty.importer = function()
+{
+	var i, func;
+	var parent = JSmarty.shared;
+	var global = JSmarty.GLOBALS;
+
+	for(i=arguments.length-1;i>=0;i--)
+	{
+		func = arguments[i];
+		global[func] = shared[func];
+	}
+};
+
