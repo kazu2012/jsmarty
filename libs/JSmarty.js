@@ -9,72 +9,73 @@ JSmarty.VERSION = '0.0.1M1';
 JSmarty.shared = {};
 JSmarty.templates_c = {};
 
-JSmarty.prototype =
+(function(Class)
 {
 /**#@+
  * JSmarty Configuration Section
  */
-//	config_dir   : 'configs',
-//	compile_dir  : 'templates_c',
-	plugins_dir  : ['plugins'],
-	template_dir : 'templates',
+//	Class.config_dir   = 'configs';
+//	Class.compile_dir  = 'templates_c';
+	Class.plugins_dir  = ['plugins'];
+	Class.template_dir = 'templates';
 
-	debug_tpl : '',
-	debugging : false,
-	debugging_ctrl : 'NONE',
+	Class.debug_tpl = '';
+	Class.debugging = false;
+	Class.debugging_ctrl = 'NONE';
 
-//	compile_check : true,
-	force_compile : false,
+//	Class.compile_check = true;
+	Class.force_compile = false;
 
-//	cache_lifetime : 3600,
-//	cache_modified_check : false,
+//	Class.cache_lifetime = 3600;
+//	Class.cache_modified_check = false;
 
-//	trusted_dir : [],
+//	Class.trusted_dir = [];
 
-	left_delimiter  : '{',
-	right_delimiter : '}',
+	Class.left_delimiter  = '{';
+	Class.right_delimiter = '}';
 
-	compile_id : null,
-//	use_sub_dirs : false,
+	Class.compile_id = null;
+//	Class.use_sub_dirs = false;
 
-	default_modifiers : [],
-	default_resource_type : 'file',
+	Class.default_modifiers = [];
+	Class.default_resource_type = 'file';
 
-	cache_handler_func : null,
-	autoload_filters   : {},
+	Class.cache_handler_func = null;
+	Class.autoload_filters   = {};
 
-//	config_overwrite    : true,
-//	config_booleanize   : true,
-//	config_read_hidden  : false,
-//	config_fix_newlines : true
+//	Class.config_overwrite    = true;
+//	Class.config_booleanize   = true;
+//	Class.config_read_hidden  = false;
+//	Class.config_fix_newlines = true;
 
-	default_template_handler_func : null,
-//	compiler_file  : 'JSmarty_Compiler.js',
-	compiler_class : 'Compiler',
-	config_class   : 'Config_File',
+	Class.default_template_handler_func = null;
+//	Class.compiler_file  = 'JSmarty_Compiler.js';
+	Class.compiler_class = 'Compiler';
+	Class.config_class   = 'Config_File';
 
 /**#@+
  * END JSmarty Configuration Section
  * @access private
  */
-	_plugins :
+	Class._smarty_debug_id = '#JSMARTY_DEBUG';
+	Class._smarty_debug_info = [];
+
+	Class._foreach = {};
+	Class._section = {};
+	Class._capture = {};
+	Class._version = JSmarty.Version;
+	Class._tpl_vars = {};
+	Class._compiler = null;
+	Class._debug_id = 'JSMARTY_DEBUG';
+	Class._debug_info = [];
+	Class._plugins =
 	{
 		modifier: {}, 'function':{}, block:       {},
 		resource: {}, insert:    {}, compiler:    {},
 		prefilter:{}, postfilter:{}, outputfilter:{}
-	},
-	_foreach : {},
-	_section : {},
-	_capture : {},
-	_version : JSmarty.VERSION,
-	_compiler : null,
-	_tpl_vars : {},
-	_smarty_debug_id : '#JSMARTY_DEBUG',
-	_smarty_debug_info : []
-};
-(function(Class)
-{
-	Class.assign = function()
+	};
+
+	Class.assign = function(key, value)
 	{
 		switch(typeof(value))
 		{
@@ -95,9 +96,11 @@ JSmarty.prototype =
 
 		if(key != '') this._tpl_vars[key] = value;
 	};
+
 	Class.assign_by_ref = function(key, value){
 		if(key != '') this._tpl_vars[key] = value;
 	};
+
 	Class.append = function(key, value, merge)
 	{
 		var i, k, vars, mkey;
@@ -132,6 +135,7 @@ JSmarty.prototype =
 			vars.push(value);
 		}
 	};
+
 	Class.append_by_ref = function(key, value, merge)
 	{
 		if(key != '' && value != void(0)) return;
@@ -179,7 +183,7 @@ JSmarty.prototype =
 		return false;
 	};
 	Class.clear_compiled_tpl = function(name){
-		delete JSmarty.templates_c[name];
+		JSmarty.templates_c[name] = null;
 	};
 	/* -----------------------------------------------------------------
 	 # Template Process
@@ -219,12 +223,14 @@ JSmarty.prototype =
 		if(cpid == void(0))
 			cpid = this.compile_id;
 
+/*
 		for(i in types)
 		{
 			filters = types[i];
 			for(filter in filters)
 				this.load_filter(filter, filters[filter]);
 		}
+*/
 
 		if(this._is_compiled(name) || this._compile_resource(name))
 		{
@@ -479,9 +485,17 @@ JSmarty.prototype =
 JSmarty.File = function(){};
 (function(Class)
 {
+	var global = JSmarty.GLOBALS;
+
+	Class._system = 'http';
+
+	Class.FILESYS = function()
+	{
+		return false;
+	}();
+
 	Class.XMLHTTP = function()
 	{
-		var global = JSmarty.CLOBALS;
 		if(global.XMLHttpRequest)
 			return new XMLHttpRequest;
 		if(global.ActiveXObject)
@@ -498,30 +512,41 @@ JSmarty.File = function(){};
 	Class.setData = function(data)
 	{
 		var http = this.XMLHTTP;
-		http.open('GET', data.url, false);
+
 		try
 		{
+			http.open('GET', data.url, false);
 			http.send('')
 			if(http.status == 200 || http.status == 0)
 			{
 				data.src  = http.responseText;
 				data.time = new Date(http.getResponseHeader('Last-Modified')).getTime();
 			}
-			http.abort();
+			
+			alert(data.src);
+
 			return true;
 		}
 		catch(e){ /* empty */ };
 		return false;
 	};
 
-	Class.read = function()
+	Class.read = function(path)
 	{
-		
+		switch(this._system)
+		{
+			default:
+				return null;
+		};
 	};
 
-	Class.fput = function()
+	Class.fput = function(path)
 	{
-		
+		switch(this._system)
+		{
+			default:
+				return false;
+		};
 	};
 
 })(JSmarty.File.prototype);
@@ -555,6 +580,7 @@ JSmarty.Plugin.prototype = new JSmarty.File;
 		__parent[name] = __script;
 		return (__script) ? true : false;
 	};
+
 	Class.addPlugin = function(name, type, path)
 	{
 		var code;
@@ -568,6 +594,7 @@ JSmarty.Plugin.prototype = new JSmarty.File;
 
 		return this.parse(code, name, type);
 	};
+
 })(JSmarty.Plugin.prototype);
 
 /**
