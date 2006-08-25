@@ -363,12 +363,9 @@ JSmarty.templates_c = {};
 	};
 	Class._is_compiled = function(name)
 	{
-		var data;
-
 		if(!this.force_compile && !JSmarty.templates_c[name])
 		{
 			if(this.compile_check) return true;
-		//	data = {};
 		//	if(!this._fetch_resource_info(data)) return false;
 		}
 
@@ -522,9 +519,6 @@ JSmarty.File = function(){};
 				data.src  = http.responseText;
 				data.time = new Date(http.getResponseHeader('Last-Modified')).getTime();
 			}
-			
-			alert(data.src);
-
 			return true;
 		}
 		catch(e){ /* empty */ };
