@@ -49,7 +49,7 @@ JSmarty.templates_c = {};
 //	Class.config_fix_newlines = true;
 
 	Class.default_template_handler_func = null;
-//	Class.compiler_file  = 'JSmarty_Compiler.js';
+	Class.compiler_file  = 'JSmarty_Compiler.js';
 	Class.compiler_class = 'Compiler';
 	Class.config_class   = 'Config_File';
 
@@ -341,7 +341,9 @@ JSmarty.templates_c = {};
 				JSmarty.templates_c[name].timestamp = data.time;
 				return true;
 			}
-			catch(e){}
+			catch(e)
+			{
+			}
 			return false;
 		}
 
@@ -354,12 +356,11 @@ JSmarty.templates_c = {};
 
 		if(cpir == null)
 		{
-			if(JSmarty[name] == void(0)) /* JSAN.use(name) */;
+			if(JSmarty[name] == void(0)) /* JSAN.use(name) */ ;
 			cpir = this._compiler = new JSmarty[name];
 		}
 
-		cpir[name](src, this);
-		return cpir.exec(src);
+		return cpir._compile_file(src);
 	};
 	Class._is_compiled = function(name)
 	{
@@ -422,7 +423,10 @@ JSmarty.templates_c = {};
 
 		return true;
 	};
-	Class._call = function(name, parm, src, type)
+	/* -----------------------------------------------------------------
+	 # Process
+	 ---------------------------------------------------------------- */
+	Class._call = function(name, attr, src, type)
 	{
 		var call = this._plugins[type];
 
@@ -439,11 +443,11 @@ JSmarty.templates_c = {};
 			case 'resource':
 				return call[name];
 			case 'function':
-				return call[name](parm, this);
+				return call[name](attr, this);
 			case 'block':
-				return call[name](parm, src, this);
+				return call[name](attr, src, this);
 			case 'modifier':
-				return call[name].apply(null, parm);
+				return call[name].apply(null, attr);
 		}
 	};
 	Class._modf = function(src, modf)
@@ -485,6 +489,7 @@ JSmarty.File = function(){};
 	var global = JSmarty.GLOBALS;
 
 	Class._system = 'http';
+	Class._mtimes = {};
 
 	Class.FILESYS = function()
 	{
@@ -525,22 +530,49 @@ JSmarty.File = function(){};
 		return false;
 	};
 
-	Class.read = function(path)
+	Class.fread = function(path)
 	{
+		var http, file;
+
 		switch(this._system)
 		{
-			default:
+			case 'http':
+				http = this.XMLHTTP;
+				try
+				{
+					http.open('GET', path, false);
+					http.send('');
+					file = http.responseText;
+					this._mtimes[path] = http.getResponseHeader('Last-Modified');
+					return file;
+				}
+				catch(e){ /* empty */ };
 				return null;
 		};
+
+		return null;
 	};
 
-	Class.fput = function(path)
+	Class.mtime = function(path)
 	{
 		switch(this._system)
 		{
-			default:
+			case 'http':
+				return this._mtimes[path];
+		};
+
+		return null;
+	};
+
+	Class.fputs = function(path, text)
+	{
+		switch(this._system)
+		{
+			case 'http':
 				return false;
 		};
+
+		return false;
 	};
 
 })(JSmarty.File.prototype);
