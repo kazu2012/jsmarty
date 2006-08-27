@@ -323,8 +323,11 @@ JSmarty.templates_c = {};
 	/* -----------------------------------------------------------------
 	 # Error
 	 ---------------------------------------------------------------- */
-	Class.trigger_error = function(msg){
-		if(this.debugging) alert(msg);
+	Class.trigger_error = function(msg, level)
+	{
+		if(!this.debugging) level = 'none;'
+		if(msg instanceof Object) msg = msg.description || msg;
+		JSmarty.trigger_error(msg, level);
 	};
 	/* -----------------------------------------------------------------
 	 # Process
@@ -375,22 +378,25 @@ JSmarty.templates_c = {};
 	Class._fetch_resource_info = function(data)
 	{
 		var flag = true;
-		if(data.get == void(0)) data.get = true;
-		if(data.bye == void(0)) data.bye = false;
+		if(data.gets == void(0)) data.gets = true;
+		if(data.quit == void(0)) data.quit = false;
 
 		if(this._parse_resource_name(data))
 		{
-			switch((type = data.type))
+			switch(data.type)
 			{
 				case 'file':
 					data.url = this.template_dir +'/' + data.name;
-					if(data.get)
-						new JSmarty.File().setData(data);
+					if(data.gets)
+					{
+						data.src  = new JSmarty.File().fread(data.url);
+						data.time = new JSmarty.File().mtime(data.url);
+					}
 					break;
 				default:
 					var name = data.name;
 					var call = this._call(type, null, null, 'resource');
-					var sret = (data.get) ? call[1](name, data, this) : true;
+					var sret = (data.gets) ? call[1](name, data.type, this) : true;
 					flag = sret && call[1](name, data, this);
 					break;
 			}
@@ -471,12 +477,22 @@ JSmarty.templates_c = {};
 	};
 	Class._eval = function(src)
 	{
-		try{ eval(src) }
-		catch(e){
-			this.trigger_error('');
-		};
+		try{ return eval(src); }
+		catch(e){ this.trigger_error() };
+
 		return '';
 	};
+
+	Class._inSection = function()
+	{
+		
+	};
+
+	Class._inForeach = function()
+	{
+		
+	};
+
 })(JSmarty.prototype);
 
 /**
@@ -505,31 +521,6 @@ JSmarty.File = function(){};
 		return null;
 	}();
 
-	Class.getText = function(url)
-	{
-		var data = { url:url };
-		return (this.setData(data)) ? data.src : '';
-	};
-
-	Class.setData = function(data)
-	{
-		var http = this.XMLHTTP;
-
-		try
-		{
-			http.open('GET', data.url, false);
-			http.send('')
-			if(http.status == 200 || http.status == 0)
-			{
-				data.src  = http.responseText;
-				data.time = new Date(http.getResponseHeader('Last-Modified')).getTime();
-			}
-			return true;
-		}
-		catch(e){ /* empty */ };
-		return false;
-	};
-
 	Class.fread = function(path)
 	{
 		var http, file;
@@ -544,9 +535,10 @@ JSmarty.File = function(){};
 					http.send('');
 					file = http.responseText;
 					this._mtimes[path] = http.getResponseHeader('Last-Modified');
+					http.abort();
 					return file;
 				}
-				catch(e){ /* empty */ };
+				catch(e){ /* empty */ }
 				return null;
 		};
 
@@ -609,12 +601,12 @@ JSmarty.Plugin.prototype = new JSmarty.File;
 
 	Class.addPlugin = function(name, type, path)
 	{
-		var code;
+		var i, code;
 		var script = [type, name, 'js'].join('.');
 
-		for(var i=path.length-1;i>=0;i--)
+		for(i=path.length-1;i>=0;i--)
 		{
-			code = this.getText(path[i] + '/' + script);
+			code = this.fread(path[i] + '/' + script);
 			if(code) break;
 		}
 
@@ -624,12 +616,16 @@ JSmarty.Plugin.prototype = new JSmarty.File;
 })(JSmarty.Plugin.prototype);
 
 /**
- * Error object
+ * instance of JSmarty.Plugin
+ * @var object
  */
-JSmarty.Error = function(msg, level)
-{
-	
-};
+JSmarty.plugin = new JSmarty.Plugin();
+
+/**
+ * instance of JSmarty.File
+ * @var object
+ */
+JSmarty.file = new JSmarty.File();
 
 /**
  * import shared plugins
@@ -646,4 +642,26 @@ JSmarty.importer = function()
 		func = arguments[i];
 		global[func] = shared[func];
 	}
+};
+
+/**
+ * JSmarty Error Handler
+ * @param string
+ * @param string
+ */
+JSmarty.trigger_error = function(msg, level)
+{
+	switch(level)
+	{
+		case 'none':
+			break;
+		case 'warn':
+			try{ alert(msg); break; }catch(e){};
+			try{ print(msg); break; }catch(e){};
+			break;
+		case 'die':
+		default:
+			throw new Error(msg);
+			break;
+	};
 };
