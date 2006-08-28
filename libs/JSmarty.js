@@ -198,7 +198,7 @@ JSmarty.templates_c = {};
 		if(!debug && this.debugging_ctrl == 'URL')
 		{
 			var hash = location.hash;
-			var dbid = this._smarty_debug_id;
+			var dbid = this._debug_id;
 
 			if(hash == dbid + '=on')
 				debug = true;
@@ -236,8 +236,8 @@ JSmarty.templates_c = {};
 		{
 			if(debug) info.compile_time = new Date().getTime() - dst;
 			results = JSmarty.templates_c[name].call(this);
-			for(i in filters)
-				results = filters[i](results, this);
+//			for(i in filters)
+//				results = filters[i](results, this);
 		}
 
 		if(display)
@@ -246,7 +246,6 @@ JSmarty.templates_c = {};
 			if(debug)
 			{
 				info.exec_time = new Date().getTime() - dst;
-		//		document.write(JSmarty.use('display_debug_consol')([], this));
 			}
 			return;
 		}
@@ -325,8 +324,9 @@ JSmarty.templates_c = {};
 	 ---------------------------------------------------------------- */
 	Class.trigger_error = function(msg, level)
 	{
+		if(!level) level = 'warn';
 		if(!this.debugging) level = 'none;'
-		if(msg instanceof Object) msg = msg.description || msg;
+		if(!(msg instanceof String)) msg = msg.description || msg;
 		JSmarty.trigger_error(msg, level);
 	};
 	/* -----------------------------------------------------------------
@@ -344,9 +344,7 @@ JSmarty.templates_c = {};
 				JSmarty.templates_c[name].timestamp = data.time;
 				return true;
 			}
-			catch(e)
-			{
-			}
+			catch(e){ this.trigger_error(e); };
 			return false;
 		}
 
@@ -478,7 +476,7 @@ JSmarty.templates_c = {};
 	Class._eval = function(src)
 	{
 		try{ return eval(src); }
-		catch(e){ this.trigger_error() };
+		catch(e){ this.trigger_error(e) };
 
 		return '';
 	};

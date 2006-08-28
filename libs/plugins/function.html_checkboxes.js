@@ -13,13 +13,13 @@
  * Credit :  
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.00
+ * @version  1.01
  * @param    string
  * @return   string
  */
 function jsmarty_function_html_checkboxes(params, jsmarty)
 {
-	var value, html = [];
+	var k, value, i = 0, html = [];
 	var outputf = jsmarty_function_html_checkboxes.outputf;
 
 	var name      = 'checkbox';
@@ -30,35 +30,37 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 	var selected  = null;
 	var separator = '';
 
-	for(var i in params)
+	for(k in params)
 	{
-		switch(i)
+		if(!params.hasOwnProperty(k)) break;
+
+		switch(k)
 		{
 			case 'name':
-				name = params[i]; break;
+				name = params[k]; break;
 			case 'labels':
-				labels = params[i]; break; 
+				labels = params[k]; break; 
 			case 'options':
-				options = params[i]; break;
+				options = params[k]; break;
 			case 'values':
-				values = params[i]; break;
+				values = params[k]; break;
 			case 'output':
-				output = params[i]; break;
+				output = params[k]; break;
 			case 'checked':
 			case 'selected':
-				if(!(params[i] instanceof Array))
-					selected = [params[i]];
+				if(!(params[k] instanceof Array))
+					selected = params[k];
 				break;
 			case 'checkboxes':
 				jsmarty.trigger_error('html_checkboxes: the use of the "checkboxes" attribute is deprecated, use "options" instead');
-				options = params[i]; break;
+				options = params[k]; break;
 			case 'assign':
 				break;
 			default:
-				if(params[i] instanceof Object)
-					jsmarty.trigger_error('html_checkboxes: extra attribute '+ i +' cannot be an array');
+				if(params[k] instanceof String)
+					extra.push(k +'="'+ params[k] +'"');
 				else
-					extra.push(i +'="'+ params[i] +'"');
+					jsmarty.trigger_error('html_checkboxes: extra attribute '+ k +' cannot be an array');
 				break;
 		};
 	};
@@ -67,15 +69,19 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 
 	if(options)
 	{
-		for(var key in options)
-			html.push(outputf(name, key, options[key], selected, extra, separator, labels));
+		for(k in options)
+		{
+			if(!options.hasOwnProperty(k)) break;
+			html[i++] = outputf(name, k, options[k], selected, extra, separator, labels);
+		}
 	}
 	else
 	{
-		for(var i=0,fin=values.length;i<fin;i++)
+		for(k in values)
 		{
-			value = (output[i]) ? output[i] : '';
-			html.push(outputf(name, i, value, selected, extra, separator, labels));
+			if(!values.hasOwnProperty(k)) break;
+			value = (output[k]) ? output[k] : '';
+			html[i++] = outputf(name, k, value, selected, extra, separator, labels);
 		}
 	}
 
