@@ -5,16 +5,16 @@
  */
 
 /**
- * JSmarty html_checkboxes function plugin
+ * JSmarty {html_checkboxes} function plugin
  *
  * Type:     function<br />
  * Name:     html_checkboxes<br />
- * Purpose:  <br />
- * Credit :  
+ * Credit :  Taken from original Smarty {html_chackboxes} plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.01
+ * @version  1.0.0
  * @param    string
+ * @param    JSmarty
  * @return   string
  */
 function jsmarty_function_html_checkboxes(params, jsmarty)
@@ -57,7 +57,7 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 			case 'assign':
 				break;
 			default:
-				if(params[k] instanceof String)
+				if(typeof(params[k]) != 'object')
 					extra.push(k +'="'+ params[k] +'"');
 				else
 					jsmarty.trigger_error('html_checkboxes: extra attribute '+ k +' cannot be an array');

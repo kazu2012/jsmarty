@@ -35,8 +35,9 @@ JSmarty.Compiler = function(){};
 		this._rextag.compile(L + '[^'+ R +']+' + R,'g');
 		this._rblock.compile(L + '\\/(.+?)' + R,'g');
 
-		src = src.replace(this._recrlf,'');
+		txt[i++] = 'var output = ';
 
+		src = src.replace(this._recrlf,'');
 		src.replace(this._rblock, function($0, $1){
 			list[$1] = true; return '';
 		});
@@ -55,7 +56,7 @@ JSmarty.Compiler = function(){};
 		txt[i++] = this._quote(src.slice(iap));
 		txt[i++] = '; return output;'
 
-		return 'output = ' + txt.join('');
+		return txt.join('');
 	};
 	/**
 	 *
@@ -89,6 +90,10 @@ JSmarty.Compiler = function(){};
 				return 'this.left_delimiter + ';
 			case 'rdelim':
 				return 'this.right_delimiter + ';
+			case 'literal':
+				return '';
+			case '/literal':
+				return '';
 		};
 
 		switch(tag.charAt(isp))
@@ -169,7 +174,7 @@ JSmarty.Compiler = function(){};
 	 * @return string
 	 */
 	Class._tagclose = function(type){
-		return "''" + ","+ type + ") +";
+		return "''" + ","+ type + ") + ";
 	};
 	/**
 	 * Argument ToAttribute
