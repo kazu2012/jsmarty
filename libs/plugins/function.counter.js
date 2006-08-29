@@ -1,3 +1,23 @@
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
+/**
+ * JSmarty {counter} function plugin
+ *
+ * Type:     function<br />
+ * Name:     counter<br />
+ * Original: Smarty {counter} function plugin
+ *
+ * @author   shogo < shogo4405 at gmail dot com>
+ * @version  1.0.0
+ * @see      http://smarty.php.net/manual/en/language.function.counter.php
+ * @param    object
+ * @param    JSmarty
+ * @return   string
+ */
 function jsmarty_function_counter(params, jsmarty)
 {
 	var counters = jsmarty_function_counter.counters;
@@ -48,5 +68,5 @@ function jsmarty_function_counter(params, jsmarty)
 
 	return retval;
 }
-/** static counters **/
+// counters
 jsmarty_function_counter.counters = {};

@@ -9,11 +9,12 @@
  *
  * Type:     function<br />
  * Name:     html_checkboxes<br />
- * Credit :  Taken from original Smarty {html_chackboxes} plugin
+ * Original: Smarty {html_checkboxes} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
- * @param    string
+ * @see       http://smarty.php.net/manual/en/language.function.html.checkboxes.php
+ * @param    object
  * @param    JSmarty
  * @return   string
  */
@@ -22,12 +23,12 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 	var k, value, i = 0, html = [];
 	var outputf = jsmarty_function_html_checkboxes.outputf;
 
-	var name      = 'checkbox';
-	var extra     = [];
-	var labels    = true;
-	var output    = null;
-	var values    = null;
-	var selected  = null;
+	var name = 'checkbox';
+	var extra = [];
+	var labels = true;
+	var output = null;
+	var values = null;
+	var selected = null;
 	var separator = '';
 
 	for(k in params)

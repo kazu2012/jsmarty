@@ -8,12 +8,13 @@
  * JSmarty {html_options} function plugin
  *
  * Type:     function<br />
- * Name:     html_checkboxes<br />
- * Credit :  Taken from original Smarty {html_options} plugin
+ * Name:     html_options<br />
+ * Original: Smarty {html_options} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
- * @param    string
+ * @see      http://smarty.php.net/manual/en/language.function.html.options.php
+ * @param    object
  * @param    JSmarty
  * @return   string
  */

@@ -11,9 +11,11 @@
  * Name:     cycle<br />
  * Purpose:  cycle through given values<br />
  * Original: Smarty {cycle} function plugin
+ *
  * @author   shogo <shogo4405 at gmail dot com>
- * @version  1.0
- * @param    array
+ * @version  1.0.0
+ * @see       http://smarty.php.net/manual/en/language.function.cycle.php
+ * @param    object
  * @param    JSmarty
  * @return   string
  */
@@ -77,5 +79,6 @@ function jsmarty_function_cycle(params, jsmarty)
 
 	return retval;
 }
-/** static cycle_vars **/
+
+// cycle_vars
 jsmarty_function_cycle.cycle_vars = {};

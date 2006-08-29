@@ -5,16 +5,17 @@
  */
 
 /**
- * JSmarty html_radios function plugin
+ * JSmarty {html_radios} function plugin
  *
  * Type:     function<br />
- * Name:     html_checkboxes<br />
- * Purpose:  <br />
- * Credit :  
+ * Name:     html_radios<br />
+ * Original: Smarty {counter} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.00
- * @param    string
+ * @version  1.0.0
+ * @see      http://smarty.php.net/manual/en/language.function.html.radios.php
+ * @param    object
+ * @param    JSmarty
  * @return   string
  */
 function jsmarty_function_html_radios(params, jsmarty)
