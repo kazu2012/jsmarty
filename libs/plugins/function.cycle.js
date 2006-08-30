@@ -14,7 +14,7 @@
  *
  * @author   shogo <shogo4405 at gmail dot com>
  * @version  1.0.0
- * @see       http://smarty.php.net/manual/en/language.function.cycle.php
+ * @see      http://smarty.php.net/manual/en/language.function.cycle.php
  * @param    object
  * @param    JSmarty
  * @return   string

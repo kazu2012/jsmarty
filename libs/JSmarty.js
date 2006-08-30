@@ -1,7 +1,10 @@
 /**
- * @package JSmarty
+ * Construct a new JSmarty.
+ *
+ * @class This is the JSmarty class
+ * @constructor
  */
-function JSmarty(){ /* empty */ };
+function JSmarty(){};
 
 JSmarty.GLOBALS = self;
 JSmarty.VERSION = '0.0.1M1';
@@ -9,54 +12,50 @@ JSmarty.VERSION = '0.0.1M1';
 JSmarty.shared = {};
 JSmarty.templates_c = {};
 
+JSmarty.prototype =
+{
+//	config_dir   : 'configs',
+//	compile_dir  : 'templates_c'
+	plugins_dir  : ['plugins'],
+	template_dir : 'templates',
+
+	debug_tpl : '',
+	debugging : false,
+	debugging_ctrl : 'NONE',
+
+//	compile_check : true,
+	force_compile : false,
+
+//	cache_lifetime : 3600,
+//	cache_modified_check : false,
+
+//	trusted_dir : [],
+
+	left_delimiter  : '{',
+	right_delimiter : '}',
+
+	compile_id : null,
+//	use_sub_dirs : false,
+
+	default_modifiers : [],
+	default_resource_type : 'file',
+
+	cache_handler_func : null,
+	autoload_filters   : {},
+
+//	config_overwrite    : true,
+//	config_booleanize   : true,
+//	config_read_hidden  : false,
+//	config_fix_newlines : true,
+
+	default_template_handler_func : null,
+	compiler_file  : 'JSmarty_Compiler.js',
+	compiler_class : 'Compiler',
+	config_class   : 'Config_File'
+};
+
 (function(Class)
 {
-/**#@+
- * JSmarty Configuration Section
- */
-//	Class.config_dir   = 'configs';
-//	Class.compile_dir  = 'templates_c';
-	Class.plugins_dir  = ['plugins'];
-	Class.template_dir = 'templates';
-
-	Class.debug_tpl = '';
-	Class.debugging = false;
-	Class.debugging_ctrl = 'NONE';
-
-//	Class.compile_check = true;
-	Class.force_compile = false;
-
-//	Class.cache_lifetime = 3600;
-//	Class.cache_modified_check = false;
-
-//	Class.trusted_dir = [];
-
-	Class.left_delimiter  = '{';
-	Class.right_delimiter = '}';
-
-	Class.compile_id = null;
-//	Class.use_sub_dirs = false;
-
-	Class.default_modifiers = [];
-	Class.default_resource_type = 'file';
-
-	Class.cache_handler_func = null;
-	Class.autoload_filters   = {};
-
-//	Class.config_overwrite    = true;
-//	Class.config_booleanize   = true;
-//	Class.config_read_hidden  = false;
-//	Class.config_fix_newlines = true;
-
-	Class.default_template_handler_func = null;
-	Class.compiler_file  = 'JSmarty_Compiler.js';
-	Class.compiler_class = 'Compiler';
-	Class.config_class   = 'Config_File';
-
-/**#@+
- * END JSmarty Configuration Section
- * @access private
- */
 	Class._smarty_debug_id = '#JSMARTY_DEBUG';
 	Class._smarty_debug_info = [];
 
@@ -326,8 +325,7 @@ JSmarty.templates_c = {};
 	{
 		if(!level) level = 'warn';
 		if(!this.debugging) level = 'none;'
-		if(!(msg instanceof String)) msg = msg.description || msg;
-		JSmarty.trigger_error(msg, level);
+		JSmarty.trigger_error('JSmarty error: ' + msg, level);
 	};
 	/* -----------------------------------------------------------------
 	 # Process
@@ -498,28 +496,39 @@ JSmarty.templates_c = {};
  * @package JSmarty
  */
 JSmarty.File = function(){};
-(function(Class)
+JSmarty.File.prototype =
 {
-	var global = JSmarty.GLOBALS;
+	_system : 'http',
+	_mtimes : null,
 
-	Class._system = 'http';
-	Class._mtimes = {};
-
-	Class.FILESYS = function()
+	/**
+	 * Exit FileSystem(ex FileSystemObject)
+	 * 
+	 * @type boolean
+	 */
+	FILESYS : function()
 	{
 		return false;
-	}();
-
-	Class.XMLHTTP = function()
+	}(),
+	
+	/**
+	 * Create XMLHttpObject
+	 * @type XMLHttpRequest object | null
+	 */
+	XMLHTTP : function()
 	{
-		if(global.XMLHttpRequest)
+		if(JSmarty.GLOBALS.XMLHttpRequest)
 			return new XMLHttpRequest;
-		if(global.ActiveXObject)
+		if(JSmarty.GLOBALS.ActiveXObject)
 			return new ActiveXObject('Microsoft.XMLHTTP');
 		return null;
-	}();
+	}(),
 
-	Class.fread = function(path)
+	/**
+	 * File get contents.
+	 * @return string
+	 */
+	fread : function()
 	{
 		var http, file;
 
@@ -541,9 +550,12 @@ JSmarty.File = function(){};
 		};
 
 		return null;
-	};
+	},
 
-	Class.mtime = function(path)
+	/**
+	 * 
+	 */
+	mtime : function()
 	{
 		switch(this._system)
 		{
@@ -552,9 +564,13 @@ JSmarty.File = function(){};
 		};
 
 		return null;
-	};
+	},
 
-	Class.fputs = function(path, text)
+	/**
+	 * File put contents.
+	 * @return boolean
+	 */
+	fputs : function()
 	{
 		switch(this._system)
 		{
@@ -563,55 +579,56 @@ JSmarty.File = function(){};
 		};
 
 		return false;
-	};
-
-})(JSmarty.File.prototype);
+	}
+};
 
 /**
  * JSmarty Plugin class
- * @package JSmarty
+ * @class This is plugin class.
+ * @constructor
  */
 JSmarty.Plugin = function(){};
-JSmarty.Plugin.prototype = new JSmarty.File;
-(function(Class)
+JSmarty.Plugin.prototype = new JSmarty.File();
+
+/**
+ *
+ *
+ *
+ */
+JSmarty.Plugin.prototype.parse = function(code, name, type)
 {
-	Class.parse = function(code, name, type)
+	var __parent, __script = null;
+
+	__parent = (type == 'shared') ?
+		JSmarty.shared :
+		JSmarty.prototype._plugins[type];
+
+	if(code)
 	{
-		var __parent, __script = null;
-
-		__parent = (type == 'shared') ?
-			JSmarty.shared :
-			JSmarty.prototype._plugins[type];
-
-		if(code)
+		try
 		{
-			try
-			{
-				eval(code);
-				__script = eval(['jsmarty', type, name].join('_'));
-			}
-			catch(e){ /* empty */ };
+			eval(code);
+			__script = eval(['jsmarty', type, name].join('_'));
 		}
+		catch(e){ /* empty */ };
+	}
 
-		__parent[name] = __script;
-		return (__script) ? true : false;
-	};
+	__parent[name] = __script;
+	return (__script) ? true : false;
+};
+JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
+{
+	var i, code;
+	var script = [type, name, 'js'].join('.');
 
-	Class.addPlugin = function(name, type, path)
+	for(i=path.length-1;i>=0;i--)
 	{
-		var i, code;
-		var script = [type, name, 'js'].join('.');
+		code = this.fread(path[i] + '/' + script);
+		if(code) break;
+	}
 
-		for(i=path.length-1;i>=0;i--)
-		{
-			code = this.fread(path[i] + '/' + script);
-			if(code) break;
-		}
-
-		return this.parse(code, name, type);
-	};
-
-})(JSmarty.Plugin.prototype);
+	return this.parse(code, name, type);
+};
 
 /**
  * instance of JSmarty.Plugin
@@ -644,6 +661,7 @@ JSmarty.importer = function()
 
 /**
  * JSmarty Error Handler
+ *
  * @param string
  * @param string
  */

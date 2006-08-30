@@ -9,7 +9,7 @@
  *
  * Type:     function<br />
  * Name:     html_radios<br />
- * Original: Smarty {counter} function plugin
+ * Original: Smarty {html_radios} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0

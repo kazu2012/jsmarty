@@ -1,9 +1,9 @@
 (function()
 {
-	// Object.hasOwnProperty
-	if(!Object.hasOwnProperty)
+	// Object.prototype.hasOwnProperty
+	if(!Object.prototype.hasOwnProperty)
 	{
-		Object.hasOwnProperty = function(prop){
+		Object.prototype.hasOwnProperty = function(prop){
 			return (this[prop] && !this.constructor.prototype[prop]);
 		};
 	};

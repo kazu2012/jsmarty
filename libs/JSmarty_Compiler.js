@@ -1,8 +1,27 @@
 /**
- * Template compiling class
- * @package JSmarty
+ * File:    JSmarty_Compiler.js
+ *
+ * This library is free software. License under the GNU Lesser General
+ * Public License as published by the Free Software Foundation(LGPL).
+ *
+ * @link http://d.hatena.ne.jp/shogo4405/
+ * @author shogo < shogo4405 at gmail dot com >
+ * @version 0.0.1M1
+ */
+
+/**
+ * Construct a new Compiler object.
+ *
+ * @class This is the template compiling class.
+ * @constructor
  */
 JSmarty.Compiler = function(){};
+JSmarty.Compiler.prototype =
+{
+	
+};
+
+
 (function(Class)
 {
 	Class.left_delimiter = '{';
@@ -20,6 +39,8 @@ JSmarty.Compiler = function(){};
 	Class._recrlf = /\r?\n/g;
 	Class._reattr = /(\w+)=(\'|\"|)([^\s]+|[^\2]+?)\2/g;
 	Class._folded_blocks = {};
+
+	Class._flags = {};
 
 	/**
 	 * 
@@ -64,6 +85,18 @@ JSmarty.Compiler = function(){};
 	 */
 	Class._compile_tag = function(tag, isp, iep)
 	{
+		var flag = this._flags;
+
+		if(flag.literal)
+		{
+			if(tag.indexOf('/literal') >= 0)
+			{
+				flag.literal = false;
+				return '';
+			}
+			return this._string(tag);
+		};
+
 		var inp = irp = iep;
 		var attr, close = '';
 		var iap = tag.indexOf(' ');
@@ -91,8 +124,9 @@ JSmarty.Compiler = function(){};
 			case 'rdelim':
 				return 'this.right_delimiter + ';
 			case 'literal':
+				flag.literal = true;
 				return '';
-			case '/literal':
+			case 'foreach':
 				return '';
 		};
 
@@ -118,8 +152,10 @@ JSmarty.Compiler = function(){};
 	};
 	/**
 	 * Argument ToString
-	 * @param string
-	 * @return string
+	 *
+	 * @member  JSmarty.Compiler
+	 * @param   string
+	 * @return  string
 	 */
 	Class._string = function(src)
 	{
@@ -212,4 +248,4 @@ JSmarty.Compiler = function(){};
 		src  = src.replace(this._rexvar, 'this._tpl_vars.');
 		return src.replace(this._rtoken, function($1){ return ops[$1]; });
 	};
-})(JSmarty.Compiler.prototype)
+})(JSmarty.Compiler.prototype);
