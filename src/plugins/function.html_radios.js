@@ -35,7 +35,7 @@ function jsmarty_function_html_radios(params, jsmarty)
 
 	for(k in params)
 	{
-		if(!params.hasOwnProperty(k)) break;
+		if(!params.hasOwnProperty(k)) continue;
 
 		switch(k)
 		{

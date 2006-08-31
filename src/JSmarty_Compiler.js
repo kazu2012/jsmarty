@@ -34,7 +34,9 @@ JSmarty.Compiler.prototype =
 	_recrlf : /\r?\n/g,
 	_reattr : /(\w+)=(\'|\"|)([^\s]+|[^\2]+?)\2/g,
 	_folded_blocks : {},
-	_flags : {},
+
+	_tag_stack : 'none',
+	_tag_count : 0,
 
 	/**
 	 * compile a resource
@@ -44,7 +46,9 @@ JSmarty.Compiler.prototype =
 	 */
 	_compile_file : function(src)
 	{
+		var flag = this._tag_flags;
 		var list = this._folded_blocks;
+		var stack = this._tag_stack;
 		var iap, isp, i = 0, txt = [], self = this;
 		var L = this.left_delimiter , l = L.length;
 		var R = this.right_delimiter, r = R.length;
@@ -85,16 +89,25 @@ JSmarty.Compiler.prototype =
 	 */
 	_compile_tag : function(tag, isp, iep)
 	{
-		var flag = this._flags;
-
-		if(flag.literal)
+		switch(this._tag_stack)
 		{
-			if(tag.indexOf('/literal') >= 0)
-			{
-				flag.literal = false;
-				return '';
-			}
-			return this._string(tag);
+			case 'literal':
+				if(tag.indexOf('/literal') >= 0)
+				{
+					if(this._tag_count == 0)
+					{
+						this._tag_stack = 'none';
+						return '';
+					}
+					this._tag_count--;
+				}
+				else if(tag.indexOf('literal') >= 0)
+					this._tag_count++;
+
+				return this._string(tag);
+				break;
+			default:
+				break;
 		};
 
 		var inp = irp = iep;
@@ -124,10 +137,30 @@ JSmarty.Compiler.prototype =
 			case 'rdelim':
 				return 'this.right_delimiter + ';
 			case 'literal':
-				flag.literal = true;
+				this._tag_stack = 'literal';
 				return '';
+			case 'strip':
+				return 'String(';
+			case '/strip':
+				return "'').replace(/\\s|\\n/g,'') + ";
 			case 'foreach':
-				return '';
+			case 'section':
+				attr = this._attribute(tag.slice(iap + 1, irp));
+				return "this._in"+ name +"("+ attr +", function(){ var output = ";
+			case 'foreachelse':
+			case 'sectionelse':
+				return " ''; return output; } , function(){ var output = ";
+			case '/foreach':
+			case '/section':
+				return " ''; return output; }) +";
+			case 'javascript':
+				return "this._eval(";
+			case '/javascript':
+				return "'')";
+//			case 'php':
+//				return '';
+//			case '/php':
+//				return '';
 		};
 
 		switch(tag.charAt(isp))
@@ -152,9 +185,9 @@ JSmarty.Compiler.prototype =
 	},
 	/**
 	 * TagOpen
-	 * @param  {string}
-	 * @param  {string}
-	 * @return {string}
+	 * @param  {string} name TagName
+	 * @param  {string} attr Parameters
+	 * @return {string} this._call(name, attr)
 	 */
 	_tagopen : function(name, attr){
 		return 'this._call('+ [name, attr, ''].join(',');

@@ -6,17 +6,18 @@
 
 /**
  * JSmarty {html_table} function plugin
- *
- * Type:     function<br />
- * Name:     html_table<br />
+ * <pre>
+ * Type:     function
+ * Name:     html_table
  * Original: Smarty {html_table} function plugin
+ * </pre>
  *
  * @author   shogo <shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.function.html.table.php
- * @param    object
- * @param    JSmarty
- * @return   string
+ * @param    {Object} params Parameter
+ * @param    {JSmarty} jsmarty JSmarty
+ * @return   {string} &lt;table&gt; - &lt;/table&gt;
  */
 
 function jsmarty_function_html_table(params, jsmarty)
@@ -27,20 +28,58 @@ function jsmarty_function_html_table(params, jsmarty)
 		return '';
 	};
 
-	var loop = params.loop;
-	var cols = params.cols || 3;
-	var rows = params.rows || 3;
-	var vdif = params.vdir || 'down';
-	var hdir = params.hdir || 'right';
-	var inner = params.inner || 'cols';
-	var tr_attr = params.tr_attr || '';
-	var td_attr = params.td_attr || '';
-	var trailpad = params.trailpad || '&nbsp;';
-	var table_attr = params.table_attr || 'border="1"';
+	var c, r, k, x, rx, html, i = 0;
+	var cycle = jsmarty_function_html_table.cycle;
+
+	var loop;
+	var cols = 3;
+	var rows = 3;
+	var vdif = 'down';
+	var hdir = 'right';
+	var inner = 'cols';
+	var tr_attr = '';
+	var td_attr = '';
+	var trailpad = '&nbsp;';
+	var table_attr = 'border="1"';
 
 	var loop_count = loop.length;
 
-	return '';
+	for(k in params)
+	{
+		if(!params.hasOwnProperty(k)) continue;
+
+		switch(k)
+		{
+			case 'loop':
+				loop = params[k]; break;
+		};
+	};
+
+	html[i++] = '<table'+ table_attr;
+
+	for(r=0; r < rows; r++)
+	{
+		html[i++] = '<tr' + cycle('tr', tr_attr, r) +'>';
+		rx = (vdir == 'down') ? r*cols : (rows-1-r)*cols;
+
+		for(c=0; c < cols; c++)
+		{
+			x = (hdir == 'right') ? rx + c : rx + cols -1 -c;
+			if(inner != 'cols')
+				x = parseInt(x / cols) + (x % cols) * rows;
+
+			if(x < loop_count)
+				html[i++] = '<td'+ cycle('td', td_attr, c) +'>'+ loop[x] +'</td>';
+			else
+				html[i++] = '<td'+ cycle('td', td_attr, c) +'>'+ trailpad +'</td>';
+		};
+
+		html[i++] = '</tr>';
+	};
+
+	html[i++] = '</table>';
+
+	return html.join('\n');
 };
 
 jsmarty_function_html_table.cycle = function(name, vari, no)

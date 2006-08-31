@@ -131,7 +131,6 @@ JSmarty.prototype =
 			vars.push(value);
 		}
 	},
-
 	append_by_ref : function(key, value, merge)
 	{
 		if(key != '' && value != void(0)) return;
@@ -146,7 +145,6 @@ JSmarty.prototype =
 		}
 		vars.push(value);
 	},
-
 	clear_assign : function(key)
 	{
 		if(key instanceof Object)

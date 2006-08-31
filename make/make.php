@@ -1,5 +1,5 @@
 <?php
-require 'Smarty.class.php';
+require 'smarty/Smarty.class.php';
 
 $list = glob('templates/html/*.html');
 $smarty = new Smarty();
@@ -16,5 +16,15 @@ $list = glob('templates_c/*.php');
 foreach($list as $php){
 	unlink($php);
 }
+/*
+// call main function
+main();
 
+/*
+function main()
+{
+	$smarty = new Smarty();
+	$smarty->plugins_dir = array('plugins', '../smarty/plugins');
+};
+*/
 ?>
