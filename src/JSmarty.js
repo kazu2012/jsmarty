@@ -15,7 +15,7 @@ JSmarty.templates_c = {};
 JSmarty.prototype =
 {
 //	config_dir   : 'configs',
-//	compile_dir  : 'templates_c'
+//	compile_dir  : 'templates_c',
 	plugins_dir  : ['plugins'],
 	template_dir : 'templates',
 
@@ -51,30 +51,27 @@ JSmarty.prototype =
 	default_template_handler_func : null,
 	compiler_file  : 'JSmarty_Compiler.js',
 	compiler_class : 'Compiler',
-	config_class   : 'Config_File'
-};
+	config_class   : 'Config_File',
 
-(function(Class)
-{
-	Class._smarty_debug_id = '#JSMARTY_DEBUG';
-	Class._smarty_debug_info = [];
+	_smarty_debug_id : '#JSMARTY_DEBUG',
+	_smarty_debug_info : [],
 
-	Class._foreach = {};
-	Class._section = {};
-	Class._capture = {};
-	Class._version = JSmarty.Version;
-	Class._tpl_vars = {};
-	Class._compiler = null;
-	Class._debug_id = 'JSMARTY_DEBUG';
-	Class._debug_info = [];
-	Class._plugins =
+	_foreach : {},
+	_section : {},
+	_capture : {},
+	_version : JSmarty.Version,
+	_tpl_vars : {},
+	_compiler : null,
+	_debug_id : 'JSMARTY_DEBUG',
+	_debug_info : [],
+	_plugins :
 	{
 		modifier: {}, 'function':{}, block:       {},
 		resource: {}, insert:    {}, compiler:    {},
 		prefilter:{}, postfilter:{}, outputfilter:{}
-	};
+	},
 
-	Class.assign = function(key, value)
+	assign : function(key, value)
 	{
 		switch(typeof(value))
 		{
@@ -94,13 +91,13 @@ JSmarty.prototype =
 		}
 
 		if(key != '') this._tpl_vars[key] = value;
-	};
+	},
 
-	Class.assign_by_ref = function(key, value){
+	assign_by_ref : function(key, value){
 		if(key != '') this._tpl_vars[key] = value;
-	};
+	},
 
-	Class.append = function(key, value, merge)
+	append : function(key, value, merge)
 	{
 		var i, k, vars, mkey;
 
@@ -133,9 +130,9 @@ JSmarty.prototype =
 			}
 			vars.push(value);
 		}
-	};
+	},
 
-	Class.append_by_ref = function(key, value, merge)
+	append_by_ref : function(key, value, merge)
 	{
 		if(key != '' && value != void(0)) return;
 
@@ -148,9 +145,9 @@ JSmarty.prototype =
 			return;
 		}
 		vars.push(value);
-	};
+	},
 
-	Class.clear_assign = function(key)
+	clear_assign : function(key)
 	{
 		if(key instanceof Object)
 		{
@@ -160,34 +157,26 @@ JSmarty.prototype =
 		}
 
 		if(key != '') delete this._tpl_vars[key];
-	};
-
-	Class.clear_all_assign = function(){
+	},
+	clear_all_assign : function(){
 		this._tpl_vars = {};
-	};
-
-	Class.get_template_vars = function(key){
+	},
+	get_template_vars : function(key){
 		return (key == void(0)) ? this._tpl_vars[key] : this._tpl_vars;
-	};
-	/* -----------------------------------------------------------------
-	 # Cashing
-	 ---------------------------------------------------------------- */
-	Class.clear_all_cache = function(){
+	},
+	clear_all_cache : function(){
 		JSmarty.cache = {};
-	};
-	Class.clear_cache = function(name){
+	},
+	clear_cache : function(name){
 		delete JSmarty.cache[name];
-	};
-	Class.is_cashed = function(name){
+	},
+	is_cashed : function(name){
 		return false;
-	};
-	Class.clear_compiled_tpl = function(name){
+	},
+	clear_compiled_tpl : function(name){
 		JSmarty.templates_c[name] = null;
-	};
-	/* -----------------------------------------------------------------
-	 # Template Process
-	 ---------------------------------------------------------------- */
-	Class.fetch = function(name, ccid, cpid, display)
+	},
+	fetch : function(name, ccid, cpid, display)
 	{
 		var i, filter, results;
 		var types = this.autoload_filter;
@@ -250,87 +239,74 @@ JSmarty.prototype =
 		}
 
 		return results || '';
-	};
-	Class.display = function(name, ccid, cpid){
+	},
+	display : function(name, ccid, cpid){
 		this.fetch(name, ccid, cpid, true);
-	};
-	Class.template_exists = function(file){
+	},
+	template_exists : function(file){
 		return this._call('file', null, null, 'resource').source(file, null, this);
-	};
-	/* -----------------------------------------------------------------
-	 # Plugins
-	 ---------------------------------------------------------------- */
-	Class.register_block = function(name, impl){
+	},
+	register_block : function(name, impl){
 		this._plugins.block[name] = impl;
-	};
-	Class.register_function = function(name, impl){
+	},
+	register_function : function(name, impl){
 		this._plugins['function'][name] = impl;
-	};
-	Class.register_modifier = function(name, impl){
+	},
+	register_modifier : function(name, impl){
 		this._plguins.modifier[name] = impl;
-	};
-	Class.register_resource = function(type, impl)
+	},
+	register_resource : function(type, impl)
 	{
 		if(impl instanceof Array && impl.length == 4)
 			this._plugins.resource[type] = impl;
 		else
 			this.trigger_error("malformed function-list for '"+ type +"' in register_resource");
-	};
-	Class.register_compiler_function = function(name, impl){
+	},
+	register_compiler_function : function(name, impl){
 		this._plugins.compiler[name] = impl;
-	};
-	Class.unregister_block = function(name){
+	},
+	unregister_block : function(name){
 		this._plugins.block[name] = false;
-	};
-	Class.unregister_function = function(name){
+	},
+	unregister_function : function(name){
 		this._plugins['function'][name] = false;
-	};
-	Class.unregister_modifier = function(name){
+	},
+	unregister_modifier : function(name){
 		this._plugins.modifier[name] = false;
-	};
-	Class.unregister_resource = function(name){
+	},
+	unregister_resource : function(name){
 		this._plugins.resource[name] = false;
-	};
-	Class.unregister_compiler_function = function(name){
+	},
+	unregister_compiler_function : function(name){
 		this._plugins.compiler[name] = false;
-	};
-	/* -----------------------------------------------------------------
-	 # Filter
-	 ---------------------------------------------------------------- */
-	Class.load_filter = function(type, name)
-	{
-	};
-	Class.register_prefilter = function(name){
+	},
+	load_filter : function(type, name){
+	},
+	register_prefilter : function(name){
 		this._plugins.prefilter[name] = JSmarty.GLOBALS[name];
-	};
-	Class.register_postfilter = function(name){
+	},
+	register_postfilter : function(name){
 		this._plugins.postfilter[name] = JSmarty.GLOBALS[name];
-	};
-	Class.register_outputfilter = function(name){
+	},
+	register_outputfilter : function(name){
 		this._plugins.outputfilter[name] = JSmarty.GLOBALS[name];
-	};
-	Class.unregister_prefilter = function(name){
+	},
+	unregister_prefilter : function(name){
 		this._plugins.prefilter[name] = false;
-	};
-	Class.unregister_postfilter = function(name){
+	},
+	unregister_postfilter : function(name){
 		this._plugins.postfilter[name] = false;
-	};
-	Class.unregister_outputfilter = function(name){
+	},
+	unregister_outputfilter : function(name){
 		this._plugins.outputfilter[name] = false;
-	};
-	/* -----------------------------------------------------------------
-	 # Error
-	 ---------------------------------------------------------------- */
-	Class.trigger_error = function(msg, level)
+	},
+	trigger_error : function(msg, level)
 	{
 		if(!level) level = 'warn';
 		if(!this.debugging) level = 'none;'
 		JSmarty.trigger_error('JSmarty error: ' + msg, level);
-	};
-	/* -----------------------------------------------------------------
-	 # Process
-	 ---------------------------------------------------------------- */
-	Class._compile_resource = function(name)
+	},
+	_compile_resource : function(name)
 	{
 		var src, data = { name:name };
 		if(!this._fetch_resource_info(data)) return false;
@@ -347,8 +323,8 @@ JSmarty.prototype =
 		}
 
 		return false;
-	};
-	Class._compile_source = function(name, src)
+	},
+	_compile_source : function(name, src)
 	{
 		var cpir = this._compiler;
 		var name = this.compiler_class;
@@ -360,8 +336,8 @@ JSmarty.prototype =
 		}
 
 		return cpir._compile_file(src);
-	};
-	Class._is_compiled = function(name)
+	},
+	_is_compiled : function(name)
 	{
 		if(!this.force_compile && !JSmarty.templates_c[name])
 		{
@@ -370,8 +346,8 @@ JSmarty.prototype =
 		}
 
 		return false;
-	};
-	Class._fetch_resource_info = function(data)
+	},
+	_fetch_resource_info : function(data)
 	{
 		var flag = true;
 		if(data.gets == void(0)) data.gets = true;
@@ -407,8 +383,8 @@ JSmarty.prototype =
 		}
 
 		return flag;
-	};
-	Class._parse_resource_name = function(data)
+	},
+	_parse_resource_name : function(data)
 	{
 		var name = data.name;
 		var part = name.indexOf(':');
@@ -424,11 +400,8 @@ JSmarty.prototype =
 		}
 
 		return true;
-	};
-	/* -----------------------------------------------------------------
-	 # Process
-	 ---------------------------------------------------------------- */
-	Class._call = function(name, attr, src, type)
+	},
+	_call : function(name, attr, src, type)
 	{
 		var call = this._plugins[type];
 
@@ -451,8 +424,8 @@ JSmarty.prototype =
 			case 'modifier':
 				return call[name].apply(null, attr);
 		}
-	};
-	Class._modf = function(src, modf)
+	},
+	_modf : function(src, modf)
 	{
 		var name, args;
 
@@ -470,50 +443,39 @@ JSmarty.prototype =
 		}
 
 		return src;
-	};
-	Class._eval = function(src)
+	},
+	_eval : function(src)
 	{
 		try{ return eval(src); }
 		catch(e){ this.trigger_error(e) };
 
 		return '';
-	};
-
-	Class._inSection = function()
-	{
-		
-	};
-
-	Class._inForeach = function()
-	{
-		
-	};
-
-})(JSmarty.prototype);
+	}
+};
 
 /**
- * File I/O class
- * @package JSmarty
+ * Construct
+ * @class Provide interface of File I/O.
+ * @constructor
  */
 JSmarty.File = function(){};
 JSmarty.File.prototype =
 {
 	_system : 'http',
-	_mtimes : null,
+	_mtimes : {},
 
 	/**
-	 * Exit FileSystem(ex FileSystemObject)
-	 * 
+	 * Check a FileSystemObject
 	 * @type boolean
 	 */
 	FILESYS : function()
 	{
 		return false;
 	}(),
-	
+
 	/**
-	 * Create XMLHttpObject
-	 * @type XMLHttpRequest object | null
+	 * Set XMLHttpObject
+	 * @type XMLHttpRequest|null
 	 */
 	XMLHTTP : function()
 	{
@@ -525,10 +487,11 @@ JSmarty.File.prototype =
 	}(),
 
 	/**
-	 * File get contents.
-	 * @return string
+	 * file_get_contents
+	 * @param  {string} path File-path.
+	 * @return {string} Contents of file.
 	 */
-	fread : function()
+	fread : function(path)
 	{
 		var http, file;
 
@@ -555,7 +518,7 @@ JSmarty.File.prototype =
 	/**
 	 * 
 	 */
-	mtime : function()
+	mtime : function(path)
 	{
 		switch(this._system)
 		{
@@ -567,8 +530,8 @@ JSmarty.File.prototype =
 	},
 
 	/**
-	 * File put contents.
-	 * @return boolean
+	 * file_put_contents
+	 * @return {boolean} The function sucess, or not.
 	 */
 	fputs : function()
 	{
@@ -583,17 +546,18 @@ JSmarty.File.prototype =
 };
 
 /**
- * JSmarty Plugin class
+ * Construct a new JSmarty.File
  * @class This is plugin class.
  * @constructor
  */
 JSmarty.Plugin = function(){};
 JSmarty.Plugin.prototype = new JSmarty.File();
-
 /**
- *
- *
- *
+ * Evalute the source of plugin.
+ * @param  {string} code - The source code of javascript.
+ * @param  {string} name - Plugin-name.
+ * @param  {string} type - Plugin-type.
+ * @return {boolean} Evalute done, or not.
  */
 JSmarty.Plugin.prototype.parse = function(code, name, type)
 {
@@ -616,6 +580,13 @@ JSmarty.Plugin.prototype.parse = function(code, name, type)
 	__parent[name] = __script;
 	return (__script) ? true : false;
 };
+/**
+ * Load of plugin.
+ * @param {string} name Plugin-name.
+ * @param {string} type Plugin-type.
+ * @param {string} path The repository path of plugins. 
+ * @return {boolean} The function success, or not.
+ */
 JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
 {
 	var i, code;
@@ -632,13 +603,13 @@ JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
 
 /**
  * instance of JSmarty.Plugin
- * @var object
+ * @type JSmarty.Plugin
  */
 JSmarty.plugin = new JSmarty.Plugin();
 
 /**
  * instance of JSmarty.File
- * @var object
+ * @type JSmarty.File
  */
 JSmarty.file = new JSmarty.File();
 
@@ -661,9 +632,9 @@ JSmarty.importer = function()
 
 /**
  * JSmarty Error Handler
- *
- * @param string
- * @param string
+ * @param {string} msg Display Message
+ * @param {string} level Error level.
+ * @type void
  */
 JSmarty.trigger_error = function(msg, level)
 {

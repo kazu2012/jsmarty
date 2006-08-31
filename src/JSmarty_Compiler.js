@@ -16,37 +16,33 @@
  * @constructor
  */
 JSmarty.Compiler = function(){};
+JSmarty.Compiler.STROPS =
+{
+	eq : '==', ne : '!=', lt : '<', gt : '>',
+	not : '!', and : '&&', or : '||'
+};
 JSmarty.Compiler.prototype =
 {
-	
-};
+	left_delimiter : '{',
+	right_delimiter : '}',
 
-
-(function(Class)
-{
-	Class.left_delimiter = '{';
-	Class.right_delimiter = '}';
-
-	Class._strops =
-	{
-		eq : '==', ne : '!=', lt : '<', gt : '>',
-		not : '!', and : '&&', or : '||'
-	};
-	Class._rtoken = /eq|ne|lt|gt|not|and|or/g,
-	Class._rextag = new RegExp();
-	Class._rblock = new RegExp();
-	Class._rexvar = /\$/g;
-	Class._recrlf = /\r?\n/g;
-	Class._reattr = /(\w+)=(\'|\"|)([^\s]+|[^\2]+?)\2/g;
-	Class._folded_blocks = {};
-
-	Class._flags = {};
+	_strops : JSmarty.Compiler.STROPS,
+	_rtoken : /eq|ne|lt|gt|not|and|or/g,
+	_rextag : new RegExp(),
+	_rblock : new RegExp(),
+	_rexvar : /\$/g,
+	_recrlf : /\r?\n/g,
+	_reattr : /(\w+)=(\'|\"|)([^\s]+|[^\2]+?)\2/g,
+	_folded_blocks : {},
+	_flags : {},
 
 	/**
-	 * 
-	 * 
+	 * compile a resource
+	 *
+	 * @param  {string}
+	 * @return {boolean}
 	 */
-	Class._compile_file = function(src)
+	_compile_file : function(src)
 	{
 		var list = this._folded_blocks;
 		var iap, isp, i = 0, txt = [], self = this;
@@ -78,12 +74,16 @@ JSmarty.Compiler.prototype =
 		txt[i++] = '; return output;'
 
 		return txt.join('');
-	};
+	},
 	/**
+	 * Compile a template tag
 	 *
-	 *
+	 * @param  {string} tempalte_tag
+	 * @param  {number}
+	 * @param  {number}
+	 * @return {string}
 	 */
-	Class._compile_tag = function(tag, isp, iep)
+	_compile_tag : function(tag, isp, iep)
 	{
 		var flag = this._flags;
 
@@ -149,75 +149,31 @@ JSmarty.Compiler.prototype =
 		name = this._quote(name);
 		attr = this._attribute(tag.slice(iap + 1, irp));
 		return this._tagopen(name, attr) + close;
-	};
+	},
 	/**
-	 * Argument ToString
-	 *
-	 * @member  JSmarty.Compiler
-	 * @param   string
-	 * @return  string
+	 * TagOpen
+	 * @param  {string}
+	 * @param  {string}
+	 * @return {string}
 	 */
-	Class._string = function(src)
-	{
-		if(!src) return "'' + ";
-		return "'"+ src + "' + ";
-	};
-	/**
-	 * Return Quoted String
-	 * @param string
-	 * @return string
-	 */
-	Class._quote = function(src)
-	{
-		if(!src) return "''";
-		return "'"+ src + "'";
-	};
-	/**
-	 * Argument ToVariable
-	 * @param string
-	 * @return string
-	 */
-	Class._variable = function(src){
-		return 'this._tpl_vars.' + src;
-	};
-	/**
-	 * JSmarty Reserved Variables
-	 * @param string
-	 * @return string
-	 */
-	Class._reserved = function(src)
-	{
-		var vars = src.split('.');
-		switch(vars[1])
-		{
-			case 'version':
-				return 'this._version';
-			default:
-				return '';
-		};
-	};
-	/**
-	 * Tag Open
-	 * @param string
-	 * @return string
-	 */
-	Class._tagopen = function(name, attr){
+	_tagopen : function(name, attr){
 		return 'this._call('+ [name, attr, ''].join(',');
-	};
+	},
 	/**
-	 * Tag Close
-	 * @return string
-	 * @return string
+	 * TagClose
+	 * @param  {string}
+	 * @return {string}
 	 */
-	Class._tagclose = function(type){
+	_tagclose : function(type){
 		return "''" + ","+ type + ") + ";
-	};
+	},
 	/**
-	 * Argument ToAttribute
-	 * @param string
-	 * @return string
+	 * ToAttribute, object literal
+	 * 
+	 * @param  {string}
+	 * @return {string}
 	 */
-	Class._attribute = function(src)
+	_attribute : function(src)
 	{
 		var i = 0, attr = [], self = this;
 		src.replace(this._reattr, function($0, $1, $2, $3)
@@ -236,16 +192,63 @@ JSmarty.Compiler.prototype =
 			return '';
 		});
 		return '{'+ attr.join(',') +'}';
-	};
+	},
 	/**
-	 * Arguments ToToken
-	 * @param string
-	 * @return string
+	 * The expression is substituted for JavaScript. 
+	 * 
+	 * @param  {string}
+	 * @return {string}
 	 */
-	Class._token = function(src)
+	_token : function(src)
 	{
 		var ops = this._strops;
 		src  = src.replace(this._rexvar, 'this._tpl_vars.');
 		return src.replace(this._rtoken, function($1){ return ops[$1]; });
-	};
-})(JSmarty.Compiler.prototype);
+	},
+	/**
+	 * ToString, with '+' token
+	 * 
+	 * @param  {string}
+	 * @return {string}
+	 */
+	_string : function(src)
+	{
+		if(!src) return "'' + ";
+		return "'"+ src + "' + ";
+	},
+	/**
+	 * ToString, quoted
+	 * @param  {string}
+	 * @return {string}
+	 */
+	_quote : function(src)
+	{
+		if(!src) return "''";
+		return "'"+ src + "'";
+	},
+	/**
+	 * ToVariable
+	 * @param  {string}
+	 * @return {string}
+	 */
+	_variable : function(src){
+		return 'this._tpl_vars.' + src;
+	},
+	/**
+	 * ToVariables, JSmarty Reserved 
+	 * @param  {string}
+	 * @return {string}
+	 */
+	_reserved : function(src)
+	{
+		var vars = src.split('.');
+		switch(vars[1])
+		{
+			case 'version':
+				return 'this._version';
+			default:
+				return '';
+		};
+	}
+};
+
