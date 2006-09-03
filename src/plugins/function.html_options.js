@@ -14,8 +14,8 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.function.html.options.php
- * @param    object
- * @param    JSmarty
+ * @param    {Object} params
+ * @param    {JSmarty} jsmarty
  * @return   string
  */
 function jsmarty_function_html_options(params, jsmarty)

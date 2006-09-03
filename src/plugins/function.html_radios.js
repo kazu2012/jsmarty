@@ -63,7 +63,7 @@ function jsmarty_function_html_radios(params, jsmarty)
 			case 'assign':
 				break;
 			default:
-				if(params[k] instanceof String)
+				if(typeof(params[k]) != 'object')
 					extra.push(k +'="'+ params[k] +'"');
 				else
 					jsmarty.trigger_error('html_radios: extra attribute "'+ i +'" cannot be an array');

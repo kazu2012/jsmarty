@@ -4,26 +4,57 @@ function jsmarty_function_html_image(params, jsmarty)
 	{
 		jsmarty.trigger_error("html_image: missing 'file' parameter");
 		return '';
-	}
+	};
 
-	var img, html, attr = [];
+	var path;
 
-	for(var i in params)
+	var dpi;
+	var alt = '';
+	var file = '';
+	var width = '';
+	var extra = [];
+	var height = '';
+	var prefix = '';
+	var suffix = '';
+	var basedir = '';
+	var path_prefix = '';
+//	var server_vars = {};
+
+	for(k in params)
 	{
-		switch(i)
+		if(!params.hasOwnProperty(k)) continue;
+
+		switch(k)
 		{
-			case 'dpi':
+			case 'dpi';
+				dpi = params[k]; break;
 			case 'file':
+				file = params[k]; break;
 			case 'width':
+				width = params[k]; break;
 			case 'height':
+				height = paramas[k]; break;
 			case 'basedir':
+				basedir = params[k]; break;
 			case 'path_prefix':
+				path_prefix = params[k]; break;
+			case 'link':
+			case 'href':
+				prefix = '<a href="'+ params[k] +'">';
+				suffix = '</a>';
+			case 'alt':
+				alt = params[k];
 				break;
 			default:
-				attr.push(i +'="'+ params[i] +'"');
+				extra.push(params[k]);
 				break;
-		}
-	}
+		};
+	};
 
-	return html;
+	if(file.charAt(0) == '/')
+		path = basedir + file;
+	else
+		path = file;
+
+	return '';
 }

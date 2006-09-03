@@ -58,7 +58,7 @@ JSmarty.Compiler.prototype =
 
 		txt[i++] = 'var output = ';
 
-		src = src.replace(this._recrlf,'');
+		src = src.replace(this._recrlf,'\\n');
 		src.replace(this._rblock, function($0, $1){
 			list[$1] = true; return '';
 		});
@@ -149,7 +149,7 @@ JSmarty.Compiler.prototype =
 				return "this._in"+ name +"("+ attr +", function(){ var output = ";
 			case 'foreachelse':
 			case 'sectionelse':
-				return " ''; return output; } , function(){ var output = ";
+				return " ''; return output; }, function(){ var output = ";
 			case '/foreach':
 			case '/section':
 				return " ''; return output; }) +";
@@ -247,6 +247,7 @@ JSmarty.Compiler.prototype =
 	_string : function(src)
 	{
 		if(!src) return "'' + ";
+		src = src.split("'").join("\\'");
 		return "'"+ src + "' + ";
 	},
 	/**
@@ -257,6 +258,7 @@ JSmarty.Compiler.prototype =
 	_quote : function(src)
 	{
 		if(!src) return "''";
+		src = src.split("'").join("\\'");
 		return "'"+ src + "'";
 	},
 	/**

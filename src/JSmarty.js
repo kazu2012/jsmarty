@@ -359,8 +359,8 @@ JSmarty.prototype =
 					data.url = this.template_dir +'/' + data.name;
 					if(data.gets)
 					{
-						data.src  = new JSmarty.File().fread(data.url);
-						data.time = new JSmarty.File().mtime(data.url);
+						data.src  = JSmarty.file.fgets(data.url);
+						data.time = JSmarty.file.mtime(data.url);
 					}
 					break;
 				default:
@@ -448,6 +448,36 @@ JSmarty.prototype =
 		catch(e){ this.trigger_error(e) };
 
 		return '';
+	},
+	_inforeach : function(params, content, contentelse)
+	{
+		var i, html = [];
+		var from = params.from;
+		var key  = params.key  || false;
+		var item = params.item || false;
+		var name = params.name || false;
+
+		if(!params.from)
+		{
+			if(contentelse)
+				return contentelse.call(this);
+			return '';
+		};
+
+		for(i in from)
+		{
+			if(!from.hasOwnProperty(i)) continue;
+
+			if(key) this.assign(key, i);
+			this.assign(item, from[i]);
+			html.push(content.call(this));
+		};
+
+		return html.join('');
+	},
+	_insection : function(params, content, contentelse)
+	{
+		
 	}
 };
 
@@ -489,7 +519,7 @@ JSmarty.File.prototype =
 	 * @param  {string} path File-path.
 	 * @return {string} Contents of file.
 	 */
-	fread : function(path)
+	fgets : function(path)
 	{
 		var http, file;
 
@@ -514,6 +544,21 @@ JSmarty.File.prototype =
 	},
 
 	/**
+	 * file_put_contents
+	 * @return {boolean} The function sucess, or not.
+	 */
+	fputs : function(src, file)
+	{
+		switch(this._system)
+		{
+			case 'http':
+				return false;
+		};
+
+		return false;
+	},
+
+	/**
 	 * 
 	 */
 	mtime : function(path)
@@ -525,21 +570,6 @@ JSmarty.File.prototype =
 		};
 
 		return null;
-	},
-
-	/**
-	 * file_put_contents
-	 * @return {boolean} The function sucess, or not.
-	 */
-	fputs : function()
-	{
-		switch(this._system)
-		{
-			case 'http':
-				return false;
-		};
-
-		return false;
 	}
 };
 
@@ -592,7 +622,7 @@ JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
 
 	for(i=path.length-1;i>=0;i--)
 	{
-		code = this.fread(path[i] + '/' + script);
+		code = this.fgets(path[i] + '/' + script);
 		if(code) break;
 	}
 
@@ -630,9 +660,8 @@ JSmarty.importer = function()
 
 /**
  * JSmarty Error Handler
- * @param {string} msg Display Message
- * @param {string} level Error level.
- * @type void
+ * @param {string} msg message
+ * @param {string} level error-level
  */
 JSmarty.trigger_error = function(msg, level)
 {

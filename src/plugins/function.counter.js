@@ -12,11 +12,11 @@
  * Original: Smarty {counter} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.function.counter.php
- * @param    object
- * @param    JSmarty
- * @return   string
+ * @param    {object} params
+ * @param    {JSmarty} jsmarty
+ * @return   {string}
  */
 function jsmarty_function_counter(params, jsmarty)
 {
@@ -37,7 +37,7 @@ function jsmarty_function_counter(params, jsmarty)
 	counter = counters[name];
 
 	if(params.start != void(0))
-		counter.start = counter.count = params.start - 0;
+		counter.start = counter.count = Number(params.start);
 
 	if(!params.assign)
 		counter.assign = params.assign;
@@ -46,7 +46,7 @@ function jsmarty_function_counter(params, jsmarty)
 		jsmarty.assign(counter.assign, counter.count);
 
 	if(params.print)
-		print = new Boolean(params.print);
+		print = Boolean(params.print);
 	else
 		print = (counter.assign != 0 && !counter.assign) ? true : false;
 
@@ -62,9 +62,9 @@ function jsmarty_function_counter(params, jsmarty)
 		counter.direction = params.direction;
 
 	if(counter.direction == 'down')
-		counter.count -= counter.skip - 0;
+		counter.count -= Number(counter.skip);
 	else
-		counter.count += counter.skip - 0;
+		counter.count += Number(counter.skip);
 
 	return retval;
 }
