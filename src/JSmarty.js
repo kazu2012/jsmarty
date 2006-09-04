@@ -302,7 +302,7 @@ JSmarty.prototype =
 	{
 		if(!level) level = 'warn';
 		if(!this.debugging) level = 'none;'
-		JSmarty.trigger_error('JSmarty error: ' + msg, level);
+		JSmarty.trigger_error(msg, level);
 	},
 	_compile_resource : function(name)
 	{
@@ -404,7 +404,7 @@ JSmarty.prototype =
 		var call = this._plugins[type];
 
 		if(call[name] == void(0))
-			new JSmarty.Plugin().addPlugin(name, type, this.plugins_dir);
+			JSmarty.plugin.addPlugin(name, type, this.plugins_dir);
 		if(!call[name]) return '';
 
 		switch(type)
@@ -665,6 +665,8 @@ JSmarty.importer = function()
  */
 JSmarty.trigger_error = function(msg, level)
 {
+	msg = 'JSmarty error : ' + msg.toString();
+
 	switch(level)
 	{
 		case 'none':
