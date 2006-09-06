@@ -686,7 +686,7 @@ JSmarty.trigger_error = function(msg, level)
 };
 
 /**
- * Wraper of document.write or print.
+ * Wrapper of document.write or print.
  * @type Function
  */
 JSmarty.print = function()
