@@ -41,7 +41,7 @@ JSmarty.Compiler.prototype =
 	/**
 	 * compile a resource
 	 *
-	 * @param  {string}
+	 * @param  {String}
 	 * @return {boolean}
 	 */
 	_compile_file : function(src)
@@ -82,10 +82,10 @@ JSmarty.Compiler.prototype =
 	/**
 	 * Compile a template tag
 	 *
-	 * @param  {string} tempalte_tag
+	 * @param  {String} tempalte_tag
 	 * @param  {number}
 	 * @param  {number}
-	 * @return {string}
+	 * @return {String}
 	 */
 	_compile_tag : function(tag, isp, iep)
 	{
@@ -185,17 +185,17 @@ JSmarty.Compiler.prototype =
 	},
 	/**
 	 * TagOpen
-	 * @param  {string} name TagName
-	 * @param  {string} attr Parameters
-	 * @return {string} this._call(name, attr)
+	 * @param  {String} name TagName
+	 * @param  {String} attr Parameters
+	 * @return {String} this._call(name, attr)
 	 */
 	_tagopen : function(name, attr){
 		return 'this._call('+ [name, attr, ''].join(',');
 	},
 	/**
 	 * TagClose
-	 * @param  {string}
-	 * @return {string}
+	 * @param  {String}
+	 * @return {String}
 	 */
 	_tagclose : function(type){
 		return "''" + ","+ type + ") + ";
@@ -203,8 +203,8 @@ JSmarty.Compiler.prototype =
 	/**
 	 * ToAttribute, object literal
 	 * 
-	 * @param  {string}
-	 * @return {string}
+	 * @param  {String}
+	 * @return {String}
 	 */
 	_attribute : function(src)
 	{
@@ -229,8 +229,8 @@ JSmarty.Compiler.prototype =
 	/**
 	 * The expression is substituted for JavaScript. 
 	 * 
-	 * @param  {string}
-	 * @return {string}
+	 * @param  {String}
+	 * @return {String}
 	 */
 	_token : function(src)
 	{
@@ -241,8 +241,8 @@ JSmarty.Compiler.prototype =
 	/**
 	 * ToString, with '+' token
 	 * 
-	 * @param  {string}
-	 * @return {string}
+	 * @param  {String}
+	 * @return {String}
 	 */
 	_string : function(src)
 	{
@@ -252,8 +252,8 @@ JSmarty.Compiler.prototype =
 	},
 	/**
 	 * ToString, quoted
-	 * @param  {string}
-	 * @return {string}
+	 * @param  {String}
+	 * @return {String}
 	 */
 	_quote : function(src)
 	{
@@ -263,16 +263,16 @@ JSmarty.Compiler.prototype =
 	},
 	/**
 	 * ToVariable
-	 * @param  {string}
-	 * @return {string}
+	 * @param  {String}
+	 * @return {String}
 	 */
 	_variable : function(src){
 		return 'this._tpl_vars.' + src;
 	},
 	/**
-	 * ToVariables, JSmarty Reserved 
-	 * @param  {string}
-	 * @return {string}
+	 * ToVariable, JSmarty Reserved 
+	 * @param  {String}
+	 * @return {String}
 	 */
 	_reserved : function(src)
 	{

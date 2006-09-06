@@ -228,7 +228,7 @@ JSmarty.prototype =
 
 		if(display)
 		{
-			if(results){ document.write(results); }
+			if(results){ JSmarty.print(results); }
 			if(debug)
 			{
 				info.exec_time = new Date().getTime() - dst;
@@ -516,43 +516,47 @@ JSmarty.File.prototype =
 
 	/**
 	 * file_get_contents
-	 * @param  {string} path File-path.
-	 * @return {string} Contents of file.
+	 * @param  {String} path File-path.
+	 * @return {String or null} Contents of file or null.
 	 */
 	fgets : function(path)
 	{
-		var http, file;
+		var src, http, stream;
 
 		switch(this._system)
 		{
 			case 'http':
 				http = this.XMLHTTP;
+				http.open('GET', path, false);
 				try
 				{
-					http.open('GET', path, false);
 					http.send('');
-					file = http.responseText;
+					src = http.responseText;
 					this._mtimes[path] = http.getResponseHeader('Last-Modified');
-					http.abort();
-					return file;
 				}
 				catch(e){ /* empty */ }
-				return null;
+				finally{ http.abort(); };
+				break;
+			case 'ajaja':
+				try{ return System.readFile(path); }
+				catch(e){ /* empty */ };
+				break;
 		};
 
-		return null;
+		return src || null;
 	},
 
 	/**
 	 * file_put_contents
-	 * @return {boolean} The function sucess, or not.
+	 * @return {Boolean} The function sucess, or not.
 	 */
 	fputs : function(src, file)
 	{
 		switch(this._system)
 		{
-			case 'http':
-				return false;
+			case 'wsh':
+				fso = new ActiveXObject('');
+				return true;
 		};
 
 		return false;
@@ -567,9 +571,9 @@ JSmarty.File.prototype =
 		{
 			case 'http':
 				return this._mtimes[path];
+			default:
+				return null;
 		};
-
-		return null;
 	}
 };
 
@@ -582,10 +586,10 @@ JSmarty.Plugin = function(){};
 JSmarty.Plugin.prototype = new JSmarty.File();
 /**
  * Evalute the source of plugin.
- * @param  {string} code - The source code of javascript.
- * @param  {string} name - Plugin-name.
- * @param  {string} type - Plugin-type.
- * @return {boolean} Evalute done, or not.
+ * @param  {String} code - The source code of javascript.
+ * @param  {String} name - Plugin-name.
+ * @param  {String} type - Plugin-type.
+ * @return {Boolean} Evalute done, or not.
  */
 JSmarty.Plugin.prototype.parse = function(code, name, type)
 {
@@ -610,10 +614,10 @@ JSmarty.Plugin.prototype.parse = function(code, name, type)
 };
 /**
  * Load of plugin.
- * @param {string} name Plugin-name.
- * @param {string} type Plugin-type.
- * @param {string} path The repository path of plugins. 
- * @return {boolean} The function success, or not.
+ * @param {String} name Plugin-name.
+ * @param {String} type Plugin-type.
+ * @param {String} path The repository path of plugins. 
+ * @return {Boolean} The function success, or not.
  */
 JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
 {
@@ -660,8 +664,8 @@ JSmarty.importer = function()
 
 /**
  * JSmarty Error Handler
- * @param {string} msg message
- * @param {string} level error-level
+ * @param {String} msg message
+ * @param {String} level error-level
  */
 JSmarty.trigger_error = function(msg, level)
 {
@@ -672,8 +676,7 @@ JSmarty.trigger_error = function(msg, level)
 		case 'none':
 			break;
 		case 'warn':
-			try{ alert(msg); break; }catch(e){};
-			try{ print(msg); break; }catch(e){};
+			JSmarty.print(msg);
 			break;
 		case 'die':
 		default:
@@ -681,3 +684,14 @@ JSmarty.trigger_error = function(msg, level)
 			break;
 	};
 };
+
+/**
+ * Wraper of document.write or print.
+ * @type Function
+ */
+JSmarty.print = function()
+{
+	if(JSmarty.GLOBALS.document)
+		return function(str){ document.write(str) };
+	return function(str){ print(str); };
+}();
