@@ -1,4 +1,15 @@
 /**
+ * File:    JSmarty.js
+ *
+ * This library is free software. License under the GNU Lesser General
+ * Public License as published by the Free Software Foundation(LGPL).
+ *
+ * @link http://d.hatena.ne.jp/shogo4405/20060727/1153977238
+ * @author shogo < shogo4405 at gmail dot com >
+ * @version 0.0.1M2
+ */
+
+/**
  * Construct a new JSmarty.
  *
  * @class This is the JSmarty class
@@ -21,7 +32,7 @@ JSmarty.prototype =
 	template_dir : 'templates',
 
 	debug_tpl : '',
-	debugging : false,
+	debugging : true,
 	debugging_ctrl : 'NONE',
 
 //	compile_check : true,
@@ -233,6 +244,7 @@ JSmarty.prototype =
 			if(debug)
 			{
 				info.exec_time = new Date().getTime() - dst;
+				JSmarty.print(info.compile_time);
 			}
 			return;
 		}
@@ -279,7 +291,12 @@ JSmarty.prototype =
 	unregister_compiler_function : function(name){
 		this._plugins.compiler[name] = false;
 	},
-	load_filter : function(type, name){
+	load_filter : function(type, name)
+	{
+		var call = this._plugins[type];
+		if(call[name] == void(0))
+			JSmarty.plugin.addPlugin(name, type, this.plugins_dir);
+		if(!call[name]) call[name] = function(){};
 	},
 	register_prefilter : function(name){
 		this._plugins.prefilter[name] = JSmarty.GLOBALS[name];
@@ -405,10 +422,6 @@ JSmarty.prototype =
 
 		switch(type)
 		{
-			case 'prefilter':
-			case 'postfilter':
-			case 'outputfilter':
-				return true;
 			case 'resource':
 				return call[name];
 			case 'function':
@@ -417,7 +430,7 @@ JSmarty.prototype =
 				return call[name](attr, src, this);
 			case 'modifier':
 				return call[name].apply(null, attr);
-		}
+		};
 	},
 	_modf : function(src, modf)
 	{

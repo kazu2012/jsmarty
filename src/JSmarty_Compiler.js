@@ -4,9 +4,9 @@
  * This library is free software. License under the GNU Lesser General
  * Public License as published by the Free Software Foundation(LGPL).
  *
- * @link http://d.hatena.ne.jp/shogo4405/
+ * @link http://d.hatena.ne.jp/shogo4405/20060727/1153977238
  * @author shogo < shogo4405 at gmail dot com >
- * @version 0.0.1M1
+ * @version 0.0.1M2
  */
 
 /**
@@ -44,12 +44,10 @@ JSmarty.Compiler.prototype =
 	 */
 	_compile_file : function(src, jsmarty)
 	{
+		var len, fin, tags;
 		var flag = this._tag_flags;
 		var list = this._folded_blocks;
-		var stack = this._tag_stack;
-		var f, iap, isp, i = 0, txt = [], self = this;
-		var pref = jsmarty._plugins.prefilter;
-		var post = jsmarty._plugins.postfilters;
+		var k, iap = 0, isp = 0, i = 0, txt = [];
 		var L = jsmarty.left_delimiter , l = L.length;
 		var R = jsmarty.right_delimiter, r = R.length;
 
@@ -60,40 +58,32 @@ JSmarty.Compiler.prototype =
 
 		//prefilter
 		src = src.replace(this._recrlf,'\\n');
-		for(f in pref)
-		{
-			if(!pref.hasOwnProperty(f)) continue;
-			src = pref[f](src, jsmarty);
-		};
 
 		src.replace(this._rblock, function($0, $1){
 			list[$1] = true; return '';
 		});
 
-		src.replace(this._rextag, function(tag, isp, src)
+		tags = src.match(this._rextag);
+		for(k=0,fin=tags.length;k<fin;++k)
 		{
-			// Normal Text
-			if(iap != isp)
-				txt[i++] = self._string(src.slice(iap, isp));
-			// Template Tag
-			txt[i++] = self._compile_tag(tag, l, tag.length - r);
-			iap = isp + tag.length;
-			return '';
-		});
+			tag = tags[k];
+			len = tag.length;
+			isp = src.indexOf(tag, iap);
+			txt[i++] = this._string(src.slice(iap, isp));
+			txt[i++] = this._compile_tag(tag, l, len - r);
+			iap = isp + len;
+		};
 
 		txt[i++] = this._quote(src.slice(iap));
 		txt[i++] = '; return output;'
 
-		// postfilter
 		txt = txt.join('').replace(this._remove, '');
-		for(f in post)
-		{
-			if(!post.hasOwnProperty(f)) continue;
-			txt = post[f](txt, jsmarty);
-		};
 
-		try{ return new Function(txt); }
-		catch(e){ jsmarty.trigger_error('Compiler : '+ e.message); };
+		try{
+			return new Function(txt);
+		}catch(e){
+			jsmarty.trigger_error('Compiler : '+ e.message);
+		};
 
 		return function(){};
 	},
@@ -101,8 +91,8 @@ JSmarty.Compiler.prototype =
 	 * Compile a template tag
 	 *
 	 * @param  {String} tempalte_tag
-	 * @param  {number}
-	 * @param  {number}
+	 * @param  {Number}
+	 * @param  {Number}
 	 * @return {String}
 	 */
 	_compile_tag : function(tag, isp, iep)
@@ -175,10 +165,6 @@ JSmarty.Compiler.prototype =
 				return "this._eval(";
 			case '/javascript':
 				return "'')";
-//			case 'php':
-//				return '';
-//			case '/php':
-//				return '';
 		};
 
 		switch(tag.charAt(isp))
@@ -265,7 +251,8 @@ JSmarty.Compiler.prototype =
 	_string : function(src)
 	{
 		if(!src) return "'' + ";
-		src = src.split("'").join("\\'");
+		if(src.indexOf("'"))
+			src = src.split("'").join("\\'");
 		return "'"+ src + "' + ";
 	},
 	/**
