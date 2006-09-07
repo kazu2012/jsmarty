@@ -23,9 +23,6 @@ JSmarty.Compiler.STROPS =
 };
 JSmarty.Compiler.prototype =
 {
-	left_delimiter : '{',
-	right_delimiter : '}',
-
 	_strops : JSmarty.Compiler.STROPS,
 	_rtoken : /eq|ne|lt|gt|not|and|or/g,
 	_rextag : new RegExp(),
@@ -33,6 +30,7 @@ JSmarty.Compiler.prototype =
 	_rexvar : /\$/g,
 	_recrlf : /\r?\n/g,
 	_reattr : /(\w+)=(\'|\"|)([^\s]+|[^\2]+?)\2/g,
+	_remove : / \+''/g,
 	_folded_blocks : {},
 
 	_tag_stack : 'none',
@@ -44,21 +42,30 @@ JSmarty.Compiler.prototype =
 	 * @param  {String}
 	 * @return {boolean}
 	 */
-	_compile_file : function(src)
+	_compile_file : function(src, jsmarty)
 	{
 		var flag = this._tag_flags;
 		var list = this._folded_blocks;
 		var stack = this._tag_stack;
-		var iap, isp, i = 0, txt = [], self = this;
-		var L = this.left_delimiter , l = L.length;
-		var R = this.right_delimiter, r = R.length;
+		var f, iap, isp, i = 0, txt = [], self = this;
+		var pref = jsmarty._plugins.prefilter;
+		var post = jsmarty._plugins.postfilters;
+		var L = jsmarty.left_delimiter , l = L.length;
+		var R = jsmarty.right_delimiter, r = R.length;
 
 		this._rextag.compile(L + '[^'+ R +']+' + R,'g');
 		this._rblock.compile(L + '\\/(.+?)' + R,'g');
 
 		txt[i++] = 'var output = ';
 
+		//prefilter
 		src = src.replace(this._recrlf,'\\n');
+		for(f in pref)
+		{
+			if(!pref.hasOwnProperty(f)) continue;
+			src = pref[f](src, jsmarty);
+		};
+
 		src.replace(this._rblock, function($0, $1){
 			list[$1] = true; return '';
 		});
@@ -77,7 +84,18 @@ JSmarty.Compiler.prototype =
 		txt[i++] = this._quote(src.slice(iap));
 		txt[i++] = '; return output;'
 
-		return txt.join('');
+		// postfilter
+		txt = txt.join('').replace(this._remove, '');
+		for(f in post)
+		{
+			if(!post.hasOwnProperty(f)) continue;
+			txt = post[f](txt, jsmarty);
+		};
+
+		try{ return new Function(txt); }
+		catch(e){ jsmarty.trigger_error('Compiler : '+ e.message); };
+
+		return function(){};
 	},
 	/**
 	 * Compile a template tag

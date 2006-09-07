@@ -6,8 +6,9 @@
  */
 function JSmarty(){};
 
-JSmarty.GLOBALS = self;
+JSmarty.GLOBALS = this;
 JSmarty.VERSION = '0.0.1M1';
+JSmarty.ERRLEVL = 'none';
 
 JSmarty.shared = {};
 JSmarty.templates_c = {};
@@ -310,14 +311,9 @@ JSmarty.prototype =
 		if(!this._fetch_resource_info(data)) return false;
 		if(src = this._compile_source(name, data.src))
 		{
-			try
-			{
-				JSmarty.templates_c[name] = new Function(src);
-				JSmarty.templates_c[name].timestamp = data.time;
-				return true;
-			}
-			catch(e){ this.trigger_error(e); };
-			return false;
+			JSmarty.templates_c[name] = src;
+			JSmarty.templates_c[name].timestamp = data.time;
+			return true;
 		}
 
 		return false;
@@ -333,7 +329,7 @@ JSmarty.prototype =
 			cpir = this._compiler = new JSmarty[name];
 		}
 
-		return cpir._compile_file(src);
+		return cpir._compile_file(src, this);
 	},
 	_is_compiled : function(name)
 	{
@@ -552,12 +548,9 @@ JSmarty.File.prototype =
 	 */
 	fputs : function(src, file)
 	{
-		switch(this._system)
-		{
-			case 'wsh':
-				fso = new ActiveXObject('');
-				return true;
-		};
+//		switch(this._system)
+//		{
+//		};
 
 		return false;
 	},
@@ -669,7 +662,8 @@ JSmarty.importer = function()
  */
 JSmarty.trigger_error = function(msg, level)
 {
-	msg = 'JSmarty error : ' + msg.toString();
+	if(msg.message) msg = msg.message;
+	msg = 'JSmarty error : ' + msg;
 
 	switch(level)
 	{
