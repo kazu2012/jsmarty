@@ -195,7 +195,7 @@ JSmarty.prototype =
 
 		if(!debug && this.debugging_ctrl == 'URL')
 		{
-			var hash = location.hash;
+			var hash = JSmarty.getArgs('JSMARTY_DEBUG');
 			var dbid = this._debug_id;
 
 			if(hash == dbid + '=on')
@@ -498,21 +498,28 @@ JSmarty.prototype =
 JSmarty.File = function(){};
 JSmarty.File.prototype =
 {
+	/** @private **/
 	_system : 'http',
+	/** @private **/
 	_mtimes : {},
 
 	/**
-	 * Check a FileSystemObject
-	 * @type boolean
+	 * Check a FileSystem
+	 * @type Boolean
 	 */
 	FILESYS : function()
 	{
+		if(JSmarty.GLOBALS.System)
+		{
+			this._system = 'ajaja';
+			return true;
+		};
 		return false;
 	}(),
 
 	/**
-	 * Set XMLHttpObject
-	 * @type XMLHttpRequest|null
+	 * XMLHttpObject
+	 * @type XMLHttpRequest or null
 	 */
 	XMLHTTP : function()
 	{
@@ -530,7 +537,7 @@ JSmarty.File.prototype =
 	 */
 	fgets : function(path)
 	{
-		var src, http, stream;
+		var text, http;
 
 		switch(this._system)
 		{
@@ -540,19 +547,19 @@ JSmarty.File.prototype =
 				try
 				{
 					http.send('');
-					src = http.responseText;
+					text = http.responseText;
 					this._mtimes[path] = http.getResponseHeader('Last-Modified');
 				}
 				catch(e){ /* empty */ }
 				finally{ http.abort(); };
-				break;
+				return text || null;
 			case 'ajaja':
 				try{ return System.readFile(path); }
 				catch(e){ /* empty */ };
-				break;
+				return null
 		};
 
-		return src || null;
+		return null;
 	},
 
 	/**
@@ -561,15 +568,17 @@ JSmarty.File.prototype =
 	 */
 	fputs : function(src, file)
 	{
-//		switch(this._system)
-//		{
-//		};
-
+		var fso, txt;
+/*
+		switch(this._system)
+		{
+		};
+*/
 		return false;
 	},
-
 	/**
-	 * 
+	 * Return the timestamp of file
+	 * @return {Number}
 	 */
 	mtime : function(path)
 	{
@@ -577,9 +586,18 @@ JSmarty.File.prototype =
 		{
 			case 'http':
 				return this._mtimes[path];
-			default:
-				return null;
 		};
+
+		return null;
+	},
+	/**
+	 * Setup the file operation system.
+	 * You can select this, 'http' , 'ajaja'.
+	 * @param {String} system system name
+	 */
+	setSystem : function(system)
+	{
+		this._system = system;
 	}
 };
 
@@ -680,16 +698,19 @@ JSmarty.trigger_error = function(msg, level)
 
 	switch(level)
 	{
-		case 'none':
-			break;
 		case 'warn':
 			JSmarty.print(msg);
 			break;
 		case 'die':
-		default:
 			throw new Error(msg);
 			break;
+		default:
+			break;
 	};
+};
+
+JSmarty.getArgs = function(){
+	return '';
 };
 
 /**

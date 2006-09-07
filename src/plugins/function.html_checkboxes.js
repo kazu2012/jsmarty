@@ -12,11 +12,11 @@
  * Original: Smarty {html_checkboxes} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.function.html.checkboxes.php
- * @param    object
- * @param    JSmarty
- * @return   string
+ * @param    {Object} params
+ * @param    {JSmarty} jsmarty
+ * @return   {String}
  */
 function jsmarty_function_html_checkboxes(params, jsmarty)
 {
@@ -94,25 +94,24 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 
 jsmarty_function_html_checkboxes.outputf = function(name, value, output, selected, extra, separator, labels)
 {
-	var html = '';
+	var i = 0, html = [];
 
-	if(labels) html += '<label>';
-	html +=
-		'<input type="checkbox" name="'+
-		name + '[]" value="'+ value + '"';
+	if(labels) html[i++] = '<label>';
+	html[i++] =
+		'<input type="checkbox" name="'+ name + '[]" value="'+ value + '"';
 
 	if(selected)
 	{
 		for(var i=selected.length-1;i>=0;i--)
 		{
 			if(value == selected[i])
-				html += ' checked="checked"';
+				html[i++] = ' checked="checked"';
 		}
 	}
 
-	html += extra.join(' ') + ' />' + output;
-	if(labels) html += '</label>';
-	html += separator;
+	html[i++] = extra.join(' ') + ' />' + output;
+	if(labels) html[i++] = '</label>';
+	html[i++] = separator;
 
 	return html;
 };
