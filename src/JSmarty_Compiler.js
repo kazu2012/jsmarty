@@ -44,10 +44,9 @@ JSmarty.Compiler.prototype =
 	 */
 	_compile_file : function(src, jsmarty)
 	{
-		var len, fin, tags;
 		var flag = this._tag_flags;
 		var list = this._folded_blocks;
-		var k, iap = 0, isp = 0, i = 0, txt = [];
+		var k, iap, isp, i = 0, txt = [], self = this;
 		var L = jsmarty.left_delimiter , l = L.length;
 		var R = jsmarty.right_delimiter, r = R.length;
 
@@ -60,19 +59,15 @@ JSmarty.Compiler.prototype =
 		src = src.replace(this._recrlf,'\\n');
 
 		src.replace(this._rblock, function($0, $1){
-			list[$1] = true; return '';
+			list[$1] = true;
 		});
 
-		tags = src.match(this._rextag);
-		for(k=0,fin=tags.length;k<fin;++k)
+		src.replace(this._rextag, function(tag, isp, src)
 		{
-			tag = tags[k];
-			len = tag.length;
-			isp = src.indexOf(tag, iap);
-			txt[i++] = this._string(src.slice(iap, isp));
-			txt[i++] = this._compile_tag(tag, l, len - r);
-			iap = isp + len;
-		};
+			txt[i++] = self._string(src.slice(iap, isp));
+			txt[i++] = self._compile_tag(tag, l, tag.length - r);
+			iap = isp + tag.length;
+		});
 
 		txt[i++] = this._quote(src.slice(iap));
 		txt[i++] = '; return output;'

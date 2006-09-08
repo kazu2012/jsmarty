@@ -13,8 +13,8 @@
  *
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.00
- * @param    string
- * @return   string
+ * @param    {String} string
+ * @return   {String}
  */
 
 function jsmarty_modifier_nl2br(string)

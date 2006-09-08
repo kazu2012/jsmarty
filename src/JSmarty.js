@@ -290,10 +290,6 @@ JSmarty.prototype =
 	},
 	load_filter : function(type, name)
 	{
-		var call = this._plugins[type];
-		if(call[name] == void(0))
-			JSmarty.plugin.addPlugin(name, type, this.plugins_dir);
-		if(!call[name]) call[name] = function(){};
 	},
 	register_prefilter : function(name){
 		this._plugins.prefilter[name] = JSmarty.GLOBALS[name];
@@ -496,23 +492,14 @@ JSmarty.File = function(){};
 JSmarty.File.prototype =
 {
 	/** @private **/
-	_system : 'http',
-	/** @private **/
 	_mtimes : {},
-
-	/**
-	 * Check a FileSystem
-	 * @type Boolean
-	 */
-	FILESYS : function()
+	/** @private **/
+	_system : function()
 	{
 		if(JSmarty.GLOBALS.System)
-			return true;
-		if(JSmarty.GLOBALS.ActiveXObject)
-			return true;
-		return false;
+			return 'ajaja';
+		return 'http';
 	}(),
-
 	/**
 	 * XMLHttpObject
 	 * @type XMLHttpRequest or null
@@ -525,7 +512,6 @@ JSmarty.File.prototype =
 			return new ActiveXObject('Microsoft.XMLHTTP');
 		return null;
 	}(),
-
 	/**
 	 * file_get_contents
 	 * @param  {String} path File-path.
@@ -557,7 +543,6 @@ JSmarty.File.prototype =
 
 		return null;
 	},
-
 	/**
 	 * file_put_contents
 	 * @return {Boolean} The function sucess, or not.
@@ -565,11 +550,11 @@ JSmarty.File.prototype =
 	fputs : function(src, file)
 	{
 		var fso, txt;
-/*
-		switch(this._system)
-		{
-		};
-*/
+
+//		switch(this._system)
+//		{
+//		};
+
 		return false;
 	},
 	/**
@@ -582,18 +567,14 @@ JSmarty.File.prototype =
 		{
 			case 'http':
 				return this._mtimes[path];
+			case 'ajaja':
+				return new Date().getTime(); // temp
 		};
 
 		return null;
 	},
-	/**
-	 * Setup the file operation system.
-	 * You can select this, 'http' , 'ajaja'.
-	 * @param {String} system system name
-	 */
-	setSystem : function(system)
-	{
-		this._system = system;
+	getSystem : function(){
+		return this._system;
 	}
 };
 
@@ -652,19 +633,16 @@ JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
 
 	return this.parse(code, name, type);
 };
-
 /**
  * instance of JSmarty.Plugin
  * @type JSmarty.Plugin
  */
 JSmarty.plugin = new JSmarty.Plugin();
-
 /**
  * instance of JSmarty.File
  * @type JSmarty.File
  */
 JSmarty.file = new JSmarty.File();
-
 /**
  * import shared plugins
  * @param string
@@ -681,7 +659,6 @@ JSmarty.importer = function()
 		global[func] = shared[func];
 	};
 };
-
 /**
  * JSmarty Error Handler
  * @param {String} msg message
@@ -704,11 +681,9 @@ JSmarty.trigger_error = function(msg, level)
 			break;
 	};
 };
-
 JSmarty.getArgs = function(){
 	return '';
 };
-
 /**
  * Make the clone of 'obj' and cut chains.
  * @params {Object} obj
@@ -721,14 +696,16 @@ JSmarty.copy = function(obj)
 		o[i] = obj[i];
 	return o;
 };
-
 /**
  * Wrapper of document.write or print.
  * @type Function
  */
 JSmarty.print = function()
 {
-	if(JSmarty.GLOBALS.document)
-		return function(str){ document.write(str) };
-	return function(str){ print(str); };
+	switch(JSmarty.file.getSystem())
+	{
+		case 'ajaja':
+			return function(str){ print(str); };
+	};
+	return function(str){ document.write(str); };
 }();

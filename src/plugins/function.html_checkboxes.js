@@ -94,10 +94,10 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 
 jsmarty_function_html_checkboxes.outputf = function(name, value, output, selected, extra, separator, labels)
 {
-	var i = 0, html = [];
+	var n = 0, html = [];
 
-	if(labels) html[i++] = '<label>';
-	html[i++] =
+	if(labels) html[n++] = '<label>';
+	html[n++] =
 		'<input type="checkbox" name="'+ name + '[]" value="'+ value + '"';
 
 	if(selected)
@@ -105,13 +105,13 @@ jsmarty_function_html_checkboxes.outputf = function(name, value, output, selecte
 		for(var i=selected.length-1;i>=0;i--)
 		{
 			if(value == selected[i])
-				html[i++] = ' checked="checked"';
+				html[n++] = ' checked="checked"';
 		}
 	}
 
-	html[i++] = extra.join(' ') + ' />' + output;
-	if(labels) html[i++] = '</label>';
-	html[i++] = separator;
+	html[n++] = extra.join(' ') + ' />' + output;
+	if(labels) html[n++] = '</label>';
+	html[n++] = separator;
 
-	return html;
+	return html.join('');
 };
