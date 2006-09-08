@@ -82,7 +82,6 @@ JSmarty.prototype =
 		resource: {}, insert:    {}, compiler:    {},
 		prefilter:{}, postfilter:{}, outputfilter:{}
 	},
-
 	assign : function(key, value)
 	{
 		switch(typeof(value))
@@ -91,24 +90,22 @@ JSmarty.prototype =
 				value = null;
 				break;
 			case 'object':
-				for(var i in value) value[i] = value[i];
+				value = JSmarty.copy(value);
 				break;
-		}
+		};
 
 		if(key instanceof Object)
 		{
 			for(var i in key)
 				this._tpl_vars[i] = key[i];
 			return;
-		}
+		};
 
 		if(key != '') this._tpl_vars[key] = value;
 	},
-
 	assign_by_ref : function(key, value){
 		if(key != '') this._tpl_vars[key] = value;
 	},
-
 	append : function(key, value, merge)
 	{
 		var i, k, vars, mkey;
@@ -125,9 +122,9 @@ JSmarty.prototype =
 					for(k in mkey)
 						vars[k] = mkey[k];
 					return;
-				}
+				};
 				vars.push(mkey);
-			}
+			};
 		}
 		else
 		{
@@ -139,9 +136,9 @@ JSmarty.prototype =
 				for(i in value)
 					vars[i] = value[i];
 				return;
-			}
+			};
 			vars.push(value);
-		}
+		};
 	},
 	append_by_ref : function(key, value, merge)
 	{
@@ -154,7 +151,7 @@ JSmarty.prototype =
 			for(var i in value)
 				vars[i] = value[i];
 			return;
-		}
+		};
 		vars.push(value);
 	},
 	clear_assign : function(key)
@@ -164,7 +161,7 @@ JSmarty.prototype =
 			for(var i in key)
 				delete this._tpl_vars[key[i]];
 			return;
-		}
+		};
 
 		if(key != '') delete this._tpl_vars[key];
 	},
@@ -240,12 +237,12 @@ JSmarty.prototype =
 
 		if(display)
 		{
-			if(results){ JSmarty.print(results); }
+			if(results){ JSmarty.print(results); };
 			if(debug)
 			{
 				info.exec_time = new Date().getTime() - dst;
 				JSmarty.print(info.compile_time);
-			}
+			};
 			return;
 		}
 
@@ -510,10 +507,9 @@ JSmarty.File.prototype =
 	FILESYS : function()
 	{
 		if(JSmarty.GLOBALS.System)
-		{
-			this._system = 'ajaja';
 			return true;
-		};
+		if(JSmarty.GLOBALS.ActiveXObject)
+			return true;
 		return false;
 	}(),
 
@@ -631,7 +627,7 @@ JSmarty.Plugin.prototype.parse = function(code, name, type)
 			__script = eval(['jsmarty', type, name].join('_'));
 		}
 		catch(e){ /* empty */ };
-	}
+	};
 
 	__parent[name] = __script;
 	return (__script) ? true : false;
@@ -652,7 +648,7 @@ JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
 	{
 		code = this.fgets(path[i] + '/' + script);
 		if(code) break;
-	}
+	};
 
 	return this.parse(code, name, type);
 };
@@ -683,7 +679,7 @@ JSmarty.importer = function()
 	{
 		func = arguments[i];
 		global[func] = shared[func];
-	}
+	};
 };
 
 /**
@@ -711,6 +707,19 @@ JSmarty.trigger_error = function(msg, level)
 
 JSmarty.getArgs = function(){
 	return '';
+};
+
+/**
+ * Make the clone of 'obj' and cut chains.
+ * @params {Object} obj
+ * @return {Object} Return the clone object.
+ */
+JSmarty.copy = function(obj)
+{
+	var i, o = {};
+	for(i in obj)
+		o[i] = obj[i];
+	return o;
 };
 
 /**
