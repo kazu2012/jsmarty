@@ -18,7 +18,7 @@
 function JSmarty(){};
 
 JSmarty.GLOBALS = this;
-JSmarty.VERSION = '0.0.1M1';
+JSmarty.VERSION = '0.0.1M2';
 JSmarty.ERRLEVL = 'none';
 
 JSmarty.shared = {};
@@ -90,7 +90,7 @@ JSmarty.prototype =
 				value = null;
 				break;
 			case 'object':
-				value = JSmarty.copy(value);
+				value = JSmarty.makeObjClone(value);
 				break;
 		};
 
@@ -689,7 +689,7 @@ JSmarty.getArgs = function(){
  * @params {Object} obj
  * @return {Object} Return the clone object.
  */
-JSmarty.copy = function(obj)
+JSmarty.makeObjClone = function(obj)
 {
 	var i, o = {};
 	for(i in obj)
