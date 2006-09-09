@@ -32,7 +32,7 @@ JSmarty.prototype =
 	template_dir : 'templates',
 
 	debug_tpl : '',
-	debugging : true,
+	debugging : false,
 	debugging_ctrl : 'NONE',
 
 //	compile_check : true,
