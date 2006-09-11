@@ -161,6 +161,8 @@ JSmarty.Compiler.prototype =
 				return "this._eval(";
 			case '/javascript':
 				return "'')";
+			case 'include_php':
+				return '';
 		};
 
 		switch(tag.charAt(isp))

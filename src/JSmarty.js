@@ -6,7 +6,7 @@
  *
  * @link http://d.hatena.ne.jp/shogo4405/20060727/1153977238
  * @author shogo < shogo4405 at gmail dot com >
- * @version 0.0.1M2
+ * @version 0.0.1M3
  */
 
 /**
@@ -18,8 +18,7 @@
 function JSmarty(){};
 
 JSmarty.GLOBALS = this;
-JSmarty.VERSION = '0.0.1M2';
-JSmarty.ERRLEVL = 'none';
+JSmarty.VERSION = '0.0.1M3';
 
 JSmarty.shared = {};
 JSmarty.templates_c = {};
@@ -35,19 +34,19 @@ JSmarty.prototype =
 	debugging : false,
 	debugging_ctrl : 'NONE',
 
-//	compile_check : true,
+	compile_check : true,
 	force_compile : false,
 
 //	cache_lifetime : 3600,
 //	cache_modified_check : false,
 
-//	trusted_dir : [],
+	trusted_dir : [],
 
 	left_delimiter  : '{',
 	right_delimiter : '}',
 
 	compile_id : null,
-//	use_sub_dirs : false,
+	use_sub_dirs : false,
 
 	default_modifiers : [],
 	default_resource_type : 'file',
@@ -90,7 +89,7 @@ JSmarty.prototype =
 				value = null;
 				break;
 			case 'object':
-				value = JSmarty.makeObjClone(value);
+				value = JSmarty.makeCloneObj(value);
 				break;
 		};
 
@@ -233,7 +232,7 @@ JSmarty.prototype =
 			results = JSmarty.templates_c[name].call(this);
 //			for(i in filters)
 //				results = filters[i](results, this);
-		}
+		};
 
 		if(display)
 		{
@@ -335,19 +334,37 @@ JSmarty.prototype =
 
 		if(cpir == null)
 		{
-			if(JSmarty[name] == void(0)) /* JSAN.use(name) */ ;
+			if(JSmarty[name] == void(0)) /* empty */;
+//				JSmarty.plugin.addModule(this.compiler_file);
 			cpir = this._compiler = new JSmarty[name];
-		}
+		};
 
 		return cpir._compile_file(src, this);
 	},
-	_is_compiled : function(name)
+	/**
+	 * test if resource needs compiling
+	 * @param {String} name - resource_name
+	 * @param {String} cpath - compile_path
+	 * @return {Boolean} 
+	 */
+	_is_compiled : function(name, path)
 	{
-		if(!this.force_compile && !JSmarty.templates_c[name])
+		var data;
+
+		if(!this.force_compile)
 		{
-			if(this.compile_check) return true;
-		//	if(!this._fetch_resource_info(data)) return false;
-		}
+			if(JSmarty.templates_c[name])
+				return true;
+/*
+			if(!this.compile_check)
+				return true;
+			data = { name:name, gets:false };
+			if(!this._fetch_resource_info(data))
+				return false;
+			if(data.timestamp <= JSmarty.file.mtime(path))
+				return true;
+*/
+		};
 
 		return false;
 	},
@@ -440,45 +457,132 @@ JSmarty.prototype =
 			args.unshift(src);
 
 			src = this._call(name, args, null, 'modifier');
-		}
+		};
 
 		return src;
 	},
+	/**
+	 * wrapper for eval() 
+	 * @param {String} code - Pure javascript code
+	 * @return {mixed}
+	 */
 	_eval : function(code){
 		return eval(code);
 	},
-	_include : function()
-	{
-	},
+	/**
+	 * Builtin function for {foreach} block.
+	 * @param {Object} params
+	 * @param {Function} content
+	 * @param {Function} contentelse
+	 * @type String
+	 */
 	_inforeach : function(params, content, contentelse)
 	{
-		var i, html = [];
+		var k, html = [], foreach;
 		var from = params.from;
 		var key  = params.key  || false;
 		var item = params.item || false;
 		var name = params.name || false;
 
-		if(!params.from)
+		if(!from)
 		{
+			if(name)
+				this._foreach[name] = { show:false };
 			if(contentelse)
+			{
+				this._foreach[name].show = true;
 				return contentelse.call(this);
+			};
 			return '';
 		};
 
-		for(i in from)
+		if(name)
 		{
-			if(!from.hasOwnProperty(i)) continue;
+			foreach = this._foreach[name] =
+			{
+				show : true,
+				last : false,
+				first : true,
+				total : 0,
+				iteration : 1
+			};
 
-			if(key) this.assign(key, i);
-			this.assign(item, from[i]);
+			for(k in from)
+			{
+				if(!from.hasOwnProperty(k)) continue;
+				foreach.total++;
+			};
+
+			for(k in from)
+			{
+				if(!from.hasOwnProperty(k)) continue;
+				if(key) this.assign(key, k);
+				this.assign(item, from[k]);
+				html.push(content.call(this));
+				foreach.iteration++;
+			};
+
+			delete foreach.last;
+			delete foreach.first;
+			delete foreach.iteration;
+
+			return html.join('');
+		};
+
+		for(k in from)
+		{
+			if(!from.hasOwnProperty(k)) continue;
+
+			if(key) this.assign(key, k);
+			this.assign(item, from[k]);
 			html.push(content.call(this));
 		};
 
 		return html.join('');
 	},
+	/**
+	 * Builtin function for {section} block.
+	 * @param {Object} params
+	 * @param {Function} content
+	 * @param {Function} contentelse
+	 * @type String
+	 */
 	_insection : function(params, content, contentelse)
 	{
-		
+		if(!params.name)
+		{
+			this.trigger_error('section : ');
+			return '';
+		};
+
+		var k, i, html =[];
+		var name = params.name, loop = params.loop;
+
+		var max   = loop.length - 1;
+		var show  = true;
+		var step  = 1;
+		var start = 0;
+
+		if(loop.length == 0)
+		{
+			if(name)
+				this._section[name] = { show:false };
+			if(contentelse)
+			{
+				this._section[name].show = true;
+				return contentelse.call(this);
+			};
+			return '';
+		};
+
+		section.total = 0;
+
+		for(k=start;k<max;k+=step)
+		{
+			section.total++;
+		};
+
+		return html.join('');
 	}
 };
 
@@ -613,11 +717,11 @@ JSmarty.Plugin.prototype.parse = function(code, name, type)
 	return (__script) ? true : false;
 };
 /**
- * Load of plugin.
+ * Load plugin.
  * @param {String} name Plugin-name.
  * @param {String} type Plugin-type.
  * @param {String} path The repository path of plugins. 
- * @return {Boolean} The function success, or not.
+ * @type Boolean
  */
 JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
 {
@@ -632,6 +736,26 @@ JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
 
 	return this.parse(code, name, type);
 };
+/**
+ * Load module.
+ * @param {String} namespace
+ * @param {String} filename
+ * @type Boolean
+ */
+JSmarty.Plugin.prototype.addModule = function(filename, global)
+{
+	if(this.modules[filename]) return true;
+};
+/**
+ * Load template is compiled.
+ * @param {String} name
+ * @type Boolean
+ */
+JSmarty.Plugin.prototype.addTemplatec = function(name)
+{
+	if(JSmarty.templates_c[name]) return true;
+};
+
 /**
  * instance of JSmarty.Plugin
  * @type JSmarty.Plugin
@@ -684,11 +808,11 @@ JSmarty.getArgs = function(){
 	return '';
 };
 /**
- * Make the clone of 'obj' and cut chains.
+ * Make a clone 'obj' and cut chains.
  * @params {Object} obj
  * @return {Object} Return the clone object.
  */
-JSmarty.makeObjClone = function(obj)
+JSmarty.makeCloneObj = function(obj)
 {
 	var i, o = {};
 	for(i in obj)
@@ -696,7 +820,7 @@ JSmarty.makeObjClone = function(obj)
 	return o;
 };
 /**
- * Wrapper of document.write or print.
+ * wrapper for document.write() or print().
  * @type Function
  */
 JSmarty.print = function()
