@@ -444,12 +444,11 @@ JSmarty.prototype =
 
 		return src;
 	},
-	_eval : function(src)
+	_eval : function(code){
+		return eval(code);
+	},
+	_include : function()
 	{
-		try{ return eval(src); }
-		catch(e){ this.trigger_error(e) };
-
-		return '';
 	},
 	_inforeach : function(params, content, contentelse)
 	{

@@ -106,14 +106,14 @@ jsmarty_function_html_radios.outputf = function(name, value, output, selected, e
 	{
 		if(label_ids)
 		{
-			id = ''; // temp
+			id = value.replace(/[^\w\-\.]/g,'_');
 			html += '<label for="'+ id +'">';
 		}
 		else
 		{
 			html += '<label>';
 		}
-	}
+	};
 
 	html +=
 		'<input type="radio" name="'+ name + '" value="'+ value + '"';

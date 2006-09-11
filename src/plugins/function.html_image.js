@@ -1,3 +1,23 @@
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
+/**
+ * JSmarty {html_image} function plugin
+ *
+ * Type:     function<br />
+ * Name:     html_image<br />
+ * Original: Smarty {html_image} function plugin
+ *
+ * @author   shogo < shogo4405 at gmail dot com>
+ * @version  0.0.0
+ * @see      http://smarty.php.net/manual/en/language.function.counter.php
+ * @param    {Object} params
+ * @param    {JSmarty} jsmarty
+ * @return   {String}
+ */
 function jsmarty_function_html_image(params, jsmarty)
 {
 	if(params.file)
@@ -6,7 +26,7 @@ function jsmarty_function_html_image(params, jsmarty)
 		return '';
 	};
 
-	var path;
+	var img, path;;
 
 	var dpi;
 	var alt = '';
@@ -56,5 +76,16 @@ function jsmarty_function_html_image(params, jsmarty)
 	else
 		path = file;
 
-	return '';
+	if(params.width == void(0) || params.height == void(0))
+	{
+		img = new Image();
+		img.src = path;
+
+		if(params.width == void(0))
+			width = img.width;
+		if(params.height == void(0))
+			height = img.height;
+	};
+
+	return prefix + '<img src="'+ path_prefix + file +';
 }

@@ -39,8 +39,9 @@ JSmarty.Compiler.prototype =
 	/**
 	 * compile a resource
 	 *
-	 * @param  {String}
-	 * @return {boolean}
+	 * @param  {String} src
+	 * @param  {JSmarty} jsmarty
+	 * @return {Boolean}
 	 */
 	_compile_file : function(src, jsmarty)
 	{
@@ -86,8 +87,8 @@ JSmarty.Compiler.prototype =
 	 * Compile a template tag
 	 *
 	 * @param  {String} tempalte_tag
-	 * @param  {Number}
-	 * @param  {Number}
+	 * @param  {Number} isp
+	 * @param  {Number} iep
 	 * @return {String}
 	 */
 	_compile_tag : function(tag, isp, iep)
@@ -193,7 +194,7 @@ JSmarty.Compiler.prototype =
 	},
 	/**
 	 * TagClose
-	 * @param  {String}
+	 * @param  {String} src
 	 * @return {String}
 	 */
 	_tagclose : function(type){
@@ -202,7 +203,7 @@ JSmarty.Compiler.prototype =
 	/**
 	 * ToAttribute, object literal
 	 * 
-	 * @param  {String}
+	 * @param  {String} src
 	 * @return {String}
 	 */
 	_attribute : function(src)
@@ -228,7 +229,7 @@ JSmarty.Compiler.prototype =
 	/**
 	 * The expression is substituted for JavaScript. 
 	 * 
-	 * @param  {String}
+	 * @param  {String} src
 	 * @return {String}
 	 */
 	_token : function(src)
@@ -240,7 +241,7 @@ JSmarty.Compiler.prototype =
 	/**
 	 * ToString, with '+' token
 	 * 
-	 * @param  {String}
+	 * @param  {String} src
 	 * @return {String}
 	 */
 	_string : function(src)
@@ -252,7 +253,7 @@ JSmarty.Compiler.prototype =
 	},
 	/**
 	 * ToString, quoted
-	 * @param  {String}
+	 * @param  {String} src
 	 * @return {String}
 	 */
 	_quote : function(src)
@@ -263,7 +264,7 @@ JSmarty.Compiler.prototype =
 	},
 	/**
 	 * ToVariable
-	 * @param  {String}
+	 * @param  {String} src
 	 * @return {String}
 	 */
 	_variable : function(src){
@@ -271,7 +272,7 @@ JSmarty.Compiler.prototype =
 	},
 	/**
 	 * ToVariable, JSmarty Reserved 
-	 * @param  {String}
+	 * @param  {String} src
 	 * @return {String}
 	 */
 	_reserved : function(src)

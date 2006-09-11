@@ -14,9 +14,9 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.function.counter.php
- * @param    {object} params
+ * @param    {Object} params
  * @param    {JSmarty} jsmarty
- * @return   {string}
+ * @return   {String}
  */
 function jsmarty_function_counter(params, jsmarty)
 {

@@ -16,6 +16,7 @@ $list = glob('templates_c/*.php');
 foreach($list as $php){
 	unlink($php);
 }
+
 /*
 // call main function
 main();
@@ -24,7 +25,7 @@ main();
 function main()
 {
 	$smarty = new Smarty();
-	$smarty->plugins_dir = array('plugins', '../smarty/plugins');
+	$smarty->plugins_dir = array('plugins', '../plugins');
 };
 */
 ?>
