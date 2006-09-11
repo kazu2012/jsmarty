@@ -18,8 +18,11 @@
  * @param    {JSmarty} jsmarty
  * @return   string
  */
+
 function jsmarty_function_html_options(params, jsmarty)
 {
+	JSmarty.plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
+
 	var k, value, i = 0, html = [];
 	var optoutput = jsmarty_function_html_options.optoutput;
 
@@ -83,11 +86,12 @@ jsmarty_function_html_options.optoutput = function(key, value, selected)
 {
 	var k, html, i = 0;
 	var optgroup = jsmarty_function_html_options.optgroup;
+	var escape_special_chars = JSmarty.shared.escape_special_chars;
 
 	if(typeof(value) == 'string')
 	{
 		html = 
-			'<option label="'+ value + '" value="'+ key +'"';
+			'<option label="'+ escape_special_chars(value) + '" value="'+ escape_special_chars(key) +'"';
 		html += '>' + value + '</option>\n';
 	}
 	else
