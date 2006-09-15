@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSmarty" default="directory" basedir="./">
+
+	<property name="version" value="0.0.1" />
+	<property name="dir.lib" value="lib" />
+	<property name="dir.src" value="src" />
+	<property name="dir.demo" value="demo" />
+
+	<target name="directory">
+		<mkdir dir="${lib}" />
+		<loadfile property="include.File" srcFile="JSmarty/File.js" />
+		<loadfile property="include.Plugin" srcFile="JSmarty/Plugin.js" />
+		<copy todir="${lib}">
+			<fileset dir="./" />
+			<filterset begintoken=";//@" endtoken="@">
+				<filter token="include.File" value="${include.File}" />
+				<filter token="include.Plugin" value="${include.Plugin}" />
+			</filterset>
+			<filterchain>
+				<stripjavacomments />
+			</filterchain>
+		</copy>
+	</target>
+
+	<!-- Ant default package -->
+	<target name="default">
+		
+	</target>
+
+	<!-- Ant demo/*.html -->
+	<target name="demo">
+		<loadfile property="html.header" srcFile="" />
+		<loadfile prooerty="html.footer" srcFile="" />
+		<copy todir="${dir.demo}">
+			<filterset>
+				<filter token="html.header" value="${html.header}" />
+				<filter token="html.footer" value="${html.footer}" />
+			</filterset>
+		</copy>
+	</target>
+
+</project>

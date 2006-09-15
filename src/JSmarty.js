@@ -18,7 +18,7 @@
 function JSmarty(){};
 
 JSmarty.GLOBALS = this;
-JSmarty.VERSION = '0.0.1M3';
+JSmarty.VERSION = '//@version@';
 
 JSmarty.shared = {};
 JSmarty.templates_c = {};
