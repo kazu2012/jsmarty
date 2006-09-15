@@ -665,3 +665,17 @@ JSmarty.print = function()
 	};
 	return function(str){ document.write(str); };
 }();
+
+//@include.File@
+/**
+ * instance of JSmarty.File
+ * @type JSmarty.File
+ */
+JSmarty.file = new JSmarty.File();
+
+//@include.Plugin@
+/**
+ * instance of JSmarty.Plugin
+ * @type JSmarty.Plugin
+ */
+JSmarty.plugin = new JSmarty.Plugin();

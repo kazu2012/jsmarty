@@ -110,9 +110,3 @@ JSmarty.File.prototype =
 		return this._system;
 	}
 };
-
-/**
- * instance of JSmarty.File
- * @type JSmarty.File
- */
-JSmarty.file = new JSmarty.File();

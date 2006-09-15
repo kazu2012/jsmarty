@@ -72,9 +72,3 @@ JSmarty.Plugin.prototype.addTemplatec = function(name)
 {
 	if(JSmarty.templates_c[name]) return true;
 };
-
-/**
- * instance of JSmarty.Plugin
- * @type JSmarty.Plugin
- */
-JSmarty.plugin = new JSmarty.Plugin();
