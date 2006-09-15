@@ -579,6 +579,7 @@ JSmarty.prototype =
 
 		for(k=start;k<max;k+=step)
 		{
+			html[i++] = content.call(this, k);
 			section.total++;
 		};
 
@@ -675,6 +676,24 @@ JSmarty.File.prototype =
 		};
 
 		return null;
+	},
+	/**
+	 * 
+	 * @param {Object} system
+	 */
+	require : function(script)
+	{
+		return function()
+		{
+			var element, loaded = this.loaded;
+			if(loaded[script]) return;
+			element = document.createElement('script');
+			element.type = 'text/javascript';
+			element.src  = script;
+		};
+	}(),
+	setSystem : function(system){
+		this._system = system;
 	},
 	getSystem : function(){
 		return this._system;
