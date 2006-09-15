@@ -522,17 +522,12 @@ JSmarty.prototype =
 				foreach.iteration++;
 			};
 
-			delete foreach.last;
-			delete foreach.first;
-			delete foreach.iteration;
-
 			return html.join('');
 		};
 
 		for(k in from)
 		{
 			if(!from.hasOwnProperty(k)) continue;
-
 			if(key) this.assign(key, k);
 			this.assign(item, from[k]);
 			html.push(content.call(this));
@@ -555,13 +550,13 @@ JSmarty.prototype =
 			return '';
 		};
 
-		var k, i, html =[];
+		var k, i, section, html =[];
 		var name = params.name, loop = params.loop;
 
-		var max   = loop.length - 1;
-		var show  = true;
-		var step  = 1;
-		var start = 0;
+		var max   = params.max || loop.length - 1;
+		var show  = params.show || true;
+		var step  = params.step || 1;
+		var start = params.start || 0;
 
 		if(loop.length == 0)
 		{
@@ -575,216 +570,35 @@ JSmarty.prototype =
 			return '';
 		};
 
-		section.total = 0;
+		section = this._section[name] =
+		{
+			show : true,
+			loop : 0,
+			last : false,
+			total : 0,
+			index : 0,
+			first : true,
+			rownum : 0,
+			iteration : 0,
+			index_next : 0,
+			index_prev : -1
+		};
 
 		for(k=start;k<max;k+=step)
 		{
 			html[i++] = content.call(this, k);
-			section.total++;
+		};
+
+		this._section[name] =
+		{
+			loop : section.loop,
+			total : section.total
 		};
 
 		return html.join('');
 	}
 };
 
-/**
- * Construct
- * @class Provide interface of File I/O.
- * @constructor
- */
-JSmarty.File = function(){};
-JSmarty.File.prototype =
-{
-	/** @private **/
-	_mtimes : {},
-	/** @private **/
-	_system : function()
-	{
-		if(JSmarty.GLOBALS.System)
-			return 'ajaja';
-		return 'http';
-	}(),
-	/**
-	 * XMLHttpObject
-	 * @type XMLHttpRequest or null
-	 */
-	XMLHTTP : function()
-	{
-		if(JSmarty.GLOBALS.XMLHttpRequest)
-			return new XMLHttpRequest;
-		if(JSmarty.GLOBALS.ActiveXObject)
-			return new ActiveXObject('Microsoft.XMLHTTP');
-		return null;
-	}(),
-	/**
-	 * file_get_contents
-	 * @param  {String} path File-path.
-	 * @return {String or null} Contents of file or null.
-	 */
-	fgets : function(path)
-	{
-		var text, http;
-
-		switch(this._system)
-		{
-			case 'http':
-				http = this.XMLHTTP;
-				http.open('GET', path, false);
-				try
-				{
-					http.send('');
-					text = http.responseText;
-					this._mtimes[path] = http.getResponseHeader('Last-Modified');
-				}
-				catch(e){ /* empty */ }
-				finally{ http.abort(); };
-				return text || null;
-			case 'ajaja':
-				try{ return System.readFile(path); }
-				catch(e){ /* empty */ };
-				return null
-		};
-
-		return null;
-	},
-	/**
-	 * file_put_contents
-	 * @return {Boolean} The function sucess, or not.
-	 */
-	fputs : function(src, file)
-	{
-		var fso, txt;
-
-//		switch(this._system)
-//		{
-//		};
-
-		return false;
-	},
-	/**
-	 * Return the timestamp of file
-	 * @return {Number}
-	 */
-	mtime : function(path)
-	{
-		switch(this._system)
-		{
-			case 'http':
-				return this._mtimes[path];
-			case 'ajaja':
-				return new Date().getTime(); // temp
-		};
-
-		return null;
-	},
-	/**
-	 * 
-	 * @param {Object} system
-	 */
-	require : function(script)
-	{
-		return function()
-		{
-			var element, loaded = this.loaded;
-			if(loaded[script]) return;
-			element = document.createElement('script');
-			element.type = 'text/javascript';
-			element.src  = script;
-		};
-	}(),
-	setSystem : function(system){
-		this._system = system;
-	},
-	getSystem : function(){
-		return this._system;
-	}
-};
-
-/**
- * Construct a new JSmarty.File
- * @class This is plugin class.
- * @constructor
- */
-JSmarty.Plugin = function(){};
-JSmarty.Plugin.prototype = new JSmarty.File();
-/**
- * Evalute the source of plugin.
- * @param  {String} code - The source code of javascript.
- * @param  {String} name - Plugin-name.
- * @param  {String} type - Plugin-type.
- * @return {Boolean} Evalute done, or not.
- */
-JSmarty.Plugin.prototype.parse = function(code, name, type)
-{
-	var __parent, __script = null;
-
-	__parent = (type == 'shared') ?
-		JSmarty.shared :
-		JSmarty.prototype._plugins[type];
-
-	if(code)
-	{
-		try
-		{
-			eval(code);
-			__script = eval(['jsmarty', type, name].join('_'));
-		}
-		catch(e){ /* empty */ };
-	};
-
-	__parent[name] = __script;
-	return (__script) ? true : false;
-};
-/**
- * Load plugin.
- * @param {String} name Plugin-name.
- * @param {String} type Plugin-type.
- * @param {String} path The repository path of plugins. 
- * @type Boolean
- */
-JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
-{
-	var i, code;
-	var script = [type, name, 'js'].join('.');
-
-	for(i=path.length-1;i>=0;i--)
-	{
-		code = this.fgets(path[i] + '/' + script);
-		if(code) break;
-	};
-
-	return this.parse(code, name, type);
-};
-/**
- * Load module.
- * @param {String} namespace
- * @param {String} filename
- * @type Boolean
- */
-JSmarty.Plugin.prototype.addModule = function(filename, global)
-{
-	if(this.modules[filename]) return true;
-};
-/**
- * Load template is compiled.
- * @param {String} name
- * @type Boolean
- */
-JSmarty.Plugin.prototype.addTemplatec = function(name)
-{
-	if(JSmarty.templates_c[name]) return true;
-};
-
-/**
- * instance of JSmarty.Plugin
- * @type JSmarty.Plugin
- */
-JSmarty.plugin = new JSmarty.Plugin();
-/**
- * instance of JSmarty.File
- * @type JSmarty.File
- */
-JSmarty.file = new JSmarty.File();
 /**
  * import shared plugins
  * @param string
