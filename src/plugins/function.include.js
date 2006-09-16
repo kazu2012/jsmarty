@@ -21,9 +21,24 @@ function jsmarty_function_include(params, jsmarty)
 {
 	if(params.file)
 	{
-		jsmarty.trigger_errot('include : ');
+		self.trigger_error('include : missing "file" parameter.');
 		return '';
 	};
-	var vars, html;
+	var k, html;
+
+	delete params.file;
+	delete params.assign;
+
+	// merge variables
+	for(k in params)
+		jsmarty._tpl_vars[i] = params[i];
+
+	if(jsmarty._is_compiled(file) || jsmarty._compile_resource(file)){
+		html = JSmarty.templates_c[file].call(jsmarty);
+	};
+
+//	if(jsmarty.caching)
+//		jsmarty._cache_info['template'][file] = true;
+
 	return html;
 };

@@ -1,37 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSmarty" default="directory" basedir="./">
+<project name="JSmarty" default="default" basedir="./">
 
 	<property name="version" value="0.0.1" />
-	<property name="dir.lib" value="lib" />
-	<property name="dir.src" value="src" />
-	<property name="dir.demo" value="demo" />
 
-	<target name="directory">
-		<mkdir dir="${lib}" />
-		<loadfile property="include.File" srcFile="JSmarty/File.js" />
-		<loadfile property="include.Plugin" srcFile="JSmarty/Plugin.js" />
-		<copy todir="${lib}">
-			<fileset dir="./" />
-			<filterset begintoken=";//@" endtoken="@">
+	<!-- Ant default package -->
+	<target name="default" depends="demo">
+		<mkdir dir="lib" />
+		<loadfile property="include.File" srcFile="src/JSmarty/File.js" />
+		<loadfile property="include.Plugin" srcFile="src/JSmarty/Plugin.js" />
+		<copy todir="lib">
+			<fileset dir="src" />
+		</copy>
+		<copy tofile="lib/JSmarty_Compiler.js" file="src/JSmarty/Compiler.js" />
+		<copy tofile="lib/JSmarty.js" file="src/JSmarty.js" overwrite="Yes">
+			<filterset begintoken="//@" endtoken="@">
 				<filter token="include.File" value="${include.File}" />
 				<filter token="include.Plugin" value="${include.Plugin}" />
 			</filterset>
-			<filterchain>
-				<stripjavacomments />
-			</filterchain>
 		</copy>
-	</target>
-
-	<!-- Ant default package -->
-	<target name="default">
-		
+		<delete dir="lib/JSmarty" />
 	</target>
 
 	<!-- Ant demo/*.html -->
 	<target name="demo">
-		<loadfile property="html.header" srcFile="" />
-		<loadfile prooerty="html.footer" srcFile="" />
-		<copy todir="${dir.demo}">
+		<loadfile property="html.header" srcFile="build/html/header.html" />
+		<loadfile property="html.footer" srcFile="build/html/footer.html" />
+		<copy todir="demo" overwrite="Yes">
+			<fileset dir="./build/demo/" />
 			<filterset>
 				<filter token="html.header" value="${html.header}" />
 				<filter token="html.footer" value="${html.footer}" />

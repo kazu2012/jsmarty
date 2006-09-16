@@ -1,12 +1,12 @@
 /**
- * File:    JSmarty_Compiler.js
+ * File:    JSmarty/Compiler.js
  *
  * This library is free software. License under the GNU Lesser General
  * Public License as published by the Free Software Foundation(LGPL).
  *
  * @link http://d.hatena.ne.jp/shogo4405/20060727/1153977238
  * @author shogo < shogo4405 at gmail dot com >
- * @version 0.0.1M2
+ * @version @version@
  */
 
 /**
@@ -87,8 +87,8 @@ JSmarty.Compiler.prototype =
 	 * Compile a template tag
 	 *
 	 * @param  {String} tempalte_tag
-	 * @param  {Number} isp
-	 * @param  {Number} iep
+	 * @param  {Number} isp index of tagStart point
+	 * @param  {Number} iep index of tagEnd point
 	 * @return {String}
 	 */
 	_compile_tag : function(tag, isp, iep)

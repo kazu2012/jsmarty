@@ -6,7 +6,7 @@
  *
  * @link http://d.hatena.ne.jp/shogo4405/20060727/1153977238
  * @author shogo < shogo4405 at gmail dot com >
- * @version 0.0.1M3
+ * @version @version@
  */
 
 /**
@@ -18,7 +18,7 @@
 function JSmarty(){};
 
 JSmarty.GLOBALS = this;
-JSmarty.VERSION = '//@version@';
+JSmarty.VERSION = '@version@';
 
 JSmarty.shared = {};
 JSmarty.templates_c = {};
@@ -64,9 +64,6 @@ JSmarty.prototype =
 	compiler_class : 'Compiler',
 	config_class   : 'Config_File',
 
-	_smarty_debug_id : '#JSMARTY_DEBUG',
-	_smarty_debug_info : [],
-
 	_foreach : {},
 	_section : {},
 	_capture : {},
@@ -75,11 +72,15 @@ JSmarty.prototype =
 	_compiler : null,
 	_debug_id : 'JSMARTY_DEBUG',
 	_debug_info : [],
+
 	_plugins :
 	{
 		modifier: {}, 'function':{}, block:       {},
 		resource: {}, insert:    {}, compiler:    {},
 		prefilter:{}, postfilter:{}, outputfilter:{}
+	},
+	_filters : {
+		prefilter:[], postfilter:[], outputfilter:[]
 	},
 	assign : function(key, value)
 	{
@@ -184,66 +185,56 @@ JSmarty.prototype =
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
-		var i, filter, results;
-		var types = this.autoload_filter;
-		var filters = this._plugins.outputfilter;
-		var cache = this.caching, debug = this.debugging;
+		var index, start;
+		var debugging = this.debugging;
+		var i, args, debug, index, result;
+		var outputp = this._plugins.outputfilter;
+		var outputf = this._filters.outputfilter;
 
-		if(!debug && this.debugging_ctrl == 'URL')
+		if(!debugging && this.debugging_ctrl == 'URL')
 		{
-			var hash = JSmarty.getArgs('JSMARTY_DEBUG');
-			var dbid = this._debug_id;
+			args = JSmarty.getArgs(this._debug_id);
 
-			if(hash == dbid + '=on')
-				debug = true;
-			else if(hash == dbid + '=off')
-				debug = false;
-		}
+			if(args == 'on')
+				debugging = true;
+			else if(args == 'off')
+				debugging = false;
+		};
 
-		if(debug)
+		if(this.debugging)
 		{
-			var dst  = new Date().getTime();
-			var info = this._smarty_debug_info;
-			var idx  = info.length;
-
-			info = info[idx] =
-				   {
-						type : 'template',
-						depth: 0,
-						filename : name
-				   };
-		}
+			start = new Date().getTime();
+			debug = this._debug_info;
+			index = debug.length;
+			debug = debug[index] = {
+				type : 'template', depth: 0, filename : name
+			};
+		};
 
 		if(cpid == void(0))
 			cpid = this.compile_id;
 
-/*
-		for(i in types)
-		{
-			filters = types[i];
-			for(filter in filters)
-				this.load_filter(filter, filters[filter]);
-		}
-*/
-
 		if(this._is_compiled(name) || this._compile_resource(name))
 		{
 			if(debug) info.compile_time = new Date().getTime() - dst;
-			results = JSmarty.templates_c[name].call(this);
-//			for(i in filters)
-//				results = filters[i](results, this);
+			result = JSmarty.templates_c[name].call(this);
 		};
 
 		if(display)
 		{
-			if(results){ JSmarty.print(results); };
-			if(debug)
+			if(result){ JSmarty.print(result); };
+			if(this.debugging)
 			{
 				info.exec_time = new Date().getTime() - dst;
 				JSmarty.print(info.compile_time);
+				for(i in outputf)
+				{
+					if(!outputf.hasOwnProperty(i)) continue;
+					result = outputf[i](result, this);
+				};
 			};
 			return;
-		}
+		};
 
 		return results || '';
 	},
@@ -289,6 +280,8 @@ JSmarty.prototype =
 	},
 	load_filter : function(type, name)
 	{
+		JSmarty.plugin.addPlugin(type, name, this.plugins_dir);
+		this._filters[type].push(name);
 	},
 	register_prefilter : function(name){
 		this._plugins.prefilter[name] = JSmarty.GLOBALS[name];
@@ -599,6 +592,20 @@ JSmarty.prototype =
 	}
 };
 
+//@include.File@
+/**
+ * instance of JSmarty.File
+ * @type JSmarty.File
+ */
+JSmarty.file = new JSmarty.File();
+
+//@include.Plugin@
+/**
+ * instance of JSmarty.Plugin
+ * @type JSmarty.Plugin
+ */
+JSmarty.plugin = new JSmarty.Plugin();
+
 /**
  * import shared plugins
  * @param string
@@ -652,6 +659,7 @@ JSmarty.makeCloneObj = function(obj)
 		o[i] = obj[i];
 	return o;
 };
+
 /**
  * wrapper for document.write() or print().
  * @type Function
@@ -665,17 +673,3 @@ JSmarty.print = function()
 	};
 	return function(str){ document.write(str); };
 }();
-
-//@include.File@
-/**
- * instance of JSmarty.File
- * @type JSmarty.File
- */
-JSmarty.file = new JSmarty.File();
-
-//@include.Plugin@
-/**
- * instance of JSmarty.Plugin
- * @type JSmarty.Plugin
- */
-JSmarty.plugin = new JSmarty.Plugin();
