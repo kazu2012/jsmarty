@@ -12,7 +12,7 @@
  * Original: Smarty {html_image} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  0.0.0
+ * @version  0.0.1
  * @see      http://smarty.php.net/manual/en/language.function.counter.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -20,13 +20,13 @@
  */
 function jsmarty_function_html_image(params, jsmarty)
 {
-	if(params.file)
+	if(!params.file)
 	{
 		jsmarty.trigger_error("html_image: missing 'file' parameter");
 		return '';
 	};
 
-	var img, path;;
+	var img, path;
 
 	var dpi;
 	var alt = '';
@@ -46,7 +46,7 @@ function jsmarty_function_html_image(params, jsmarty)
 
 		switch(k)
 		{
-			case 'dpi';
+			case 'dpi':
 				dpi = params[k]; break;
 			case 'file':
 				file = params[k]; break;
@@ -87,5 +87,6 @@ function jsmarty_function_html_image(params, jsmarty)
 			height = img.height;
 	};
 
-	return prefix + '<img src="'+ path_prefix + file +';
-}
+	return prefix + '<img src="'+ path_prefix + file +'" width="'+ width +
+		   '" height="'+ height +'"'+ extra.join(' ') +' />' + suffix;
+};

@@ -11,20 +11,22 @@
  * Name:     include<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  0.0.0
- * @see      http://smarty.php.net/manual/en/language.function.html.radios.php
+ * @version  0.0.1
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
  * @return   {String}
  */
 function jsmarty_function_include(params, jsmarty)
 {
-	if(params.file)
+	if(!params.file)
 	{
 		self.trigger_error('include : missing "file" parameter.');
 		return '';
 	};
-	var k, html;
+	var k, html = '';
+
+	var file = params.file;
+	var assign = params.assign || false;
 
 	delete params.file;
 	delete params.assign;
@@ -37,8 +39,10 @@ function jsmarty_function_include(params, jsmarty)
 		html = JSmarty.templates_c[file].call(jsmarty);
 	};
 
-//	if(jsmarty.caching)
-//		jsmarty._cache_info['template'][file] = true;
+/*
+	if(jsmarty.caching)
+		jsmarty._cache_info['template'][file] = true;
+*/
 
 	return html;
 };

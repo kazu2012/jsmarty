@@ -21,7 +21,7 @@
 
 function jsmarty_function_html_table(params, jsmarty)
 {
-	if(params.loop != void(0))
+	if(!params.loop)
 	{
 		jsmarty.trigger_error("html_table: missing 'loop' parameter");
 		return '';

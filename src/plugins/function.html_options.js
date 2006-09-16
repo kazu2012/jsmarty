@@ -21,7 +21,7 @@
 
 function jsmarty_function_html_options(params, jsmarty)
 {
-	JSmarty.plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
+	JSmarty.plugin.addPlugin('escape_special_chars', 'shared', jsmarty.plugins_dir);
 
 	var k, value, i = 0, html = [];
 	var optoutput = jsmarty_function_html_options.optoutput;

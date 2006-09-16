@@ -1,0 +1,4 @@
+<h2>TABLE001</h2>
+{html_table}
+<h2>TABLE002</h2>
+{html_table}

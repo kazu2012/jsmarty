@@ -201,7 +201,7 @@ JSmarty.prototype =
 				debugging = false;
 		};
 
-		if(this.debugging)
+		if(debugging)
 		{
 			start = new Date().getTime();
 			debug = this._debug_info;
@@ -216,22 +216,19 @@ JSmarty.prototype =
 
 		if(this._is_compiled(name) || this._compile_resource(name))
 		{
-			if(debug) info.compile_time = new Date().getTime() - dst;
+			if(debugging) debug.compile_time = new Date().getTime() - start;
 			result = JSmarty.templates_c[name].call(this);
+//			for(i in outputf)
+//				result = outputf[i](result, this);
 		};
 
 		if(display)
 		{
 			if(result){ JSmarty.print(result); };
-			if(this.debugging)
+			if(debugging)
 			{
-				info.exec_time = new Date().getTime() - dst;
-				JSmarty.print(info.compile_time);
-				for(i in outputf)
-				{
-					if(!outputf.hasOwnProperty(i)) continue;
-					result = outputf[i](result, this);
-				};
+				debug.exec_time = new Date().getTime() - start;
+				JSmarty.print(debug.compile_time);
 			};
 			return;
 		};
