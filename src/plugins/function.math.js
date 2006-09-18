@@ -1,4 +1,3 @@
-function jsmarty_function_math(params, smarty)
+function jsmarty_function_math(params, jsmarty)
 {
-	return '';
-}
+};

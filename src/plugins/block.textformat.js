@@ -1,16 +1,108 @@
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
+/**
+ * JSmarty {textformat} function plugin
+ *
+ * Type:     function<br />
+ * Name:     textformat<br />
+ * Original: Smarty {textformat} block plugin
+ *
+ * @author   shogo < shogo4405 at gmail dot com>
+ * @version  1.0.0RC1
+ * @see      http://smarty.php.net/manual/en/language.block.textformat.php
+ * @param    {Object} params
+ * @param    {String} content
+ * @param    {JSmarty} jsmarty
+ * @return   {String}
+ */
 function jsmarty_block_textformat(params, content, smarty)
 {
-	if(!(content = content.call(smarty))) return '';
+	if(!content) return '';
 
-	var style        = params.style || null;
-	var indent       = (params.indent || 0) - 0;
-	var indent_first = (params.indent_first || 0) - 0;
-	var indent_char  = params.indent_char || ' ';
-	var wrap         = (params.wrap || 80) - 0;
-	var wrap_char    = params.wrap_char || '\n';
-	var wrap_cut     = params.wrap_cut || false;
-	var assign       = params.assign || null;
+	var html, paragraphs;
+	var str_repeat = function(input_str, multiplier)
+	{
+		var i, ary = [];
+		for(i=0;i<=multiplier;i++)
+			ary[i] = input_str;
+		return ary.join('');;
+	};
+	var wordwrap = function(str, width, br, cut){
+		return str;
+	};
 
-	if(style == 'email')
-		wrap = 72;
-}
+	var style = null;
+	var wrap = 80;
+	var assign = null;
+	var indent = 0;
+	var wrap_cut = false;
+	var wrap_char = '\n';
+	var indent_char = ' ';
+	var indent_first = 0;
+
+	for(k in params)
+	{
+		switch(k)
+		{
+			case 'style':
+				style = params[k];
+				break;
+			case 'wrap':
+				wrap = parseInt(params[k]);
+				break;
+			case 'assign':
+				assign = params[k];
+				break;
+			case 'indent':
+				indent = parseInt(params[k]);
+				break;
+			case 'wrap_cut':
+				wrap_cut = parseInt(params[k]);
+				break;
+			case 'wrap_char':
+				wrap_char = params[k];
+				break;
+			case 'indent_char':
+				indent_char = params[k];
+			case 'indent_first':
+				indent_first = parseInt(params[k]);
+				break;
+			default:
+				jsmarty.trigger_error("textformat: unknown attribute");
+		};
+	};
+
+	switch(style)
+	{
+		case 'email':
+			wrap = 72;
+			break;
+	};
+
+	paragraphs = content.split(/\r?\n\r?\n/g);
+	html = '';
+
+	for(var x = 0, y = paragraphs.length; x < y; x++)
+	{
+		if(paragraphs[x] == '') continue;
+		paragraphs[x] = paragraphs[x].replace(/\s+/,' ');
+		paragraphs[x] = paragraphs[x].replace(/(^\s+)|(\s+$)/,'');
+		if(indent_first > 0)
+			paragraphs[x] = str_repeat(indent_char, indent_first) + paragraphs[x];
+		paragraphs[x] = wordwrap(paragraphs[x], wrap - indent, wrap_char, wrap_cut);
+		if(indent > 0)
+			paragraphs[x] = paragraphs[x].replace(/^/m, str_repeat(indent_char, indent));
+	};
+
+	if(assign)
+	{
+		jsmarty.assign(assign, output);
+		return '';
+	};
+
+	return output;
+};

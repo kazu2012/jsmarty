@@ -12,7 +12,7 @@
  * Original: Smarty {html_image} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  0.0.1
+ * @version  1.0.0RC1
  * @see      http://smarty.php.net/manual/en/language.function.counter.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -38,7 +38,6 @@ function jsmarty_function_html_image(params, jsmarty)
 	var suffix = '';
 	var basedir = '';
 	var path_prefix = '';
-//	var server_vars = {};
 
 	for(k in params)
 	{
@@ -47,21 +46,28 @@ function jsmarty_function_html_image(params, jsmarty)
 		switch(k)
 		{
 			case 'dpi':
-				dpi = params[k]; break;
+				dpi = params[k];
+				break;
 			case 'file':
-				file = params[k]; break;
+				file = params[k];
+				break;
 			case 'width':
-				width = params[k]; break;
+				width = params[k];
+				break;
 			case 'height':
-				height = paramas[k]; break;
+				height = paramas[k];
+				break;
 			case 'basedir':
-				basedir = params[k]; break;
+				basedir = params[k];
+				break;
 			case 'path_prefix':
-				path_prefix = params[k]; break;
+				path_prefix = params[k];
+				break;
 			case 'link':
 			case 'href':
 				prefix = '<a href="'+ params[k] +'">';
 				suffix = '</a>';
+				break;
 			case 'alt':
 				alt = params[k];
 				break;

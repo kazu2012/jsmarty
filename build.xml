@@ -13,7 +13,7 @@
 		</copy>
 		<copy tofile="lib/JSmarty_Compiler.js" file="src/JSmarty/Compiler.js" />
 		<copy tofile="lib/JSmarty.js" file="src/JSmarty.js" overwrite="Yes">
-			<filterset begintoken="//@" endtoken="@">
+			<filterset begintoken="/*@" endtoken="@*/">
 				<filter token="include.File" value="${include.File}" />
 				<filter token="include.Plugin" value="${include.Plugin}" />
 			</filterset>

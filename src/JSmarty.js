@@ -589,14 +589,14 @@ JSmarty.prototype =
 	}
 };
 
-//@include.File@
+/*@include.File@*/
 /**
  * instance of JSmarty.File
  * @type JSmarty.File
  */
 JSmarty.file = new JSmarty.File();
 
-//@include.Plugin@
+/*@include.Plugin@*/
 /**
  * instance of JSmarty.Plugin
  * @type JSmarty.Plugin
