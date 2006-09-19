@@ -13,7 +13,7 @@
  *
  * @author   shogo <shogo4405 at gmail dot com>
  * @version  0.0.1
- * @see      http://smarty.php.net/manual/en/language.function.html.table.php
+ * @see      http://smarty.php.net/manual/en/language.function.mailto.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
  * @return   {String}
@@ -40,7 +40,7 @@ function jsmarty_function_mailto(params, jsmarty)
 			case 'followupto':
 				mail_parms[i++] = k + '=' + params[k].replace('%40','@');
 				break;
-			case 'subject'
+			case 'subject':
 			case 'newsgroups':
 				mail_parms[i++] = k + '=' + params[k];
 				break;

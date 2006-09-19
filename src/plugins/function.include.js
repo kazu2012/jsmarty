@@ -39,10 +39,9 @@ function jsmarty_function_include(params, jsmarty)
 		html = JSmarty.templates_c[file].call(jsmarty);
 	};
 
-/*
-	if(jsmarty.caching)
-		jsmarty._cache_info['template'][file] = true;
-*/
+//	if(jsmarty.caching)
+//		jsmarty._cache_info['template'][file] = true;
+
 
 	return html;
 };

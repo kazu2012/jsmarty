@@ -16,7 +16,7 @@ function jsmarty_modifier_truncate(string, length, etc, break_words, middle)
 			return string.slice(0, length) + etc;
 		else
 			return string.slice(0, length/2) + etc + string.slice(-length/2);
-	}
-	else
-		return string;
-}
+	};
+
+	return string;
+};

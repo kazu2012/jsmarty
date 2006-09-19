@@ -12,7 +12,7 @@
  * Original: Smarty {html_options} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.function.html.options.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -24,7 +24,7 @@ function jsmarty_function_html_options(params, jsmarty)
 	JSmarty.plugin.addPlugin('escape_special_chars', 'shared', jsmarty.plugins_dir);
 
 	var k, value, i = 0, html = [];
-	var optoutput = jsmarty_function_html_options.optoutput;
+	var optoutput = jsmarty_function_html_options_optoutput;
 
 	var name = null;
 	var extra = [];
@@ -82,10 +82,10 @@ function jsmarty_function_html_options(params, jsmarty)
 	return '<select name="'+ name +'"'+ extra.join(' ') +'>\n'+ html.join('\n') +'</select>\n';
 };
 
-jsmarty_function_html_options.optoutput = function(key, value, selected)
+function jsmarty_function_html_options_optoutput(key, value, selected)
 {
 	var k, html, i = 0;
-	var optgroup = jsmarty_function_html_options.optgroup;
+	var optgroup = jsmarty_function_html_options_optgroup;
 	var escape_special_chars = JSmarty.shared.escape_special_chars;
 
 	if(typeof(value) == 'string')
@@ -102,10 +102,10 @@ jsmarty_function_html_options.optoutput = function(key, value, selected)
 	return html;
 };
 
-jsmarty_function_html_options.optgroup = function(key, value, selected)
+function jsmarty_function_html_options_optgroup(key, value, selected)
 {
 	var k, i = 0, html = [];
-	var optoutput = jsmarty_function_html_options.optoutput;
+	var optoutput = jsmarty_function_html_options_optoutput;
 
 	html[i++] = '<optgroup label="' + key + '">';
 	for(k in value)

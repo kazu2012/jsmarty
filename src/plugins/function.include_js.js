@@ -12,7 +12,6 @@
  *
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  0.0.0
- * @see      http://smarty.php.net/manual/en/language.function.html.radios.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
  * @return   {String}

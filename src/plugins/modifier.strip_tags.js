@@ -7,4 +7,4 @@ function jsmarty_modifier_strip_tags(string, replace_with_space)
 		return string.replace(/<[^>]*?>/,' ');
 	else
 		return string.replace(/<[^>]*?>/,'');
-}
+};
