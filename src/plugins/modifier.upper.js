@@ -18,5 +18,6 @@
  */
 function jsmarty_modifier_upper(string)
 {
+	// String#toUpperCase
 	return string.toUpperCase();
-}
+};

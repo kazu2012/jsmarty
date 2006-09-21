@@ -1,6 +1,6 @@
 /**
- * Smarty plugin
- * @package Smarty
+ * JSmarty plugin
+ * @package JSmarty
  * @subpackage plugins
  */
 

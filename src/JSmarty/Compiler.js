@@ -31,6 +31,7 @@ JSmarty.Compiler.prototype =
 	_recrlf : /\r?\n/g,
 	_reattr : /(\w+)=(\'|\"|)([^\s]+|[^\2]+?)\2/g,
 	_remove : / \+''/g,
+	_rexsec : /name:\'([^']+)\'/,
 	_folded_blocks : {},
 
 	_tag_stack : 'none',
@@ -148,9 +149,11 @@ JSmarty.Compiler.prototype =
 			case '/strip':
 				return "'').replace(/\\s|\\n/g,'') + ";
 			case 'foreach':
-			case 'section':
 				attr = this._attribute(tag.slice(iap + 1, irp));
 				return "this._in"+ name +"("+ attr +", function(){ var output = ";
+			case 'section':
+				attr = this._attribute(tag.slice(iap + 1, irp));
+				return "this._in"+ name +"("+ attr +", function("+ this._secname(attr) +"){ var output = ";
 			case 'foreachelse':
 			case 'sectionelse':
 				return " ''; return output; }, function(){ var output = ";
@@ -280,13 +283,25 @@ JSmarty.Compiler.prototype =
 	_reserved : function(src)
 	{
 		var vars = src.split('.');
-		switch(vars[1])
+		switch(vars.pop())
 		{
 			case 'version':
-				return 'this._version';
+			case 'section':
+			case 'foreach':
+				return 'this._'+ vars.join('.');
 			default:
 				return '';
 		};
+	},
+	/**
+	 * Parse attribute , for name of section.
+	 * @param  {String} attr string of attribute.
+	 * @return {String} name of section.
+	 */
+	_secname : function(attr)
+	{
+		var result = attr.match(this._rexsec);
+		return (result) ? result[1] : '' ;
 	}
 };
 

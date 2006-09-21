@@ -1,3 +1,23 @@
+/**
+ * JSmarty plugin
+ * @package JSmarty
+ * @subpackage plugins
+ */
+
+/**
+ * JSmarty truncate modifier plugin
+ *
+ * Type:     modifier<br />
+ * Name:     truncate<br />
+ * Original: Smarty truncate modifier plugin
+ *
+ * @author   shogo < shogo4405 at gmail dot com>
+ * @version  1.0.0
+ * @see      http://smarty.php.net/manual/en/language.modifier.truncate.php
+ * @param    {Object} params
+ * @param    {JSmarty} jsmarty
+ * @return   {String}
+ */
 function jsmarty_modifier_truncate(string, length, etc, break_words, middle)
 {
 	length = (length) ? length - 0 : 80;

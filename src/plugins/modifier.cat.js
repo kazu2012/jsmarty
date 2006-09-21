@@ -4,7 +4,21 @@
  * @subpackage plugins
  */
 
+/**
+ * JSmarty cat modifier plugin
+ *
+ * Type:     modifier<br />
+ * Name:     cat<br />
+ *
+ * @author   shogo < shogo4405 at gmail dot com>
+ * @version  1.0.0
+ * @see      http://smarty.php.net/manual/en/language.modifier.cat.php
+ * @param    {String} string
+ * @return   {String} string with cat
+ */
+
 function jsmarty_modifier_cat(string, cat)
 {
-	return string + cat;
-}
+	// String#concat
+	return string.concat(cat);
+};
