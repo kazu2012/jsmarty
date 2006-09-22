@@ -477,12 +477,17 @@ JSmarty.prototype =
 		if(!from)
 		{
 			if(name)
-				this._foreach[name] = { show:false };
-			if(contentelse)
 			{
-				this._foreach[name].show = true;
-				return contentelse.call(this);
+				this._foreach[name] = { show:false };
+				if(contentelse)
+				{
+					this._foreach[name].show = true;
+					return contentelse.call(this);
+				};
+				return '';
 			};
+			if(contentelse)
+				return contentelse.call(this);
 			return '';
 		};
 
@@ -536,22 +541,13 @@ JSmarty.prototype =
 	{
 		if(!params.name)
 		{
-			this.trigger_error('section : ');
+			this.trigger_error("section : missing 'name' parameter");
 			return '';
 		};
 
-		var k, i, section, html =[];
-		var name = params.name, loop = params.loop;
-
-		var max   = params.max || loop.length - 1;
-		var show  = params.show || true;
-		var step  = params.step || 1;
-		var start = params.start || 0;
-
-		if(loop.length == 0)
+		if(!params.loop)
 		{
-			if(name)
-				this._section[name] = { show:false };
+			this._section[name] = { show : false };
 			if(contentelse)
 			{
 				this._section[name].show = true;
@@ -559,6 +555,14 @@ JSmarty.prototype =
 			};
 			return '';
 		};
+
+		var k, section, i = 0, html =[];
+		var name = params.name, loop = params.loop;
+
+		var max   = params.max || loop.length;
+		var show  = params.show || true;
+		var step  = params.step || 1;
+		var start = params.start || 0;
 
 		section = this._section[name] =
 		{
@@ -651,9 +655,8 @@ JSmarty.getArgs = function(){
  */
 JSmarty.makeCloneObj = function(obj)
 {
-	var i, o = {};
-	for(i in obj)
-		o[i] = obj[i];
+	var i, o = (obj instanceof Array) ? [] : {};
+	for(i in obj) o[i] = obj[i];
 	return o;
 };
 

@@ -1,4 +1,6 @@
 {foreach from=$hoge item="datum" key="key"}
 {$key}:{$datum}:{counter}<br />
 <hr width="90%" />
+{foreachelse}
+displayed by foreachelse
 {/foreach}

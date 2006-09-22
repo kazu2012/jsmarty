@@ -1,0 +1,25 @@
+@html.header@
+<h1>block : foreach</h1>
+
+<h2>TRY1 : section01.txt</h2>
+<div class="result">
+	<script type="text/javascript">
+	smarty.display("section01.txt");
+	</script>
+</div>
+<h2>TRY2 : section01.txt</h2>
+
+<pre>
+smarty.assign("custid", [ "001", "002" ]);
+smarty.assign("name",   [ "shogo", "4405"]);
+smarty.assign("address",[ "hoge@com", "fuga@com" ]);
+</pre>
+<div class="result">
+	<script type="text/javascript">
+	smarty.assign("custid", [ "001", "002" ]);
+	smarty.assign("name",   [ "shogo", "4405"]);
+	smarty.assign("address",[ "hoge@com", "fuga@com" ]);
+	smarty.display("section01.txt");
+	</script>
+</div>
+@html.footer@

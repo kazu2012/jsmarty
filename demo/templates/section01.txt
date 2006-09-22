@@ -1,0 +1,10 @@
+{section name=mydata loop=$custid}
+<p>
+	id: {$custid[mydata]}<br />
+	name: {$name[mydata]}<br />
+	address: {$address[mydata]}<br />
+</p>
+<hr />
+{sectionelse}
+displayed by sectionelse
+{/section}
