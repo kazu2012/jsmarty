@@ -547,12 +547,9 @@ JSmarty.prototype =
 
 		if(!params.loop)
 		{
-			this._section[name] = { show : false };
+			this._section[params.name] = { show : false, total : 0 };
 			if(contentelse)
-			{
-				this._section[name].show = true;
 				return contentelse.call(this);
-			};
 			return '';
 		};
 
@@ -572,21 +569,42 @@ JSmarty.prototype =
 			total : 0,
 			index : 0,
 			first : true,
-			rownum : 0,
-			iteration : 0,
+			rownum : 1,
+			iteration : 1,
 			index_next : 0,
 			index_prev : -1
 		};
 
-		for(k=start;k<max;k+=step)
+		// section.first
+		html[i++] = content.call(this, start);
+		section.first = false;
+		section.total++;
+		section.index = start + step;
+		section.rownum++;
+		section.iteration++;
+		section.index_prev += step;
+		section.index_next += step;
+
+		for(k=start+step,max=max-step;k<max;k+=step)
 		{
 			html[i++] = content.call(this, k);
+			section.total++;
+			section.index = k + step;
+			section.rownum++;
+			section.iteration++;
+			section.index_prev += step;
+			section.index_next += step;
 		};
+
+		// section last
+		section.last = true;
+		html[i++] = content.call(this, max);
 
 		this._section[name] =
 		{
+			show : true,
 			loop : section.loop,
-			total : section.total
+			total : ++section.total
 		};
 
 		return html.join('');
@@ -655,8 +673,8 @@ JSmarty.getArgs = function(){
  */
 JSmarty.makeCloneObj = function(obj)
 {
-	var i, o = (obj instanceof Array) ? [] : {};
-	for(i in obj) o[i] = obj[i];
+	var o = (obj instanceof Array) ? [] : {};
+	for(var i in obj) o[i] = obj[i];
 	return o;
 };
 

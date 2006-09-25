@@ -4,7 +4,10 @@
 	name: {$name[mydata]}<br />
 	address: {$address[mydata]}<br />
 </p>
-<hr />
+{if !$smarty.section.mydata.last}<hr />{/if}
 {sectionelse}
-displayed by sectionelse
+<div>displayed by sectionelse</div>
 {/section}
+{if $smarty.section.mydata.total != 0}
+<p>SECTION TOTAL : {$smarty.section.mydata.total}</p>
+{/if}

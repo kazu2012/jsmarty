@@ -1,3 +1,4 @@
+/*@information@*/
 /**
  * File:    JSmarty/Compiler.js
  *
@@ -32,6 +33,7 @@ JSmarty.Compiler.prototype =
 	_reattr : /(\w+)=(\'|\"|)([^\s]+|[^\2]+?)\2/g,
 	_remove : / \+''/g,
 	_rexsec : /name:\'([^']+)\'/,
+	_resmty : /\$smarty\./,
 	_folded_blocks : {},
 
 	_tag_stack : 'none',
@@ -240,7 +242,8 @@ JSmarty.Compiler.prototype =
 	_token : function(src)
 	{
 		var ops = this._strops;
-		src  = src.replace(this._rexvar, 'this._tpl_vars.');
+		src = src.replace(this._resmty, 'this._');
+		src = src.replace(this._rexvar, 'this._tpl_vars.');
 		return src.replace(this._rtoken, function($1){ return ops[$1]; });
 	},
 	/**
@@ -272,7 +275,10 @@ JSmarty.Compiler.prototype =
 	 * @param  {String} src
 	 * @return {String}
 	 */
-	_variable : function(src){
+	_variable : function(src)
+	{
+		if(src.indexOf('smarty') >= 0)
+			return this._reserved(src);
 		return 'this._tpl_vars.' + src;
 	},
 	/**
@@ -282,8 +288,11 @@ JSmarty.Compiler.prototype =
 	 */
 	_reserved : function(src)
 	{
-		var vars = src.split('.');
-		switch(vars.pop())
+		var vars;
+		vars = src.split('.');
+		vars.shift();
+
+		switch(vars[0])
 		{
 			case 'version':
 			case 'section':

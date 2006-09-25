@@ -10,15 +10,15 @@
 <h2>TRY2 : section01.txt</h2>
 
 <pre>
-smarty.assign("custid", [ "001", "002" ]);
-smarty.assign("name",   [ "shogo", "4405"]);
-smarty.assign("address",[ "hoge@com", "fuga@com" ]);
+smarty.assign("custid", [ "001", "002", "003" ]);
+smarty.assign("name",   [ "id", "shogo", "4405"]);
+smarty.assign("address",[ "hoge@com", "foo@com", "bar@com" ]);
 </pre>
 <div class="result">
 	<script type="text/javascript">
-	smarty.assign("custid", [ "001", "002" ]);
-	smarty.assign("name",   [ "shogo", "4405"]);
-	smarty.assign("address",[ "hoge@com", "fuga@com" ]);
+	smarty.assign("custid", [ "001", "002", "003" ]);
+	smarty.assign("name",   [ "id", "shogo", "4405"]);
+	smarty.assign("address",[ "hoge@com", "foo@com", "bar@com" ]);
 	smarty.display("section01.txt");
 	</script>
 </div>
