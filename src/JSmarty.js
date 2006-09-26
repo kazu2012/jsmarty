@@ -468,22 +468,19 @@ JSmarty.prototype =
 	 */
 	_inforeach : function(params, content, contentelse)
 	{
-		var k, html = [], foreach;
+		var k, foreach, i = 0, html = [];
 		var from = params.from;
 		var key  = params.key  || false;
 		var item = params.item || false;
-		var name = params.name || false;
+		var name = params.name || null;
 
 		if(!from)
 		{
 			if(name)
 			{
-				this._foreach[name] = { show:false };
+				this._foreach[name] = { show : false, total : 0 };
 				if(contentelse)
-				{
-					this._foreach[name].show = true;
 					return contentelse.call(this);
-				};
 				return '';
 			};
 			if(contentelse)
@@ -499,7 +496,7 @@ JSmarty.prototype =
 				last : false,
 				first : true,
 				total : 0,
-				iteration : 1
+				iteration : 0
 			};
 
 			for(k in from)
@@ -508,13 +505,18 @@ JSmarty.prototype =
 				foreach.total++;
 			};
 
+			total = foreach.total;
+
 			for(k in from)
 			{
 				if(!from.hasOwnProperty(k)) continue;
 				if(key) this.assign(key, k);
+				if(++foreach.iteration == total)
+					foreach.last = true;
 				this.assign(item, from[k]);
-				html.push(content.call(this));
+				html[i++] = content.call(this);
 				foreach.iteration++;
+				foreach.first = false;
 			};
 
 			return html.join('');
@@ -525,7 +527,7 @@ JSmarty.prototype =
 			if(!from.hasOwnProperty(k)) continue;
 			if(key) this.assign(key, k);
 			this.assign(item, from[k]);
-			html.push(content.call(this));
+			html[i++] = content.call(this);
 		};
 
 		return html.join('');
@@ -585,7 +587,7 @@ JSmarty.prototype =
 		section.index_prev += step;
 		section.index_next += step;
 
-		for(k=start+step,max=max-step;k<max;k+=step)
+		for(k=start+step,max=max;k<max;k+=step)
 		{
 			html[i++] = content.call(this, k);
 			section.total++;

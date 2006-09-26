@@ -1,6 +1,7 @@
-{foreach from=$hoge item="datum" key="key"}
-{$key}:{$datum}:{counter}<br />
-<hr width="90%" />
+{foreach from=$hoge name="mydata" item="datum" key="key"}
+<p>
+	{$key} -&gt; {$datum}, {$smarty.foreach.mydata.total}<br />
+</p>
 {foreachelse}
 displayed by foreachelse
 {/foreach}
