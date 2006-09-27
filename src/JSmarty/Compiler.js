@@ -1,4 +1,3 @@
-/*@information@*/
 /**
  * File:    JSmarty/Compiler.js
  *

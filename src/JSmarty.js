@@ -60,7 +60,7 @@ JSmarty.prototype =
 //	config_fix_newlines : true,
 
 	default_template_handler_func : null,
-	compiler_file  : 'JSmarty_Compiler.js',
+	compiler_file  : 'JSmarty/Compiler.js',
 	compiler_class : 'Compiler',
 	config_class   : 'Config_File',
 
@@ -228,7 +228,7 @@ JSmarty.prototype =
 			if(debugging)
 			{
 				debug.exec_time = new Date().getTime() - start;
-				JSmarty.print(debug.compile_time);
+//				JSmarty.print(debug.compile_time);
 			};
 			return;
 		};
@@ -577,20 +577,21 @@ JSmarty.prototype =
 			index_prev : -1
 		};
 
+		for(k=start;k<max;k+=step)
+			section.total++;
+
 		// section.first
 		html[i++] = content.call(this, start);
 		section.first = false;
-		section.total++;
 		section.index = start + step;
 		section.rownum++;
 		section.iteration++;
 		section.index_prev += step;
 		section.index_next += step;
 
-		for(k=start+step,max=max;k<max;k+=step)
+		for(k=start+step,max=max-step;k<max;k+=step)
 		{
 			html[i++] = content.call(this, k);
-			section.total++;
 			section.index = k + step;
 			section.rownum++;
 			section.iteration++;
@@ -606,21 +607,21 @@ JSmarty.prototype =
 		{
 			show : true,
 			loop : section.loop,
-			total : ++section.total
+			total : section.total
 		};
 
 		return html.join('');
 	}
 };
 
-/*@include.File@*/
+/*@file.File@*/
 /**
  * instance of JSmarty.File
  * @type JSmarty.File
  */
 JSmarty.file = new JSmarty.File();
 
-/*@include.Plugin@*/
+/*@file.Plugin@*/
 /**
  * instance of JSmarty.Plugin
  * @type JSmarty.Plugin

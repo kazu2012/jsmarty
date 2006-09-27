@@ -6,7 +6,7 @@
  *
  * @link http://d.hatena.ne.jp/shogo4405/
  * @author shogo < shogo4405 at gmail dot com >
- * @version -
+ * @version @version@
  */
 
 /**

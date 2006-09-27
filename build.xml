@@ -1,37 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSmarty" default="default" basedir="./">
+<project name="JSmarty" default="main" basedir="./">
 
 	<property name="version" value="0.0.1" />
+	<property name="dir.src" value="src" />
+	<property name="dir.pkg" value="Temp/JSmarty-${version}" />
 
-	<!-- Ant default package -->
-	<target name="default" depends="demo">
-		<mkdir dir="lib" />
-		<loadfile property="include.File" srcFile="src/JSmarty/File.js" />
-		<loadfile property="include.Plugin" srcFile="src/JSmarty/Plugin.js" />
-		<copy todir="lib">
-			<fileset dir="src" />
-		</copy>
-		<copy tofile="lib/JSmarty_Compiler.js" file="src/JSmarty/Compiler.js" />
-		<copy tofile="lib/JSmarty.js" file="src/JSmarty.js" overwrite="Yes">
-			<filterset begintoken="/*@" endtoken="@*/">
-				<filter token="include.File" value="${include.File}" />
-				<filter token="include.Plugin" value="${include.Plugin}" />
-			</filterset>
-		</copy>
-		<delete dir="lib/JSmarty" />
-	</target>
-
-	<!-- Ant demo/*.html -->
 	<target name="demo">
 		<loadfile property="html.header" srcFile="build/html/header.html" />
 		<loadfile property="html.footer" srcFile="build/html/footer.html" />
 		<copy todir="demo" overwrite="Yes">
-			<fileset dir="./build/demo/" />
+			<fileset dir="build/demo" />
 			<filterset>
 				<filter token="html.header" value="${html.header}" />
 				<filter token="html.footer" value="${html.footer}" />
 			</filterset>
 		</copy>
+	</target>
+
+	<target name="build">
+		<mkdir dir="lib" />
+		<loadfile property="file.File" srcFile="src/JSmarty/File.js" />
+		<loadfile property="file.Plugin" srcFile="src/JSmarty/Plugin.js" />
+		<copy todir="lib" preservelastmodified="true">
+			<filterset>
+				<filter token="version" value="${version}" />
+			</filterset>
+			<fileset dir="src" />
+		</copy>
+		<copy tofile="lib/JSmarty.js" file="src/JSmarty.js" overwrite="Yes">
+			<filterset begintoken="/*@" endtoken="@*/">
+				<filter token="file.File" value="${file.File}" />
+				<filter token="file.Plugin" value="${file.Plugin}" />
+			</filterset>
+			<filterset>
+				<filter token="version" value="${version}" />
+			</filterset>
+		</copy>
+		<delete file="lib/JSmarty/File.js" />
+		<delete file="lib/JSmarty/Plugin.js" />
+	</target>
+
+	<target name="main" depends="demo,build">
+		<mkdir dir="${dir.pkg}" />
+		<copy todir="${dir.pkg}"><fileset dir="lib" /></copy>
+		<copy todir="${dir.pkg}"><fileset dir="demo" /></copy>
+		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
+		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
+		<delete dir="Temp" />
 	</target>
 
 </project>
