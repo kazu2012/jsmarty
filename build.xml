@@ -42,8 +42,8 @@
 
 	<target name="main" depends="demo,build">
 		<mkdir dir="${dir.pkg}" />
-		<copy todir="${dir.pkg}"><fileset dir="lib" /></copy>
-		<copy todir="${dir.pkg}"><fileset dir="demo" /></copy>
+		<copy todir="${dir.pkg}/lib"><fileset dir="lib" /></copy>
+		<copy todir="${dir.pkg}/demo"><fileset dir="demo" /></copy>
 		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />
