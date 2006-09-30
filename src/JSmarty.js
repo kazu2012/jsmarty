@@ -277,7 +277,7 @@ JSmarty.prototype =
 	},
 	load_filter : function(type, name)
 	{
-		JSmarty.plugin.addPlugin(type, name, this.plugins_dir);
+		JSmarty.Plugin.addPlugin(type, name, this.plugins_dir);
 		this._filters[type].push(name);
 	},
 	register_prefilter : function(name){
@@ -325,7 +325,7 @@ JSmarty.prototype =
 		if(cpir == null)
 		{
 			if(JSmarty[name] == void(0)) /* empty */;
-//				JSmarty.plugin.addModule(this.compiler_file);
+//				JSmarty.Plugin.addModule(this.compiler_file);
 			cpir = this._compiler = new JSmarty[name];
 		};
 
@@ -351,7 +351,7 @@ JSmarty.prototype =
 			data = { name:name, gets:false };
 			if(!this._fetch_resource_info(data))
 				return false;
-			if(data.timestamp <= JSmarty.file.mtime(path))
+			if(data.timestamp <= JSmarty.File.mtime(path))
 				return true;
 */
 		};
@@ -372,8 +372,8 @@ JSmarty.prototype =
 					data.url = this.template_dir +'/' + data.name;
 					if(data.gets)
 					{
-						data.src  = JSmarty.file.fgets(data.url);
-						data.time = JSmarty.file.mtime(data.url);
+						data.src  = JSmarty.File.fgets(data.url);
+						data.time = JSmarty.File.mtime(data.url);
 					}
 					break;
 				default:
@@ -417,7 +417,7 @@ JSmarty.prototype =
 		var call = this._plugins[type];
 
 		if(call[name] == void(0))
-			JSmarty.plugin.addPlugin(name, type, this.plugins_dir);
+			JSmarty.Plugin.addPlugin(name, type, this.plugins_dir);
 		if(!call[name]) return '';
 
 		switch(type)
@@ -615,18 +615,7 @@ JSmarty.prototype =
 };
 
 /*@file.File@*/
-/**
- * instance of JSmarty.File
- * @type JSmarty.File
- */
-JSmarty.file = new JSmarty.File();
-
 /*@file.Plugin@*/
-/**
- * instance of JSmarty.Plugin
- * @type JSmarty.Plugin
- */
-JSmarty.plugin = new JSmarty.Plugin();
 
 /**
  * import shared plugins
@@ -669,6 +658,14 @@ JSmarty.trigger_error = function(msg, level)
 JSmarty.getArgs = function(){
 	return '';
 };
+
+JSmarty.Factory = function(o)
+{
+	var f = function(){};
+	f.prototype = o;
+	return new f;
+};
+
 /**
  * Make a clone 'obj' and cut chains.
  * @params {Object} obj
@@ -687,7 +684,7 @@ JSmarty.makeCloneObj = function(obj)
  */
 JSmarty.print = function()
 {
-	switch(JSmarty.file.getSystem())
+	switch(JSmarty.File.getSystem())
 	{
 		case 'ajaja':
 			return function(str){ print(str); };

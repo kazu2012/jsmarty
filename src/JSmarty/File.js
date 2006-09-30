@@ -3,8 +3,7 @@
  * @class Provide interface of File I/O.
  * @constructor
  */
-JSmarty.File = function(){};
-JSmarty.File.prototype =
+JSmarty.File =
 {
 	/** @private **/
 	_mtimes : {},

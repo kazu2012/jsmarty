@@ -3,8 +3,15 @@
  * @class This is plugin class.
  * @constructor
  */
-JSmarty.Plugin = function(){};
-JSmarty.Plugin.prototype = new JSmarty.File();
+JSmarty.Plugin = JSmarty.Factory(JSmarty.File);
+
+JSmarty.Plugin.Object = {
+	append : function(ns, flag){ this[ns] = flag; }
+};
+
+JSmarty.Plugin.plugins = JSmarty.Factory(JSmarty.Plugin.Object);
+JSmarty.Plugin.modules = JSmarty.Factory(JSmarty.Plugin.Object);
+
 /**
  * Evalute the source of plugin.
  * @param  {String} code - The source code of javascript.
@@ -12,7 +19,7 @@ JSmarty.Plugin.prototype = new JSmarty.File();
  * @param  {String} type - Plugin-type.
  * @return {Boolean} Evalute done, or not.
  */
-JSmarty.Plugin.prototype.parse = function(code, name, type)
+JSmarty.Plugin.parse = function(code, name, type)
 {
 	var __parent, __script = null;
 
@@ -35,23 +42,25 @@ JSmarty.Plugin.prototype.parse = function(code, name, type)
 };
 /**
  * Load plugin.
- * @param {String} name Plugin-name.
- * @param {String} type Plugin-type.
+ * @param {String} ns Namaspace of plugin
  * @param {String} path The repository path of plugins. 
  * @type Boolean
  */
-JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
+JSmarty.Plugin.addPlugin = function(ns, path)
 {
-	var i, code;
-	var script = [type, name, 'js'].join('.');
+	var plugins = this.plugins;
+	if(ns in plugins) return plugins[ns];
+
+	var i, code, flag = false;
 
 	for(i=path.length-1;i>=0;i--)
 	{
-		code = this.fgets(path[i] + '/' + script);
+		code = this.fgets(path[i] + '/' + ns + '.js');
 		if(code) break;
 	};
 
-	return this.parse(code, name, type);
+	plugins.append(ns, flag);
+	return flag;
 };
 /**
  * Load module.
@@ -59,16 +68,14 @@ JSmarty.Plugin.prototype.addPlugin = function(name, type, path)
  * @param {String} filename
  * @type Boolean
  */
-JSmarty.Plugin.prototype.addModule = function(filename, global)
+JSmarty.Plugin.addModule = function(filename, global)
 {
-	if(this.modules[filename]) return true;
 };
 /**
  * Load template is compiled.
  * @param {String} name
  * @type Boolean
  */
-JSmarty.Plugin.prototype.addTemplatec = function(name)
+JSmarty.Plugin.addTemplatec = function(name)
 {
-	if(JSmarty.templates_c[name]) return true;
 };
