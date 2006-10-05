@@ -1,19 +1,13 @@
 /**
- * Construct
- * @class Provide interface of File I/O.
- * @constructor
+ * Provide interface of File I/O.
+ * @type JSmartyFileObject
  */
 JSmarty.File =
 {
 	/** @private **/
-	_mtimes : {},
+	__mtimes__ : {},
 	/** @private **/
-	_system : function()
-	{
-		if(JSmarty.GLOBALS.System)
-			return 'ajaja';
-		return 'http';
-	}(),
+	__system__ : 'http',
 	/**
 	 * XMLHttpObject
 	 * @type XMLHttpRequest or null
@@ -31,31 +25,10 @@ JSmarty.File =
 	 * @param  {String} path File-path.
 	 * @return {String or null} Contents of file or null.
 	 */
-	fgets : function(path)
+	fgets : function(file, dir)
 	{
-		var text, http;
-
-		switch(this._system)
-		{
-			case 'http':
-				http = this.XMLHTTP;
-				http.open('GET', path, false);
-				try
-				{
-					http.send('');
-					text = http.responseText;
-					this._mtimes[path] = http.getResponseHeader('Last-Modified');
-				}
-				catch(e){ /* empty */ }
-				finally{ http.abort(); };
-				return text || null;
-			case 'ajaja':
-				try{ return System.readFile(path); }
-				catch(e){ /* empty */ };
-				return null
-		};
-
-		return null;
+		var text, http = this.XMLHTTP;
+		return text;
 	},
 	/**
 	 * file_put_contents
@@ -63,49 +36,40 @@ JSmarty.File =
 	 */
 	fputs : function(src, file)
 	{
-		var fso, txt;
-
-//		switch(this._system)
-//		{
-//		};
-
+		/* abstract */
 		return false;
 	},
 	/**
 	 * Return the timestamp of file
 	 * @return {Number}
 	 */
-	mtime : function(path)
-	{
-		switch(this._system)
-		{
-			case 'http':
-				return this._mtimes[path];
-			case 'ajaja':
-				return new Date().getTime(); // temp
-		};
-
-		return null;
+	mtime : function(path){
+		return this.__mtimes__[file];
 	},
-	/**
-	 * 
-	 * @param {Object} system
-	 */
-	require : function(script)
+	setSystem : function(system)
 	{
-		return function()
+		switch(system)
 		{
-			var element, loaded = this.loaded;
-			if(loaded[script]) return;
-			element = document.createElement('script');
-			element.type = 'text/javascript';
-			element.src  = script;
+			case 'ajaja':
+				loadScript(Core.JSPATH + 'internal/core.ajaja.js'):
+				break;
+			case 'wscript':
+				break;
+			default:
+				JSmarty.trigger_error(" system: no-supported for "+ system);
 		};
-	}(),
-	setSystem : function(system){
-		this._system = system;
+		this.__system__ = system;
 	},
 	getSystem : function(){
-		return this._system;
+		return this.___system__;
 	}
 };
+
+(function()
+{
+	if(JSmarty.GLOBALS.System)
+	{
+		JSmarty.File.setSystem('ajaja');
+		return;
+	};
+})();

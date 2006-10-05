@@ -19,22 +19,17 @@
  * @param    {JSmarty} jsmarty
  * @return   {String}
  */
-function jsmarty_block_textformat(params, content, smarty)
+function jsmarty_block_textformat(params, content, jsmarty)
 {
 	if(!content) return '';
 
-	var html, paragraphs;
-	var str_repeat = function(input_str, multiplier)
-	{
-		var i, ary = [];
-		for(i=0;i<=multiplier;i++)
-			ary[i] = input_str;
-		return ary.join('');;
-	};
-	var wordwrap = function(str, width, br, cut){
-		return str;
-	};
+	JSmarty.plugin.addPlugin('shared.str_repeat', jsmarty.plugins_dir);
+	JSmarty.plugin.addPlugin('shared.wordwrap', jsmarty.plugins_dir);
 
+	var str_repeat = JSmarty.shared.str_repeat;
+	var wordwrap = JSmarty.shared.wordwrap;
+
+	var html, paragraphs;
 	var style = null;
 	var wrap = 80;
 	var assign = null;

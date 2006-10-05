@@ -452,7 +452,7 @@ JSmarty.prototype =
 		return src;
 	},
 	/**
-	 * wrapper for eval() 
+	 * Wrapper for eval() 
 	 * @param {String} code - Pure javascript code
 	 * @return {mixed}
 	 */
@@ -614,8 +614,17 @@ JSmarty.prototype =
 	}
 };
 
-/*@file.File@*/
-/*@file.Plugin@*/
+/**
+ * Create new extended object.
+ * @param {Object} o Super object
+ * @return {Object}
+ */
+JSmarty.Factory = function(o)
+{
+	var f = function(){};
+	f.prototype = o;
+	return new f;
+};
 
 /**
  * import shared plugins
@@ -633,8 +642,9 @@ JSmarty.importer = function()
 		global[func] = shared[func];
 	};
 };
+
 /**
- * JSmarty Error Handler
+ * Error Handler
  * @param {String} msg message
  * @param {String} level error-level
  */
@@ -655,19 +665,19 @@ JSmarty.trigger_error = function(msg, level)
 			break;
 	};
 };
+
+JSmarty.getSelfPath = function()
+{
+	var self;
+	return funtion(){ return self; };
+}();
+
 JSmarty.getArgs = function(){
 	return '';
 };
 
-JSmarty.Factory = function(o)
-{
-	var f = function(){};
-	f.prototype = o;
-	return new f;
-};
-
 /**
- * Make a clone 'obj' and cut chains.
+ * Make a clone object and cut chains.
  * @params {Object} obj
  * @return {Object} Return the clone object.
  */
@@ -679,7 +689,7 @@ JSmarty.makeCloneObj = function(obj)
 };
 
 /**
- * wrapper for document.write() or print().
+ * Wrapper for document.write() or print().
  * @type Function
  */
 JSmarty.print = function()
@@ -691,3 +701,7 @@ JSmarty.print = function()
 	};
 	return function(str){ document.write(str); };
 }();
+
+/*@file.File@*/
+/*@file.Plugin@*/
+/*@file.Iterator@*/

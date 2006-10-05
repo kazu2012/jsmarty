@@ -28,7 +28,7 @@ function jsmarty_function_html_table(params, jsmarty)
 	};
 
 	var c, r, k, x, rx, html, i = 0;
-	var cycle = jsmarty_function_html_table.cycle;
+	var cycle = jsmarty_function_html_table_cycle;
 
 	var loop;
 	var cols = 3;
@@ -107,7 +107,7 @@ function jsmarty_function_html_table(params, jsmarty)
 	return html.join('\n');
 };
 
-jsmarty_function_html_table.cycle = function(name, vari, no)
+function jsmarty_function_html_table(name, vari, no)
 {
 	var html;
 

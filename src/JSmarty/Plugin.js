@@ -1,81 +1,65 @@
 /**
- * Construct a new JSmarty.File
- * @class This is plugin class.
- * @constructor
+ * Provide interfase of Plugin.
+ * extend JSmartyFileObject
+ * @type JSmartyPluginObject
  */
 JSmarty.Plugin = JSmarty.Factory(JSmarty.File);
 
-JSmarty.Plugin.Object = {
-	append : function(ns, flag){ this[ns] = flag; }
-};
+/**
+ * Stack of plugins.
+ * @type Object
+ */
+JSmarty.Plugin.plugins = {};
 
-JSmarty.Plugin.plugins = JSmarty.Factory(JSmarty.Plugin.Object);
-JSmarty.Plugin.modules = JSmarty.Factory(JSmarty.Plugin.Object);
+/**
+ * Stack of modules.
+ * @type Object
+ */
+JSmarty.Plugin.modules = {};
 
 /**
  * Evalute the source of plugin.
- * @param  {String} code - The source code of javascript.
- * @param  {String} name - Plugin-name.
- * @param  {String} type - Plugin-type.
+ * @param  {String} $code - The source code of javascript.
+ * @param  {String} $ns - Plugin-name.
  * @return {Boolean} Evalute done, or not.
  */
-JSmarty.Plugin.parse = function(code, name, type)
+JSmarty.Plugin.addFunction = function($code, $namespace)
 {
-	var __parent, __script = null;
-
-	__parent = (type == 'shared') ?
-		JSmarty.shared :
-		JSmarty.prototype._plugins[type];
-
-	if(code)
-	{
-		try
-		{
-			eval(code);
-			__script = eval(['jsmarty', type, name].join('_'));
-		}
-		catch(e){ /* empty */ };
-	};
-
-	__parent[name] = __script;
-	return (__script) ? true : false;
 };
+
 /**
  * Load plugin.
  * @param {String} ns Namaspace of plugin
- * @param {String} path The repository path of plugins. 
+ * @param {String | Array} dir The repository path of plugins. 
  * @type Boolean
  */
-JSmarty.Plugin.addPlugin = function(ns, path)
+JSmarty.Plugin.addPlugin = function(ns, dir)
 {
 	var plugins = this.plugins;
 	if(ns in plugins) return plugins[ns];
 
-	var i, code, flag = false;
+	plugins[ns] = this.addFunction(
+		this.fgets(ns + '.js', dir), ns
+	);
 
-	for(i=path.length-1;i>=0;i--)
-	{
-		code = this.fgets(path[i] + '/' + ns + '.js');
-		if(code) break;
-	};
-
-	plugins.append(ns, flag);
-	return flag;
+	return plugins[ns];
 };
+
 /**
  * Load module.
  * @param {String} namespace
  * @param {String} filename
  * @type Boolean
  */
-JSmarty.Plugin.addModule = function(filename, global)
+JSmarty.Plugin.addModule = function(file, parent)
 {
 };
+
 /**
  * Load template is compiled.
- * @param {String} name
+ * @param {String} file
  * @type Boolean
  */
-JSmarty.Plugin.addTemplatec = function(name)
+JSmarty.Plugin.addTemplatec = function(file)
 {
 };
