@@ -614,6 +614,9 @@ JSmarty.prototype =
 	}
 };
 
+/*@file.File@*/
+/*@file.Plugin@*/
+
 /**
  * Create new extended object.
  * @param {Object} o Super object
@@ -701,7 +704,3 @@ JSmarty.print = function()
 	};
 	return function(str){ document.write(str); };
 }();
-
-/*@file.File@*/
-/*@file.Plugin@*/
-/*@file.Iterator@*/

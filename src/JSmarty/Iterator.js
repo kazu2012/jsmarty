@@ -2,33 +2,30 @@
  * The factory of Iterator
  */
 JSmarty.Iterator = {};
-JSmarty.Iterator.Array = function()
+JSmarty.Iterator.Array = function(ary, args)
 {
-	var idx = -1;
-	var max = '';
-	var nxt = 0;
-	var prv = 0;
-	var stp = 0;
+
+	for(var k in args)
+	{
+		switch(k)
+		{
+			case 'step':
+				step = args[k]; break;
+			case 'start':
+				start = args[k]; break;
+		};
+	};
 
 	return {
-		step : function()
+		next : function()
 		{
-			idx += stp;
-			if(idx == max)
-				return false;
-			return true;
+			return prop;
 		},
-		getElement : function()
+		hasNext : function()
 		{
-			return ary[idx];
 		},
-		getProperty : function()
-		{
-			return {
-				index  : index,
-				rownum : rownum,
-				iteration : iterarion,
-			};
+		toString : function(){
+			return i;
 		}
 	};
 };

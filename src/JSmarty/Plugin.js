@@ -19,17 +19,38 @@ JSmarty.Plugin.modules = {};
 
 /**
  * Evalute the source of plugin.
- * @param  {String} $code - The source code of javascript.
- * @param  {String} $ns - Plugin-name.
+ * @param  {String} $code The sourcecode of javascript.
+ * @param  {String} $namespace namespace of plugin
  * @return {Boolean} Evalute done, or not.
  */
 JSmarty.Plugin.addFunction = function($code, $namespace)
 {
+	if(!$code) return false;
+
+	$namespace = $namespace.split('.');
+	var $type = $namespace[0], $func = $namespace[1];
+
+	switch($type)
+	{
+		case 'shared':
+			$parent = JSmarty.shared; break;
+		default:
+			$parent = JSmarty.prototype._plugins[$type]; break;
+	};
+
+	try
+	{
+		eval($code + '$parent['+ $func +'] = $func;')
+		return true;
+	}
+	catch(e){ /* empty */ };
+
+	return false;
 };
 
 /**
  * Load plugin.
- * @param {String} ns Namaspace of plugin
+ * @param {String} ns namaspace of plugin
  * @param {String | Array} dir The repository path of plugins. 
  * @type Boolean
  */
@@ -51,7 +72,7 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
  * @param {String} filename
  * @type Boolean
  */
-JSmarty.Plugin.addModule = function(file, parent)
+JSmarty.Plugin.addModule = function(ns)
 {
 };
 
