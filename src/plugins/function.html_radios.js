@@ -12,7 +12,7 @@
  * Original: Smarty {html_radios} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.function.html.radios.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -21,7 +21,7 @@
 function jsmarty_function_html_radios(params, jsmarty)
 {
 	var k, i = 0, html = [];
-	var outputf = jsmarty_function_html_radios.outputf;
+	var outputf = jsmarty_function_html_radios_outputf;
 
 	var name      = 'radio';
 	var extra     = [];
@@ -98,7 +98,7 @@ function jsmarty_function_html_radios(params, jsmarty)
 		return html.join('\n');
 };
 
-jsmarty_function_html_radios.outputf = function(name, value, output, selected, extra, separator, labels, label_ids)
+function jsmarty_function_html_radios_outputf(name, value, output, selected, extra, separator, labels, label_ids)
 {
 	var id, html = '';
 

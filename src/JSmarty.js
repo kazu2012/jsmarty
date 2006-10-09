@@ -360,30 +360,27 @@ JSmarty.prototype =
 	},
 	_fetch_resource_info : function(data)
 	{
-		var flag = true;
+		var name, call, sret, flag = true;
 		if(data.gets == void(0)) data.gets = true;
 		if(data.quit == void(0)) data.quit = false;
 
 		if(this._parse_resource_name(data))
 		{
+			name = data.name;
 			switch(data.type)
 			{
 				case 'file':
-					data.url = this.template_dir +'/' + data.name;
-					if(data.gets)
-					{
-						data.src  = JSmarty.File.fgets(data.url);
-						data.time = JSmarty.File.mtime(data.url);
-					}
+					if(!data.gets) break;
+					data.src  = JSmarty.File.fgets(name, this.template_dir);
+					data.time = JSmarty.File.mtime(name, this.template_dir);
 					break;
 				default:
-					var name = data.name;
-					var call = this._call(type, null, null, 'resource');
-					var sret = (data.gets) ? call[1](name, data.type, this) : true;
+					call = this._call(type, null, null, 'resource');
+					sret = (data.gets) ? call[1](name, data.type, this) : true;
 					flag = sret && call[1](name, data, this);
 					break;
-			}
-		}
+			};
+		};
 
 		if(!flag)
 		{
@@ -417,7 +414,7 @@ JSmarty.prototype =
 		var call = this._plugins[type];
 
 		if(call[name] == void(0))
-			JSmarty.Plugin.addPlugin(name, type, this.plugins_dir);
+			JSmarty.Plugin.addPlugin(type + '.'+ name, this.plugins_dir);
 		if(!call[name]) return '';
 
 		switch(type)
@@ -614,9 +611,6 @@ JSmarty.prototype =
 	}
 };
 
-/*@file.File@*/
-/*@file.Plugin@*/
-
 /**
  * Create new extended object.
  * @param {Object} o Super object
@@ -672,7 +666,7 @@ JSmarty.trigger_error = function(msg, level)
 JSmarty.getSelfPath = function()
 {
 	var self;
-	return funtion(){ return self; };
+	return function(){ return self; };
 }();
 
 JSmarty.getArgs = function(){
@@ -692,15 +686,28 @@ JSmarty.makeCloneObj = function(obj)
 };
 
 /**
- * Wrapper for document.write() or print().
- * @type Function
+ * 
+ * @param {String | Array} obj
+ * @return {Array}
  */
-JSmarty.print = function()
+JSmarty.toArray = function(obj)
 {
-	switch(JSmarty.File.getSystem())
+	switch(typeof(obj))
 	{
-		case 'ajaja':
-			return function(str){ print(str); };
+		case 'string':
+			return [obj];
+		case 'object':
+			return obj;
 	};
-	return function(str){ document.write(str); };
-}();
+};
+
+/**
+ * Wrapper for document.write
+ * @param {String} str
+ */
+JSmarty.print = function(str){
+	document.write(str);
+};
+
+/*@file.File@*/
+/*@file.Plugin@*/

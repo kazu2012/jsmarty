@@ -28,7 +28,8 @@ JSmarty.Plugin.addFunction = function($code, $namespace)
 	if(!$code) return false;
 
 	$namespace = $namespace.split('.');
-	var $type = $namespace[0], $func = $namespace[1];
+	var $type = $namespace[0], $name = $namespace[1];
+	var $func = ['jsmarty', $type, $name].join('_');
 
 	switch($type)
 	{
@@ -40,7 +41,7 @@ JSmarty.Plugin.addFunction = function($code, $namespace)
 
 	try
 	{
-		eval($code + '$parent['+ $func +'] = $func;')
+		eval($code + '$parent[$name] = '+ $func +';');
 		return true;
 	}
 	catch(e){ /* empty */ };

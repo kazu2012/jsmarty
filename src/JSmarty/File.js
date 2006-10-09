@@ -28,7 +28,23 @@ JSmarty.File =
 	fgets : function(file, dir)
 	{
 		var text, http = this.XMLHTTP;
-		return text;
+
+		dir = JSmarty.toArray(dir);
+
+		for(var i=0,fin=dir.length;i<fin;i++)
+		{
+			if(text) break;
+			try
+			{
+				http.open('GET', dir[i] +'/'+ file, false);
+				http.send('');
+				text = http.responseText;
+			}
+			catch(e){ /* empty */ }
+			finally{ http.abort(); };
+		};
+
+		return text || '';
 	},
 	/**
 	 * file_put_contents
@@ -41,17 +57,18 @@ JSmarty.File =
 	},
 	/**
 	 * Return the timestamp of file
+	 * @param {String}
 	 * @return {Number}
 	 */
 	mtime : function(path){
-		return this.__mtimes__[file];
+		return this.__mtimes__[path];
 	},
 	setSystem : function(system)
 	{
 		switch(system)
 		{
 			case 'ajaja':
-				loadScript(Core.JSPATH + 'internal/core.ajaja.js'):
+				loadScript(Core.JSPATH + '/internal/core.ajaja.js');
 				break;
 			case 'wscript':
 				break;
@@ -67,7 +84,7 @@ JSmarty.File =
 
 (function()
 {
-	if(JSmarty.GLOBALS.System)
+	if(typeof(System) != 'undefined')
 	{
 		JSmarty.File.setSystem('ajaja');
 		return;

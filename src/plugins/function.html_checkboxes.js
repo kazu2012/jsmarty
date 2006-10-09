@@ -12,7 +12,7 @@
  * Original: Smarty {html_checkboxes} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.1
+ * @version  1.0.2
  * @see      http://smarty.php.net/manual/en/language.function.html.checkboxes.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -21,7 +21,7 @@
 function jsmarty_function_html_checkboxes(params, jsmarty)
 {
 	var k, value, i = 0, html = [];
-	var outputf = jsmarty_function_html_checkboxes.outputf;
+	var outputf = jsmarty_function_html_checkboxes_outputf;
 
 	var name = 'checkbox';
 	var extra = [];
@@ -92,7 +92,7 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 		return html.join('\n');
 };
 
-jsmarty_function_html_checkboxes.outputf = function(name, value, output, selected, extra, separator, labels)
+function jsmarty_function_html_checkboxes_outputf(name, value, output, selected, extra, separator, labels)
 {
 	var n = 0, html = [];
 

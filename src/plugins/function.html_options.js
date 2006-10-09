@@ -12,7 +12,7 @@
  * Original: Smarty {html_options} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.1
+ * @version  1.0.2
  * @see      http://smarty.php.net/manual/en/language.function.html.options.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -21,7 +21,7 @@
 
 function jsmarty_function_html_options(params, jsmarty)
 {
-	JSmarty.plugin.addPlugin('escape_special_chars', 'shared', jsmarty.plugins_dir);
+	JSmarty.Plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
 
 	var k, value, i = 0, html = [];
 	var optoutput = jsmarty_function_html_options_optoutput;
