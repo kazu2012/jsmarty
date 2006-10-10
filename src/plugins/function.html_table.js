@@ -12,7 +12,7 @@
  * Original: Smarty {html_table} function plugin<br />
  *
  * @author   shogo <shogo4405 at gmail dot com>
- * @version  1.0.0RC1
+ * @version  1.0.0RC2
  * @see      http://smarty.php.net/manual/en/language.function.html.table.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -27,19 +27,19 @@ function jsmarty_function_html_table(params, jsmarty)
 		return '';
 	};
 
-	var c, r, k, x, rx, html, i = 0;
+	var c, r, k, x, rx, html = [], i = 0;
 	var cycle = jsmarty_function_html_table_cycle;
 
-	var loop;
+	var loop = params.loop;
 	var cols = 3;
 	var rows = 3;
-	var vdif = 'down';
+	var vdir = 'down';
 	var hdir = 'right';
 	var inner = 'cols';
 	var tr_attr = '';
 	var td_attr = '';
 	var trailpad = '&nbsp;';
-	var table_attr = 'border="1"';
+	var table_attr = ' border="1"';
 
 	var loop_count = loop.length;
 
@@ -64,7 +64,7 @@ function jsmarty_function_html_table(params, jsmarty)
 			case 'trailpad':
 				trailpad = String(params[k]);
 			case 'table_attr':
-				table_attr = String(params[k]);
+				table_attr = ' '+ String(params[k]);
 			case 'tr_attr':
 				tr_attr = params[k];
 			case 'td_attr':
@@ -80,7 +80,7 @@ function jsmarty_function_html_table(params, jsmarty)
 			cols = Math.ceil(loop_count / rows);
 	};
 
-	html[i++] = '<table'+ table_attr;
+	html[i++] = '<table'+ table_attr +'>';
 
 	for(r=0; r < rows; r++)
 	{
@@ -107,7 +107,7 @@ function jsmarty_function_html_table(params, jsmarty)
 	return html.join('\n');
 };
 
-function jsmarty_function_html_table(name, vari, no)
+function jsmarty_function_html_table_cycle(name, vari, no)
 {
 	var html;
 

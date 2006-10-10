@@ -50,6 +50,15 @@ JSmarty.Plugin.addFunction = function($code, $namespace)
 };
 
 /**
+ *
+ *
+ */
+JSmarty.Plugin.getFunction = function(ns)
+{
+	
+};
+
+/**
  * Load plugin.
  * @param {String} ns namaspace of plugin
  * @param {String | Array} dir The repository path of plugins. 

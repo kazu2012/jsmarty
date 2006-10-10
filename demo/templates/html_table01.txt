@@ -1,4 +1,4 @@
 <h2>TABLE001</h2>
-{html_table}
+{html_table loop=$data}
 <h2>TABLE002</h2>
-{html_table}
+{html_table loop=$data cols=4 tr_attr=$tr}
