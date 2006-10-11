@@ -3,7 +3,7 @@
  * extend JSmartyFileObject
  * @type JSmartyPluginObject
  */
-JSmarty.Plugin = JSmarty.Factory(JSmarty.File);
+JSmarty.Plugin = JSmarty.clone(JSmarty.File);
 
 /**
  * Stack of plugins.

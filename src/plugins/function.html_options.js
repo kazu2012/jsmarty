@@ -86,7 +86,7 @@ function jsmarty_function_html_options_optoutput(key, value, selected)
 {
 	var k, html, i = 0;
 	var optgroup = jsmarty_function_html_options_optgroup;
-	var escape_special_chars = JSmarty.shared.escape_special_chars;
+	var escape_special_chars = JSmarty.Plugin.getFunction('shared.escape_special_chars');
 
 	if(typeof(value) == 'string')
 	{

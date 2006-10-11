@@ -23,13 +23,13 @@ function jsmarty_function_html_radios(params, jsmarty)
 	var k, i = 0, html = [];
 	var outputf = jsmarty_function_html_radios_outputf;
 
-	var name      = 'radio';
-	var extra     = [];
-	var labels    = true;
-	var values    = null;
-	var output    = null;
-	var options   = null;
-	var selected  = null;
+	var name = 'radio';
+	var extra = [];
+	var labels = true;
+	var values = null;
+	var output = null;
+	var options = null;
+	var selected = null;
 	var separator = '';
 	var label_ids = false;
 

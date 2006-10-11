@@ -21,10 +21,12 @@
 
 function jsmarty_function_debug(params, jsmarty)
 {
-	JSmarty.plugin.addPlugin('display_debug_console', 'shared', jsmarty.plugins_dir);
+	var Plugin = JSmarty.Plugin;
+
+	Plugin.addPlugin('core.display_debug_console', JSmarty.getSelfPath() + '/internal');
 
 	if(params.output != void(0))
 		jsamrty.assign('_jsmarty_debug_output', params.output);
 
-	return JSmarty.shared.display_debug_console(null, jsmarty);
+	return Plugin.getFunction('core.display_debug_console');
 };

@@ -5,7 +5,7 @@
  */
 
 /**
- * str_repeat shared function
+ * wordwrap shared function
  *
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0
@@ -14,12 +14,7 @@
  * @param  {Number} multiplier
  * @return {String}
  */
-function jsmarty_shared_str_repeat(input_str, multiplier)
+function jsmarty_shared_wordwrap()
 {
-	var i, ary = [];
-
-	for(i=0;i<=multiplier;i++)
-		ary[i] = input_str;
-
-	return ary.join('');
+	return '';
 };

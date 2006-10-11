@@ -612,18 +612,6 @@ JSmarty.prototype =
 };
 
 /**
- * Create new extended object.
- * @param {Object} o Super object
- * @return {Object}
- */
-JSmarty.Factory = function(o)
-{
-	var f = function(){};
-	f.prototype = o;
-	return new f;
-};
-
-/**
  * import shared plugins
  * @param string
  */
@@ -678,7 +666,7 @@ JSmarty.getArgs = function(){
  * @params {Object} obj
  * @return {Object} Return the clone object.
  */
-JSmarty.makeCloneObj = function(obj)
+JSmarty.copy = function(obj)
 {
 	var o = (obj instanceof Array) ? [] : {};
 	for(var i in obj) o[i] = obj[i];
@@ -686,11 +674,23 @@ JSmarty.makeCloneObj = function(obj)
 };
 
 /**
+ * Create new extended object.
+ * @param {Object} o Super object
+ * @return {Object}
+ */
+JSmarty.clone = function(o)
+{
+	var f = function(){};
+	f.prototype = o;
+	return new f;
+};
+
+/**
  * 
  * @param {String | Array} obj
  * @return {Array}
  */
-JSmarty.toArray = function(obj)
+JSmarty.flatten = function(obj)
 {
 	switch(typeof(obj))
 	{

@@ -28,7 +28,7 @@ function jsmarty_function_fetch(params, jsmarty)
 
 	var content = '';
 
-	content = JSmarty.file.fgets(params.file);
+	content = JSmarty.File.fgets(params.file);
 
 	if(params.assign)
 		jsmarty.assign(params.assign, content);
