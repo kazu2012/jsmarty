@@ -1,21 +1,16 @@
 /**
  * Provide interfase of Plugin.
- * extend JSmartyFileObject
- * @type JSmartyPluginObject
+ * extended JSmarty.File Object
+ * @type JSmarty.Plugin Object
  */
-JSmarty.Plugin = JSmarty.clone(JSmarty.File);
+JSmarty.Plugin = JSmarty.factory(JSmarty.File);
 
 /**
- * Stack of plugins.
+ * Stack of plugin function
+ * @private
  * @type Object
  */
-JSmarty.Plugin.plugins = {};
-
-/**
- * Stack of modules.
- * @type Object
- */
-JSmarty.Plugin.modules = {};
+JSmarty.Plugin.__func__ = {};
 
 /**
  * Evalute the source of plugin.
@@ -23,25 +18,16 @@ JSmarty.Plugin.modules = {};
  * @param  {String} $namespace namespace of plugin
  * @return {Boolean} Evalute done, or not.
  */
-JSmarty.Plugin.addFunction = function($code, $namespace)
+JSmarty.Plugin.addFunction = function($code, $ns)
 {
 	if(!$code) return false;
 
-	$namespace = $namespace.split('.');
-	var $type = $namespace[0], $name = $namespace[1];
-	var $func = ['jsmarty', $type, $name].join('_');
-
-	switch($type)
-	{
-		case 'shared':
-			$parent = JSmarty.shared; break;
-		default:
-			$parent = JSmarty.prototype._plugins[$type]; break;
-	};
+	var $parent = this.__func__;
+	var $func = ('jsmarty.' + $ns ).split('.').join('_');
 
 	try
 	{
-		eval($code + '$parent[$name] = '+ $func +';');
+		eval($code + '$parent[$ns] = '+ $func +' || null;');
 		return true;
 	}
 	catch(e){ /* empty */ };
@@ -55,7 +41,9 @@ JSmarty.Plugin.addFunction = function($code, $namespace)
  */
 JSmarty.Plugin.getFunction = function(ns)
 {
-	
+	var plugins = this.__func__;
+	if(ns in plugins) return plugins[ns];
+	return function(){ return ''; };
 };
 
 /**
@@ -66,10 +54,10 @@ JSmarty.Plugin.getFunction = function(ns)
  */
 JSmarty.Plugin.addPlugin = function(ns, dir)
 {
-	var plugins = this.plugins;
+	var plugins = this.__func__;
 	if(ns in plugins) return plugins[ns];
 
-	plugins[ns] = this.addFunction(
+	this.addFunction(
 		this.fgets(ns + '.js', dir), ns
 	);
 
@@ -78,7 +66,7 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
 
 /**
  * Load module.
- * @param {String} namespace
+ * @param {String} ns
  * @param {String} filename
  * @type Boolean
  */

@@ -20,7 +20,6 @@ function JSmarty(){};
 JSmarty.GLOBALS = this;
 JSmarty.VERSION = '@version@';
 
-JSmarty.shared = {};
 JSmarty.templates_c = {};
 
 JSmarty.prototype =
@@ -90,7 +89,7 @@ JSmarty.prototype =
 				value = null;
 				break;
 			case 'object':
-				value = JSmarty.makeCloneObj(value);
+				value = JSmarty.copy(value);
 				break;
 		};
 
@@ -163,7 +162,8 @@ JSmarty.prototype =
 			return;
 		};
 
-		if(key != '') delete this._tpl_vars[key];
+		if(key != '')
+			delete this._tpl_vars[key];
 	},
 	clear_all_assign : function(){
 		this._tpl_vars = {};
@@ -678,7 +678,7 @@ JSmarty.copy = function(obj)
  * @param {Object} o Super object
  * @return {Object}
  */
-JSmarty.clone = function(o)
+JSmarty.factory = function(o)
 {
 	var f = function(){};
 	f.prototype = o;
@@ -694,10 +694,8 @@ JSmarty.flatten = function(obj)
 {
 	switch(typeof(obj))
 	{
-		case 'string':
-			return [obj];
-		case 'object':
-			return obj;
+		case 'string': return [obj];
+		case 'object': return obj;
 	};
 };
 

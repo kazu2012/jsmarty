@@ -24,12 +24,11 @@ function jsmarty_block_textformat(params, content, jsmarty)
 	if(!content) return '';
 
 	var Plugin = JSmarty.Plugin;
-
-	Plugin.addPlugin('shared.str_repeat', jsmarty.plugins_dir);
 	Plugin.addPlugin('shared.wordwrap', jsmarty.plugins_dir);
+	Pluhin.addPlugin('shared.str_repeat' jsmarty.plugins_dir);
 
-	var wordwrap = Plugin.addFunction('shared.wordwrap');
-	var str_repeat = Plugin.addFunction('shared.str_repeat');
+	var wordwrap = Plugin.getFunction('shared.wordwrap');
+	var str_repeat = Plugin.getFunction('shared.str_repeat');
 
 	var html, paragraphs;
 	var style = null;
