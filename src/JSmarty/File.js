@@ -68,7 +68,7 @@ JSmarty.File =
 		switch(system)
 		{
 			case 'ajaja':
-				loadScript(Core.JSPATH + '/internal/core.ajaja.js');
+				loadScript(Core.JSPATH + '/internals/core.ajaja.js');
 				break;
 			case 'wscript':
 				break;

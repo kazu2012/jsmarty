@@ -13,6 +13,14 @@ JSmarty.Plugin = JSmarty.factory(JSmarty.File);
 JSmarty.Plugin.__func__ = {};
 
 /**
+ *
+ *
+ */
+JSmarty.Plugin.empty = function(){
+	return '';
+};
+
+/**
  * Evalute the source of plugin.
  * @param  {String} $code The sourcecode of javascript.
  * @param  {String} $namespace namespace of plugin
@@ -20,14 +28,18 @@ JSmarty.Plugin.__func__ = {};
  */
 JSmarty.Plugin.addFunction = function($code, $ns)
 {
-	if(!$code) return false;
-
 	var $parent = this.__func__;
 	var $func = ('jsmarty.' + $ns ).split('.').join('_');
 
+	if(!$code)
+	{
+		$parent = this.empty;
+		return false;
+	};
+
 	try
 	{
-		eval($code + '$parent[$ns] = '+ $func +' || null;');
+		eval($code + '$parent[$ns] = '+ $func +' || this.empty;');
 		return true;
 	}
 	catch(e){ /* empty */ };
@@ -43,7 +55,7 @@ JSmarty.Plugin.getFunction = function(ns)
 {
 	var plugins = this.__func__;
 	if(ns in plugins) return plugins[ns];
-	return function(){ return ''; };
+	return this.empty;
 };
 
 /**

@@ -19,5 +19,5 @@
 function jsmarty_modifier_count_paragraphs(string)
 {
 	// count \r or \n characters
-	return string.split(/[\r\n]+/).length;
+	return string.match(/[\r\n]+/g).length;
 };
