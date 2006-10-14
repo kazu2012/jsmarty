@@ -18,5 +18,5 @@
  */
 function jsmarty_modifier_regex_replace(string, search, replace)
 {
-	
+	return string.replace(search, replace);
 };

@@ -5,7 +5,7 @@
  */
 
 /**
- * JSmarty indent modifier plugin
+ * JSmarty replace modifier plugin
  *
  * Type:     modifier<br />
  * Name:     replace<br />
@@ -20,6 +20,6 @@ function jsmarty_modifier_replace(string, search, replace)
 {
 	var index = 0;
 	while((index = string.indexOf(search, index)) != -1)
-		string = string.replace(search);
+		string = string.replace(search, replace);
 	return string;
 };
