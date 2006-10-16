@@ -10,7 +10,7 @@ JSmarty.Plugin = JSmarty.factory(JSmarty.File);
  * @private
  * @type Object
  */
-JSmarty.Plugin.__func__ = {};
+JSmarty.Plugin.__pool__ = {};
 
 /**
  *
@@ -53,7 +53,7 @@ JSmarty.Plugin.addFunction = function($code, $ns)
  */
 JSmarty.Plugin.getFunction = function(ns)
 {
-	var plugins = this.__func__;
+	var plugins = this.__pool__;
 	if(ns in plugins) return plugins[ns];
 	return this.empty;
 };
