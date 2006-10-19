@@ -17,14 +17,45 @@
 
 var jsmarty_resource_string =
 [
-	function(){
+	/**
+	 * get a template source
+	 * @param {String} name Template name
+	 * @param {Object} data Template data
+	 * @param {JSmarty} jsmarty
+	 * @return {Boolean} 
+	 */
+	function(name, data, jsmarty)
+	{
+		data.src = name;
+		return true;
 	},
-	function(){
-		return new Date();
+	/**
+	 * get a template timestamp
+	 * @param {String} name Template name
+	 * @param {Object} data Template data
+	 * @param {JSmarty} jsmarty
+	 * @return {Boolean} 
+	 */
+	 */
+	function(name, data, jsmarty)
+	{
+		if(document && document.lastModified)
+			data.time = document.lastModified;
+		else
+			data.time = new Date.getTime();
+		return true;
 	},
+	/**
+	 * secure?
+	 * @return {Boolean} true
+	 */
 	function(){
 		return true;
 	},
+	/**
+	 * trusted?
+	 * @return {Boolean} true
+	 */
 	function(){
 		return true;
 	}

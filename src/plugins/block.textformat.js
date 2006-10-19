@@ -19,16 +19,13 @@
  * @param    {JSmarty} jsmarty
  * @return   {String}
  */
+
 function jsmarty_block_textformat(params, content, jsmarty)
 {
 	if(!content) return '';
 
-	var Plugin = JSmarty.Plugin;
-	Plugin.addPlugin('shared.wordwrap', jsmarty.plugins_dir);
-	Pluhin.addPlugin('shared.str_repeat' jsmarty.plugins_dir);
-
-	var wordwrap = Plugin.getFunction('shared.wordwrap');
-	var str_repeat = Plugin.getFunction('shared.str_repeat');
+	var wordwrap = JSmarty.Plugin.getPlugin('php.wordwrap');
+	var str_repeat = JSmarty.Plugin.getPlugin('php.str_repeat');
 
 	var html, paragraphs;
 	var style = null;

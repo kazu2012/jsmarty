@@ -375,7 +375,7 @@ JSmarty.prototype =
 					data.time = JSmarty.File.mtime(name, this.template_dir);
 					break;
 				default:
-					call = this._call(type, null, null, 'resource');
+					call = this._call(data.type, null, null, 'resource');
 					sret = (data.gets) ? call[1](name, data.type, this) : true;
 					flag = sret && call[1](name, data, this);
 					break;

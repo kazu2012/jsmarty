@@ -10,7 +10,7 @@ JSmarty.Plugin = JSmarty.factory(JSmarty.File);
  * @private
  * @type Object
  */
-JSmarty.Plugin.__pool__ = {};
+JSmarty.Plugin.__func__ = {};
 
 /**
  *
