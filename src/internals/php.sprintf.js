@@ -1,0 +1,4 @@
+function sprintf(format, timestamp)
+{
+	
+};

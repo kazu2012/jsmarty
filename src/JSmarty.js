@@ -72,10 +72,7 @@ JSmarty.prototype =
 	_debug_id : 'JSMARTY_DEBUG',
 	_debug_info : [],
 
-	_plugins :
-	{
-		modifier: {}, 'function':{}, block:       {},
-		resource: {}, insert:    {}, compiler:    {},
+	_plugins :{
 		prefilter:{}, postfilter:{}, outputfilter:{}
 	},
 	_filters : {
@@ -242,61 +239,62 @@ JSmarty.prototype =
 		return this._call('file', null, null, 'resource').source(file, null, this);
 	},
 	register_block : function(name, impl){
-		this._plugins.block[name] = impl;
+		this._plugins['block.' + name] = impl;
 	},
 	register_function : function(name, impl){
-		this._plugins['function'][name] = impl;
+		this._plugins['function.' + name] = impl;
 	},
 	register_modifier : function(name, impl){
-		this._plguins.modifier[name] = impl;
+		this._plguins['mofifier.' + name] = impl;
 	},
 	register_resource : function(type, impl)
 	{
 		if(impl instanceof Array && impl.length == 4)
-			this._plugins.resource[type] = impl;
+			this._plugins['resource.' + type] = impl;
 		else
 			this.trigger_error("malformed function-list for '"+ type +"' in register_resource");
 	},
 	register_compiler_function : function(name, impl){
-		this._plugins.compiler[name] = impl;
+		this._plugins['compiler' + name] = impl;
 	},
 	unregister_block : function(name){
-		this._plugins.block[name] = false;
+		this._plugins['block.' + name] = false;
 	},
 	unregister_function : function(name){
-		this._plugins['function'][name] = false;
+		this._plugins['function.' + name] = false;
 	},
 	unregister_modifier : function(name){
-		this._plugins.modifier[name] = false;
+		this._plugins['modifier.' + name] = false;
 	},
 	unregister_resource : function(name){
-		this._plugins.resource[name] = false;
+		this._plugins['resource.' + name] = false;
 	},
 	unregister_compiler_function : function(name){
-		this._plugins.compiler[name] = false;
+		this._plugins['compiler.' + name] = false;
 	},
 	load_filter : function(type, name)
 	{
-		JSmarty.Plugin.addPlugin(type, name, this.plugins_dir);
-		this._filters[type].push(name);
+		this._plugins[type].push(
+			JSmarty.Plugin.addPlugin(type + '.' + name, this.plugins_dir)
+		);
 	},
 	register_prefilter : function(name){
-		this._plugins.prefilter[name] = JSmarty.GLOBALS[name];
+		this._plugins['prefilter.' + name] = JSmarty.GLOBALS[name];
 	},
 	register_postfilter : function(name){
-		this._plugins.postfilter[name] = JSmarty.GLOBALS[name];
+		this._plugins['postfilter.' + name] = JSmarty.GLOBALS[name];
 	},
 	register_outputfilter : function(name){
-		this._plugins.outputfilter[name] = JSmarty.GLOBALS[name];
+		this._plugins['outputfilter.' + name] = JSmarty.GLOBALS[name];
 	},
 	unregister_prefilter : function(name){
-		this._plugins.prefilter[name] = false;
+		this._plugins['prefilter.' + name] = false;
 	},
 	unregister_postfilter : function(name){
-		this._plugins.postfilter[name] = false;
+		this._plugins['postfilter.' + name] = false;
 	},
 	unregister_outputfilter : function(name){
-		this._plugins.outputfilter[name] = false;
+		this._plugins['outputfilter.' + name] = false;
 	},
 	trigger_error : function(msg, level)
 	{
@@ -376,7 +374,7 @@ JSmarty.prototype =
 					break;
 				default:
 					call = this._call(data.type, null, null, 'resource');
-					sret = (data.gets) ? call[1](name, data.type, this) : true;
+					sret = (data.gets) ? call[0](name, data, this) : true;
 					flag = sret && call[1](name, data, this);
 					break;
 			};

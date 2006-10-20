@@ -14,8 +14,8 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.modifier.strip_tags.php
- * @param    {Object} params
- * @param    {JSmarty} jsmarty
+ * @param    {String} string
+ * @param    {String} replace_with_space
  * @return   {String} string with tags removed
  */
 function jsmarty_modifier_strip_tags(string, replace_with_space)

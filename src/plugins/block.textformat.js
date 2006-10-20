@@ -24,8 +24,8 @@ function jsmarty_block_textformat(params, content, jsmarty)
 {
 	if(!content) return '';
 
-	var wordwrap = JSmarty.Plugin.getPlugin('php.wordwrap');
-	var str_repeat = JSmarty.Plugin.getPlugin('php.str_repeat');
+	var wordwrap = JSmarty.Plugin.getFunction('php.wordwrap');
+	var str_repeat = JSmarty.Plugin.getFunction('php.str_repeat');
 
 	var html, paragraphs;
 	var style = null;

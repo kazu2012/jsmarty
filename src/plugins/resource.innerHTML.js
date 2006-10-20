@@ -28,7 +28,6 @@ var jsmarty_resource_innerHTML =
 		var element = document.getElementById(name);
 		if(!element) return false;
 		data.src = element.innerHTML;
-		data.time= new Date.getTime();
 		return true;
 	},
 	/**

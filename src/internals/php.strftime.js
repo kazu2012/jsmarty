@@ -1,0 +1,4 @@
+function strftime(format, timestamp)
+{
+	
+};
