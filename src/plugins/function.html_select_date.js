@@ -6,10 +6,10 @@
 
 function jsmarty_function_html_select_date(params, jsmarty)
 {
-	var Plugin = JSmarty.Plugin;
-
-	var html_options = Plugin.addPlugin('function.html_options');
-	var escape_special_chars = Plugin.addPlugin('shared.escape_special_chars');
+	var html_options =
+		JSmarty.Plugin.getFunction('function.html_options', jsmarty.plugins_dir);
+	var escape_special_chars =
+		JSmarty.Plugin.getFunction('shared.escape_special_chars', jsmarty.plugins_dir);
 
 	var time = new Date();
 	var prefix = 'Date_';

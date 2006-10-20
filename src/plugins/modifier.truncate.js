@@ -14,8 +14,11 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.modifier.truncate.php
- * @param    {Object} params
- * @param    {JSmarty} jsmarty
+ * @param    {String} string
+ * @param    {Number} length
+ * @param    {String} etc
+ * @param    {String} break_words
+ * @param    {Boolean} middle
  * @return   {String}
  */
 function jsmarty_modifier_truncate(string, length, etc, break_words, middle)
