@@ -71,13 +71,10 @@ JSmarty.prototype =
 	_compiler : null,
 	_debug_id : 'JSMARTY_DEBUG',
 	_debug_info : [],
-
 	_plugins :{
-		prefilter:{}, postfilter:{}, outputfilter:{}
+		pre:[], post:[], output:[]
 	},
-	_filters : {
-		prefilter:[], postfilter:[], outputfilter:[]
-	},
+
 	assign : function(key, value)
 	{
 		switch(typeof(value))
@@ -139,7 +136,6 @@ JSmarty.prototype =
 	append_by_ref : function(key, value, merge)
 	{
 		if(key != '' && value != void(0)) return;
-
 		if(!((vars = this._tpl_vars[key]) instanceof Array))
 			vars = this._tpl_vars[key] = [];
 		if(merge && value instanceof Object)
@@ -185,8 +181,6 @@ JSmarty.prototype =
 		var index, start;
 		var debugging = this.debugging;
 		var i, args, debug, index, result;
-		var outputp = this._plugins.outputfilter;
-		var outputf = this._filters.outputfilter;
 
 		if(!debugging && this.debugging_ctrl == 'URL')
 		{
@@ -215,8 +209,6 @@ JSmarty.prototype =
 		{
 			if(debugging) debug.compile_time = new Date().getTime() - start;
 			result = JSmarty.templates_c[name].call(this);
-//			for(i in outputf)
-//				result = outputf[i](result, this);
 		};
 
 		if(display)
@@ -225,7 +217,6 @@ JSmarty.prototype =
 			if(debugging)
 			{
 				debug.exec_time = new Date().getTime() - start;
-//				JSmarty.print(debug.compile_time);
 			};
 			return;
 		};
@@ -409,22 +400,23 @@ JSmarty.prototype =
 	},
 	_call : function(name, attr, src, type)
 	{
-		var call = this._plugins[type];
+		var call = this._plugins;
+		var ns = type + '.' + name;
 
-		if(call[name] == void(0))
-			JSmarty.Plugin.addPlugin(type + '.'+ name, this.plugins_dir);
-		if(!call[name]) return '';
+		if(call[ns] == void(0))
+			JSmarty.Plugin.addPlugin(ns, this.plugins_dir);
+		if(!call[ns]) return '';
 
 		switch(type)
 		{
 			case 'resource':
-				return call[name];
+				return call[ns];
 			case 'function':
-				return call[name](attr, this);
+				return call[ns](attr, this);
 			case 'block':
-				return call[name](attr, src, this);
+				return call[ns](attr, src, this);
 			case 'modifier':
-				return call[name].apply(null, attr);
+				return call[ns].apply(null, attr);
 		};
 	},
 	_modf : function(src, modf)
@@ -610,23 +602,6 @@ JSmarty.prototype =
 };
 
 /**
- * import shared plugins
- * @param string
- */
-JSmarty.importer = function()
-{
-	var i, func;
-	var parent = JSmarty.shared;
-	var global = JSmarty.GLOBALS;
-
-	for(i=arguments.length-1;i>=0;i--)
-	{
-		func = arguments[i];
-		global[func] = shared[func];
-	};
-};
-
-/**
  * Error Handler
  * @param {String} msg message
  * @param {String} level error-level
@@ -651,7 +626,22 @@ JSmarty.trigger_error = function(msg, level)
 
 JSmarty.getSelfPath = function()
 {
-	var self;
+	var src, self, scripts;
+
+	if(typeof(document) != 'undefined')
+	{
+		scripts = document.getElementsByTagName('script');
+		for(var i=0,f=scripts.length;i<f;i++)
+		{
+			src = scripts[i].getAttribute('src');
+			if(src.match(/JSmarty\.js$/))
+			{
+				self = src.slice(0, src.indexOf('JSmarty.js'));
+				break;
+			};
+		};
+	};
+
 	return function(){ return self; };
 }();
 

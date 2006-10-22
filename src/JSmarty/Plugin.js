@@ -33,13 +33,13 @@ JSmarty.Plugin.addFunction = function($code, $ns)
 
 	if(!$code)
 	{
-		$parent = this.empty;
+		$parent = null;
 		return false;
 	};
 
 	try
 	{
-		eval($code + '$parent[$ns] = '+ $func +' || this.empty;');
+		eval($code + '$parent[$ns] = '+ $func +' || null');
 		return true;
 	}
 	catch(e){ /* empty */ };
@@ -53,7 +53,7 @@ JSmarty.Plugin.addFunction = function($code, $ns)
  */
 JSmarty.Plugin.getFunction = function(ns)
 {
-	var plugins = this.__pool__;
+	var plugins = this.__func__;
 	if(ns in plugins) return plugins[ns];
 	return this.empty;
 };
@@ -69,11 +69,12 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
 	var plugins = this.__func__;
 	if(ns in plugins) return plugins[ns];
 
-	this.addFunction(
+	if(dir == void(0))
+		dir = JSmarty.getSelfPath() + '/internals/';
+
+	return this.addFunction(
 		this.fgets(ns + '.js', dir), ns
 	);
-
-	return plugins[ns];
 };
 
 /**
@@ -93,4 +94,10 @@ JSmarty.Plugin.addModule = function(ns)
  */
 JSmarty.Plugin.addTemplatec = function(file)
 {
+};
+
+JSmarty.Plugin.importer = function()
+{
+	var parent = this.__func__;
+	var global = JSmarty.GLOBALS;
 };

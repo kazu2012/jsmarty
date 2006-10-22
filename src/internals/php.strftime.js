@@ -34,7 +34,7 @@ function strftime(format, timestamp)
 			case '%d':
 				return d.getDate();
 			case '%D':
-				return '%m/%d/%y';
+				return strftime('%m/%d/%y', timestamp);
 			case '%e':
 				return '';
 			case '%g':

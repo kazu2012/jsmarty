@@ -29,7 +29,7 @@ JSmarty.File =
 	{
 		var text, http = this.XMLHTTP;
 
-		dir = JSmarty.toArray(dir);
+		dir = JSmarty.flatten(dir);
 
 		for(var i=0,fin=dir.length;i<fin;i++)
 		{
@@ -78,7 +78,7 @@ JSmarty.File =
 		this.__system__ = system;
 	},
 	getSystem : function(){
-		return this.___system__;
+		return this.__system__;
 	}
 };
 
