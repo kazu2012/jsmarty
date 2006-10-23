@@ -11,10 +11,9 @@
 function strftime(format, timestamp)
 {
 	var val, d = new Date();
-
 	d.setTime(timestamp);
 
-	return format.replace(/%./, function($0)
+	return format.replace(/%./g, function($0)
 	{
 		switch($0)
 		{
@@ -30,13 +29,14 @@ function strftime(format, timestamp)
 			case '%c':
 				return '';
 			case '%C':
-				return '';
+				return Math.ceil(d.getFullYear() / 100);
 			case '%d':
 				return d.getDate();
 			case '%D':
 				return strftime('%m/%d/%y', timestamp);
 			case '%e':
-				return '';
+				val = String(d.getMonth());
+				return (val.length > 1) ? val : ' ' + val;
 			case '%g':
 				return '';
 			case '%G':
@@ -47,41 +47,57 @@ function strftime(format, timestamp)
 				val = d.getHours() - 12;
 				return (val >= 0) ? val : d.getHours();
 			case '%j':
-				return '';
+				val = (d.getTime() - new Date(d.getFullYear(), 0, 1).getTime());
+				val = String(Math.ceil(val / 86400000));
+				switch(val.length)
+				{
+					case 1: return '00' + val;
+					case 2: return '0' + val;
+				};
+				return val;
 			case '%m':
-				return '';
+				return d.getMonth() + 1;
 			case '%M':
-				return '';
+				return d.getMinutes();
 			case '%n':
 				return '\n';
 			case '%p':
-				return '';
+				val = d.getHours() - 12;
+				return (val >= 0) ? 'PM' : 'AM';
 			case '%r':
-				return '';
+				val = d.getHours() - 12;
+				return (val >= 0) ? val : d.getHours();
 			case '%R':
-				return '';
+				return d.getHours();
 			case '%S':
-				return '';
+				return d.getSeconds();
 			case '%t':
 				return '\t';
 			case '%T':
-				return '%H:%M:%S';
+				return strftime('%H:%M:%S', timestamp);
 			case '%u':
-				return '';
+				val = d.getDay()
+				return (val == 0) ? 7 : val;
 			case '%U':
-				return '';
+				val = (d.getTime() - new Date(d.getFullYear(), 0, 1).getTime());
+				return Math.ceil(val / 604800000);
 			case '%V':
 				return '';
 			case '%W':
-				return '';
+				val = (d.getTime() - new Date(d.getFullYear(), 0, 1).getTime());
+				return Math.floor(val / 604800000);
 			case '%w':
-				return '';
+				return d.getDay();
 			case '%x':
-				return '';
+				val = d.toLocaleString();
+				return val.slice(0, val.indexOf(' '));
 			case '%X':
-				return '';
+				val = d.toLocaleString();
+				return val.slice(val.indexOf(' '));
+			case '%y':
+				return String(d.getFullYear()).slice(-2);
 			case '%Y':
-				return '';
+				return d.getFullYear();
 			case '%Z':
 				return '';
 			case '%%':

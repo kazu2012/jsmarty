@@ -364,7 +364,7 @@ JSmarty.prototype =
 					data.time = JSmarty.File.mtime(name, this.template_dir);
 					break;
 				default:
-					call = this._call(data.type, null, null, 'resource');
+					call = JSmarty.Plugin.getFunction('resource.' + name, this.plugins_dir);
 					sret = (data.gets) ? call[0](name, data, this) : true;
 					flag = sret && call[1](name, data, this);
 					break;
@@ -409,8 +409,6 @@ JSmarty.prototype =
 
 		switch(type)
 		{
-			case 'resource':
-				return call[ns];
 			case 'function':
 				return call[ns](attr, this);
 			case 'block':

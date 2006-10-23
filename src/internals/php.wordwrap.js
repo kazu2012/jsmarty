@@ -15,7 +15,7 @@ function wordwrap(str, width, break_word, cut)
 	var buffer, i = 0, text = [];
 	var word, words = str.split(' ');
 
-	for(var k=0,f=str.length;i<fin;k++)
+	for(var k=0,f=str.length;i<f;k++)
 	{
 		word = words[k];
 
@@ -29,7 +29,7 @@ function wordwrap(str, width, break_word, cut)
 			else
 			{
 				text[i] = word.match(regexp);
-//				text[i] += word.slice();
+				text[i] += word.slice(-(str.length % width));
 				i++;
 			};
 			continue;

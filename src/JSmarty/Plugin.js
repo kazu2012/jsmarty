@@ -26,7 +26,7 @@ JSmarty.Plugin.empty = function(){
  * @param  {String} $namespace namespace of plugin
  * @return {Boolean} Evalute done, or not.
  */
-JSmarty.Plugin.addFunction = function($code, $ns)
+JSmarty.Plugin.parse = function($code, $ns)
 {
 	var $parent = this.__func__;
 	var $func = ('jsmarty.' + $ns ).split('.').join('_');
@@ -51,11 +51,12 @@ JSmarty.Plugin.addFunction = function($code, $ns)
  *
  *
  */
-JSmarty.Plugin.getFunction = function(ns)
+JSmarty.Plugin.getFunction = function(ns, dir)
 {
-	var plugins = this.__func__;
-	if(ns in plugins) return plugins[ns];
-	return this.empty;
+	if(ns in this.__func__)
+		return this.__func__[ns] || this.empty;
+	this.addPlugin(ns, dir);
+	return this.getFunction(ns, dir);
 };
 
 /**
@@ -66,15 +67,11 @@ JSmarty.Plugin.getFunction = function(ns)
  */
 JSmarty.Plugin.addPlugin = function(ns, dir)
 {
-	var plugins = this.__func__;
-	if(ns in plugins) return plugins[ns];
-
+	if(ns in this.__func__)
+		return Boolean(this.__func__[ns]);
 	if(dir == void(0))
 		dir = JSmarty.getSelfPath() + '/internals/';
-
-	return this.addFunction(
-		this.fgets(ns + '.js', dir), ns
-	);
+	return this.parse(this.fgets(ns + '.js', dir), ns);
 };
 
 /**

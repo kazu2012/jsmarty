@@ -14,9 +14,9 @@ JSmarty.File =
 	 */
 	XMLHTTP : function()
 	{
-		if(JSmarty.GLOBALS.XMLHttpRequest)
+		if(typeof(XMLHttpRequest) != 'undefined')
 			return new XMLHttpRequest;
-		if(JSmarty.GLOBALS.ActiveXObject)
+		if(typeof(ActiveXObject) != 'undefined')
 			return new ActiveXObject('Microsoft.XMLHTTP');
 		return null;
 	}(),
