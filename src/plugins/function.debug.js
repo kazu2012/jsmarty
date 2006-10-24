@@ -21,11 +21,7 @@
 
 function jsmarty_function_debug(params, jsmarty)
 {
+	var display_debug_console = JSmarty.Plugin.getFunction('core.display_debug_console');
 	if(params.output != void(0))
 		jsamrty.assign('_jsmarty_debug_output', params.output);
-
-	return JSmarty.Plugin.addPlugin(
-		'core.display_debug_console',
-		JSmarty.getSelfPath() + '/internal'
-	);
 };

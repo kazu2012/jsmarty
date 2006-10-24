@@ -17,13 +17,7 @@ function jsmarty_shared_escape_special_chars(string)
 	if(typeof(string) == 'object')
 		string = string.toString();
 
-	// htmlspecialchars
-	string =
-		string.replace(/&/g, '&amp;'
-			 ).replace(/"/g, '&quot;'
-			 ).replace(/'/g, '&#039;'
-			 ).replace(/</g, '&lt;'
-			 ).replace(/>/g, '&gt;');
+	string = JSmarty.Plugin.getFunction('php.htmlspecialchars')(string);
 
 	return string;
 };

@@ -10,9 +10,7 @@
  */
 function strftime(format, timestamp)
 {
-	var val, d = new Date();
-	d.setTime(timestamp);
-
+	var val, d = new Date(), d.setTime(timestamp);
 	return format.replace(/%./g, function($0)
 	{
 		switch($0)
