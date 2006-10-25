@@ -5,19 +5,14 @@
  */
 
 /**
- * Smarty capitalize modifier plugin
+ * JSmarty capitalize modifier plugin
  *
- * Type:     modifier<br>
- * Name:     capitalize<br>
- * Purpose:  capitalize words in the string
- * @link http://smarty.php.net/manual/en/language.modifiers.php#LANGUAGE.MODIFIER.CAPITALIZE
- *      capitalize (Smarty online manual)
- * @author   Monte Ohrt <monte at ohrt dot com>
- * @param string
- * @return string
+ * Type:     modifier<br />
+ * Name:     capitalize<br />
+ * @param {String}
+ * @return {String}
  */
 
-var ucfirst = JSmarty.Plugin.getFunction('php.ucfirst');
 var jsmarty_modifier_capitalize_digits = false;
 
 function jsmarty_modifier_capitalize(string, digits)
@@ -29,6 +24,8 @@ function jsmarty_modifier_capitalize(string, digits)
 
 function jsmarty_modifier_capitalize_ucfirst(string, digits)
 {
+	var ucfirst = JSmarty.Plugin.getFunction('php.ucfirst');
+
 	if(digits != void(0))
 	{
 		jsmarty_modifier_capitalize_digits = digits;

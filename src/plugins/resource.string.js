@@ -36,7 +36,6 @@ var jsmarty_resource_string =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	 */
 	function(name, data, jsmarty)
 	{
 		if(document && document.lastModified)

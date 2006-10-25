@@ -178,9 +178,10 @@ JSmarty.prototype =
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
+		var Plugin = JSmarty.Plugin;
+		var output = this._plugins.output;
 		var debugging = this.debugging;
 		var autoload  = this.autoload_filters;
-		var outputfilter = this._plugins.output;
 		var i, k, f, debug, index, result, start, filters;
 
 		if(!debugging && this.debugging_ctrl == 'URL')
@@ -211,8 +212,9 @@ JSmarty.prototype =
 			for(i in autoload)
 			{
 				filters = autoload[i];
-				for(k=0,f=filters.length;k<f;k++)
+				for(k=0,f=filters.length;k<f;k++){
 					this.load_filter(i, filters[k]);
+				};
 			};
 		};
 
@@ -226,14 +228,8 @@ JSmarty.prototype =
 		};
 
 		// -- outputfilter
-		f = outputfilter.length;
-		if(f > 0)
-		{
-			for(i=0;i<f;i++)
-			{
-				filter = 'outputfilter.' + outputfilter[i];
-				result = JSmarty.Plugin.getFunction(filter)(result, this);
-			};
+		for(i=0,f=output.length;i<f;i++){
+			result = Plugin.getFunction('outputfilter.' + output[i])(result, this);
 		};
 
 		this.autoload_filters = null;

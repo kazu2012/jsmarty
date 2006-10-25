@@ -47,11 +47,15 @@ JSmarty.Compiler.prototype =
 	 */
 	_compile_file : function(src, jsmarty)
 	{
+		var Plugin = JSmarty.Plugin;
+
+		var pre = jsmarty._plugins.pre;
 		var flag = this._tag_flags;
 		var list = this._folded_blocks;
-		var k, iap, isp, i = 0, txt = [], self = this;
+		var post = jsmarty._plugins.post;
 		var L = jsmarty.left_delimiter , l = L.length;
 		var R = jsmarty.right_delimiter, r = R.length;
+		var k, f, iap, isp, i = 0, txt = [], self = this;
 
 		this._rextag.compile(L + '[^'+ R +']+' + R,'g');
 		this._rblock.compile(L + '\\/(.+?)' + R,'g');
@@ -60,6 +64,9 @@ JSmarty.Compiler.prototype =
 
 		//prefilter
 		src = src.replace(this._recrlf,'\\n');
+		for(k=0,f=pre.length;k<f;k++){
+			src = Plugin.getFunction('prefilter.' + pre[k])(src, this);
+		};
 
 		src.replace(this._rblock, function($0, $1){
 			list[$1] = true;
@@ -74,8 +81,12 @@ JSmarty.Compiler.prototype =
 
 		txt[i++] = this._quote(src.slice(iap));
 		txt[i++] = '; return output;'
-
 		txt = txt.join('').replace(this._remove, '');
+
+		//postfilter
+		for(k=0,f=post.length;k<f;k++){
+			txt = Plugin.getFunction('postfilter.' + post[k])(txt, this);
+		};
 
 		try{
 			return new Function(txt);

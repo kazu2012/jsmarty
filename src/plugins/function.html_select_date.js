@@ -82,7 +82,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 				day_empty = params[k]; break;
 			case 'year_empty':
 				year_empty = params[k]; break;
-			caase 'all_empty':
+			case 'all_empty':
 				all_empty = params[k];
 				day_empty = month_empty = year_empty = all_empty;
 				break;

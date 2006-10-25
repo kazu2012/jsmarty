@@ -37,7 +37,6 @@ var jsmarty_resource_innerHTML =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	 */
 	function(name, data, jsmarty)
 	{
 		var element = document.getElementById(name);

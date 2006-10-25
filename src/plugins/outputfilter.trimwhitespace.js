@@ -17,10 +17,12 @@
  * @return   {String}
  */
 
-var trim = JSmarty.Plugin.getFunction('php.trim');
+
 
 function jsmarty_outputfilter_trimwhitespace(source, jsmarty)
 {
+	var trim = JSmarty.Plugin.getFunction('php.trim');
+
 	var pretxt = /<pre>.*?<\/pre>/ig;
 	var script = /<script[^>]+>.*?<\/script>/ig;
 	var txtara = /<textarea[^>]+>.*?<\/textarea>/ig;
