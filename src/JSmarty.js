@@ -51,7 +51,7 @@ JSmarty.prototype =
 	default_resource_type : 'file',
 
 	cache_handler_func : null,
-	autoload_filters   : {},
+	autoload_filters   : null,
 
 //	config_overwrite    : true,
 //	config_booleanize   : true,
@@ -178,18 +178,22 @@ JSmarty.prototype =
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
-		var index, start;
 		var debugging = this.debugging;
-		var i, args, debug, index, result;
+		var autoload  = this.autoload_filters;
+		var outputfilter = this._plugins.output;
+		var i, k, f, debug, index, result, start, filters;
 
 		if(!debugging && this.debugging_ctrl == 'URL')
 		{
-			args = JSmarty.getArgs(this._debug_id);
-
-			if(args == 'on')
-				debugging = true;
-			else if(args == 'off')
-				debugging = false;
+			switch(JSmarty.getArgs(this._debug_id))
+			{
+				case 'on':
+					debugging = true;
+					break;
+				case 'off':
+					debugging = false;
+					break;
+			};
 		};
 
 		if(debugging)
@@ -202,6 +206,16 @@ JSmarty.prototype =
 			};
 		};
 
+		if(autoload)
+		{
+			for(i in autoload)
+			{
+				filters = autoload[i];
+				for(k=0,f=filters.length;k<f;k++)
+					this.load_filter(i, filters[k]);
+			};
+		};
+
 		if(cpid == void(0))
 			cpid = this.compile_id;
 
@@ -210,6 +224,19 @@ JSmarty.prototype =
 			if(debugging) debug.compile_time = new Date().getTime() - start;
 			result = JSmarty.templates_c[name].call(this);
 		};
+
+		// -- outputfilter
+		f = outputfilter.length;
+		if(f > 0)
+		{
+			for(i=0;i<f;i++)
+			{
+				filter = 'outputfilter.' + outputfilter[i];
+				result = JSmarty.Plugin.getFunction(filter)(result, this);
+			};
+		};
+
+		this.autoload_filters = null;
 
 		if(display)
 		{
@@ -221,7 +248,7 @@ JSmarty.prototype =
 			return;
 		};
 
-		return results || '';
+		return result || '';
 	},
 	display : function(name, ccid, cpid){
 		this.fetch(name, ccid, cpid, true);
@@ -265,9 +292,9 @@ JSmarty.prototype =
 	},
 	load_filter : function(type, name)
 	{
-		this._plugins[type].push(
-			JSmarty.Plugin.addPlugin(type + '.' + name, this.plugins_dir)
-		);
+		if(JSmarty.Plugin.addPlugin(type + 'filter.' + name, this.plugins_dir)){
+			this._plugins[type].push(name);
+		};
 	},
 	register_prefilter : function(name){
 		this._plugins['prefilter.' + name] = JSmarty.GLOBALS[name];

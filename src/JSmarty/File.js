@@ -22,8 +22,9 @@ JSmarty.File =
 	}(),
 	/**
 	 * file_get_contents
-	 * @param  {String} path File-path.
-	 * @return {String or null} Contents of file or null.
+	 * @param  {String} file Request filename.
+	 * @param  {String | Array} dir Request directoryname.
+	 * @return {String} Contents of file or ''.
 	 */
 	fgets : function(file, dir)
 	{
@@ -31,7 +32,7 @@ JSmarty.File =
 
 		dir = JSmarty.flatten(dir);
 
-		for(var i=0,fin=dir.length;i<fin;i++)
+		for(var i=0,f=dir.length;i<f;i++)
 		{
 			if(text) break;
 			try

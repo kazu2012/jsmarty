@@ -55,8 +55,9 @@ JSmarty.Plugin.getFunction = function(ns, dir)
 {
 	if(ns in this.__func__)
 		return this.__func__[ns] || this.empty;
-	this.addPlugin(ns, dir);
-	return this.getFunction(ns, dir);
+	if(this.addPlugin(ns, dir))
+		return this.__func__[ns];
+	return this.empty;
 };
 
 /**
