@@ -12,7 +12,7 @@
  * Original: Smarty {html_radios} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.1
+ * @version  1.0.2
  * @see      http://smarty.php.net/manual/en/language.function.html.radios.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -20,6 +20,8 @@
  */
 function jsmarty_function_html_radios(params, jsmarty)
 {
+	JSmarty.Plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
+
 	var k, i = 0, html = [];
 	var outputf = jsmarty_function_html_radios_outputf;
 
@@ -67,7 +69,6 @@ function jsmarty_function_html_radios(params, jsmarty)
 					extra.push(k +'="'+ params[k] +'"');
 				else
 					jsmarty.trigger_error('html_radios: extra attribute "'+ i +'" cannot be an array');
-
 				break;
 		};
 	};
@@ -100,33 +101,36 @@ function jsmarty_function_html_radios(params, jsmarty)
 
 function jsmarty_function_html_radios_outputf(name, value, output, selected, extra, separator, labels, label_ids)
 {
-	var id, html = '';
+	var id, i= 0, html = [];
+	var escape_special_chars = JSmarty.Plugin.getFunction('shared.escape_special_chars');
 
 	if(labels)
 	{
 		if(label_ids)
 		{
-			id = value.replace(/[^\w\-\.]/g,'_');
-			html += '<label for="'+ id +'">';
+			id = escape_special_chars((name + '_' + value).replace(/[^\w\-\.]/g,'_'));
+			html[i++] = '<label for="'+ id +'">';
 		}
 		else
 		{
-			html += '<label>';
+			html[i++] = '<label>';
 		}
 	};
 
-	html +=
-		'<input type="radio" name="'+ name + '" value="'+ value + '"';
+	html[i++] =
+		'<input type="radio" name="' +
+		escape_special_chars(name) + '" value="' +
+		escape_special_chars(value) + '"';
 
 	if(labels && label_ids)
-		html += ' id="'+ id +'"';
+		html[i++] = ' id="'+ id +'"';
 
 	if(value == selected)
-		html += ' checked="checked"';
+		html[i++] = ' checked="checked"';
 
-	html += extra.join('') + ' />' + output;
-	if (labels) html += '</label>';
-	html += separator;
+	html[i++] = extra.join('') + ' />' + output;
+	if (labels) html[i++] = '</label>';
+	html[i++] = separator;
 
-	return html;
+	return html.join('');
 };

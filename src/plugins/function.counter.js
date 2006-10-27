@@ -12,15 +12,19 @@
  * Original: Smarty {counter} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.1
+ * @version  1.0.2
  * @see      http://smarty.php.net/manual/en/language.function.counter.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
  * @return   {String}
  */
+
+// counters
+var jsmarty_function_counter_counters = {};
+
 function jsmarty_function_counter(params, jsmarty)
 {
-	var counters = jsmarty_function_counter.counters;
+	var counters = jsmarty_function_counter_counters;
 	var retval, print, counter, name = params.name || 'default';
 
 	if(!counters[name])
@@ -68,5 +72,3 @@ function jsmarty_function_counter(params, jsmarty)
 
 	return retval;
 }
-// counters
-jsmarty_function_counter.counters = {};

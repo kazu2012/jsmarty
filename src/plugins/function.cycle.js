@@ -13,15 +13,19 @@
  * Original: Smarty {cycle} function plugin
  *
  * @author   shogo <shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.function.cycle.php
- * @param    object
- * @param    JSmarty
- * @return   string
+ * @param    {Object} params
+ * @param    {JSmarty} jsmarty
+ * @return   {String}
  */
+
+// cycle_vars
+var jsmarty_function_cycle_cycle_vars = {};
+
 function jsmarty_function_cycle(params, jsmarty)
 {
-	var cycle_vars = jsmarty_function_cycle.cycle_vars;
+	var cycle_vars = jsmarty_function_cycle_cycle_vars;
 	var name, reset, print, advance, cycle_var, cycle_array;
 	var retval, values = params.values, assign = params.assign;
 
@@ -31,7 +35,7 @@ function jsmarty_function_cycle(params, jsmarty)
 	advance = (params.advance == void(0)) ? true  : params.advance;
 
 	if(!(cycle_var = cycle_vars[name]))
-		cycle_var = cycle_vars[name] = { index:0, values:'' };
+		cycle_var = cycle_vars[name] = { index:0, values: '' };
 
 	if(!values)
 	{
@@ -79,6 +83,3 @@ function jsmarty_function_cycle(params, jsmarty)
 
 	return retval;
 }
-
-// cycle_vars
-jsmarty_function_cycle.cycle_vars = {};

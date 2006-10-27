@@ -61,8 +61,8 @@ JSmarty.File =
 	 * @param {String}
 	 * @return {Number}
 	 */
-	mtime : function(path){
-		return this.__mtimes__[path];
+	mtime : function(file){
+		return this.__mtimes__[file];
 	},
 	setSystem : function(system)
 	{

@@ -10,5 +10,5 @@
  */
 function str_repeat(input_str, multiplier)
 {
-	return Array(multiplier + 1).join(input_str);
+	return new Array(multiplier + 1).join(input_str);
 };

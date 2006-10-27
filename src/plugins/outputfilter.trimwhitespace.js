@@ -7,7 +7,7 @@
 /**
  * JSmarty trimwhitespace outputfilter plugin
  * 
- * Type:     outputfilte<br />
+ * Type:     outputfilter<br />
  * Name:     trimwhitespace<br />
  * 
  * @author   shogo < shogo4405 at gmail dot com>
@@ -16,9 +16,6 @@
  * @param    {JSmarty} jsmarty
  * @return   {String}
  */
-
-
-
 function jsmarty_outputfilter_trimwhitespace(source, jsmarty)
 {
 	var trim = JSmarty.Plugin.getFunction('php.trim');
@@ -35,6 +32,8 @@ function jsmarty_outputfilter_trimwhitespace(source, jsmarty)
 
 	var txtara_blocks = source.match(txtara);
 	source = source.replace(txtara, '@@@JSMARTY:TRIM:TEXTAREA@@@');
+
+	source = trim(source.replace(/((\?<!\?>)\n)[\s]+/m, '$1'));
 
 	source = jsmarty_outputfilter_trimwhitespace_replace('@@@SMARTY:TRIM:SCRIPT@@@', script_blocks, source);
 	source = jsmarty_outputfilter_trimwhitespace_replace('@@@JSMARTY:TRIM:PRE@@@', pretxt_blocks, source);

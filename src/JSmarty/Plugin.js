@@ -6,15 +6,14 @@
 JSmarty.Plugin = JSmarty.factory(JSmarty.File);
 
 /**
- * Stack of plugin function
+ * Stack of Plugins
  * @private
  * @type Object
  */
 JSmarty.Plugin.__func__ = JSmarty.prototype._plugins;
 
 /**
- *
- *
+ * Return blank string.
  */
 JSmarty.Plugin.empty = function(){
 	return '';
@@ -29,7 +28,15 @@ JSmarty.Plugin.empty = function(){
 JSmarty.Plugin.parse = function($code, $ns)
 {
 	var $parent = this.__func__;
-	var $func = ('jsmarty.' + $ns ).split('.').join('_');
+	var $func = ('jsmarty.' + $ns ).split('.');
+
+	switch($func[1])
+	{
+		case 'php':
+			$func = $func[2]; break;
+		default:
+			$func = $func.join('_'); break;
+	};
 
 	if(!$code)
 	{
@@ -98,4 +105,28 @@ JSmarty.Plugin.importer = function()
 {
 	var parent = this.__func__;
 	var global = JSmarty.GLOBALS;
+};
+
+JSmarty.Plugin.toString = function()
+{
+	var k, i = 0, str = [];
+	var func = this.__func__;
+	var date = new Date().toString();
+
+	str[i++] = 'Table Of Plugins';
+	str[i++] = new Array(52).join('-');
+	for(k in func)
+	{
+		k = k.split('.');
+		if(k.length == 2)
+		{
+			str[i] = '['+ k[0] + ']\t' + k[1] + ' -> ';
+			str[i] += Boolean(func[k.join('.')]) ? 'success' : 'failure';
+			i++;
+		};
+	};
+	str[i++] = new Array(52).join('-');
+	str[i++] = new Array(32).join(' ') + date;
+
+	return str.join('\n');
 };

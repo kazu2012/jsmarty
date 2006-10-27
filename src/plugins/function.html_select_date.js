@@ -44,7 +44,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 
 	for(k in params)
 	{
-		if(!params.hasOwnProperty(k)) break;
+		if(!params.hasOwnProperty(k)) continue;
 
 		switch(k)
 		{
@@ -97,7 +97,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 			case 'reverse_years':
 				reverse_years = params[k]; break;
 			default:
-				
+				break;
 		};
 	};
 

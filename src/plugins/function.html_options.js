@@ -16,7 +16,7 @@
  * @see      http://smarty.php.net/manual/en/language.function.html.options.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
- * @return   string
+ * @return   {String}
  */
 
 function jsmarty_function_html_options(params, jsmarty)
@@ -25,6 +25,8 @@ function jsmarty_function_html_options(params, jsmarty)
 
 	var k, value, i = 0, html = [];
 	var optoutput = jsmarty_function_html_options_optoutput;
+	var array_map = JSmarty.Plugin.getFunction('php.array_map');
+	var array_values = JSmarty.Plugin.getFunction('php.array_values');
 
 	var name = null;
 	var extra = [];
@@ -35,7 +37,8 @@ function jsmarty_function_html_options(params, jsmarty)
 
 	for(k in params)
 	{
-		if(!params.hasOwnProperty(k)) break;
+		if(!params.hasOwnProperty(k)) continue;
+
 		switch(k)
 		{
 			case 'name':
@@ -47,6 +50,11 @@ function jsmarty_function_html_options(params, jsmarty)
 			case 'output':
 				output = params[k]; break;
 			case 'selected':
+				selected = array_map
+				(
+					function(v){ return v.toString(); },
+					array_values([params[k]])
+				);
 				break;
 			default:
 				if(typeof(params[k]) != 'object')
@@ -63,7 +71,7 @@ function jsmarty_function_html_options(params, jsmarty)
 	{
 		for(k in options)
 		{
-			if(!options.hasOwnProperty(k)) break;
+			if(!options.hasOwnProperty(k)) continue;
 			html[i++] = optoutput(k, options[k], selected)
 		};
 	}
@@ -84,15 +92,19 @@ function jsmarty_function_html_options(params, jsmarty)
 
 function jsmarty_function_html_options_optoutput(key, value, selected)
 {
-	var k, html, i = 0;
 	var optgroup = jsmarty_function_html_options_optgroup;
+	var html, in_array = JSmarty.Plugin.getFunction('php.in_array');
 	var escape_special_chars = JSmarty.Plugin.getFunction('shared.escape_special_chars');
 
 	if(typeof(value) == 'string')
 	{
-		html = 
-			'<option label="'+ escape_special_chars(value) + '" value="'+ escape_special_chars(key) +'"';
-		html += '>' + value + '</option>\n';
+		html =
+			'<option label="' + escape_special_chars(value) + '" value="' +
+			escape_special_chars(key) +'"';
+		if(in_array(key, selected)){
+			html += ' selected="selected"';
+		};
+		html += '>' + escape_special_chars(value) + '</option>\n';
 	}
 	else
 	{
@@ -110,10 +122,10 @@ function jsmarty_function_html_options_optgroup(key, value, selected)
 	html[i++] = '<optgroup label="' + key + '">';
 	for(k in value)
 	{
-		if(!value.hasOwnProperty(k)) break;
+		if(!value.hasOwnProperty(k)) continue;
 		html[i++] = optoutput(key, value, selected);
 	};
 	html[i++] = '</optgroup>\n';
 
-	return html.join('\n');
+	return html.join('');
 };

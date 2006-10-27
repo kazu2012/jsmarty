@@ -12,7 +12,7 @@
  * Original: Smarty {html_checkboxes} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.2
+ * @version  1.0.3
  * @see      http://smarty.php.net/manual/en/language.function.html.checkboxes.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -20,8 +20,12 @@
  */
 function jsmarty_function_html_checkboxes(params, jsmarty)
 {
+	JSmarty.Plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
+
 	var k, value, i = 0, html = [];
 	var outputf = jsmarty_function_html_checkboxes_outputf;
+	var array_map = JSmarty.Plugin.getFunction('php.array_map');
+	var array_values = JSmarty.Plugin.getFunction('php.array_values');
 
 	var name = 'checkbox';
 	var extra = [];
@@ -33,7 +37,7 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 
 	for(k in params)
 	{
-		if(!params.hasOwnProperty(k)) break;
+		if(!params.hasOwnProperty(k)) continue;
 
 		switch(k)
 		{
@@ -49,8 +53,11 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 				output = params[k]; break;
 			case 'checked':
 			case 'selected':
-				if(!(params[k] instanceof Array))
-					selected = params[k];
+				selected = array_map
+				(
+					function(v){ return v.toString(); },
+					array_values([params[k]])
+				);
 				break;
 			case 'checkboxes':
 				jsmarty.trigger_error('html_checkboxes: the use of the "checkboxes" attribute is deprecated, use "options" instead');
@@ -94,24 +101,22 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 
 function jsmarty_function_html_checkboxes_outputf(name, value, output, selected, extra, separator, labels)
 {
-	var n = 0, html = [];
+	var i = 0, html = [];
+	var in_array = JSmarty.Plugin.getFunction('php.in_array');
+	var escape_special_chars = JSmarty.Plugin.getFunction('shared.escape_special_chars');
 
-	if(labels) html[n++] = '<label>';
-	html[n++] =
-		'<input type="checkbox" name="'+ name + '[]" value="'+ value + '"';
+	if(labels) html[i++] = '<label>';
+	html[i++] =
+		'<input type="checkbox" name="' +
+		escape_special_chars(name) + '[]" value="' +
+		escape_special_chars(value) + '"';
 
-	if(selected)
-	{
-		for(var i=selected.length-1;i>=0;i--)
-		{
-			if(value == selected[i])
-				html[n++] = ' checked="checked"';
-		}
-	}
+	if(in_array(value, selected))
+		html[i++] = ' checked="checked"';
 
-	html[n++] = extra.join(' ') + ' />' + output;
-	if(labels) html[n++] = '</label>';
-	html[n++] = separator;
+	html[i++] = extra.join(' ') + ' />' + output;
+	if(labels) html[i++] = '</label>';
+	html[i++] = separator;
 
 	return html.join('');
 };
