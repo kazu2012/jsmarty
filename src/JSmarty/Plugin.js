@@ -27,7 +27,7 @@ JSmarty.Plugin.empty = function(){
  */
 JSmarty.Plugin.parse = function($code, $ns)
 {
-	var $parent = this.__func__;
+	var $flag = false, $parent = this.__func__;
 	var $func = ('jsmarty.' + $ns ).split('.');
 
 	switch($func[1])
@@ -38,25 +38,20 @@ JSmarty.Plugin.parse = function($code, $ns)
 			$func = $func.join('_'); break;
 	};
 
-	if(!$code)
-	{
-		$parent = null;
-		return false;
-	};
-
 	try
 	{
+		$flag = true;
 		eval($code + '$parent[$ns] = '+ $func +' || null');
-		return true;
 	}
 	catch(e){ /* empty */ };
 
-	return false;
+	return $flag;
 };
 
 /**
- *
- *
+ * @param {String} ns namaspace of plugin
+ * @param {String | Array} dir The repository path of plugins. 
+ * @type Boolean
  */
 JSmarty.Plugin.getFunction = function(ns, dir)
 {
@@ -107,6 +102,10 @@ JSmarty.Plugin.importer = function()
 	var global = JSmarty.GLOBALS;
 };
 
+/**
+ * Return the table of plugins.
+ * @type String
+ */
 JSmarty.Plugin.toString = function()
 {
 	var k, i = 0, str = [];
@@ -115,6 +114,7 @@ JSmarty.Plugin.toString = function()
 
 	str[i++] = 'Table Of Plugins';
 	str[i++] = new Array(52).join('-');
+
 	for(k in func)
 	{
 		k = k.split('.');
@@ -125,6 +125,7 @@ JSmarty.Plugin.toString = function()
 			i++;
 		};
 	};
+
 	str[i++] = new Array(52).join('-');
 	str[i++] = new Array(32).join(' ') + date;
 

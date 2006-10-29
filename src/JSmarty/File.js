@@ -85,9 +85,9 @@ JSmarty.File =
 
 (function()
 {
-	if(typeof(System) != 'undefined')
+	switch(true)
 	{
-		JSmarty.File.setSystem('ajaja');
-		return;
+		case (typeof(System) != 'undefined'):
+			JSmarty.File.setSystem('ajaja'); break;
 	};
 })();

@@ -387,7 +387,7 @@ JSmarty.prototype =
 					data.time = JSmarty.File.mtime(name, this.template_dir);
 					break;
 				default:
-					call = JSmarty.Plugin.getFunction('resource.' + name, this.plugins_dir);
+					call = JSmarty.Plugin.getFunction('resource.' + data.type);
 					sret = (data.gets) ? call[0](name, data, this) : true;
 					flag = sret && call[1](name, data, this);
 					break;
@@ -406,20 +406,20 @@ JSmarty.prototype =
 	},
 	_parse_resource_name : function(data)
 	{
+		var flag = true;
 		var name = data.name;
 		var part = name.indexOf(':');
 
-		if(part > 1)
-		{
-			data.type = name.split(0, part);
-			data.name = name.split(part + 1);
-		}
-		else
-		{
-			data.type = this.default_resource_type;
-		}
+		data.type = this.default_resource_type;
 
-		return true;
+		if(part != -1)
+		{
+			data.type = name.slice(0, part);
+			data.name = name.slice(part + 1);
+			flag = JSmarty.Plugin.addPlugin('resource.' + data.type, this.plugins_dir);
+		};
+
+		return flag;
 	},
 	_call : function(name, attr, src, type)
 	{

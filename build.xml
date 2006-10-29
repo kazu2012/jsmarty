@@ -27,7 +27,7 @@
 			</filterset>
 			<fileset dir="src" />
 		</copy>
-		<copy tofile="lib/JSmarty.js" file="src/JSmarty.js" overwrite="Yes">
+		<copy tofile="lib/JSmarty.js" file="src/JSmarty.js" overwrite="Yes" preservelastmodified="true">
 			<filterset begintoken="/*@" endtoken="@*/">
 				<filter token="file.File" value="${file.File}" />
 				<filter token="file.Plugin" value="${file.Plugin}" />

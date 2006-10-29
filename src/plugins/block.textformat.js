@@ -27,7 +27,7 @@ function jsmarty_block_textformat(params, content, jsmarty)
 	var wordwrap = JSmarty.Plugin.getFunction('php.wordwrap');
 	var str_repeat = JSmarty.Plugin.getFunction('php.str_repeat');
 
-	var html, paragraphs;
+	var output = '', paragraphs;
 	var style = null;
 	var wrap = 80;
 	var assign = null;
@@ -39,33 +39,29 @@ function jsmarty_block_textformat(params, content, jsmarty)
 
 	for(k in params)
 	{
+		if(!params.hasOwnProperty(k)) continue;
+
 		switch(k)
 		{
 			case 'style':
-				style = params[k];
-				break;
+				style = params[k]; break;
 			case 'wrap':
-				wrap = parseInt(params[k]);
-				break;
+				wrap = parseInt(params[k]); break;
 			case 'assign':
-				assign = params[k];
-				break;
+				assign = params[k]; break;
 			case 'indent':
-				indent = parseInt(params[k]);
-				break;
+				indent = parseInt(params[k]); break;
 			case 'wrap_cut':
-				wrap_cut = parseInt(params[k]);
-				break;
+				wrap_cut = parseInt(params[k]); break;
 			case 'wrap_char':
-				wrap_char = params[k];
-				break;
+				wrap_char = params[k]; break;
 			case 'indent_char':
-				indent_char = params[k];
+				indent_char = params[k]; break;
 			case 'indent_first':
-				indent_first = parseInt(params[k]);
-				break;
+				indent_first = parseInt(params[k]); break;
 			default:
 				jsmarty.trigger_error("textformat: unknown attribute");
+				break;
 		};
 	};
 
@@ -77,7 +73,6 @@ function jsmarty_block_textformat(params, content, jsmarty)
 	};
 
 	paragraphs = content.split(/\r?\n\r?\n/g);
-	html = '';
 
 	for(var x = 0, y = paragraphs.length; x < y; x++)
 	{
@@ -90,6 +85,7 @@ function jsmarty_block_textformat(params, content, jsmarty)
 		if(indent > 0)
 			paragraphs[x] = paragraphs[x].replace(/^/m, str_repeat(indent_char, indent));
 	};
+	output = paragraphs.join(wrap_char + wrap_char);
 
 	if(assign)
 	{
