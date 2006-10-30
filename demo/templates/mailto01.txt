@@ -1,0 +1,5 @@
+<ul>
+  <li>hex - {mailto address="foo@bar.com" encode="hex"}</li>
+  <li>javascript - {mailto address="foo@bar.com" encode="javascript"}</li>
+  <li>javascript_charcode - {mailto address="foo@bar.com" encode="javascript_charcode"}</li>
+</ul>

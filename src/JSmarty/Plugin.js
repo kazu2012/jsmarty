@@ -109,11 +109,11 @@ JSmarty.Plugin.importer = function()
 JSmarty.Plugin.toString = function()
 {
 	var k, i = 0, str = [];
-	var func = this.__func__;
 	var date = new Date().toString();
+	var width = 72, func = this.__func__;
 
 	str[i++] = 'Table Of Plugins';
-	str[i++] = new Array(52).join('-');
+	str[i++] = new Array(width + 1).join('-');
 
 	for(k in func)
 	{
@@ -126,8 +126,8 @@ JSmarty.Plugin.toString = function()
 		};
 	};
 
-	str[i++] = new Array(52).join('-');
-	str[i++] = new Array(32).join(' ') + date;
+	str[i++] = new Array(width + 1).join('-');
+	str[i++] = new Array(width -32).join(' ') + date;
 
 	return str.join('\n');
 };

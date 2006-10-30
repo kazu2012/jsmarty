@@ -2,7 +2,7 @@
  * var_dump function
  *
  * @author shogo < shogo4405 at gmail dot com >
- * @version 0.9.0
+ * @version 0.9.2
  * @see http://www.php.net/var_dump
  * @param  {mixed} exp
  * @return {String}
@@ -19,6 +19,7 @@ function var_dump(exp)
 			alert(dump); break;
 		case (typeof(print) != 'undefined'):
 			print(dump); break;
+		default: break;
 	};
 	return dump;
 };
@@ -31,7 +32,7 @@ var_dump.is_display = true;
 var_dump._deploy = function(v, p, n)
 {
 	var s = new Array(n + 1).join(' ');
-	var k, t, i = 0, a = [];
+	var c, k, t, i = 0, a = [];
 
 	switch(typeof(v))
 	{
@@ -40,25 +41,30 @@ var_dump._deploy = function(v, p, n)
 		case 'number':
 			return p + 'number('+ v +')';
 		case 'function':
+			if(v instanceof RegExp){ return p + 'RegExp' };
 			return p + 'function';
 		case 'boolean':
 			return p + 'boolean('+ v +')';
 		case 'object':
-			t = 'Object';
 			switch(true)
 			{
-				case (v instanceof Array):
-					t = 'Array'; break;
-				case (v instanceof String):
-					t = 'String'; break;
-				case (v instanceof Boolean):
-					t = 'Boolean'; break;
-				case (v instanceof Date):
-					t = 'Date'; break;
+				case (v.constructor && v.constructor instanceof Function):
+					if(v.constructor.toString().match(/^function (.+)\(/)){ t = RegExp.$1 };
+					break;
+				default:
+					t = 'Object', c = 'false';
+					if(v == null) return p + 'null';
+					break;
 			};
-			for(k in v){
-				a[i++] = '  ' + s + this._deploy(v[k], '['+ k +'] => ', n + 2);
-			};
+			try
+			{
+				for(k in v)
+				{
+					if(c && k == 'constructor') continue;
+					a[i++] = '  ' + s + this._deploy(v[k], '['+ k +'] => ', n + 2);
+				};
+			}
+			catch(e){ return p + 'XMLHttpRequestObject'; };
 			return p + t + '('+ i +') {\n' + a.join('\n') + '\n' + s + '}';
 		default:
 			return p + 'undefined';
