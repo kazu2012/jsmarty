@@ -2,7 +2,7 @@
  * var_dump function
  *
  * @author shogo < shogo4405 at gmail dot com >
- * @version 0.9.2
+ * @version 0.9.3
  * @see http://www.php.net/var_dump
  * @param  {mixed} exp
  * @return {String}
@@ -26,9 +26,6 @@ function var_dump(exp)
 
 // display?
 var_dump.is_display = true;
-
-// var_dump.print = function(dump){};
-
 var_dump._deploy = function(v, p, n)
 {
 	var s = new Array(n + 1).join(' ');
@@ -46,25 +43,25 @@ var_dump._deploy = function(v, p, n)
 		case 'boolean':
 			return p + 'boolean('+ v +')';
 		case 'object':
+			try{ if(v.toString() == void(0)) return p + '[object]'; }
+			catch(e){ return p + '[object]'; };
 			switch(true)
 			{
+				case (v == null):
+					return p + 'null';
+				case (v.toString().match(/^\[object\s(.+)\]/g) != null):
+					t = RegExp.$1; break;
 				case (v.constructor && v.constructor instanceof Function):
-					if(v.constructor.toString().match(/^function (.+)\(/)){ t = RegExp.$1 };
+					if(v.constructor.toString().match(/function\s(.+)\(/g)){ t = RegExp.$1 };
 					break;
-				default:
-					t = 'Object', c = 'false';
-					if(v == null) return p + 'null';
-					break;
+				default: t = 'Object'; break;
 			};
 			try
 			{
 				for(k in v)
-				{
-					if(c && k == 'constructor') continue;
 					a[i++] = '  ' + s + this._deploy(v[k], '['+ k +'] => ', n + 2);
-				};
 			}
-			catch(e){ return p + 'XMLHttpRequestObject'; };
+			catch(e){}; 
 			return p + t + '('+ i +') {\n' + a.join('\n') + '\n' + s + '}';
 		default:
 			return p + 'undefined';

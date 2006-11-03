@@ -98,8 +98,13 @@ JSmarty.Plugin.addTemplatec = function(file)
 
 JSmarty.Plugin.importer = function()
 {
-	var parent = this.__func__;
-	var global = JSmarty.GLOBALS;
+	var name, parent = this.__func__;
+	var i, f, global = JSmarty.GLOBALS;
+	for(i=0,f=arguments.length;i<f;i++)
+	{
+		name = arguments[i];
+		global[name.split('.')[1]] = parent[name];
+	};
 };
 
 /**
