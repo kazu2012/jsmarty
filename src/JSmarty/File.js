@@ -69,7 +69,7 @@ JSmarty.File =
 		switch(system)
 		{
 			case 'ajaja':
-				loadScript(Core.JSPATH + '/internals/core.ajaja.js');
+				load('./internals/core.ajaja.js');
 				break;
 			case 'wscript':
 				break;
@@ -85,9 +85,6 @@ JSmarty.File =
 
 (function()
 {
-	switch(true)
-	{
-		case (typeof(System) != 'undefined'):
-			JSmarty.File.setSystem('ajaja'); break;
-	};
+	if(typeof(System) != 'undefined')
+	{ JSmarty.File.setSystem('ajaja'); return; };
 })();

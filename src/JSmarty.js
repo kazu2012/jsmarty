@@ -647,7 +647,7 @@ JSmarty.trigger_error = function(msg, level)
 
 JSmarty.getSelfPath = function()
 {
-	var src, self, scripts;
+	var src, scripts, self = '.';
 
 	if(typeof(document) != 'undefined')
 	{
