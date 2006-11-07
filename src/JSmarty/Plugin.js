@@ -27,23 +27,18 @@ JSmarty.Plugin.empty = function(){
  */
 JSmarty.Plugin.parse = function($code, $ns)
 {
+	if($code == void(0)) $code = '';
 	var $flag = false, $parent = this.__func__;
 	var $func = ('jsmarty.' + $ns ).split('.');
 
 	switch($func[1])
 	{
-		case 'php':
-			$func = $func[2]; break;
-		default:
-			$func = $func.join('_'); break;
+		case 'php': $func = $func[2]; break;
+		default: $func = $func.join('_'); break;
 	};
 
-	try
-	{
-		$flag = true;
-		eval($code + '$parent[$ns] = '+ $func +' || null');
-	}
-	catch(e){ /* empty */ };
+	try{ $flag = true; eval($code + '$parent[$ns] = '+ $func +' || null'); }
+	catch(e){ JSmarty.trigger_error('Plugin: ' + e.toString(), 'warn'); };
 
 	return $flag;
 };

@@ -24,8 +24,8 @@ JSmarty.templates_c = {};
 
 JSmarty.prototype =
 {
-//	config_dir   : 'configs',
-//	compile_dir  : 'templates_c',
+	config_dir   : 'configs',
+	compile_dir  : 'templates_c',
 	plugins_dir  : ['plugins'],
 	template_dir : 'templates',
 
@@ -36,8 +36,8 @@ JSmarty.prototype =
 	compile_check : true,
 	force_compile : false,
 
-//	cache_lifetime : 3600,
-//	cache_modified_check : false,
+	cache_lifetime : 3600,
+	cache_modified_check : false,
 
 	trusted_dir : [],
 
@@ -53,10 +53,10 @@ JSmarty.prototype =
 	cache_handler_func : null,
 	autoload_filters   : null,
 
-//	config_overwrite    : true,
-//	config_booleanize   : true,
-//	config_read_hidden  : false,
-//	config_fix_newlines : true,
+	config_overwrite    : true,
+	config_booleanize   : true,
+	config_read_hidden  : false,
+	config_fix_newlines : true,
 
 	default_template_handler_func : null,
 	compiler_file  : 'JSmarty/Compiler.js',
@@ -80,11 +80,9 @@ JSmarty.prototype =
 		switch(typeof(value))
 		{
 			case 'undefined':
-				value = null;
-				break;
+				value = null; break;
 			case 'object':
-				value = JSmarty.copy(value);
-				break;
+				value = JSmarty.copy(value); break;
 		};
 
 		if(key instanceof Object)
@@ -189,11 +187,9 @@ JSmarty.prototype =
 			switch(JSmarty.getArgs(this._debug_id))
 			{
 				case 'on':
-					debugging = true;
-					break;
+					debugging = true; break;
 				case 'off':
-					debugging = false;
-					break;
+					debugging = false; break;
 			};
 		};
 
@@ -630,18 +626,15 @@ JSmarty.prototype =
 JSmarty.trigger_error = function(msg, level)
 {
 	if(msg.message) msg = msg.message;
-	msg = 'JSmarty error : ' + msg;
+	msg = 'JSmarty error: ' + msg + '\n';
 
 	switch(level)
 	{
 		case 'warn':
-			JSmarty.print(msg);
-			break;
+			JSmarty.print(msg); break;
 		case 'die':
-			throw new Error(msg);
-			break;
 		default:
-			break;
+			throw new Error(msg); break;
 	};
 };
 
@@ -655,10 +648,8 @@ JSmarty.getSelfPath = function()
 		for(var i=0,f=scripts.length;i<f;i++)
 		{
 			src = scripts[i].getAttribute('src');
-			if(src.match(/JSmarty\.js$/))
-			{
-				self = src.slice(0, src.indexOf('JSmarty.js'));
-				break;
+			if(src.match(/JSmarty\.js$/)){
+				self = src.slice(0, src.indexOf('JSmarty.js')); break;
 			};
 		};
 	};
