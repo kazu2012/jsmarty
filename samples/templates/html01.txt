@@ -1,3 +1,4 @@
+<h2>function : html : checkboxes, radio, options</h2>
 checkboxes:<br />
 {html_checkboxes name="checkbox001" options=$data selected="002"}
 <hr />

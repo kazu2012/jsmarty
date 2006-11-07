@@ -1,3 +1,4 @@
+<h2>block : literal</h2>
 {literal|nl2br}{if $hoge==1}
 Hello, World!! Part1.
 {elsif $hoge==2}

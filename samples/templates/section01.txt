@@ -1,3 +1,4 @@
+<h2>block : section</h2>
 {section name=mydata loop=$custid}
 <p>
 	id: {$custid[mydata]}<br />

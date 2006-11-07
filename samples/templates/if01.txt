@@ -1,3 +1,4 @@
+<h2>block : if</h2>
 {if $hoge==1}
 Hello, World!! Part1.
 {elsif $hoge==2}

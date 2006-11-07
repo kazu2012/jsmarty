@@ -1,3 +1,4 @@
+<h2>function : mailto</h2>
 <ul>
   <li>hex - {mailto address="foo@bar.com" encode="hex"}</li>
   <li>javascript - {mailto address="foo@bar.com" encode="javascript"}</li>

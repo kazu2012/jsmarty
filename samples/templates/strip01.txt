@@ -1,3 +1,4 @@
+<h2>block : strip</h2>
 {strip}
 <pre>
 S

@@ -1,1 +1,2 @@
+<h2>function : html : image</h2>
 {html_image file=$img}

@@ -1,3 +1,4 @@
+<h2>function : cycle</h2>
 <ol>
   <li>{cycle values="one,two,tree,four,five"}</li>
   <li>{cycle values="one,two,tree,four,five"}</li>

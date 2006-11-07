@@ -1,3 +1,4 @@
+<h2>block : foreach</h2>
 {foreach from=$hoge name="mydata" item="datum" key="key"}
 <p>
 	{$key} -&gt; {$datum}, {$smarty.foreach.mydata.total}<br />

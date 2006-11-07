@@ -1,3 +1,4 @@
+<h2>function : counter</h2>
 <ul>
   <li>{counter start=10 skip=10}</li>
   <li>{counter}</li>
