@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type"  content="text/css" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<title>Plugin Test</title>
+	<script type="text/javascript" src="../lib/safari.js"></script>
+	<script type="text/javascript" src="../lib/JSmarty.js"></script>
+	<script type="text/javascript" src="../lib/JSmarty/Compiler.js"></script>
+	<script type="text/javascript" src="scripts/plugin.js"></script>
+	<script type="text/javascript">
+	smarty = new JSmarty;
+	smarty.plugins_dir = ['../lib/plugins'];
+	// override the JSmarty.print function...
+	JSmarty.print = function(str){
+		document.getElementById('main').innerHTML = str;
+	};
+	</script>
+</head>
+<body>
+
+<div class="main" id="main"></div>
+<div class="sidebar" id="sidebar">
+<h2>MENU</h2>
+<ul>
+	<li>block<ul>
+		<li><a href="plugin.html#if">if</a></li>
+		<li><a href="plugin.html#strip">strip</a></li>
+		<li><a href="plugin.html#literal">literal</a></li>
+		<li><a href="plugin.html#foreach">foreach,foreachelse</a></li>
+		<li><a href="plugin.html#section">section,sectionelse</a></li>
+	</ul></li>
+	</ul><ul>
+	<li>function<ul>
+		<li><a href="plugin.html#mailto">mailto</a></li>
+		<li><a href="plugin.html#counter">counter</a></li>
+		<li><a href="plugin.html#cycle">cycle</a></li>
+		<li><a href="plugin.html#ldelim">ldelim</a></li>
+		<li><a href="plugin.html#rdelim">rdelim</a></li>
+		<li><a href="plugin.html#html_image">html_image</a></li>
+		<li><a href="plugin.html#html_table">html_table</a></li>
+		<li><a href="plugin.html#html_radios">html_radios</a></li>
+		<li><a href="plugin.html#html_options">html_options</a></li>
+		<li><a href="plugin.html#html_chackboxes">html_checkboxes</a></li>
+		</ul>
+	</li>
+</ul>
+</div>
+
+</body>
+</html>
