@@ -1,2 +1,7 @@
 <h2>function : ldelim</h2>
+<h3>Script</h3>
+{controller name="ldelim"}
+<h3>Template</h3>
+{literal}{ldelim}{/literal}
+<h3>Result</h3>
 {ldelim}

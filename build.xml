@@ -5,23 +5,11 @@
 	<property name="dir.src" value="src" />
 	<property name="dir.pkg" value="Temp/JSmarty" />
 
-	<target name="demo">
-		<loadfile property="html.header" srcFile="build/html/header.html" />
-		<loadfile property="html.footer" srcFile="build/html/footer.html" />
-		<copy todir="demo" overwrite="Yes">
-			<fileset dir="build/demo" />
-			<filterset>
-				<filter token="html.header" value="${html.header}" />
-				<filter token="html.footer" value="${html.footer}" />
-			</filterset>
-		</copy>
-	</target>
-
 	<target name="build">
 		<mkdir dir="lib" />
 		<loadfile property="file.File" srcFile="src/JSmarty/File.js" />
 		<loadfile property="file.Plugin" srcFile="src/JSmarty/Plugin.js" />
-		<copy todir="lib" preservelastmodified="true">
+		<copy todir="lib" overwrite="Yes" preservelastmodified="true">
 			<filterset>
 				<filter token="version" value="${version}" />
 			</filterset>
@@ -40,10 +28,10 @@
 		<delete file="lib/JSmarty/Plugin.js" />
 	</target>
 
-	<target name="main" depends="demo,build">
+	<target name="main" depends="build">
 		<mkdir dir="${dir.pkg}" />
 		<copy todir="${dir.pkg}/lib"><fileset dir="lib" /></copy>
-		<copy todir="${dir.pkg}/demo"><fileset dir="demo" /></copy>
+		<copy todir="${dir.pkg}/samples"><fileset dir="samples" /></copy>
 		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />

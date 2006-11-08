@@ -12,7 +12,7 @@
 	<script type="text/javascript" src="scripts/plugin.js"></script>
 	<script type="text/javascript">
 	smarty = new JSmarty;
-	smarty.plugins_dir = ['../lib/plugins'];
+	smarty.plugins_dir = ['../lib/plugins','plugins'];
 	// override the JSmarty.print function...
 	JSmarty.print = function(str){
 		document.getElementById('main').innerHTML = str;
@@ -25,25 +25,32 @@
 <div class="sidebar" id="sidebar">
 <h2>Default Plugins</h2>
 <ul>
-	<li>block<ul>
-		<li><a href="plugin.html#if">if</a></li>
-		<li><a href="plugin.html#strip">strip</a></li>
-		<li><a href="plugin.html#literal">literal</a></li>
-		<li><a href="plugin.html#foreach">foreach,foreachelse</a></li>
-		<li><a href="plugin.html#section">section,sectionelse</a></li>
-	</ul></li>
-	</ul><ul>
-	<li>function<ul>
-		<li><a href="plugin.html#mailto">mailto</a></li>
-		<li><a href="plugin.html#counter">counter</a></li>
-		<li><a href="plugin.html#cycle">cycle</a></li>
-		<li><a href="plugin.html#ldelim">ldelim</a></li>
-		<li><a href="plugin.html#rdelim">rdelim</a></li>
-		<li><a href="plugin.html#html_image">html_image</a></li>
-		<li><a href="plugin.html#html_table">html_table</a></li>
-		<li><a href="plugin.html#html_radios">html_radios</a></li>
-		<li><a href="plugin.html#html_options">html_options</a></li>
-		<li><a href="plugin.html#html_chackboxes">html_checkboxes</a></li>
+	<li>block
+		<ul>
+			<li><a href="plugin.html#if">if</a></li>
+			<li><a href="plugin.html#strip">strip</a></li>
+			<li><a href="plugin.html#literal">literal</a></li>
+			<li><a href="plugin.html#foreach">foreach,foreachelse</a></li>
+			<li><a href="plugin.html#section">section,sectionelse</a></li>
+		</ul>
+	</li>
+	<li>function
+		<ul>
+			<li><a href="plugin.html#mailto">mailto</a></li>
+			<li><a href="plugin.html#counter">counter</a></li>
+			<li><a href="plugin.html#cycle">cycle</a></li>
+			<li><a href="plugin.html#ldelim">ldelim</a></li>
+			<li><a href="plugin.html#rdelim">rdelim</a></li>
+			<li><a href="plugin.html#html_image">html_image</a></li>
+			<li><a href="plugin.html#html_table">html_table</a></li>
+			<li><a href="plugin.html#html_radios">html_radios</a></li>
+			<li><a href="plugin.html#html_options">html_options</a></li>
+			<li><a href="plugin.html#html_chackboxes">html_checkboxes</a></li>
+		</ul>
+	</li>
+	<li>outputfilter
+		<ul>
+			<li><a href="plugin.html#trimwhitespace">trimwhitespace</a></li>
 		</ul>
 	</li>
 </ul>

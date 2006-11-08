@@ -1,4 +1,17 @@
 <h2>block : strip</h2>
+<h3>Script</h3>
+{controller name="strip"}
+<h3>Template</h3>
+{literal|nl2br|htmlspecialescape}
+<pre>
+S
+T
+R
+I
+P
+</pre>
+{/literal}
+<h3>Result</h3>
 {strip}
 <pre>
 S

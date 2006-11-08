@@ -26,81 +26,68 @@ var Controller =
 		smarty.assign("hoge", 2);
 		smarty.display('if01.txt');
 		smarty.clear_assign();
-		return false;
 	},
 	Strip : function()
 	{
 		smarty.display('strip01.txt');
-		smarty.clear_assign();
-		return false;
+		smarty.clear_all_assign();
 	},
 	Foreach : function()
 	{
 		smarty.assign_by_ref("hoge", { English:"Hello,World", Japanese:"KONNNICHIWA,SEKAI!!" });
 		smarty.display('foreach01.txt');
-		smarty.clear_assign();
-		return false;
+		smarty.clear_all_assign();
 	},
 	Section : function()
 	{
-		smarty.assign("custid", [ "001", "002", "003" ]);
-		smarty.assign("name",   [ "id", "shogo", "4405"]);
-		smarty.assign("address",[ "hoge@com", "foo@com", "bar@com" ]);
+		smarty.assign_by_ref("custid", [ "001", "002", "003" ]);
+		smarty.assign_by_ref("name",   [ "id", "shogo", "4405"]);
+		smarty.assign_by_ref("address",[ "hoge@com", "foo@com", "bar@com" ]);
 		smarty.display('section01.txt');
-		smarty.clear_assign();
-		return false;
+		smarty.clear_all_assign();
 	},
 	Mailto : function()
 	{
 		smarty.display('mailto01.txt');
-		return false;
 	},
 	Counter : function()
 	{
 		smarty.display('counter01.txt');
-		return false;
 	},
 	Cycle : function()
 	{
 		smarty.display('cycle01.txt');
-		return false;
 	},
 	Ldelim : function()
 	{
 		smarty.display('ldelim01.txt');
-		return false;
 	},
 	Rdelim : function()
 	{
 		smarty.display('rdelim01.txt');
-		return false;
 	},
 	Literal : function()
 	{
 		smarty.display('literal01.txt');
-		return false;
 	},
 	Html_image : function()
 	{
 		smarty.assign("img","images/jsmarty_icon.gif");
 		smarty.display('html_image01.txt');
-		smarty.clear_assign();
-		return false;
+		smarty.clear_all_assign();
 	},
 	Html_table : function()
 	{
 		smarty.assign_by_ref('data', [0,1,2,3,4,5,6,7,8]);
 		smarty.assign_by_ref('tr', ['bgcolor="#eeeeee"','bgcolor="#dddddd"']);
 		smarty.display('html_table01.txt');
-		smarty.clear_assign();
-		return false;
+		smarty.clear_all_assign();
 	},
 	Html_options : function()
 	{
-		smarty.assign("data", {"001":"tanaka","002":"suzuki","003":"kato"});
+		smarty.assign_by_ref("data", {"001":"tanaka","002":"suzuki","003":"kato"});
 		smarty.display('html01.txt');
-		smarty.clear_assign();
-		return false;
+		smarty.clear_all_assign();
 	},
 	Html_radios : function(){
 		return Controller.Html_options();

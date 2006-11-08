@@ -1,8 +1,21 @@
 <h2>block : foreach</h2>
+<h3>Script</h3>
+{controller name="foreach"}
+<h3>Template</h3>
+{literal|nl2br|htmlspecialhscape}
 {foreach from=$hoge name="mydata" item="datum" key="key"}
-<p>
-	{$key} -&gt; {$datum}, {$smarty.foreach.mydata.total}<br />
-</p>
+<p>{$key} -&gt; {$datum}, {$smarty.foreach.mydata.total}</p>
+{/foreach}
+{foreach from=$bar}
 {foreachelse}
-displayed by foreachelse
+displayed by sectionelse
+{/foreach}
+{/literal}
+<h3>Result</h3>
+{foreach from=$hoge name="mydata" item="datum" key="key"}
+<p>{$key} -&gt; {$datum}, {$smarty.foreach.mydata.total}</p>
+{/foreach}
+{foreach from=$bar}
+{foreachelse}
+displayed by sectionelse
 {/foreach}

@@ -1,4 +1,10 @@
 <h2>block : section</h2>
+<h3>Script</h3>
+{controller name="section"}
+<h3>Template</h3>
+{literal}
+{/literal}
+<h3>Result</h3>
 {section name=mydata loop=$custid}
 <p>
 	id: {$custid[mydata]}<br />

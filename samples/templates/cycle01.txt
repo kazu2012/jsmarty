@@ -1,8 +1,21 @@
 <h2>function : cycle</h2>
+<h3>Script</h3>
+{controller name="cycle"}
+<h3>Template</h3>
+{literal}
 <ol>
   <li>{cycle values="one,two,tree,four,five"}</li>
   <li>{cycle values="one,two,tree,four,five"}</li>
   <li>{cycle values="one,two,tree,four,five"}</li>
   <li>{cycle values="one,two,tree,four,five"}</li>
   <li>{cycle values="one,two,tree,four,five"}</li>
-</ul>
+</ol>
+{/literal}
+<h3>Result</h3>
+<ol>
+  <li>{cycle values="one,two,tree,four,five"}</li>
+  <li>{cycle values="one,two,tree,four,five"}</li>
+  <li>{cycle values="one,two,tree,four,five"}</li>
+  <li>{cycle values="one,two,tree,four,five"}</li>
+  <li>{cycle values="one,two,tree,four,five"}</li>
+</ol>

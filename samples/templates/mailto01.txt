@@ -1,4 +1,15 @@
 <h2>function : mailto</h2>
+<h3>Script</h3>
+{controller name="mailto"}
+<h3>Template</h3>
+{literal|nl2br|htmlspecialescape}
+<ul>
+  <li>hex - {mailto address="foo@bar.com" encode="hex"}</li>
+  <li>javascript - {mailto address="foo@bar.com" encode="javascript"}</li>
+  <li>javascript_charcode - {mailto address="foo@bar.com" encode="javascript_charcode"}</li>
+</ul>
+{/literal}
+<h3>Result</h3>
 <ul>
   <li>hex - {mailto address="foo@bar.com" encode="hex"}</li>
   <li>javascript - {mailto address="foo@bar.com" encode="javascript"}</li>

@@ -1,4 +1,17 @@
 <h2>function : counter</h2>
+<h3>Script</h3>
+{controller name="counter"}
+<h3>Template</h3>
+{literal|nl2br|htmlspecialescape}
+<ul>
+  <li>{counter start=10 skip=10}</li>
+  <li>{counter}</li>
+  <li>{counter}</li>
+  <li>{counter}</li>
+  <li>{counter}</li>
+</ul>
+{/literal}
+<h3>Result</h3>
 <ul>
   <li>{counter start=10 skip=10}</li>
   <li>{counter}</li>
