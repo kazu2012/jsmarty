@@ -2,7 +2,7 @@
  * wordwrap function
  *
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.0
+ * @version 1.0.1
  * @see http://www.php.net/wordwrap
  * @param  {String} str
  * @param  {Number} width
@@ -35,7 +35,7 @@ function wordwrap(str, width, break_word, cut)
 			continue;
 		};
 
-		if(buffer.length + word.length <= width)
+		if(buffer && (buffer.length + word.length <= width))
 			buffer += ' ' + word;
 		else
 			buffer = '', k--, text[i++] = buffer;

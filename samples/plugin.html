@@ -4,9 +4,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta http-equiv="Content-Style-Type"  content="text/css" />
 	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<meta name="robots" content="noindex,nofollow" />
+	<meta name="robots" content="noarchive" /> 
 	<title>Plugin Test</title>
 	<link rel="stylesheet" type="text/css" href="styles/default.css" />
-	<script type="text/javascript" src="../lib/safari.js"></script>
 	<script type="text/javascript" src="../lib/JSmarty.js"></script>
 	<script type="text/javascript" src="../lib/JSmarty/Compiler.js"></script>
 	<script type="text/javascript" src="scripts/plugin.js"></script>
@@ -15,21 +16,32 @@
 	smarty.plugins_dir = ['../lib/plugins','plugins'];
 	// override the JSmarty.print function...
 	JSmarty.print = function(str){
-		document.getElementById('main').innerHTML = str;
+		document.getElementById('content').innerHTML = str;
 	};
 	</script>
 </head>
 <body>
 
-<div class="document"><div class="main" id="main"></div></div>
-<div class="sidebar" id="sidebar">
-<h2>Default Plugins</h2>
+<div class="header" id="header">
+<div class="col01"><h1>JSmarty</h1></div>
+<div class="col02"><a href="plugin.html#index">Plugin</a></div>
+</div>
+
+<div class="main" id="main">
+	<div class="content" id="content"></div>
+	<div class="footer">
+		powerd by JSmarty
+		<script type="text/javascript">document.write(JSmarty.VERSION);</script>
+	</div>
+</div>
+<div class="sidebar" id="sidebar"><h2>Default Plugins</h2>
 <ul>
 	<li>block
 		<ul>
 			<li><a href="plugin.html#if">if</a></li>
 			<li><a href="plugin.html#strip">strip</a></li>
 			<li><a href="plugin.html#literal">literal</a></li>
+			<li><a href="plugin.html#textformat">textformat</a></li>
 			<li><a href="plugin.html#foreach">foreach,foreachelse</a></li>
 			<li><a href="plugin.html#section">section,sectionelse</a></li>
 		</ul>

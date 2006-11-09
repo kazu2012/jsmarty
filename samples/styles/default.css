@@ -1,32 +1,16 @@
 body
 {
-	color: #330000; font-size: 90%; line-height: 1.5em;
+	margin: 0px; padding: 0px;
+	color: #330000; font-size: 90%;
 	font-family: Verdana, Helvetica, sans-serif;
+	background: url('../images/wall0041.gif') repeat-x;
 }
 
-h1
-{
-	font-size: 130%; padding: 8px;
-	border: 1px solid #000000;
-	border-width: 1px 8px;
-}
-
-h2
-{
-	font-size: 125%; padding: 4px;
-	border-left: 8px solid #000000;
-	border-bottom: 1px solid #000000;
-}
-
-
-pre, .result
-{
-	margin:8px; padding: 8px;
-	border: 1px solid #000000;
-}
+h2{ font-size: 125%; }
 
 pre
 {
+	border: 1px solid #000000;
 	white-space:-pre-wrap;
 	white-space: -o-pre-wrap;
 	white-space:-moz-pre-wrap;
@@ -36,31 +20,89 @@ pre
 	word-wrap:break-word;
 }
 
-#toc h1
+/* ---------------------------------------------------------------------
+ .header
+ -------------------------------------------------------------------- */
+.header
 {
-	text-align: center;
+	width: 100%; height: 68px;
+}
+.header h1
+{
+	line-height: 60px;
+	text-indent: -1000px;
+	margin: 0px; padding: 0px;
+	background: url('../images/jsmarty_icon.gif') no-repeat left;
 }
 
-#toc ul
+.header .col01{ width: 30%; float: left; clear: right; }
+.header .col02
 {
-	margin: 0px 16px;
-	padding: 0px;
+	line-height: 60px;text-align: right;
+	width: 70%; float: left; clear: right;
+}
+.header a
+{
+	font-size: 18px;
+	margin: 0px 8px;
 }
 
-
-.document
-{
-	width: 70%;
-	float: left; clear: right;
-}
-
+/* ---------------------------------------------------------------------
+ .main
+ -------------------------------------------------------------------- */
 .main
 {
-	margin: 0px 64px;
+	padding: 16px 32px;
+	margin: 0px 264px 0px 0px;
 }
+
+.main h2
+{
+	margin: 0px -16px; padding: 8px;
+	color: #ffffff; border: 1px solid #000000;
+	background: url('../images/wall0042.gif') fixed;
+}
+
+.main h3
+{
+	margin: 16px -16px; padding: 8px;
+	border-left: 8px solid #000000;
+}
+
+.main pre
+{
+	padding: 16px;
+}
+
+/* ---------------------------------------------------------------------
+ .sidebar
+ -------------------------------------------------------------------- */
 
 .sidebar
 {
-	width: 30%;
-	float: left; clear: right;
+	width: 248px;
+	position: absolute;
+	top: 84px; right: 16px;
+}
+
+.sidebar h2
+{
+	padding: 8px; margin: 0px;
+	color: #ffffff; border: 1px solid #000000;
+	background: url('../images/wall0042.gif') fixed;
+}
+
+.sidebar ul
+{
+	font-size: 86%;
+}
+
+/* ---------------------------------------------------------------------
+ .footer
+ -------------------------------------------------------------------- */
+.footer
+{
+	text-align: right;
+	padding: 8px 0px; margin: 16px -16px 0px -16px;
+	border-top: 3px dotted #000000;
 }

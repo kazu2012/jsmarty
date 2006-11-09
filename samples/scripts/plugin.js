@@ -7,25 +7,36 @@ window.onload = function()
 		if((hash = link.href.indexOf('#')) > -1)
 		{
 			hash = link.href.slice(hash + 1);
-			link.onclick = Controller.HashRecord(hash);
-			link.onkeypress = Controller.HashRecord(hash);
+			link.onclick = link.onkeypress = Record.HashRecord(hash);
 		}
 	};
+
+	Record.HashRecord(String(location.hash).slice(1))();
 };
 
-var Controller =
+var Record = {};
+Record.HashRecord = function(arg)
 {
-	HashRecord : function(arg)
+	arg = arg.charAt(0).toUpperCase() + arg.slice(1);
+	if(Model[arg]) return Model[arg];
+	return function(){ return false; };
+};
+
+var Model =
+{
+	Index : function()
 	{
-		arg = arg.charAt(0).toUpperCase() + arg.slice(1);
-		if(this[arg]) return this[arg];
-		return function(){ return false; };
+		smarty.display('plugin.txt');
 	},
 	If : function()
 	{
 		smarty.assign("hoge", 2);
 		smarty.display('if01.txt');
 		smarty.clear_assign();
+	},
+	Textformat : function()
+	{
+		smarty.display('textformat01.txt');
 	},
 	Strip : function()
 	{
@@ -90,9 +101,9 @@ var Controller =
 		smarty.clear_all_assign();
 	},
 	Html_radios : function(){
-		return Controller.Html_options();
+		Controller.Html_options();
 	},
-	Html_checkboxes : function(){
-		return Controller.Html_options();
+	Html_chackboxes : function(){
+		Controller.Html_options();
 	}
 };
