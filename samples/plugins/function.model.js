@@ -1,4 +1,4 @@
-function jsmarty_function_controller(params, jsmarty)
+function jsmarty_function_model(params, jsmarty)
 {
 	var name, func;
 	if(!(name = params.name)) return;

@@ -28,17 +28,18 @@ JSmarty.File =
 	 */
 	fgets : function(file, dir)
 	{
-		var text, http = this.XMLHTTP;
+		var text, flag = false, http = this.XMLHTTP;
 
 		dir = JSmarty.flatten(dir);
 
 		for(var i=0,f=dir.length;i<f;i++)
 		{
-			if(text) break;
+			if(text && flag) break;
 			try
 			{
 				http.open('GET', dir[i] +'/'+ file, false);
 				http.send('');
+				flag = (http.status == 200 || http.status == 0);
 				text = http.responseText;
 			}
 			catch(e){ /* empty */ }

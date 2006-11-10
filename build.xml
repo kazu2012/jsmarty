@@ -37,6 +37,9 @@
 			</filterchain>
 		</copy>
 		<copy todir="${dir.pkg}/samples"><fileset dir="samples" /></copy>
+		<replace dir="${dir.pkg}/lib" value="">
+			<replacetoken>&#x9;</replacetoken>
+		</replace>
 		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />

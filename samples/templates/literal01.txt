@@ -1,6 +1,6 @@
 <h2>block : literal</h2>
-<h3>Script</h3>
-{controller name="literal"}
+<h3>Model</h3>
+{model name="literal"}
 <h3>Template</h3>
 {literal|nl2br|htmlspecialescape}
 {literal|nl2br}{if $hoge==1}

@@ -1,6 +1,8 @@
 window.onload = function()
 {
-	var i, f, link, links = document.getElementsByTagName('a');
+	var i, f, link, hash;
+	var links = document.getElementsByTagName('a');
+
 	for(i=0,f=links.length;i<f;i++)
 	{
 		link = links[i];
@@ -11,7 +13,8 @@ window.onload = function()
 		}
 	};
 
-	Record.HashRecord(String(location.hash).slice(1))();
+	hash = (location.hash) ? String(location.hash).slice(1) : 'index';
+	Record.HashRecord(hash)();
 };
 
 var Record = {};
@@ -101,9 +104,13 @@ var Model =
 		smarty.clear_all_assign();
 	},
 	Html_radios : function(){
-		Controller.Html_options();
+		Model.Html_options();
 	},
 	Html_chackboxes : function(){
-		Controller.Html_options();
+		Model.Html_options();
+	},
+	Trimwhitespace : function()
+	{
+		smarty.display('trimwhitespace01.txt');
 	}
 };

@@ -1,6 +1,6 @@
 <h2>function : html : table</h2>
-<h3>Script</h3>
-{controller name="html_table"}
+<h3>Model</h3>
+{model name="html_table"}
 <h3>Template</h3>
 {literal|nl2br|htmlspecialescape}
 <h4>TABLE001</h4>

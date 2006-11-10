@@ -1,6 +1,6 @@
 <h2>block : if</h2>
-<h3>Script</h3>
-{controller name="if"}
+<h3>Model</h3>
+{model name="if"}
 <h3>Template</h3>
 {literal|nl2br|htmlspecialescape}
 {if $hoge==1}

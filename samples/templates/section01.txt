@@ -1,6 +1,6 @@
 <h2>block : section</h2>
-<h3>Script</h3>
-{controller name="section"}
+<h3>Model</h3>
+{model name="section"}
 <h3>Template</h3>
 {literal}
 {/literal}

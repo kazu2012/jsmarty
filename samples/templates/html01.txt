@@ -1,8 +1,8 @@
 <h2>function : html : checkboxes, radio, options</h2>
-<h3>Script</h3>
-{controller name="html_options"}
+<h3>Model</h3>
+{model name="html_options"}
 <h3>Template</h3>
-{literal|nl2br|htmlspecialescape}
+{literal|htmlspecialescape|nl2br}
 checkboxes:<br />
 {html_checkboxes name="checkbox001" options=$data selected="002"}
 <hr />

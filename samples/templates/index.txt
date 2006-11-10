@@ -1,6 +1,6 @@
 <h2>block : textformat</h2>
-<h3>Script</h3>
-{controller name="rdelim"}
+<h3>Model</h3>
+{model name="rdelim"}
 <h3>Template</h3>
 {literal}{rdelim}{/literal}
 <h3>Result</h3>

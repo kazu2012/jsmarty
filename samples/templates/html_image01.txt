@@ -1,6 +1,6 @@
 <h2>function : html : image</h2>
-<h3>Script</h3>
-{controller name="html_image"}
+<h3>Model</h3>
+{model name="html_image"}
 <h3>Template</h3>
 {literal|nl2br|htmlspecialescape}
 {html_image file=$img}

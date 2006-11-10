@@ -1,6 +1,6 @@
 <h2>function : cycle</h2>
-<h3>Script</h3>
-{controller name="cycle"}
+<h3>Model</h3>
+{model name="cycle"}
 <h3>Template</h3>
 {literal}
 <ol>
