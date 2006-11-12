@@ -30,16 +30,8 @@
 
 	<target name="main" depends="build">
 		<mkdir dir="${dir.pkg}" />
-		<copy todir="${dir.pkg}/lib">
-			<fileset dir="lib" />
-			<filterchain>
-				<stripjavacomments />
-			</filterchain>
-		</copy>
+		<copy todir="${dir.pkg}/lib"><fileset dir="lib" /></copy>
 		<copy todir="${dir.pkg}/samples"><fileset dir="samples" /></copy>
-		<replace dir="${dir.pkg}/lib" value="">
-			<replacetoken>&#x9;</replacetoken>
-		</replace>
 		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />

@@ -619,7 +619,7 @@ JSmarty.prototype =
 };
 
 /**
- * Error Handler
+ * JSmarty Error Handler
  * @param {String} msg message
  * @param {String} level error-level
  */

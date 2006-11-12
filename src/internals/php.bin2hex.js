@@ -2,7 +2,7 @@
  * bin2hex function
  *
  * @author shogo < shogo4405 at gmail dot com >
- * @version 0.0.0
+ * @version 1.0.0RC1
  * @see http://www.php.net/bin2hex
  * @param  {String} s
  * @return {String}
