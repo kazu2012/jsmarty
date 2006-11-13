@@ -34,83 +34,89 @@ var Model =
 	If : function()
 	{
 		smarty.assign("hoge", 2);
-		smarty.display('if01.txt');
+		smarty.display('if.txt');
 		smarty.clear_assign();
 	},
 	Textformat : function()
 	{
-		smarty.display('textformat01.txt');
+		smarty.display('textformat.txt');
 	},
 	Strip : function()
 	{
-		smarty.display('strip01.txt');
+		smarty.display('strip.txt');
 		smarty.clear_all_assign();
 	},
 	Foreach : function()
 	{
 		smarty.assign_by_ref("hoge", { English:"Hello,World", Japanese:"KONNNICHIWA,SEKAI!!" });
-		smarty.display('foreach01.txt');
+		smarty.display('foreach.txt');
 		smarty.clear_all_assign();
 	},
 	Section : function()
 	{
-		smarty.assign_by_ref("custid", [ "001", "002", "003" ]);
-		smarty.assign_by_ref("name",   [ "id", "shogo", "4405"]);
-		smarty.assign_by_ref("address",[ "hoge@com", "foo@com", "bar@com" ]);
-		smarty.display('section01.txt');
+		smarty.assign_by_ref('custid', [ '001', '002', '003' ]);
+		smarty.assign_by_ref('name',   [ 'id', 'shogo', '4405']);
+		smarty.assign_by_ref('address',[ 'hoge@com', 'foo@com', 'bar@com' ]);
+		smarty.display('section.txt');
 		smarty.clear_all_assign();
 	},
 	Mailto : function()
 	{
-		smarty.display('mailto01.txt');
+		smarty.display('mailto.txt');
 	},
 	Counter : function()
 	{
-		smarty.display('counter01.txt');
+		smarty.display('counter.txt');
 	},
 	Cycle : function()
 	{
-		smarty.display('cycle01.txt');
+		smarty.display('cycle.txt');
 	},
 	Ldelim : function()
 	{
-		smarty.display('ldelim01.txt');
+		smarty.display('ldelim.txt');
 	},
 	Rdelim : function()
 	{
-		smarty.display('rdelim01.txt');
+		smarty.display('rdelim.txt');
 	},
 	Literal : function()
 	{
-		smarty.display('literal01.txt');
+		smarty.display('literal.txt');
 	},
 	Html_image : function()
 	{
-		smarty.assign("img","images/jsmarty_icon.gif");
-		smarty.display('html_image01.txt');
+		smarty.assign('img','images/jsmarty_icon.gif');
+		smarty.display('html_image.txt');
 		smarty.clear_all_assign();
 	},
 	Html_table : function()
 	{
 		smarty.assign_by_ref('data', [0,1,2,3,4,5,6,7,8]);
 		smarty.assign_by_ref('tr', ['bgcolor="#eeeeee"','bgcolor="#dddddd"']);
-		smarty.display('html_table01.txt');
+		smarty.display('html_table.txt');
 		smarty.clear_all_assign();
 	},
 	Html_options : function()
 	{
-		smarty.assign_by_ref("data", {"001":"tanaka","002":"suzuki","003":"kato"});
-		smarty.display('html01.txt');
+		smarty.assign_by_ref('data', {001:'tanaka', 002:'suzuki', 003:'kato'});
+		smarty.display('html_options.txt');
 		smarty.clear_all_assign();
 	},
-	Html_radios : function(){
-		Model.Html_options();
+	Html_radios : function()
+	{
+		smarty.assign_by_ref('data', {001:'tanaka', 002:'suzuki', 003:'kato'});
+		smarty.display('html_radios.txt');
+		smarty.clear_all_assign();
 	},
-	Html_chackboxes : function(){
-		Model.Html_options();
+	Html_chackboxes : function()
+	{
+		smarty.assign_by_ref('data', {001:'tanaka', 002:'suzuki', 003:'kato'});
+		smarty.display('html_chackboxes.txt');
+		smarty.clear_all_assign();
 	},
 	Trimwhitespace : function()
 	{
-		smarty.display('trimwhitespace01.txt');
+		smarty.display('trimwhitespace.txt');
 	}
 };

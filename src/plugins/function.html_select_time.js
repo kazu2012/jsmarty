@@ -20,8 +20,8 @@
  */
 function jsmarty_function_html_select_time(params, jsmarty)
 {
-	var range = JSmarty.Plugin.getFunction('php.range.js');
-	var strftime = JSmarty.Plugin.getFunction('php.strftime.js');
+	var range = JSmarty.Plugin.getFunction('php.range');
+	var strftime = JSmarty.Plugin.getFunction('php.strftime');
 	var html_options = JSmarty.Plugin.getFunction('function.html_options', jsmarty.plugins_dir);
 
 	var n, k, i = 0, html = [];

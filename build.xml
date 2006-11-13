@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSmarty" default="main" basedir="./">
 
-	<property name="version" value="0.1.0" />
+	<property name="version" value="0.1.1" />
 	<property name="dir.src" value="src" />
 	<property name="dir.pkg" value="Temp/JSmarty" />
 

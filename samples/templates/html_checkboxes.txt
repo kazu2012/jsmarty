@@ -1,0 +1,9 @@
+<h2>function : html : checkboxes</h2>
+<h3>Model</h3>
+{model name="html_checkboxes"}
+<h3>Template</h3>
+{literal|htmlspecialescape|nl2br}
+{html_checkboxes name="checkbox001" options=$data selected="002"}
+{/literal}
+<h3>Result</h3>
+{html_checkboxes name="checkbox001" options=$data selected="002"}
