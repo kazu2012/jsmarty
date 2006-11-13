@@ -3,6 +3,17 @@
 {model name="section"}
 <h3>Template</h3>
 {literal}
+{section name=mydata loop=$custid}
+<p>
+	id: {$custid[mydata]}<br />
+	name: {$name[mydata]}<br />
+	address: {$address[mydata]}<br />
+</p>
+{if !$smarty.section.mydata.last}<hr />{/if}
+{/section}
+{if $smarty.section.mydata.total != 0}
+<p>SECTION TOTAL : {$smarty.section.mydata.total}</p>
+{/if}
 {/literal}
 <h3>Result</h3>
 {section name=mydata loop=$custid}
@@ -12,8 +23,6 @@
 	address: {$address[mydata]}<br />
 </p>
 {if !$smarty.section.mydata.last}<hr />{/if}
-{sectionelse}
-<div>displayed by sectionelse</div>
 {/section}
 {if $smarty.section.mydata.total != 0}
 <p>SECTION TOTAL : {$smarty.section.mydata.total}</p>

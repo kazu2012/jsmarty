@@ -1,0 +1,11 @@
+<h2>function : html : select : date</h2>
+<h3>Model</h3>
+{model name="html_select_date"}
+<h3>Template</h3>
+{literal|htmlspecialescape|nl2br}
+{html_select_date name="select001" options=$data selected="002"}
+{/literal}
+<h3>Result</h3>
+<textarea row=30 col=20>
+{html_select_date name="select001" options=$data selected="002"}
+</textarea>

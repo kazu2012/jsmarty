@@ -27,7 +27,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	var n, k, i = 0, html = [];
 	var hours, hour_fmt, for_max, all_minutes, minutes = [];
 
-	var time = new Date.getTime();
+	var time = new Date().getTime();
 	var prefix = "Time_";
 	var all_extra = null;
 	var hour_extra = null;
@@ -36,12 +36,12 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	var second_extra = null;
 	var use_24_hours = true;
 	var display_hours = true;
+	var meridian_extra = null;
 	var display_minutes = true;
 	var display_seconds = true;
-	var display_meridai = true;
 	var minute_interval = 1;
 	var second_interval = 1;
-	var meridaian_extra = null;
+	var display_meridian = true;
 
 	for(k in params)
 	{
@@ -66,15 +66,15 @@ function jsmarty_function_html_select_time(params, jsmarty)
 			case 'meridian_extra':
 				meridian_extra = params[k]; break;
 			case 'display_hours':
-				display_hours = Boolean(params[k]); break;
+				display_hours = params[k]; break;
 			case 'display_minutes':
-				display_minutes = Boolean(params[k]); break;
+				display_minutes = params[k]; break;
 			case 'display_hours':
-				display_hours = Booelan(params[k]); break;
+				display_hours = params[k]; break;
 			case 'display_meridian':
-				display_meridian = Boolean(params[k]); break;
+				display_meridian = params[k]; break;
 			case 'use_24_hours':
-				use_24_hours = Boolean(params[k]); break;
+				use_24_hours = params[k]; break;
 			case 'minute_interval':
 				minute_interval = parseInt(params[k]); break;
 			case 'second_interval':
@@ -88,11 +88,11 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	{
 		hours = use_24_hours ? range(0, 23) : range(1, 2);
 		hour_fmt = use_24_hours ? '%H' : '%I';
-		for(k=0;for_max=hours.length;i<for_max;i++)
+		for(k=0,for_max=hours.length;i<for_max;i++)
 			hours[i] = (hours[i] > 9) ? hours[i] : '0' + hours[i];
 		html[i++] = '<select name=';
 		if(field_array !== null)
-			html[i++] = '"' + field_array + '[' + prefix + 'Hour'"';
+			html[i++] = '"' + field_array + '[' + prefix + 'Hour]"';
 		else
 			html[i++] = '"' + prefix + 'Hour"';
 		if(hour_extra !== null)
@@ -107,8 +107,8 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	if(display_minutes)
 	{
 		all_minutes = range(0, 59);
-		for(k=0,n=0;for_max=all_minutes.length;k<for_max;k+=minute_interval)
-			minutes[n++] = (all_minutes[k] > 9) all_minutes[k] : '0' + all_minutes[k];
+		for(k=0,n=0,for_max=all_minutes.length;k<for_max;k+=minute_interval)
+			minutes[n++] = (all_minutes[k] > 9) ? all_minutes[k] : '0' + all_minutes[k];
 		selected = parseInt(Math.floor(strftime('%M', time) / minute_interval) * minute_interval);
 		html[i++] = '<select name=';
 		if(field_array !== null)
@@ -124,11 +124,11 @@ function jsmarty_function_html_select_time(params, jsmarty)
 		html[i++] = '</select>\n';
 	};
 
-	if(display_meridaian && !use_24_hours)
+	if(display_meridian && !use_24_hours)
 	{
 		html[i++] = '<select name=';
 		if(field_array !== null)
-			html[i++] = '"' + field_array + '[' + prefix + 'Meridian']"';
+			html[i++] = '"' + field_array + '[' + prefix + 'Meridian]"';
 		else
 			html[i++] = '"' + prefix + 'Meridian"';
 
@@ -137,7 +137,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 		if(all_extra !== null)
 			html[i++] = ' ' + all_extra;
 		html[i++] = '>\n';
-		html[i++] = html_options({output: ['AM','PM'], values: ['am','pm'], selected: strftime('%p', $time).toLowwerCase(), print_result: false}, jsmarty);
+		html[i++] = html_options({output: ['AM','PM'], values: ['am','pm'], selected: strftime('%p', time).toLowerCase(), print_result: false}, jsmarty);
 		html[i++] = '</select>\n';
 	};
 

@@ -99,21 +99,29 @@ var Model =
 	},
 	Html_options : function()
 	{
-		smarty.assign_by_ref('data', {001:'tanaka', 002:'suzuki', 003:'kato'});
+		smarty.assign_by_ref('data', {'001':'tanaka', '002':'suzuki', '003':'kato'});
 		smarty.display('html_options.txt');
 		smarty.clear_all_assign();
 	},
 	Html_radios : function()
 	{
-		smarty.assign_by_ref('data', {001:'tanaka', 002:'suzuki', 003:'kato'});
+		smarty.assign_by_ref('data', {'001':'tanaka', '002':'suzuki', '003':'kato'});
 		smarty.display('html_radios.txt');
 		smarty.clear_all_assign();
 	},
-	Html_chackboxes : function()
+	Html_checkboxes : function()
 	{
-		smarty.assign_by_ref('data', {001:'tanaka', 002:'suzuki', 003:'kato'});
-		smarty.display('html_chackboxes.txt');
+		smarty.assign_by_ref('data', {'001':'tanaka', '002':'suzuki', '003':'kato'});
+		smarty.display('html_checkboxes.txt');
 		smarty.clear_all_assign();
+	},
+	Html_select_time : function()
+	{
+		smarty.display('html_select_time.txt');
+	},
+	Html_select_date : function()
+	{
+		smarty.display('html_select_date.txt');
 	},
 	Trimwhitespace : function()
 	{

@@ -81,9 +81,11 @@ function jsmarty_function_html_options(params, jsmarty)
 		};
 	};
 
-	if(name == '')
+	// fix
+	if(!name)
 		return html.join('\n');
 
+	// fix!
 	return '<select name="'+ name +'"'+ extra.join(' ') +'>\n'+ html.join('\n') +'</select>\n';
 };
 
@@ -93,22 +95,16 @@ function jsmarty_function_html_options_optoutput(key, value, selected)
 	var html, in_array = JSmarty.Plugin.getFunction('php.in_array');
 	var escape_special_chars = JSmarty.Plugin.getFunction('shared.escape_special_chars');
 
-	if(typeof(value) == 'string')
+	if(!(value instanceof Array))
 	{
 		html =
-			'<option label="' + escape_special_chars(value) + '" value="' +
-			escape_special_chars(key) +'"';
-		if(in_array(key, selected)){
-			html += ' selected="selected"';
-		};
-		html += '>' + escape_special_chars(value) + '</option>\n';
+			'<option label="' + escape_special_chars(value.toString()) + '" value="' +
+			escape_special_chars(key.toString()) +'"';
+		if(in_array(key, selected)) html += ' selected="selected"';
+		html += '>' + escape_special_chars(value.toString()) + '</option>';
 	}
-	else
-	{
-		html = optgroup(key, value, selected);
-	};
 
-	return html;
+	return html || optgroup(key, value, selected);
 };
 
 function jsmarty_function_html_options_optgroup(key, value, selected)
@@ -122,7 +118,7 @@ function jsmarty_function_html_options_optgroup(key, value, selected)
 		if(!value.hasOwnProperty(k)) continue;
 		html[i++] = optoutput(key, value, selected);
 	};
-	html[i++] = '</optgroup>\n';
+	html[i++] = '</optgroup>';
 
 	return html.join('');
 };
