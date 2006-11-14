@@ -6,6 +6,6 @@ function jsmarty_function_model(params, jsmarty)
 	name = name.charAt(0).toUpperCase() + name.slice(1);
 	func = Model[name].toString();
 	func = func.slice(func.indexOf('{') + 1, func.lastIndexOf('}'));
-	func = func.replace(/^\r?\n|^\t*/gm,'');
+	func = func.replace(/^[\r\n\t\s]*/gm,'');
 	return "<pre>" + func + "</pre>";
 };

@@ -12,7 +12,7 @@
  * Original: Smarty {html_select_date} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0RC1
+ * @version  0.0.0
  * @see      http://smarty.php.net/manual/en/language.function.html.select.date.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -158,8 +158,8 @@ function jsmarty_function_html_select_date(params, jsmarty)
 
 		if(month_empty)
 		{
-			month_names = [0] = month_empty;
-			month_values= [0] = '', n++;
+			month_names[0] = month_empty;
+			month_values[0] = '', n++;
 		};
 		for(k=0;k<=12;k++)
 		{
@@ -229,7 +229,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		{
 			year[i++] =
 				'<input type="text" name="' + year_name + '" value="' +
-				time[0] + '" size="4" maxlength="4";
+				time[0] + '" size="4" maxlength="4"';
 			if(all_extra !== null)
 				year[i++] = ' ' + all_extra;
 			if(year_extra !== null)
@@ -256,18 +256,11 @@ function jsmarty_function_html_select_date(params, jsmarty)
 
 	for(i=0;i<=2;i++)
 	{
-		c = field_order.charAt(i);
-		switch(c)
+		switch(field_order.charAt(i))
 		{
-			case 'D':
-				html[i] = day;
-				break;
-			case 'M':
-				html[i] = month;
-				break;
-			case 'Y':
-				html[i] = year;
-				break;
+			case 'D': html[i] = day; break;
+			case 'Y': html[i] = year; break;
+			case 'M': html[i] = month; break;
 		};
 	};
 

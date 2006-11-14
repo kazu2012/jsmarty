@@ -20,9 +20,11 @@
  */
 function jsmarty_function_html_select_time(params, jsmarty)
 {
-	var range = JSmarty.Plugin.getFunction('php.range');
-	var strftime = JSmarty.Plugin.getFunction('php.strftime');
-	var html_options = JSmarty.Plugin.getFunction('function.html_options', jsmarty.plugins_dir);
+	var Plugin = JSmarty.Plugin;
+
+	var range = Plugin.getFunction('php.range');
+	var strftime = Plugin.getFunction('php.strftime');
+	var html_options = Plugin.getFunction('function.html_options', jsmarty.plugins_dir);
 
 	var n, k, i = 0, html = [];
 	var hours, hour_fmt, for_max, all_minutes, minutes = [];
@@ -131,7 +133,6 @@ function jsmarty_function_html_select_time(params, jsmarty)
 			html[i++] = '"' + field_array + '[' + prefix + 'Meridian]"';
 		else
 			html[i++] = '"' + prefix + 'Meridian"';
-
 		if(meridian_extra !== null)
 			html[i++] = ' ' + meridian_extra;
 		if(all_extra !== null)

@@ -10,6 +10,8 @@
  */
 function htmlspecialchars(string, quote_style)
 {
+	if(typeof(string) != 'string') return string.toString();
+
 	string =
 		string.replace(/&/g, '&amp;'
 			 ).replace(/</g, '&lt;'

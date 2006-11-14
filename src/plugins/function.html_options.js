@@ -21,13 +21,15 @@
 
 function jsmarty_function_html_options(params, jsmarty)
 {
-	JSmarty.Plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
+	var Plugin = JSmarty.Plugin;
 
 	var k, value, i = 0, html = [];
 	var optoutput = jsmarty_function_html_options_optoutput;
-	var strval = JSmarty.Plugin.getFunction('php.strval');
-	var array_map = JSmarty.Plugin.getFunction('php.array_map');
-	var array_values = JSmarty.Plugin.getFunction('php.array_values');
+	var strval = Plugin.getFunction('php.strval');
+	var array_map = Plugin.getFunction('php.array_map');
+	var array_values = Plugin.getFunction('php.array_values');
+
+	Plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
 
 	var name = null;
 	var extra = [];
@@ -55,14 +57,16 @@ function jsmarty_function_html_options(params, jsmarty)
 				break;
 			default:
 				if(typeof(params[k]) != 'object')
-					extra.push(k +'="'+ params[k] +'"');
+					extra[i++] = ' ' + k +'="'+ params[k] +'"';
 				else
 					jsmarty.trigger_error('html_checkboxes: extra attribute '+ k +' cannot be an array');
 				break;
 		};
 	};
 
-	if(!options && !values) return '';
+	if(!options && !values) return;
+
+	i = 0;
 
 	if(options)
 	{
@@ -81,30 +85,24 @@ function jsmarty_function_html_options(params, jsmarty)
 		};
 	};
 
-	// fix
-	if(!name)
-		return html.join('\n');
-
-	// fix!
-	return '<select name="'+ name +'"'+ extra.join(' ') +'>\n'+ html.join('\n') +'</select>\n';
+	return (name) ? '<select name="'+ name +'"'+ extra.join('') +'>\n'+ html.join('\n') +'</select>\n' : html.join('\n');
 };
 
 function jsmarty_function_html_options_optoutput(key, value, selected)
 {
 	var optgroup = jsmarty_function_html_options_optgroup;
-	var html, in_array = JSmarty.Plugin.getFunction('php.in_array');
+	var i = 0, html = [], in_array = JSmarty.Plugin.getFunction('php.in_array');
 	var escape_special_chars = JSmarty.Plugin.getFunction('shared.escape_special_chars');
 
 	if(!(value instanceof Array))
 	{
-		html =
-			'<option label="' + escape_special_chars(value.toString()) + '" value="' +
-			escape_special_chars(key.toString()) +'"';
-		if(in_array(key, selected)) html += ' selected="selected"';
-		html += '>' + escape_special_chars(value.toString()) + '</option>';
-	}
+		value = escape_special_chars(value);
+		html[i++] = '<option label="' + value + '" value="' + escape_special_chars(key) +'"';
+		if(in_array(key, selected)) html[i++] = ' selected="selected"';
+		html[i++] = '>' + value + '</option>';
+	};
 
-	return html || optgroup(key, value, selected);
+	return (0 < i) ? html.join('') : optgroup(key, value, selected);
 };
 
 function jsmarty_function_html_options_optgroup(key, value, selected)
