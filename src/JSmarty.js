@@ -436,24 +436,28 @@ JSmarty.prototype =
 				return call[ns].apply(null, attr);
 		};
 	},
-	_modf : function(src, modf)
+	_incall : function()
 	{
-		var name, args;
+		
+	},
+	_inmodif : function(string, modif)
+	{
+		if(modif.smarty && modif.smarty[1] == 'nodefault') return string;
 
-		if(this.default_modifiers)
-			modf = modf.concat(this.default_modifiers);
-		if(modf.length == 0) return src;
+		var k, name;
+		var plugin = this._plugins, Plugin = JSmarty.Plugin;
 
-		for(var i=modf.length-1;i>=0;i--)
+		for(k in modif)
 		{
-			args = modf[i].split(':');
-			name = args.shift();
-			args.unshift(src);
-
-			src = this._call(name, args, null, 'modifier');
+			name = 'modifier.' + k;
+			if(plugin[name] || Plugin.addPlugin(name))
+			{
+				modif[k][0] = string;
+				string = plugin[name].apply(null, modif[k]);
+			};
 		};
 
-		return src;
+		return string;
 	},
 	/**
 	 * Wrapper for eval() 
