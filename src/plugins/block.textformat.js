@@ -12,7 +12,7 @@
  * Original: Smarty {textformat} block plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0RC1
+ * @version  1.0.0RC2
  * @see      http://smarty.php.net/manual/en/language.block.textformat.php
  * @param    {Object} params
  * @param    {String} content
@@ -22,7 +22,7 @@
 
 function jsmarty_block_textformat(params, content, jsmarty)
 {
-	if(!content) return '';
+	if(!content) return;
 
 	var wordwrap = JSmarty.Plugin.getFunction('php.wordwrap');
 	var str_repeat = JSmarty.Plugin.getFunction('php.str_repeat');
@@ -78,19 +78,20 @@ function jsmarty_block_textformat(params, content, jsmarty)
 	{
 		if(paragraphs[x] == '') continue;
 		paragraphs[x] = paragraphs[x].replace(/\s+/,' ');
-		paragraphs[x] = paragraphs[x].replace(/(^\s+)|(\s+$)/,'');
+		paragraphs[x] = paragraphs[x].replace(/^(\s+)|(\s+)$/,'');
 		if(indent_first > 0)
 			paragraphs[x] = str_repeat(indent_char, indent_first) + paragraphs[x];
 		paragraphs[x] = wordwrap(paragraphs[x], wrap - indent, wrap_char, wrap_cut);
 		if(indent > 0)
-			paragraphs[x] = paragraphs[x].replace(/^/m, str_repeat(indent_char, indent));
+			paragraphs[x] = paragraphs[x].replace(/^/gm, str_repeat(indent_char, indent));
 	};
+
 	output = paragraphs.join(wrap_char + wrap_char);
 
 	if(assign)
 	{
 		jsmarty.assign(assign, output);
-		return '';
+		output = '';
 	};
 
 	return output;

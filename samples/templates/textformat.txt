@@ -18,11 +18,11 @@ foo bar foo bar foo bar    foo.
 {/textformat}
 {/literal}
 <h3>Result</h3>
+<textarea style="width:98%;" rows="15">
 {textformat wrap=40 indent=4 indent_first=4}
 This is foo.
 This is bar.
 
-It is 40 that is textformat wrap parameter.
 Foo Foo Foo Foo Foo Foo Foo...............Foo Foo
 
 This is bar.
@@ -31,3 +31,4 @@ foo bar foo bar foo bar.
 foo bar foo bar foo bar.
 foo bar foo bar foo bar    foo.
 {/textformat}
+</textarea>

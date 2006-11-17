@@ -70,12 +70,11 @@ JSmarty.File =
 		switch(system)
 		{
 			case 'ajaja':
-				load('./internals/core.ajaja.js');
-				break;
-			case 'wscript':
-				break;
+				load('./internals/system.ajaja.js'); break;
+			case 'wscript': break;
 			default:
 				JSmarty.trigger_error(" system: no-supported for "+ system);
+				break;
 		};
 		this.__system__ = system;
 	},

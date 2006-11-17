@@ -2,7 +2,7 @@
  * wordwrap function
  *
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.1
+ * @version 1.0.1.1
  * @see http://www.php.net/wordwrap
  * @param  {String} str
  * @param  {Number} width
@@ -12,34 +12,35 @@
  */
 function wordwrap(str, width, break_word, cut)
 {
-	var buffer, i = 0, text = [];
-	var word, words = str.split(' ');
+	width = width || 75;
+	break_word = break_word || '\n';
 
-	for(var k=0,f=str.length;i<f;k++)
+	str = str.replace(/\r?\n/g,' ');
+
+	var line, words = str.split(' ');
+	var k, f, i = 0, p = 0, len = 0, txt = [];
+	var regexp = RegExp('.{'+ width +'}','g');
+
+	for(k=0,f=words.length;k<f;k++)
 	{
-		word = words[k];
+		len += words[k].length || 1;
 
-		if(word.length > width)
+		if(width <= len)
 		{
-			if(buffer != '') text[i++] = buffer;
-			if(!cut)
+			len = 0;
+			if(cut)
 			{
-				text[i++] = word;
-			}
-			else
-			{
-				text[i] = word.match(regexp);
-				text[i] += word.slice(-(str.length % width));
-				i++;
+				line = words.slice(p, k + 1).join(' ');
+				txt[i++] = line.match(regexp).join(break_word) + break_word +
+						   line.slice(-(line.length % width));
+				p = k + 1, k++;
+				continue;
 			};
-			continue;
+
+			txt[i++] = words.slice(p, k).join(' '), p = k;
 		};
-
-		if(buffer && (buffer.length + word.length <= width))
-			buffer += ' ' + word;
-		else
-			buffer = '', k--, text[i++] = buffer;
 	};
+	txt[i++] = words.slice(p, f).join(' ');
 
-	return text.join(break_word);
+	return txt.join(break_word);
 };
