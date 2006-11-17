@@ -68,7 +68,7 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
 	if(ns in this.__func__)
 		return Boolean(this.__func__[ns]);
 	if(dir == void(0))
-		dir = JSmarty.getSelfPath() + '/internals/';
+		dir = JSmarty.getSelfPath() + 'internals';
 	return this.parse(this.fgets(ns + '.js', dir), ns);
 };
 

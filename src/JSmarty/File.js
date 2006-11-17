@@ -80,11 +80,8 @@ JSmarty.File =
 	},
 	getSystem : function(){
 		return this.__system__;
+	},
+	isWritable : function(){
+		return false;
 	}
 };
-
-(function()
-{
-	if(typeof(System) != 'undefined')
-	{ JSmarty.File.setSystem('ajaja'); return; };
-})();

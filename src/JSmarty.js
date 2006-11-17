@@ -642,29 +642,6 @@ JSmarty.trigger_error = function(msg, level)
 	};
 };
 
-JSmarty.getSelfPath = function()
-{
-	var src, scripts, self = '.';
-
-	if(typeof(document) != 'undefined')
-	{
-		scripts = document.getElementsByTagName('script');
-		for(var i=0,f=scripts.length;i<f;i++)
-		{
-			src = scripts[i].getAttribute('src');
-			if(src.match(/JSmarty\.js$/)){
-				self = src.slice(0, src.indexOf('JSmarty.js')); break;
-			};
-		};
-	};
-
-	return function(){ return self; };
-}();
-
-JSmarty.getArgs = function(){
-	return '';
-};
-
 /**
  * Make a clone object and cut chains.
  * @params {Object} obj
@@ -703,13 +680,41 @@ JSmarty.flatten = function(obj)
 	};
 };
 
-/**
- * Wrapper for document.write
- * @param {String} str
- */
-JSmarty.print = function(str){
-	document.write(str);
+JSmarty.parseArgs = function()
+{
+	var o = {};
+	return o;
 };
 
 /*@file.File@*/
 /*@file.Plugin@*/
+
+// closure for setup system
+(function()
+{
+	if(typeof(System) != 'undefined')
+		return JSmarty.File.setSystem('ajaja');
+	if(typeof(WScript) != 'undefined')
+		return JSmarty.File.setSystem('wscript');
+
+	// find JSmarty.js
+	var i, f, src, self, script;
+	scripts = document.getElementsByTagName('script');
+	for(i=0,f=scripts.length;i<f;i++)
+	{
+		src = scripts[i].getAttribute('src');
+		if(src.match(/JSmarty\.js$/)){
+			self = src.slice(0, src.indexOf('JSmarty.js')); break;
+		};
+	};
+
+	// parse location.hash as query
+	var hash = JSmarty.parseArgs(String(location.hash).slice(1));
+
+	/* Wrapper for document.write */
+	JSmarty.print = function(str){ document.write(str); };
+	/* Return the path of JSmarty */
+	JSmarty.getSelfPath = function(){ return self; };
+	/* Return the arguments of JSmarty */
+	JSmarty.getArgs = function(key){ return (key) ? hash[key] : hash ; };
+})();
