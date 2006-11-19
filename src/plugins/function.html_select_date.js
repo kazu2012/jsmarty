@@ -28,19 +28,19 @@ function jsmarty_function_html_select_date(params, jsmarty)
 	var html_options = Plugin.getFunction('function.html_options', dir);
 	var escape_special_chars = Plugin.getFunction('shared.escape_special_chars', dir);
 
-	var days, month_names, month_values;
 	var n, i = 0, k = 0, html = [], month = [], day = [], year = [];
+	var days, day_values, month_names, month_values, years, year_values, year_name;
 
-	var time = new Date.getTime();
+	var time = new Date().getTime();
 	var prefix = 'Date_';
 	var day_size = null;
-	var end_year = '';
+	var end_year = strftime('%Y');
 	var all_empty = null;
 	var day_empty = null;
 	var year_size = null;
 	var all_extra = null;
 	var day_extra = null;
-	var start_year = '';
+	var start_year = end_year;
 	var day_format = '%02d';
 	var year_empty = null;
 	var month_size = null;
@@ -119,11 +119,12 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		};
 	};
 
-	if(time.match(/^-\d+$/))
+	if(time.match && time.match(/^-\d+$/))
 		time = date('Y-m-d', time);
-	if(time.match(/^\d{0,4}-\d{0.2}-\d{0,2}$/))
+	if(!(time.match && time.match(/^\d{0,4}-\d{0.2}-\d{0,2}$/)))
 		time = strftime('%Y-%m-%d', new Date(time).getTime());
-	time = time.split('-', time);
+
+	time = time.split('-');
 
 	if(match = end_year.match(/^(\+|\-)\s*(\d+)$/))
 	{
@@ -164,7 +165,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		for(k=0;k<=12;k++)
 		{
 			month_names[n+k] = strftime(month_format, new Date(2000, 1, k).getTime());
-			month_values[n+k] = strftime(month_vale_format, new Date(2000, 1, k).getTime());
+			month_values[n+k] = strftime(month_value_format, new Date(2000, 1, k).getTime());
 		};
 		month[i++] = '<select name=';
 		if(field_array !== null)
@@ -180,25 +181,26 @@ function jsmarty_function_html_select_date(params, jsmarty)
 						output:month_names, values:month_values,
 						selected: time[1] ? strftime(month_value_format, new Date(2000, 1, time[1]).getTime()) : ''
 					}, jsmarty);
-		month[i++] = '</select>';
+		month[i++] = '\n</select>';
 	};
 
 	if(display_days)
 	{
-		i = 0, n = 0, days = [];
+		i = 0, n = 0, days = [], day_values = [];
 
 		if(day_empty)
 		{
 			days[0] = day_empty;
 			day_values[0] = '', n++;
 		};
+
 		for(k=1;k<=31;k++)
 		{
 			days[n+k] = sprintf(day_format, k);
-			day_values[n+k] = sprintf(day_value_format, k);
+			day_values[k] = sprintf(day_value_format, k);
 		};
 
-		day = '<select name=';
+		day[i++] = '<select name=';
 		if(field_array !== null)
 			day[i++] = '"' + field_array + '[' + prefix + 'Day]"';
 		else
@@ -210,11 +212,9 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		if(day_extra !== null)
 			day[i++] = ' ' + day_extra;
 		day[i++] = extra_attrs + '>\n';
-		day[i++] = html_options({ output:days, values:day_values, selected:time[1], print_result:false }, jsmarty);
-		day[i++] = '</select>';
+		day[i++] = html_options({ output:days, values:day_values, selected:time[2] }, jsmarty);
+		day[i++] = '\n</select>';
 	};
-
-	var years, year_name;
 
 	if(display_years)
 	{
@@ -239,18 +239,21 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		else
 		{
 			years = range(parseInt(start_year), parseInt(end_year));
-			if(reverse_years)
-				years.sort()
-			else
-				years.sort();
+			(reverse_years) ? years.reverse() : years.sort() ;
+			year_values = years;
 			year[i++] = '<select name="' + year_name + '"';
+			if(!year_empty)
+			{
+				years.unshift(year_empty);
+				years_values.unshift('');
+			};
 			if(year_size !== null)
 				year[i++] = ' size="' + year_size + '"';
 			if(all_extra !== null)
 				year[i++] = ' ' + year_extra;
 			year[i++] = extra_attrs + '>\n';
-			year[i++] = html_options({ output:years, values:yearvals, selected:time[0], print_result:false }, jsmarty);
-			year[i++] = '</select>';
+			year[i++] = html_options({ output:years, values:year_values, selected:time[0] }, jsmarty);
+			year[i++] = '\n</select>';
 		};
 	};
 
@@ -258,9 +261,9 @@ function jsmarty_function_html_select_date(params, jsmarty)
 	{
 		switch(field_order.charAt(i))
 		{
-			case 'D': html[i] = day; break;
-			case 'Y': html[i] = year; break;
-			case 'M': html[i] = month; break;
+			case 'D': html[i] = day.join(''); break;
+			case 'Y': html[i] = year.join(''); break;
+			case 'M': html[i] = month.join(''); break;
 		};
 	};
 

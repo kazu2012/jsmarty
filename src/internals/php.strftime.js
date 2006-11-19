@@ -11,7 +11,7 @@
 function strftime(format, timestamp)
 {
 	var val, d = new Date();
-	d.setTime(timestamp);
+	if(timestamp) d.setTime(timestamp);
 
 	return format.replace(/%./g, function($0)
 	{

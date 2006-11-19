@@ -5,7 +5,7 @@
  * @version 1.0.0
  * @see http://www.php.net/strlen
  * @param  {String} s
- * @return {Boolean}
+ * @return {Number}
  */
 function strlen(s){
 	return s.length;

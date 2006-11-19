@@ -4,7 +4,7 @@
  * @author shogo < shogo4405 at gmail dot com >
  * @version 0.9.0
  * @see http://www.php.net/intval
- * @param  {mixed} low
+ * @param  {mixed} v
  * @param  {Number} base
  * @return {Number}
  */

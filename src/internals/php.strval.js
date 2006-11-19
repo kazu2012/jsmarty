@@ -4,10 +4,9 @@
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0RC1
  * @see http://www.php.net/strval
- * @param  {mixed} value
+ * @param  {mixed} v value
  * @return {String}
  */
-function strval(value)
-{
-	return value.toString();
+function strval(v){
+	return v.toString();
 };
