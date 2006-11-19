@@ -66,8 +66,6 @@ function jsmarty_function_html_options(params, jsmarty)
 
 	if(!options && !values) return;
 
-	i = 0;
-
 	if(options)
 	{
 		for(k in options)
@@ -91,10 +89,11 @@ function jsmarty_function_html_options(params, jsmarty)
 function jsmarty_function_html_options_optoutput(key, value, selected)
 {
 	var optgroup = jsmarty_function_html_options_optgroup;
-	var i = 0, html = [], in_array = JSmarty.Plugin.getFunction('php.in_array');
-	var escape_special_chars = JSmarty.Plugin.getFunction('shared.escape_special_chars');
+	var i = 0, html = [], Plugin = JSmarty.Plugin;
+	var escape_special_chars = Plugin.getFunction('shared.escape_special_chars');
+	var is_array = Plugin.getFunction('php.is_array'), in_array = Plugin.getFunction('php.in_array');
 
-	if(!(value instanceof Array))
+	if(!is_array(value))
 	{
 		value = escape_special_chars(value);
 		html[i++] = '<option label="' + value + '" value="' + escape_special_chars(key) +'"';

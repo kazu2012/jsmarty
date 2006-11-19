@@ -1,9 +1,13 @@
 if(JSmarty.File.getSystem() != 'ajaja')
 	JSmarty.File.__system__ = 'ajaja';
 
-JSmarty.print = function(str){
-	print(str);
-};
+// Wrapper for print()
+JSmarty.print = function(str){ print(str); };
+
+// Return the path of '.'
+JSmarty.getSelfPath = function(){ return '.'; };
+
+// override JSmarty.File.fgets method
 JSmarty.File.fgets = function(file, dir)
 {
 	var text;

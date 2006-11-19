@@ -34,13 +34,13 @@ JSmarty.File =
 
 		for(var i=0,f=dir.length;i<f;i++)
 		{
-			if(text && flag) break;
+			if(text != null) break;
 			try
 			{
 				http.open('GET', dir[i] +'/'+ file, false);
 				http.send('');
 				flag = (http.status == 200 || http.status == 0);
-				text = http.responseText;
+				text = flag ? http.responseText : null;
 			}
 			catch(e){ /* empty */ }
 			finally{ http.abort(); };
