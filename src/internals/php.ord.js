@@ -1,12 +1,12 @@
 /**
- * strrev function
+ * ord function
  *
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0
- * @see http://www.php.net/strrev
+ * @see http://www.php.net/ord
  * @param  {String} s string
  * @return {String}
  */
-function strrev(s){
-	return s.split(/(.|\r?\n){0}/).reverse().join('');
+function ord(s){
+	return s.charCodeAt(0);
 };
