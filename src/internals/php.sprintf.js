@@ -5,7 +5,7 @@
  * @version 0.0.1
  * @see http://www.php.net/sprintf
  * @param  {String} f format
- * @param  {mixed} args...
+ * @param  {mixed} 0..n arguments
  * @return {String}
  */
 function sprintf(f)

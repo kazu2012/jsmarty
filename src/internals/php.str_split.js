@@ -10,8 +10,8 @@
  */
 function str_split(s, l)
 {
-	if(l < 1) return false;
 	if(l == void(0)) l = 1;
+	if(l < 1) return false;
 	var i = 0, k = 0, f = s.length - 1, a = [];
 	for(;i<=f;i+=l,k++) a[k] = s.slice(i, i+l);
 	return a;

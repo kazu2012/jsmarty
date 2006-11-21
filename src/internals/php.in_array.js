@@ -2,16 +2,15 @@
  * in_array function
  *
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.0
+ * @version 1.0.1
  * @see http://www.php.net/in_array
- * @param  {mixed} needle
- * @param  {Array} haystack
+ * @param  {mixed} n needle
+ * @param  {Array} h haystack
  * @return {Boolean}
  */
-function in_array(needle, haystack)
+function in_array(n, h)
 {
-	for(var i=0,f=haystack;i<f;i++){
-		if(needle == haystack[i]) return true;
-	};
+	var i=0, f = h.length;
+	for(;i<f;i++) if(n == h[i]) return true;
 	return false;
 };

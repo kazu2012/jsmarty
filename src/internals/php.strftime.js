@@ -5,13 +5,12 @@
  * @version 0.0.1
  * @see http://www.php.net/strftime
  * @param  {String} format
- * @param  {Number} timestamp
+ * @param  {Number} t timestamp
  * @return {String}
  */
-function strftime(format, timestamp)
+function strftime(format, t)
 {
-	var val, d = new Date();
-	if(timestamp) d.setTime(timestamp);
+	var v, d = (t) ? new Date(t) : new Date();
 
 	return format.replace(/%./g, function($0)
 	{

@@ -9,8 +9,7 @@
  */
 function bin2hex(s)
 {
-	var i, f, a = [];
-	for(i=0,f=s.length;i<f;i++)
-		a[i] = s.charCodeAt(i).toString(16);
+	var i = 0, f = s.length, a = [];
+	for(;i<f;i++) a[i] = s.charCodeAt(i).toString(16);
 	return a.join('');
 };

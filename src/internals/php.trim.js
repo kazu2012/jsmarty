@@ -2,14 +2,14 @@
  * trim function
  *
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.0RC2
+ * @version 1.0.0RC3
  * @see http://www.php.net/trim
- * @param  {String} string
- * @param  {String} charlist
+ * @param  {String} s string
+ * @param  {String} c charlist
  * @return {String}
  */
-function trim(string, charlist)
+function trim(s, c)
 {
-	charlist = (charlist) ? charlist : '[\\s\\t\\n\\r\\0\\v]';
-	return string.replace(RegExp('^'+ charlist +'*|'+ charlist +'*$','g'),'');
+	c = (c) ? c : '[\\s\\t\\n\\r\\0\\v]';
+	return s.replace(RegExp('^'+ c +'*|'+ c +'*$','g'),'');
 };

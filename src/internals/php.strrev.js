@@ -8,5 +8,5 @@
  * @return {String}
  */
 function strrev(s){
-	return s.split(/(.|\r?\n){0}/).reverse().join('');
+	return s.split('').reverse().join('');
 };

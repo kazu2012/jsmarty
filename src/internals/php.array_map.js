@@ -5,7 +5,7 @@
  * @version 1.0.0RC1
  * @see http://www.php.net/array_map
  * @param  {Function} callback
- * @param  {Array} arg1...n
+ * @param  {Array} 1..n arguments
  * @return {Array}
  */
 function array_map(callback)
