@@ -7,7 +7,7 @@
  * @param  {String} s haystack
  * @param  {String} n needle
  * @param  {Number} o offset
- * @return {Number}
+ * @return {Number | Boolean}
  */
 function strpos(s, b, o)
 {

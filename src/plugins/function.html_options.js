@@ -12,7 +12,7 @@
  * Original: Smarty {html_options} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.3
+ * @version  1.0.5
  * @see      http://smarty.php.net/manual/en/language.function.html.options.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -23,7 +23,7 @@ function jsmarty_function_html_options(params, jsmarty)
 {
 	var Plugin = JSmarty.Plugin;
 
-	var k, value, i = 0, html = [];
+	var k, f, value, i = 0, html = [];
 	var optoutput = jsmarty_function_html_options_optoutput;
 	var strval = Plugin.getFunction('php.strval');
 	var array_map = Plugin.getFunction('php.array_map');
@@ -49,9 +49,9 @@ function jsmarty_function_html_options(params, jsmarty)
 			case 'options':
 				options = params[k]; break;
 			case 'values':
-				values = params[k]; break;
+				values = array_values(params[k]); break;
 			case 'output':
-				output = params[k]; break;
+				output = array_values(params[k]); break;
 			case 'selected':
 				selected = array_map(strval, array_values([params[k]]));
 				break;
@@ -76,10 +76,10 @@ function jsmarty_function_html_options(params, jsmarty)
 	}
 	else
 	{
-		for(k in values)
+		for(k=0,f=values.length;k<f;k++)
 		{
 			value = (output[k]) ? output[k] : '';
-			html[i++] = optoutput(k, value, selected)
+			html[i++] = optoutput(values[k], value, selected);
 		};
 	};
 

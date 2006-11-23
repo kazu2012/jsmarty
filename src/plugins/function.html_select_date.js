@@ -12,7 +12,7 @@
  * Original: Smarty {html_select_date} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  0.0.0
+ * @version  1.0.0RC1
  * @see      http://smarty.php.net/manual/en/language.function.html.select.date.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -154,18 +154,16 @@ function jsmarty_function_html_select_date(params, jsmarty)
 
 	if(display_months)
 	{
-		month_names = [];
-		month_values = [];
-
+		n = 0, month_names = [], month_values = [];
 		if(month_empty)
 		{
 			month_names[0] = month_empty;
 			month_values[0] = '', n++;
 		};
-		for(k=0;k<=12;k++)
+		for(k=0;k<12;k++)
 		{
-			month_names[n+k] = strftime(month_format, new Date(2000, 1, k).getTime());
-			month_values[n+k] = strftime(month_value_format, new Date(2000, 1, k).getTime());
+			month_names[n+k] = strftime(month_format, new Date(2000, k+1).getTime());
+			month_values[n+k] = strftime(month_value_format, new Date(2000, k+1).getTime());
 		};
 		month[i++] = '<select name=';
 		if(field_array !== null)
@@ -177,10 +175,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		if(month_extra !== null)
 			month[i++] = ' ' + all_extra;
 		month[i++] = extra_attrs + '>\n';
-		month[i++] = html_options({
-						output:month_names, values:month_values,
-						selected: time[1] ? strftime(month_value_format, new Date(2000, 1, time[1]).getTime()) : ''
-					}, jsmarty);
+		month[i++] = html_options({ output:month_names, values:month_values, selected: time[1] ? strftime(month_value_format, new Date(2000, time[1]).getTime()) : ''}, jsmarty);
 		month[i++] = '\n</select>';
 	};
 
@@ -194,10 +189,10 @@ function jsmarty_function_html_select_date(params, jsmarty)
 			day_values[0] = '', n++;
 		};
 
-		for(k=1;k<=31;k++)
+		for(k=0;k<31;k++)
 		{
-			days[n+k] = sprintf(day_format, k);
-			day_values[k] = sprintf(day_value_format, k);
+			days[n+k] = sprintf(day_format, k+1);
+			day_values[n+k] = sprintf(day_value_format, k+1);
 		};
 
 		day[i++] = '<select name=';
@@ -242,10 +237,10 @@ function jsmarty_function_html_select_date(params, jsmarty)
 			(reverse_years) ? years.reverse() : years.sort() ;
 			year_values = years;
 			year[i++] = '<select name="' + year_name + '"';
-			if(!year_empty)
+			if(year_empty)
 			{
 				years.unshift(year_empty);
-				years_values.unshift('');
+				year_values.unshift('');
 			};
 			if(year_size !== null)
 				year[i++] = ' size="' + year_size + '"';

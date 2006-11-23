@@ -3,9 +3,7 @@
 {model name="html_select_date"}
 <h3>Template</h3>
 {literal|htmlspecialescape|nl2br}
-{html_select_date name="select001" options=$data selected="002"}
+{html_select_date field_order="YMD"}
 {/literal}
 <h3>Result</h3>
-<textarea style="width:100%" rows=30>
-{html_select_date name="select001" options=$data selected="002" start_year=2000 end_year=2015}
-</textarea>
+{html_select_date field_order="YMD"}

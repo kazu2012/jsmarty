@@ -10,5 +10,5 @@
  */
 function sprintf(f)
 {
-	
+	return f;
 };
