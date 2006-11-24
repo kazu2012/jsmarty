@@ -162,8 +162,8 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		};
 		for(k=0;k<12;k++)
 		{
-			month_names[n+k] = strftime(month_format, new Date(2000, k+1).getTime());
-			month_values[n+k] = strftime(month_value_format, new Date(2000, k+1).getTime());
+			month_names[n+k] = strftime(month_format, new Date(2000, k).getTime());
+			month_values[n+k] = strftime(month_value_format, new Date(2000, k).getTime());
 		};
 		month[i++] = '<select name=';
 		if(field_array !== null)
@@ -175,7 +175,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		if(month_extra !== null)
 			month[i++] = ' ' + all_extra;
 		month[i++] = extra_attrs + '>\n';
-		month[i++] = html_options({ output:month_names, values:month_values, selected: time[1] ? strftime(month_value_format, new Date(2000, time[1]).getTime()) : ''}, jsmarty);
+		month[i++] = html_options({ output:month_names, values:month_values, selected: time[1] ? strftime(month_value_format, new Date(2000, time[1] - 1).getTime()) : ''}, jsmarty);
 		month[i++] = '\n</select>';
 	};
 
@@ -214,11 +214,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 	if(display_years)
 	{
 		i = 0;
-
-		if(field_array)
-			year_name = field_array + '[' + prefix + 'Year]';
-		else
-			year_name = prefix + 'Year';
+		year_name = (field_array) ? field_array + '[' + prefix + 'Year]' : prefix + 'Year' ;
 
 		if(year_as_text)
 		{

@@ -102,7 +102,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 		if(all_extra !== null)
 			html[i++] = ' ' + all_extra;
 		html[i++] = '>\n';
-		html[i++] = html_options({output: hours, values: hours, selected: strftime(hour_fmt, time), print_result: false}, jsmarty);
+		html[i++] = html_options({output: hours, values: hours, selected: strftime(hour_fmt, time)}, jsmarty);
 		html[i++] = '</select>\n'
 	};
 
@@ -110,7 +110,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	{
 		all_minutes = range(0, 59);
 		for(k=0,n=0,for_max=all_minutes.length;k<for_max;k+=minute_interval)
-			minutes[n++] = (all_minutes[k] > 9) ? all_minutes[k] : '0' + all_minutes[k];
+			minutes[n++] = (all_minutes[k] < 10) ? '0' + all_minutes[k] : all_minutes[k];
 		selected = parseInt(Math.floor(strftime('%M', time) / minute_interval) * minute_interval);
 		html[i++] = '<select name=';
 		if(field_array !== null)
@@ -122,7 +122,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 		if(all_extra !== null)
 			html[i++] = ' ' + all_extra;
 		html[i++] = '>\n';
-		html[i++] = html_options({output: minutes, values: minutes, selected: selected, print_result: false}, jsmarty);
+		html[i++] = html_options({output: minutes, values: minutes, selected: (selected < 10) ? '0' + selected : selected}, jsmarty);
 		html[i++] = '</select>\n';
 	};
 

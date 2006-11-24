@@ -1,8 +1,9 @@
 /**
  * in_array function
  *
+ * @package Arrays
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.1
+ * @version 1.0.2
  * @see http://www.php.net/in_array
  * @param  {mixed} n needle
  * @param  {Array} h haystack
@@ -11,6 +12,6 @@
 function in_array(n, h)
 {
 	var i=0, f = h.length;
-	for(;i<f;i++) if(n == h[i]) return true;
+	while(i<f) if(n == h[i++]) return true;
 	return false;
 };

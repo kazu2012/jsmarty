@@ -1,8 +1,9 @@
 /**
  * date function
  *
+ * @package Date/Time
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.0RC1
+ * @version 1.0.0RC2
  * @see http://www.php.net/date
  * @param  {String} s format
  * @param  {Number} t timestamp
@@ -10,9 +11,9 @@
  */
 function date(s, t)
 {
+	var i, f, v, s = s.split('');
 	var d = (t) ? new Date(t) : new Date();
-	var v, f = s.length, i = 0, s = s.split('');
-	for(;i<=f;i++)
+	for(i=0,f=s.length;i<=f;i++)
 	{
 		switch(s[i])
 		{
@@ -26,8 +27,11 @@ function date(s, t)
 			case 'j':
 				s[i] = d.getDate();
 				break;
+			case 'l':
+				s[i] = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()]
+				break;
 			case 'N':
-				s[i] = d.getDay() + 1;
+				s[i] = [7,1,2,3,4,5,6][d.getDay()];
 				break;
 			case 'S':
 				v  = d.getDate().toString().slice(-1);
@@ -54,7 +58,8 @@ function date(s, t)
 				s[i] = (v == 28) ? v + Number(date('L')) : v;
 				break;
 			case 'L':
-				s[i] = 0;
+				v = d.getFullYear();
+				s[i] = (v % 4) ? 0 : (v % 400) ? (v % 100) ? 1 : 0 : 1;
 				break;
 			case 'y':
 				s[i] = d.getFullYear().toString().slice(2,4);
@@ -69,6 +74,29 @@ function date(s, t)
 			case 'A':
 				v = d.getHours();
 				s[i] = (v < 12) ? 'AP' : 'PM';
+				break;
+			case 'g':
+				v = d.getHours();
+				s[i] = (v < 12) ? v : v - 12;
+				break;
+			case 'G':
+				s[i] = d.getHours();
+				break;
+			case 'h':
+				v = d.getHours();
+				s[i] = (v < 12) ? '0' + v : v - 12;
+				break;
+			case 'H':
+				v = d.getHours();
+				s[i] = (v < 12) ? '0' + v : v;
+				break;
+			case 'i':
+				v = d.getMinutes();
+				s[i] = (v < 10) ? '0' + v : v;
+				break;
+			case 's':
+				v = d.getSeconds();
+				s[i] = (v < 10) ? '0' + v : v;
 				break;
 			case 'U':
 				s[i] = d.getTime();
