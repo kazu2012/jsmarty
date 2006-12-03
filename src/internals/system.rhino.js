@@ -9,3 +9,11 @@ JSmarty.File.fputs = function()
 {
 	
 };
+
+JSmarty.System.fileGetContents = function()
+{
+};
+
+JSmarty.System.filePutContents = function()
+{
+};
