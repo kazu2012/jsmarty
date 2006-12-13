@@ -61,7 +61,7 @@ JSmarty.prototype =
 	default_template_handler_func : null,
 	compiler_file  : 'JSmarty/Compiler.js',
 	compiler_class : 'Compiler',
-	config_class   : 'Config_File',
+	config_class   : 'File',
 
 	_foreach : {},
 	_section : {},
@@ -641,80 +641,3 @@ JSmarty.trigger_error = function(msg, level)
 			throw new Error(msg); break;
 	};
 };
-
-/**
- * Make a clone object and cut chains.
- * @params {Object} obj
- * @return {Object} Return the clone object.
- */
-JSmarty.copy = function(obj)
-{
-	var o = (obj instanceof Array) ? [] : {};
-	for(var i in obj) o[i] = obj[i];
-	return o;
-};
-
-/**
- * Create new extended object.
- * @param {Object} o Super object
- * @return {Object}
- */
-JSmarty.factory = function(o)
-{
-	var f = function(){};
-	f.prototype = o;
-	return new f;
-};
-
-/**
- * 
- * @param {String | Array} obj
- * @return {Array}
- */
-JSmarty.flatten = function(obj)
-{
-	switch(typeof(obj))
-	{
-		case 'string': return [obj];
-		case 'object': return obj;
-	};
-};
-
-JSmarty.parseArgs = function()
-{
-	var o = {};
-	return o;
-};
-
-/*@file.File@*/
-/*@file.Plugin@*/
-
-// closure for setup system
-(function()
-{
-	if(typeof(System) != 'undefined')
-		return JSmarty.File.setSystem('ajaja');
-	if(typeof(WScript) != 'undefined')
-		return JSmarty.File.setSystem('wscript');
-
-	// find JSmarty.js
-	var i, f, src, self, script;
-	scripts = document.getElementsByTagName('script');
-	for(i=0,f=scripts.length;i<f;i++)
-	{
-		src = scripts[i].getAttribute('src');
-		if(src.match(/JSmarty\.js$/)){
-			self = src.slice(0, src.indexOf('JSmarty.js')); break;
-		};
-	};
-
-	// parse location.hash as query
-	var hash = JSmarty.parseArgs(String(location.hash).slice(1));
-
-	/* Wrapper for document.write */
-	JSmarty.print = function(str){ document.write(str); };
-	/* Return the path of JSmarty */
-	JSmarty.getSelfPath = function(){ return self; };
-	/* Return the arguments of JSmarty */
-	JSmarty.getArgs = function(key){ return (key) ? hash[key] : hash ; };
-})();

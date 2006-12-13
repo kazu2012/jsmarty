@@ -2,8 +2,7 @@
  * Provide interface of File I/O.
  * @type JSmartyFileObject
  */
-JSmarty.File =
-{
+JSmarty.System = {
 	/** @private **/
 	__mtimes__ : {},
 	/** @private **/

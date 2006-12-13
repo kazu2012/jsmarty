@@ -17,6 +17,29 @@ window.onload = function()
 	Record.HashRecord(hash)();
 };
 
+function postrender(target)
+{
+	var i, f, script, temp = document.write;
+	var scripts = target.getElementsByTagName('script');
+
+	document.write = function()
+	{
+		var i, f, span, b = [];
+		for(i=0,f=arguments.length;i<f;i++) b[i] = arguments[i];
+		span = document.createElement('span');
+		span.innerHTML = b.join('');
+		script.parentNode.insertBefore(span, script);
+	};
+
+	for(i=0,f=scripts.length;i<f;i++)
+	{
+		script = scripts[i];
+		eval(script.text)
+	};
+
+	document.write = temp;
+};
+
 var Record = {};
 Record.HashRecord = function(arg)
 {
@@ -63,6 +86,7 @@ var Model =
 	Mailto : function()
 	{
 		smarty.display('mailto.txt');
+		postrender(document.getElementById('content'));
 	},
 	Counter : function()
 	{

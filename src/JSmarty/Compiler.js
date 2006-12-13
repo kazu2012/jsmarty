@@ -1,326 +1,193 @@
 /**
- * File:    JSmarty/Compiler.js
  *
- * This library is free software. License under the GNU Lesser General
- * Public License as published by the Free Software Foundation(LGPL).
+ * LICENCE:
  *
- * @link http://d.hatena.ne.jp/shogo4405/20060727/1153977238
- * @author shogo < shogo4405 at gmail dot com >
+ * @author shogo < shogo4405 at gmail dot com>
  * @version @version@
  */
 
-/**
- * Construct a new Compiler object.
- *
- * @class This is the template compiling class.
- * @constructor
- */
-JSmarty.Compiler = function(){};
-JSmarty.Compiler.STROPS =
+JSmarty.Compiler = function(renderer)
 {
-	eq : '==', ne : '!=', lt : '<', gt : '>',
-	not : '!', and : '&&', or : '||'
-};
-JSmarty.Compiler.prototype =
-{
-	_strops : JSmarty.Compiler.STROPS,
-	_rtoken : /eq|ne|lt|gt|not|and|or/g,
-	_rextag : new RegExp(),
-	_rblock : new RegExp(),
-	_rexvar : /\$/g,
-	_recrlf : /\r?\n/g,
-	_reattr : /(\w+)=(\'|\"|)([^\s]+|[^\2]+?)\2/g,
-	_remove : / \+''/g,
-	_rexsec : /name:\'([^']+)\'/,
-	_resmty : /\$smarty\./,
-	_folded_blocks : {},
+	var Tags = [];
+	var ListOfBlock = {};
 
-	_tag_stack : 'none',
-	_tag_count : 0,
+	var L = renderer.left_delimiter;
+	var R = renderer.right_delimiter;
+
+	var VarRegExp = /\$/;
+	var RcrRegExp = /\r?\n/g;
+	var RsvRegExp = /\$smarty\./;
+	var TagRegExp = RegExp(L + '\\/(.+?)' + R,'g');
+	var BlcRegExp = RegExp(L + '[^'+ R +']+' + R,'g');
+	var TknRegExp = /eq|ne|neq|gt|lt|ge|gte|le|lte|not|and|or/g;
+
+	var Plugin = JSmarty.Plugin, Compiler = JSmarty.Compiler;
+	var PutString = null, StringBuffer = Compiler.StringBuffer;
+	var OPERATORS = Compiler.OPERATORS;
 
 	/**
-	 * compile a resource
-	 *
-	 * @param  {String} src
-	 * @param  {JSmarty} jsmarty
+	 * SetRegExp function
+	 */
+	function SetRegExp()
+	{
+		TagRegExp.compile(L + '\\/(.+?)' + R,'g');
+		BlcRegExp.compile(L + '[^'+ R +']+' + R,'g');
+	};
+	/**
+	 * SetHeader function
+	 */
+	function SetHeader()
+	{
+		PutString('var o, v = this._tpl_vars;');
+		PutString('o = ');
+	};
+	/**
+	 * SetHeader function
 	 * @return {Boolean}
 	 */
-	_compile_file : function(src, jsmarty)
+	function SetDelimiters()
 	{
-		var Plugin = JSmarty.Plugin;
-
-		var pre = jsmarty._plugins.pre;
-		var flag = this._tag_flags;
-		var list = this._folded_blocks;
-		var post = jsmarty._plugins.post;
-		var L = jsmarty.left_delimiter , l = L.length;
-		var R = jsmarty.right_delimiter, r = R.length;
-		var k, f, iap, isp, i = 0, txt = [], self = this;
-
-		this._rextag.compile(L + '[^'+ R +']+' + R,'g');
-		this._rblock.compile(L + '\\/(.+?)' + R,'g');
-
-		txt[i++] = 'var output = ';
-
-		//prefilter
-		src = src.replace(this._recrlf,'\\n');
-		for(k=0,f=pre.length;k<f;k++){
-			src = Plugin.getFunction('prefilter.' + pre[k])(src, this);
-		};
-
-		src.replace(this._rblock, function($0, $1){
-			list[$1] = true;
-		});
-
-		src.replace(this._rextag, function(tag, isp, src)
-		{
-			txt[i++] = self._string(src.slice(iap, isp));
-			txt[i++] = self._compile_tag(tag, l, tag.length - r);
-			iap = isp + tag.length;
-		});
-
-		txt[i++] = this._quote(src.slice(iap));
-		txt[i++] = '; return output;'
-		txt = txt.join('').replace(this._remove, '');
-
-		//postfilter
-		for(k=0,f=post.length;k<f;k++){
-			txt = Plugin.getFunction('postfilter.' + post[k])(txt, this);
-		};
-
-		try{
-			return new Function(txt);
-		}catch(e){
-			jsmarty.trigger_error('Compiler : '+ e.message);
-		};
-
-		return function(){};
-	},
+		var flag = false;
+		if(L != renderer.left_delimiter ) flag = true, L = renderer.left_delimiter;
+		if(R != renderer.right_delimiter) flag = true, R = renderer.right_delimiter;
+		return flag;
+	};
 	/**
-	 * Compile a template tag
-	 *
-	 * @param  {String} tempalte_tag
-	 * @param  {Number} isp index of tagStart point
-	 * @param  {Number} iep index of tagEnd point
+	 * GenModifier function
+	 * @param  {String} s resource
 	 * @return {String}
 	 */
-	_compile_tag : function(tag, isp, iep)
+	function GenModifier(s)
 	{
-		switch(this._tag_stack)
+		var b = s.split('');
+		for(i=0,f=s.length;i<=f;i++)
 		{
-			case 'literal':
-				if(tag.indexOf('/literal') >= 0)
-				{
-					if(this._tag_count == 0)
-					{
-						this._tag_stack = 'none';
-						return '';
-					}
-					this._tag_count--;
-				}
-				else if(tag.indexOf('literal') >= 0)
-					this._tag_count++;
-
-				return this._string(tag);
-				break;
-			default:
-				break;
-		};
-
-		var inp = irp = iep;
-		var attr, close = '';
-		var iap = tag.indexOf(' ');
-		var imp = tag.indexOf('|');
-
-		if(imp > 0) inp = imp, irp = imp;
-		if(iap > 0) inp = iap;
-
-		var name = tag.slice(isp, inp);
-
-		switch(name)
-		{
-			case 'if':
-				attr = this._token(tag.slice(iap + 1, irp));
-				return "''; if("+ attr +"){ output += ";
-			case '/if':
-				return "'';}output += ";
-			case 'elsif':
-				attr = this._token(tag.slice(iap + 1, irp));
-				return "'';}else if("+ attr +"){ output += ";
-			case 'else':
-				return "'';}else { output += ";
-			case 'ldelim':
-				return 'this.left_delimiter + ';
-			case 'rdelim':
-				return 'this.right_delimiter + ';
-			case 'literal':
-				this._tag_stack = 'literal';
-				return '';
-			case 'strip':
-				return 'String(';
-			case '/strip':
-				return "'').replace(/\\s|\\n/g,'') + ";
-			case 'foreach':
-				attr = this._attribute(tag.slice(iap + 1, irp));
-				return "this._in"+ name +"("+ attr +", function(){ var output = ";
-			case 'section':
-				attr = this._attribute(tag.slice(iap + 1, irp));
-				return "this._in"+ name +"("+ attr +", function("+ this._secname(attr) +"){ var output = ";
-			case 'foreachelse':
-			case 'sectionelse':
-				return " ''; return output; }, function(){ var output = ";
-			case '/foreach':
-			case '/section':
-				return " ''; return output; }) +";
-			case 'javascript':
-				return "this._eval(";
-			case '/javascript':
-				return "'')";
-			case 'include_php':
-				return '';
-		};
-
-		switch(tag.charAt(isp))
-		{
-			case '*':
-				return this._quote();
-			case '"':
-			case "'":
-				return this._quote(tag.slice(isp + 1, inp));
-			case '/':
-				return this._tagclose("'block'");
-			case '$':
-				return this._variable(tag.slice(isp + 1, inp)) + ' + ';
-		};
-
-		if(!this._folded_blocks[name])
-			close = this._tagclose("'function'");
-
-		name = this._quote(name);
-		attr = this._attribute(tag.slice(iap + 1, irp));
-		return this._tagopen(name, attr) + close;
-	},
-	/**
-	 * TagOpen
-	 * @param  {String} name TagName
-	 * @param  {String} attr Parameters
-	 * @return {String} this._call(name, attr)
-	 */
-	_tagopen : function(name, attr){
-		return 'this._call('+ [name, attr, ''].join(',');
-	},
-	/**
-	 * TagClose
-	 * @param  {String} src
-	 * @return {String}
-	 */
-	_tagclose : function(type){
-		return "''" + ","+ type + ") + ";
-	},
-	/**
-	 * ToAttribute, object literal
-	 * 
-	 * @param  {String} src
-	 * @return {String}
-	 */
-	_attribute : function(src)
-	{
-		var i = 0, attr = [], self = this;
-		src.replace(this._reattr, function($0, $1, $2, $3)
-		{
-			switch($3.charAt(0))
+			switch(b[i])
 			{
-				case '$':
-					$3 = self._variable($3.slice(1));
+				case ':':
+					b[i] = ',';
 					break;
-				default:
-					$3 = self._quote($3);
+				case '|':
+					b[i] = '],';
 					break;
 			};
-
-			attr[i++] = $1 + ':' + $3;
-			return '';
-		});
-		return '{'+ attr.join(',') +'}';
-	},
-	/**
-	 * The expression is substituted for JavaScript. 
-	 * 
-	 * @param  {String} src
-	 * @return {String}
-	 */
-	_token : function(src)
-	{
-		var ops = this._strops;
-		src = src.replace(this._resmty, 'this._');
-		src = src.replace(this._rexvar, 'this._tpl_vars.');
-		return src.replace(this._rtoken, function($1){ return ops[$1]; });
-	},
-	/**
-	 * ToString, with '+' token
-	 * 
-	 * @param  {String} src
-	 * @return {String}
-	 */
-	_string : function(src)
-	{
-		if(!src) return "'' + ";
-		if(src.indexOf("'"))
-			src = src.split("'").join("\\'");
-		return "'"+ src + "' + ";
-	},
-	/**
-	 * ToString, quoted
-	 * @param  {String} src
-	 * @return {String}
-	 */
-	_quote : function(src)
-	{
-		if(!src) return "''";
-		src = src.split("'").join("\\'");
-		return "'"+ src + "'";
-	},
-	/**
-	 * ToVariable
-	 * @param  {String} src
-	 * @return {String}
-	 */
-	_variable : function(src)
-	{
-		if(src.indexOf('smarty') >= 0)
-			return this._reserved(src);
-		return 'this._tpl_vars.' + src;
-	},
-	/**
-	 * ToVariable, JSmarty Reserved 
-	 * @param  {String} src
-	 * @return {String}
-	 */
-	_reserved : function(src)
-	{
-		var vars;
-		vars = src.split('.');
-		vars.shift();
-
-		switch(vars[0])
-		{
-			case 'version':
-			case 'section':
-			case 'foreach':
-				return 'this._'+ vars.join('.');
-			default:
-				return '';
 		};
-	},
+		return '{' + b.join('') +']}';
+	};
 	/**
-	 * Parse attribute , for name of section.
-	 * @param  {String} attr string of attribute.
-	 * @return {String} name of section.
+	 * GenReserved function
+	 * @param  {String} s resource
+	 * @return {String}
 	 */
-	_secname : function(attr)
+	function GenReserved(s){
+	};
+	/**
+	 * GenVariable function
+	 * @param  {String} s resource
+	 * @return {String}
+	 */
+	function GenVariable(s){
+		return (s.indexOf('smarty') >= 0) ? GenReserved(s) : 'v.' + src;
+	};
+	/**
+	 * GenModule function
+	 * @param  {String} s source
+	 * @return {String}
+	 */
+	function GenModule()
 	{
-		var result = attr.match(this._rexsec);
-		return (result) ? result[1] : '' ;
-	}
+		if(Tags.length == 0)
+		{
+			
+		}
+		else
+		{
+			
+		};
+	};
+	/**
+	 * GenModule function
+	 * @param  {String} s source
+	 * @return {String}
+	 */
+	function GenString(src)
+	{
+	};
+
+	function GenExpression(s){
+		return s.replace(RsvRegExp,'this._').replace(VarRegExp,'v.').replace(TknRegExp,function($1){ return OPERATORS[$1]; });
+	};
+
+	/**
+	 * GenAttributes function
+	 * @param  {String} s resource
+	 * @return {String}
+	 */
+	function GenAttributes(s)
+	{
+		var c, i, f, b = s.split('');
+
+		for(i=0,f=s.length;i<=f;i++)
+		{
+			switch(b[i])
+			{
+				case ' ':
+				case '\t':
+				case '\r':
+				case '\n':
+					b[i++] = ',';
+					while(b[i] <= ' ') b[i++] = '';
+					break;
+				case '$':
+					b[i] = 'v.';
+					break;
+				case '=':
+					b[i] = ':';
+					break;
+				case '"':
+				case "'":
+					c = b[i];
+					while(b[++i] != c);
+					if(b[i-1] == '\\') i--;
+					break;
+			};
+		};
+
+		return '{' + b.join('') + '}';
+	};
+
+	function ContentFilter()
+	{
+	};
+
+	function ParseContent(src)
+	{
+	};
+
+	this.execute = function(src)
+	{
+		var buffer= new StringBuffer();
+		PutString = buffer.putString;
+		if(SetDelimiters()) SetRegExp();
+		return buffer.toString();
+	};
 };
 
+JSmarty.Compiler.Module = function(){};
+JSmarty.Compiler.Module.prototype = {};
+
+/** StringBuffer **/
+JSmarty.Compiler.StringBuffer = function()
+{
+	var p = 0, b = [];
+	this.toString  = function( ){ return b.join(''); };
+	this.putString = function(s){ return b[p++] = s; };
+};
+
+/** String Operators **/
+JSmarty.Compiler.OPERATORS =
+{
+	eq : '==', ne : '!=', neq: '!=', gt : '>' ,
+	lt : '<' , ge : '>=', gte: '>=', le : '<=',
+	lte: '<=', not: '!' , and: '&&', or : '||'
+};

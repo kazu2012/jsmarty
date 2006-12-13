@@ -3,7 +3,7 @@
  * extended JSmarty.File Object
  * @type JSmarty.Plugin Object
  */
-JSmarty.Plugin = JSmarty.factory(JSmarty.File);
+JSmarty.Plugin = JSmarty.Utility.factory(JSmarty.File);
 
 /**
  * Stack of Plugins
