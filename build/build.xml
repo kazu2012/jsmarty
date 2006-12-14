@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSmarty" default="main" basedir="../">
 
-	<property name="version" value="0.1.1" />
-	<property name="dir.src" value="src" />
-	<property name="dir.pkg" value="Temp/JSmarty" />
+	<property name="version" value="0.2.0" />
+
+	<!-- Directories -->
+	<property name="src" value="src" />
+	<property name="lib" value="lib" />
+	<property name="tmp" value="Temp/JSmarty" />
 
 	<target name="build">
-		<mkdir dir="lib" />
-		<loadfile property="file.File" srcFile="src/JSmarty/File.js" />
-		<loadfile property="file.Plugin" srcFile="src/JSmarty/Plugin.js" />
-		<copy todir="lib" overwrite="Yes" preservelastmodified="true">
-			<filterset>
-				<filter token="version" value="${version}" />
-			</filterset>
-			<fileset dir="src" />
+		<mkdir dir="${lib}" />
+		<mkdir dir="${tmp}" />
+		<concat destfile="${tmp}/JSmarty.js">
+			<filelist dir="${src}" files="JSmarty.js" />
+			<filelist dir="${src}/JSmarty" files="Browser.js,Utility.js,System.js,Plugin.js" />
+		</concat>
+		<copy todir="${lib}" overwrite="Yes" preservelastmodified="true">
+			<fileset dir="${src}" />
+			<filterset><filter token="version" value="${version}" /></filterset>
 		</copy>
-		<copy tofile="lib/JSmarty.js" file="src/JSmarty.js" overwrite="Yes" preservelastmodified="true">
-			<filterset begintoken="/*@" endtoken="@*/">
-				<filter token="file.File" value="${file.File}" />
-				<filter token="file.Plugin" value="${file.Plugin}" />
-			</filterset>
-			<filterset>
-				<filter token="version" value="${version}" />
-			</filterset>
-		</copy>
-		<delete file="lib/JSmarty/File.js" />
-		<delete file="lib/JSmarty/Plugin.js" />
+		<move file="${tmp}/JSmarty.js" tofile="${lib}/JSmarty.js">
+			<filterset><filter token="version" value="${version}" /></filterset>
+		</move>
+		<delete dir="${lib}/JSmarty" excludes="Compiler.js" />
+		<delete dir="${tmp}" />
 	</target>
 
 	<target name="main" depends="build">
-		<mkdir dir="${dir.pkg}" />
-		<copy todir="${dir.pkg}/lib"><fileset dir="lib" /></copy>
-		<copy todir="${dir.pkg}/samples"><fileset dir="samples" /></copy>
+		<mkdir dir="${tmp}" />
+		<copy todir="${tmp}/${lib}"><fileset dir="${lib}" /></copy>
+		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
 		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />

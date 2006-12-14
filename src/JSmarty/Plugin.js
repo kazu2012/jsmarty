@@ -3,7 +3,7 @@
  * extended JSmarty.File Object
  * @type JSmarty.Plugin Object
  */
-JSmarty.Plugin = JSmarty.Utility.factory(JSmarty.File);
+JSmarty.Plugin = JSmarty.Utility.factory(JSmarty.System);
 
 /**
  * Stack of Plugins
@@ -79,15 +79,6 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
  * @type Boolean
  */
 JSmarty.Plugin.addModule = function(ns)
-{
-};
-
-/**
- * Load template is compiled.
- * @param {String} file
- * @type Boolean
- */
-JSmarty.Plugin.addTemplatec = function(file)
 {
 };
 

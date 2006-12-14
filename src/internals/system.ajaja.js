@@ -1,19 +1,9 @@
 (function(def)
 {
-	def.loadScript = function()
+	def.prop = { name : 'ajaja', code : 10, auth : 'shogo'};
+	def.fgets = function()
 	{
 		
 	};
-	def.getSelfPath = function()
-	{
-		return '.';
-	};
-	def.fileGetContents = function()
-	{
-		
-	};
-	def.isWritable = function()
-	{
-		return false;
-	};
+	def.getSelfPath = function(){ return '.'; };
 })(JSmarty.System);

@@ -17,11 +17,6 @@
  */
 function JSmarty(){};
 
-JSmarty.GLOBALS = this;
-JSmarty.VERSION = '@version@';
-
-JSmarty.templates_c = {};
-
 JSmarty.prototype =
 {
 	config_dir   : 'configs',
@@ -66,7 +61,7 @@ JSmarty.prototype =
 	_foreach : {},
 	_section : {},
 	_capture : {},
-	_version : JSmarty.Version,
+	_version : '@version@',
 	_tpl_vars : {},
 	_compiler : null,
 	_debug_id : 'JSMARTY_DEBUG',
@@ -232,7 +227,7 @@ JSmarty.prototype =
 
 		if(display)
 		{
-			if(result){ JSmarty.print(result); };
+			if(result){ JSmarty.System.print(result); };
 			if(debugging)
 			{
 				debug.exec_time = new Date().getTime() - start;
@@ -334,10 +329,10 @@ JSmarty.prototype =
 		{
 			if(JSmarty[name] == void(0)) /* empty */;
 //				JSmarty.Plugin.addModule(this.compiler_file);
-			cpir = this._compiler = new JSmarty[name];
+			cpir = this._compiler = new JSmarty[name](this);
 		};
 
-		return cpir._compile_file(src, this);
+		return cpir.execute(src);
 	},
 	/**
 	 * test if resource needs compiling
@@ -379,8 +374,8 @@ JSmarty.prototype =
 			{
 				case 'file':
 					if(!data.gets) break;
-					data.src  = JSmarty.File.fgets(name, this.template_dir);
-					data.time = JSmarty.File.mtime(name, this.template_dir);
+					data.src  = JSmarty.System.fgets(name, this.template_dir);
+					data.time = JSmarty.System.mtime(name, this.template_dir);
 					break;
 				default:
 					call = JSmarty.Plugin.getFunction('resource.' + data.type);
@@ -622,6 +617,10 @@ JSmarty.prototype =
 	}
 };
 
+JSmarty.GLOBALS = this;
+JSmarty.VERSION = '@version@';
+JSmarty.templates_c = {};
+
 /**
  * JSmarty Error Handler
  * @param {String} msg message
@@ -635,7 +634,7 @@ JSmarty.trigger_error = function(msg, level)
 	switch(level)
 	{
 		case 'warn':
-			JSmarty.print(msg); break;
+			JSmarty.System.print(msg); break;
 		case 'die':
 		default:
 			throw new Error(msg); break;

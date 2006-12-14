@@ -2,85 +2,43 @@
  * Provide interface of File I/O.
  * @type JSmartyFileObject
  */
-JSmarty.System = {
-	/** @private **/
-	__mtimes__ : {},
-	/** @private **/
-	__system__ : 'http',
-	/**
-	 * XMLHttpObject
-	 * @type XMLHttpRequest or null
-	 */
-	XMLHTTP : function()
+JSmarty.System = new function()
+{
+	this.prop = { name : null, code : 0, auth : null };
+
+	this.isWritable = function(){ return (this.fputs != null); };
+	this.fputs = this.mtime = this.print = this.getSelfPath = null;
+
+	this.genSysCode = function(g)
 	{
-		if(typeof(XMLHttpRequest) != 'undefined')
-			return new XMLHttpRequest;
-		if(typeof(ActiveXObject) != 'undefined')
-			return new ActiveXObject('Microsoft.XMLHTTP');
+		if(g.window  && g.document) return 10; // Browser
+		if(g.System  && g.Core    ) return 20; // Ajaja
+		if(g.context && g.javax   ) return 30; // Mustung
+	};
+
+	this.setProfile = function(v, c)
+	{
+		switch(v)
+		{
+			case 10: JSmarty.Browser(); break;
+			case 20: load('./internals/system.ajaja.js'); break;
+			default: c(); break;
+		};
+	};
+
+	this.getProperty = function(p)
+	{
+		switch(p)
+		{
+			case 'name': return this.prop.name;
+			case 'code': return this.prop.code;
+			case 'auth': return this.prop.auth;
+		};
 		return null;
-	}(),
-	/**
-	 * file_get_contents
-	 * @param  {String} file Request filename.
-	 * @param  {String | Array} dir Request directoryname.
-	 * @return {String} Contents of file or ''.
-	 */
-	fgets : function(file, dir)
-	{
-		var text, flag = false, http = this.XMLHTTP;
-
-		dir = JSmarty.flatten(dir);
-
-		for(var i=0,f=dir.length;i<f;i++)
-		{
-			if(text != null) break;
-			try
-			{
-				http.open('GET', dir[i] +'/'+ file, false);
-				http.send('');
-				flag = (http.status == 200 || http.status == 0);
-				text = flag ? http.responseText : null;
-			}
-			catch(e){ /* empty */ }
-			finally{ http.abort(); };
-		};
-
-		return text || '';
-	},
-	/**
-	 * file_put_contents
-	 * @return {Boolean} The function sucess, or not.
-	 */
-	fputs : function(src, file)
-	{
-		/* abstract */
-		return false;
-	},
-	/**
-	 * Return the timestamp of file
-	 * @param {String}
-	 * @return {Number}
-	 */
-	mtime : function(file){
-		return this.__mtimes__[file];
-	},
-	setSystem : function(system)
-	{
-		switch(system)
-		{
-			case 'ajaja':
-				load('./internals/system.ajaja.js'); break;
-			case 'wscript': break;
-			default:
-				JSmarty.trigger_error(" system: no-supported for "+ system);
-				break;
-		};
-		this.__system__ = system;
-	},
-	getSystem : function(){
-		return this.__system__;
-	},
-	isWritable : function(){
-		return false;
-	}
+	};
 };
+
+(function(def)
+{
+	def.setProfile(def.genSysCode(this));
+})(JSmarty.System);
