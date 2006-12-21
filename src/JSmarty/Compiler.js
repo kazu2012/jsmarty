@@ -15,7 +15,7 @@ JSmarty.Compiler = function(renderer)
 
 	var VarRegExp = /\$/;
 	var RcrRegExp = /\r?\n/g;
-	var RmvRegExp = /""/g;
+	var RmvRegExp = /\+\)/g;
 	var RsvRegExp = /\$smarty\./;
 	var BlcRegExp = RegExp(L + '\\/(.*?)' + R,'g');
 	var TagRegExp = RegExp(L + '[^'+ R +']+' + R,'g');
@@ -67,6 +67,8 @@ JSmarty.Compiler = function(renderer)
 				case 'literal':
 					return genString(L + src + R);
 			};
+
+			if(0 < Tags.length) r += '+';
 		}
 		else
 		{
@@ -88,19 +90,14 @@ JSmarty.Compiler = function(renderer)
 	function genString(s)
 	{
 		if(s && -1 < s.indexOf('"')) s = s.split('"').join('\\"');
-		(Tags.length == 0) ? PutString('\nB[++I]="'+ s + '";\n') : PutString('"'+ s + '"+');
+		(Tags.length == 0) ? PutString(';\nB[++I]="'+ s + '";\n') : PutString('"'+ s + '"+');
 	};
-
-	function genExpression(s){
-		return s.replace(RsvRegExp,'this._').replace(VarRegExp,'v.').replace(TknRegExp,function($1){ return OPERATORS[$1]; });
-	};
-
 	/**
 	 * header function
 	 */
 	function header()
 	{
-		PutString('var I=-1,B=[],O={},V=this._tpl_vars;');
+		PutString('var I=-1,B=[],O={},V=this._tpl_vars');
 	};
 	/**
 	 * filter function
@@ -122,7 +119,6 @@ JSmarty.Compiler = function(renderer)
 	 */
 	function footer(src)
 	{
-		alert(src);
 		return src + 'return B.join("");';
 	};
 	/**
@@ -150,7 +146,10 @@ JSmarty.Compiler = function(renderer)
 
 		genString(src.slice(iap));
 	};
-
+	/**
+	 * execute function - compile a source
+	 * @param {String} src source
+	 */
 	this.execute = function(src)
 	{
 		var buffer= new StringBuffer();
@@ -189,7 +188,9 @@ JSmarty.Compiler.Module.prototype =
 				break;
 			case '$':
 				imp = src.indexOf('|');
-				this.name = src.slice(1, (-1 < imp) ? imp++ : inp);
+				isp = src.indexOf('smarty');
+				this.name = (-1 < isp) ? 'this._' : 'V.';
+				this.name += src.slice((-1 < isp) ? isp + 7 : 1, (-1 < imp) ? imp++ : inp);
 				this.symbol = c;
 				break;
 			case '/':
@@ -210,7 +211,18 @@ JSmarty.Compiler.Module.prototype =
 			switch(this.name)
 			{
 				case 'if':
-					s = src.slice(iap);
+				case 'elsif':
+					s = src.slice(iap).split('');
+					for(i=0,f=s.length;i<=f;i++)
+					{
+						switch(s[i])
+						{
+							case '$':
+								s[i++] = 'V.';
+								break;
+						};
+					};
+					s = s.join('');
 					break;
 				default:
 					s = src.slice(iap).split('');
@@ -224,6 +236,9 @@ JSmarty.Compiler.Module.prototype =
 							case '\n':
 								s[i++] = ',';
 								while(s[i] <= ' ') s[i++] = '';
+								break;
+							case '$':
+								s[i] = 'V.';
 								break;
 							case '=':
 								s[i] = ':';
@@ -269,24 +284,22 @@ JSmarty.Compiler.Module.prototype =
 	{
 		switch(this.symbol)
 		{
-			case '$':
 			case '"':
 			case "'":
+			case '$':
 				return 'this.inModif('+ this.modif +','+ this.name +')';
 			case '/':
 				switch(this.name)
 				{
 					case 'if':
-						return ';}';
+						return '"";}';
 					case 'strip':
-						return ').replace(/\\s|\\n/g,"");';
-					case 'literal':
-						return ');';
+						return '"").replace(/\\s|\\n/g,"")';
 					case 'foreach':
 					case 'section':
 						return '"";return B.join("");})';
 				};
-				return ')';
+				return '"")';
 			case '*':
 				return '';
 		};
@@ -298,25 +311,27 @@ JSmarty.Compiler.Module.prototype =
 			case 'if':
 				return '"";\nif('+ this.attr +'){B[++I]=';
 			case 'else':
-				return ';}\nelse{B[++I]=';
+				return '"";}\nelse{B[++I]=';
 			case 'elsif':
-				return ';}\nelse if('+ this.attr +'){B[++I]=';
+				return '"";}\nelse if('+ this.attr +'){B[++I]=';
 			case 'ldelim':
-				return 'left_delimiter';
+				return 'this.left_delimiter';
+			case 'rdelim':
+				return 'this.right_delimiter';
 			case 'strip':
 				return 'String(';
 			case 'javascript':
 				return 'this.inEval(';
-			case 'section':
-				return 'this.inSection(';
-			case 'foreach':
-				return 'this.inForeach(';
 			case 'sectionelse':
 			case 'foreachelse':
-				return 'return B.join("");},function(){var B=[],I=-1;B[++I]=';
+				return '"";return B.join("");},function(){var B=[],I=-1;B[++I]=';
+			case 'foreach':
+				return 'this.inForeach('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;B[++I]=';
+			case 'section':
+				return 'this.inSection('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;B[++I]=';
 		};
 
-		var suffix = (block) ? ',' : ');';
+		var suffix = (block) ? ',' : ')';
 		return 'this.inCall("'+ this.name +'",'+ this.attr +','+ this.modif + suffix;
 	}
 };

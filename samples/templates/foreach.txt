@@ -2,7 +2,7 @@
 <h3>Model</h3>
 {model name="foreach"}
 <h3>Template</h3>
-{literal|htmlspecialhscape|nl2br}
+{literal|htmlspecialescape|nl2br}
 {foreach from=$hoge name="mydata" item="datum" key="key"}
 <p>{$key} -&gt; {$datum}, {$smarty.foreach.mydata.total}</p>
 {/foreach}

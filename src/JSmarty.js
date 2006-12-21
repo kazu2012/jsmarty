@@ -432,7 +432,7 @@ JSmarty.prototype =
 		switch(t)
 		{
 			case 'block': r = call[ns](a, s, this); break;
-			case 'function': r = call[ns](a, s, this); break;
+			case 'function': r = call[ns](a, this); break;
 		};
 
 		return r || '';
@@ -469,66 +469,57 @@ JSmarty.prototype =
 		return eval(s);
 	},
 	/**
-	 * Builtin function for {foreach} block.
-	 * @param {Object} params
-	 * @param {Function} content
-	 * @param {Function} contentelse
+	 * internals: foreach function
+	 * @param {Object} p params
+	 * @param {Object} m modifier
+	 * @param {Function} c content
+	 * @param {Function} e contentelse
 	 * @type String
 	 */
-	_inforeach : function(params, content, contentelse)
+	inForeach : function(p, m, c, e)
 	{
-		var k, foreach, i = 0, html = [];
-		var from = params.from;
-		var key  = params.key  || false;
-		var item = params.item || false;
-		var name = params.name || null;
+		var foreach;
+		var k, t = i = -1, b = [];
+
+		var from = p.from;
+		var key  = p.key  || false;
+		var item = p.item || false;
+		var name = p.name || null;
 
 		if(!from)
 		{
-			if(name)
-			{
-				this._foreach[name] = { show : false, total : 0 };
-				if(contentelse)
-					return contentelse.call(this);
-				return '';
-			};
-			if(contentelse)
-				return contentelse.call(this);
-			return '';
+			
 		};
 
 		if(name)
 		{
-			foreach = this._foreach[name] =
-			{
-				show : true,
-				last : false,
-				first : true,
-				total : 0,
-				iteration : 0
-			};
-
 			for(k in from)
 			{
 				if(!from.hasOwnProperty(k)) continue;
-				foreach.total++;
+				++t;
 			};
 
-			total = foreach.total;
+			foreach = this._foreach[name] =
+			{
+				show:true,
+				last:false,
+				first:true,
+				total:t,
+				iterarion:0
+			};
 
 			for(k in from)
 			{
 				if(!from.hasOwnProperty(k)) continue;
 				if(key) this.assign(key, k);
-				if(++foreach.iteration == total)
-					foreach.last = true;
+				if(t == i) foreach.last = true;
 				this.assign(item, from[k]);
-				html[i++] = content.call(this);
-				foreach.iteration++;
+				b[++i] = c.call(this);
+				foreach.iteration = i;
 				foreach.first = false;
 			};
 
-			return html.join('');
+			return this.inModif(m, b.join(''));
 		};
 
 		for(k in from)
@@ -536,16 +527,17 @@ JSmarty.prototype =
 			if(!from.hasOwnProperty(k)) continue;
 			if(key) this.assign(key, k);
 			this.assign(item, from[k]);
-			html[i++] = content.call(this);
+			b[++i] = c.call(this);
 		};
 
-		return html.join('');
+		return this.inModif(m, b.join(''));
 	},
 	/**
-	 * Builtin function for {section} block.
-	 * @param {Object} params
-	 * @param {Function} content
-	 * @param {Function} contentelse
+	 * internals: section function
+	 * @param {Object} p params
+	 * @param {Object} m modifier
+	 * @param {Function} c content
+	 * @param {Function} e contentelse
 	 * @type String
 	 */
 	inSection : function(params, content, contentelse, modifier)
@@ -559,79 +551,6 @@ JSmarty.prototype =
 			this._section[params.name] = { show : false, total : 0 };
 			return (contentelse) ? contentelse.call(this) : '';
 		};
-	},
-	_insection : function(params, content, contentelse)
-	{
-		if(!params.name)
-		{
-			this.trigger_error("section : missing 'name' parameter");
-			return '';
-		};
-
-		if(!params.loop)
-		{
-			this._section[params.name] = { show : false, total : 0 };
-			if(contentelse)
-				return contentelse.call(this);
-			return '';
-		};
-
-		var k, section, i = 0, html =[];
-		var name = params.name, loop = params.loop;
-
-		var max   = params.max || loop.length;
-		var show  = params.show || true;
-		var step  = params.step || 1;
-		var start = params.start || 0;
-
-		section = this._section[name] =
-		{
-			show : true,
-			loop : 0,
-			last : false,
-			total : 0,
-			index : 0,
-			first : true,
-			rownum : 1,
-			iteration : 1,
-			index_next : 0,
-			index_prev : -1
-		};
-
-		for(k=start;k<max;k+=step)
-			section.total++;
-
-		// section.first
-		html[i++] = content.call(this, start);
-		section.first = false;
-		section.index = start + step;
-		section.rownum++;
-		section.iteration++;
-		section.index_prev += step;
-		section.index_next += step;
-
-		for(k=start+step,max=max-step;k<max;k+=step)
-		{
-			html[i++] = content.call(this, k);
-			section.index = k + step;
-			section.rownum++;
-			section.iteration++;
-			section.index_prev += step;
-			section.index_next += step;
-		};
-
-		// section last
-		section.last = true;
-		html[i++] = content.call(this, max);
-
-		this._section[name] =
-		{
-			show : true,
-			loop : section.loop,
-			total : section.total
-		};
-
-		return html.join('');
 	}
 };
 

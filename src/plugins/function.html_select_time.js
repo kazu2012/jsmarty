@@ -88,7 +88,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 
 	if(display_hours)
 	{
-		hours = use_24_hours ? range(0, 23) : range(1, 2);
+		hours = use_24_hours ? range(0, 23) : range(1, 12);
 		hour_fmt = use_24_hours ? '%H' : '%I';
 		for(k=0,for_max=hours.length;i<for_max;i++)
 			hours[i] = (hours[i] > 9) ? hours[i] : '0' + hours[i];
@@ -138,7 +138,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 		if(all_extra !== null)
 			html[i++] = ' ' + all_extra;
 		html[i++] = '>\n';
-		html[i++] = html_options({output: ['AM','PM'], values: ['am','pm'], selected: strftime('%p', time).toLowerCase(), print_result: false}, jsmarty);
+		html[i++] = html_options({output: ['AM','PM'], values: ['AM','PM'], selected: strftime('%p', time).toLowerCase(), print_result: false}, jsmarty);
 		html[i++] = '</select>\n';
 	};
 

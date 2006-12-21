@@ -2,7 +2,7 @@
 <h3>Model</h3>
 {model name="section"}
 <h3>Template</h3>
-{literal}
+{literal|htmlspecialescape|nl2br}
 {section name=mydata loop=$custid}
 <p>
 	id: {$custid[mydata]}<br />
