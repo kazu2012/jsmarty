@@ -15,7 +15,7 @@ JSmarty.Browser = function()
 	// -- fgets function
 	sys.fgets = function(u, d)
 	{
-		var i, f, t, d = time, h = http;
+		var i, f, t, h = http;
 		d = JSmarty.Utility.flatten(d);
 		for(i=0,f=d.length;i<f;i++)
 		{
@@ -39,10 +39,8 @@ JSmarty.Browser = function()
 		
 	};
 	// -- print function
-	sys.print = function()
-	{
-		for(var i=0,f=arguments.length,a=[];i<f;i++) a[i] = arguments[i];
-		document.write(a.join(''));
+	sys.print = function(s){
+		document.write(s);
 	};
 	// -- getSelfPath function
 	path = (function(e)

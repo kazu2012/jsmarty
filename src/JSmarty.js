@@ -332,7 +332,8 @@ JSmarty.prototype =
 			cpir = this._compiler = new JSmarty[name](this);
 		};
 
-		return cpir.execute(src);
+		try{ return new Function(cpir.execute(src)); }
+		catch(e){ alert(e.message); };
 	},
 	/**
 	 * test if resource needs compiling
@@ -412,55 +413,60 @@ JSmarty.prototype =
 
 		return flag;
 	},
-	_call : function(name, attr, src, type)
+	/**
+	 * internals: call function
+	 * @param {String} n name
+	 * @param {Object} a attribute
+	 * @param {Object} m modifier
+	 * @param {String} s source
+	 */
+	inCall : function(n, a, m, s)
 	{
-		var call = this._plugins;
-		var ns = type + '.' + name;
+		var t = (s == null) ? 'function' : 'block';
+		var r, ns = t + '.' + n, call = this._plugins;
 
 		if(call[ns] == void(0))
 			JSmarty.Plugin.addPlugin(ns, this.plugins_dir);
 		if(!call[ns]) return '';
 
-		switch(type)
+		switch(t)
 		{
-			case 'function':
-				return call[ns](attr, this);
-			case 'block':
-				return call[ns](attr, src, this);
-			case 'modifier':
-				return call[ns].apply(null, attr);
+			case 'block': r = call[ns](a, s, this); break;
+			case 'function': r = call[ns](a, s, this); break;
 		};
-	},
-	_incall : function()
-	{
-		
-	},
-	_inmodif : function(string, modif)
-	{
-		if(modif.smarty && modif.smarty[1] == 'nodefault') return string;
 
-		var k, name;
-		var plugin = this._plugins, Plugin = JSmarty.Plugin;
+		return r || '';
+	},
+	/**
+	 * internals: modifier function
+	 * @param {Object} m modifier
+	 * @param {Object} s source
+	 */
+	inModif : function(m, s)
+	{
+		var d = this.plugins_dir;
+		var Plugin = JSmarty.Plugin;
+		var k, plugin = this._plugins;
 
-		for(k in modif)
+		for(k in m)
 		{
-			name = 'modifier.' + k;
-			if(plugin[name] || Plugin.addPlugin(name))
+			n = 'modifier.' + k;
+			if(plugin[n] || Plugin.addPlugin(n, d))
 			{
-				modif[k][0] = string;
-				string = plugin[name].apply(null, modif[k]);
+				m[k][0] = s;
+				s = plugin[n].apply(null, m[k]);
 			};
 		};
 
-		return string;
+		return s;
 	},
 	/**
-	 * Wrapper for eval() 
-	 * @param {String} code - Pure javascript code
-	 * @return {mixed}
+	 * internals: wrapper for eval function
+	 * @param {String} s
 	 */
-	_eval : function(code){
-		return eval(code);
+	inEval : function(s)
+	{
+		return eval(s);
 	},
 	/**
 	 * Builtin function for {foreach} block.
@@ -542,6 +548,18 @@ JSmarty.prototype =
 	 * @param {Function} contentelse
 	 * @type String
 	 */
+	inSection : function(params, content, contentelse, modifier)
+	{
+		if(!params.name)
+		{
+			return this.trigger_error("section : missing 'name' parameter");
+		};
+		if(!params.loop)
+		{
+			this._section[params.name] = { show : false, total : 0 };
+			return (contentelse) ? contentelse.call(this) : '';
+		};
+	},
 	_insection : function(params, content, contentelse)
 	{
 		if(!params.name)

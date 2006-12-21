@@ -15,7 +15,7 @@
 	smarty = new JSmarty;
 	smarty.plugins_dir = ['../lib/plugins','plugins'];
 	// override the JSmarty.print function...
-	JSmarty.print = function(str){
+	JSmarty.System.print = function(str){
 		document.getElementById('content').innerHTML = str;
 	};
 	</script>
