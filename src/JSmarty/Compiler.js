@@ -1,9 +1,15 @@
 /**
+ * FILE:
+ * JSmarty/Compiler.js
  *
  * LICENCE:
+ * This library is free software; you can redistribute it and/or modify
+ * it under the LGPL2.1 as published by the Free Software Foundation.
+ * See the http://www.gnu.org/licenses/lgpl.txt in this distribution.
  *
  * @author shogo < shogo4405 at gmail dot com>
- * @version 0.2.0
+ * @package JSmarty
+ * @version @version@
  */
 
 JSmarty.Compiler = function(renderer)
@@ -13,17 +19,16 @@ JSmarty.Compiler = function(renderer)
 	var L = renderer.left_delimiter;
 	var R = renderer.right_delimiter;
 
-	var VarRegExp = /\$/;
 	var RcrRegExp = /\r?\n/g;
-	var RmvRegExp = /\+\)/g;
-	var RsvRegExp = /\$smarty\./;
+	var RmvRegExp = /""\+|\+""|B\[\+\+I\]=""\;\n/g;
 	var BlcRegExp = RegExp(L + '\\/(.*?)' + R,'g');
 	var TagRegExp = RegExp(L + '[^'+ R +']+' + R,'g');
-	var TknRegExp = /eq|ne|neq|gt|lt|ge|gte|le|lte|not|and|or/g;
 
 	var Plugin = JSmarty.Plugin, Compiler = JSmarty.Compiler;
 	var PutString = null, StringBuffer = Compiler.StringBuffer;
 	var Module = Compiler.Module, OPERATORS = Compiler.OPERATORS;
+
+	this.plugins_dir = renderer.plugins_dir;
 
 	/**
 	 * SetRegExp function
@@ -110,6 +115,7 @@ JSmarty.Compiler = function(renderer)
 				src = src.replace(RcrRegExp,'\\n');
 				break;
 			case 'post':
+				src = src.replace(RmvRegExp,'');
 				break;
 		};
 		return src;
@@ -168,14 +174,14 @@ JSmarty.Compiler.Module.prototype =
 	name : null, attr : 'O', modif : null, symbol : null,
 	parse : function(src)
 	{
-		var s, i, f, iap = -1, imp = -1;
+		var s, i, f, op, iap = -1, imp = -1;
 		var inp = src.length, c = src.charAt(0);
 
 		switch(c)
 		{
 			case '"':
 			case "'":
-				this.name = src.slice(1, inp++);
+				this.name = src.slice(0, inp++);
 				this.symbol = c;
 				break;
 			case '*':
@@ -213,12 +219,28 @@ JSmarty.Compiler.Module.prototype =
 				case 'if':
 				case 'elsif':
 					s = src.slice(iap).split('');
+					op = JSmarty.Compiler.OPERATORS;
 					for(i=0,f=s.length;i<=f;i++)
 					{
 						switch(s[i])
 						{
 							case '$':
 								s[i++] = 'V.';
+								break;
+							case '"':
+							case "'":
+								c = s[i];
+								while(s[++i] != c) if(f < i) throw new Error("Template Syntax Error");
+								if(s[i-1] == '\\') i--;
+								break;
+							case ' ':
+								c = '';
+								while(s[++i] != ' ')
+								{
+									c += s[i], s[i] = '';
+									if(f < i) throw new Error("Template Syntax Error");
+								};
+								s[i] = ((op[c]) ? op[c] : c) + ' ';
 								break;
 						};
 					};
@@ -280,8 +302,10 @@ JSmarty.Compiler.Module.prototype =
 			this.modif = '{"'+ s.join('') +'}';
 		};
 	},
-	toString : function(block)
+	toString : function(block, compiler)
 	{
+		var Plugin, suffix = ')';
+
 		switch(this.symbol)
 		{
 			case '"':
@@ -292,7 +316,7 @@ JSmarty.Compiler.Module.prototype =
 				switch(this.name)
 				{
 					case 'if':
-						return '"";}';
+						return '"";}\nB[++I]=""';
 					case 'strip':
 						return '"").replace(/\\s|\\n/g,"")';
 					case 'foreach':
@@ -300,8 +324,9 @@ JSmarty.Compiler.Module.prototype =
 						return '"";return B.join("");})';
 				};
 				return '"")';
+			case '#':
 			case '*':
-				return '';
+				return '""';
 		};
 
 		switch(this.name)
@@ -311,9 +336,9 @@ JSmarty.Compiler.Module.prototype =
 			case 'if':
 				return '"";\nif('+ this.attr +'){B[++I]=';
 			case 'else':
-				return '"";}\nelse{B[++I]=';
+				return '"";}\nelse{B[++I]=""';
 			case 'elsif':
-				return '"";}\nelse if('+ this.attr +'){B[++I]=';
+				return '"";}\nelse if('+ this.attr +'){B[++I]=""';
 			case 'ldelim':
 				return 'this.left_delimiter';
 			case 'rdelim':

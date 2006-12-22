@@ -6,8 +6,27 @@
 	<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	<title>JSmarty Compiler Debugger</title>
 	<link rel="stylesheet" type="text/css" href="../samples/styles/default.css" />
+	<style type="text/css">
+	#result, #resource
+	{
+		width: 100%; height: 160px;
+	}
+	</style>
 	<script type="text/javascript" src="../lib/JSmarty.js"></script>
-	<script type="text/javascript" src="scripts/compiler.js"></script>
+	<script type="text/javascript" src="../lib/JSmarty/Compiler.js"></script>
+	<script type="text/javascript">
+	compiler = new JSmarty.Compiler({left_delimiter:'{',right_delimiter:'}'});
+	window.onload = function()
+	{
+		var idResult = document.getElementById('result');
+		var idResource = document.getElementById('resource');
+
+		idResource.onkeyup = function()
+		{
+			idResult.innerHTML = compiler.execute(this.value);
+		};
+	};
+	</script>
 </head>
 <body>
 
@@ -18,9 +37,9 @@
 
 <div class="main" id="main">
 	<h2>Template Resource</h2>
-	<textarea>
-	</textarea>
+	<textarea id="resource"></textarea>
 	<h2>Compile Result</h2>
+	<textarea id="result"></textarea>
 	<div class="footer">
 		powerd by JSmarty
 		<script type="text/javascript">document.write(JSmarty.VERSION);</script>

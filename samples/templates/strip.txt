@@ -2,15 +2,9 @@
 <h3>Model</h3>
 {model name="strip"}
 <h3>Template</h3>
-{literal|nl2br|htmlspecialescape}
-<pre>
-S
-T
-R
-I
-P
-</pre>
-{/literal}
+{template|htmlspecialchars|nl2br}
+{fetch file="strip.txt"}
+{/template}
 <h3>Result</h3>
 {strip}
 <pre>

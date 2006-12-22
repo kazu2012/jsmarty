@@ -2,7 +2,7 @@
 <h3>Model</h3>
 {model name="html_radios"}
 <h3>Template</h3>
-{literal|htmlspecialescape|nl2br}
+{literal|htmlspecialchars|nl2br}
 {html_radios name="radio001" options=$data selected="002"}
 {/literal}
 <h3>Result</h3>

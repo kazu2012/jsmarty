@@ -2,18 +2,9 @@
 <h3>Model</h3>
 {model name="literal"}
 <h3>Template</h3>
-{literal|nl2br|htmlspecialescape}
-{literal|nl2br}{if $hoge==1}
-Hello, World!! Part1.
-{elsif $hoge==2}
-Hello, World!! Part2.
-{elsif $hoge==3}
-Hello, World!! Part3.
-{else}
-Hello, World!! Part4.
-{/if}
-{/literal}
-{/literal}
+{template|htmlspecialchars|nl2br}
+{fetch file="literal.txt"}
+{/template}
 <h3>Result</h3>
 {literal|nl2br}{if $hoge==1}
 Hello, World!! Part1.

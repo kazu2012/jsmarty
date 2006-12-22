@@ -435,7 +435,7 @@ JSmarty.prototype =
 			case 'function': r = call[ns](a, this); break;
 		};
 
-		return r || '';
+		return this.inModif(m, r);
 	},
 	/**
 	 * internals: modifier function

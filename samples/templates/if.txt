@@ -2,17 +2,9 @@
 <h3>Model</h3>
 {model name="if"}
 <h3>Template</h3>
-{literal|nl2br|htmlspecialescape}
-{if $hoge==1}
-Hello, World!! Part1.
-{elsif $hoge==2}
-Hello, World!! Part2.
-{elsif $hoge==3}
-Hello, World!! Part3.
-{else}
-Hello, World!! Part4.
-{/if}
-{/literal}
+{template|htmlspecialchars|nl2br}
+{fetch file="if.txt"}
+{/template}
 <h3>Result</h3>
 {if $hoge==1}
 Hello, World!! Part1.

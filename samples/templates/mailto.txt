@@ -2,13 +2,9 @@
 <h3>Model</h3>
 {model name="mailto"}
 <h3>Template</h3>
-{literal|htmlspecialescape|nl2br}
-<ul>
-  <li>hex - {mailto address="foo@bar.com" encode="hex"}</li>
-  <li>javascript - {mailto address="foo@bar.com" encode="javascript"}</li>
-  <li>javascript_charcode - {mailto address="foo@bar.com" encode="javascript_charcode"}</li>
-</ul>
-{/literal}
+{template|htmlspecialchars|nl2br}
+{fetch file="mailto.txt"}
+{/template}
 <h3>Result</h3>
 <ul>
   <li>hex - {mailto address="foo@bar.com" encode="hex"}</li>

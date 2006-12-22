@@ -12,10 +12,10 @@
  * Original: Smarty {fetch} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  0.0.0
- * @see      http://smarty.php.net/manual/en/language.function.html.radios.php
- * @param    {Object} params
- * @param    {JSmarty} jsmarty
+ * @version  1.0.0RC1
+ * @see      http://smarty.php.net/manual/en/language.function.fetch.php
+ * @param    {Object}  params parameters
+ * @param    {JSmarty} jsmarty JSmarty
  * @return   {String}
  */
 function jsmarty_function_fetch(params, jsmarty)
@@ -23,12 +23,12 @@ function jsmarty_function_fetch(params, jsmarty)
 	if(!params.file)
 	{
 		jsmarty.trigger_error('fetch : parameter "file" cannot be empty','die');
-		return '';
+		return;
 	};
 
 	var content = '';
 
-	content = JSmarty.File.fgets(params.file);
+	content = JSmarty.System.fgets(params.file, jsmarty.template_dir);
 
 	if(params.assign)
 		jsmarty.assign(params.assign, content);
