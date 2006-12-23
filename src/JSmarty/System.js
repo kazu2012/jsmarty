@@ -13,7 +13,7 @@ JSmarty.System = new function()
 	{
 		if(g.window  && g.document) return 10; // Browser
 		if(g.System  && g.Core    ) return 20; // Ajaja
-		if(g.context && g.javax   ) return 30; // Mustung
+		if(g.context && g.javax   ) return 30; // Mustang
 	};
 
 	this.setProfile = function(v, c)
@@ -22,6 +22,7 @@ JSmarty.System = new function()
 		{
 			case 10: JSmarty.Browser(); break;
 			case 20: load('./internals/system.ajaja.js'); break;
+			case 30: load('./internals/system.mustang.js'); break;
 			default: c(); break;
 		};
 	};

@@ -34,6 +34,7 @@ function jsmarty_modifier_capitalize_ucfirst(string, digits)
 		jsmarty_modifier_capitalize_digits = digits;
 		return;
 	};
+
 	if(string[0].match(/\d/) || jsmarty_modifier_capitalize_digits)
 		return ucfirst(string[0]);
 	else

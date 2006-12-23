@@ -68,7 +68,7 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
 	if(ns in this.__func__)
 		return Boolean(this.__func__[ns]);
 	if(dir == void(0))
-		dir = JSmarty.System.getSelfPath() + '/internals';
+		dir = this.getSelfPath() + '/internals';
 	return this.parse(this.fgets(ns + '.js', dir), ns);
 };
 
@@ -99,26 +99,26 @@ JSmarty.Plugin.importer = function()
  */
 JSmarty.Plugin.toString = function()
 {
-	var k, i = 0, str = [];
+	var func = this.__func__;
+	var k, i = -1, b = [], w = 73;
 	var date = new Date().toString();
-	var width = 72, func = this.__func__;
 
-	str[i++] = 'Table Of Plugins';
-	str[i++] = new Array(width + 1).join('-');
+	b[++i] = 'Table Of Plugins';
+	b[++i] = Array(w).join('-');
 
 	for(k in func)
 	{
 		k = k.split('.');
 		if(k.length == 2)
 		{
-			str[i] = '['+ k[0] + ']\t' + k[1] + ' -> ';
-			str[i] += Boolean(func[k.join('.')]) ? 'success' : 'failure';
-			i++;
+			++i;
+			b[i] = '['+ k[0] + ']\t' + k[1] + ' -> ';
+			b[i] += Boolean(func[k.join('.')]) ? 'success' : 'failure';
 		};
 	};
 
-	str[i++] = new Array(width + 1).join('-');
-	str[i++] = new Array(width -32).join(' ') + date;
+	b[++i] = Array(w).join('-');
+	b[++i] = Array(w - 31).join(' ') + date;
 
-	return str.join('\n');
+	return b.join('\n');
 };

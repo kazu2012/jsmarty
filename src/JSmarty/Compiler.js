@@ -20,14 +20,14 @@ JSmarty.Compiler = function(renderer)
 	var R = renderer.right_delimiter;
 
 	var RcrRegExp = /\r?\n/g;
-	var RmvRegExp = /""\+|\+""|B\[\+\+I\]=""\;\n/g;
 	var BlcRegExp = RegExp(L + '\\/(.*?)' + R,'g');
 	var TagRegExp = RegExp(L + '[^'+ R +']+' + R,'g');
+	var RmvRegExp = /""\+|\+""|B\[\+\+I\]=""\;\n/g;
 
-	var Plugin = JSmarty.Plugin, Compiler = JSmarty.Compiler;
-	var PutString = null, StringBuffer = Compiler.StringBuffer;
-	var Module = Compiler.Module, OPERATORS = Compiler.OPERATORS;
+	var PutString = null, Compiler = JSmarty.Compiler;
+	var Module = Compiler.Module, StringBuffer = Compiler.StringBuffer;
 
+	/** plugins_dir **/
 	this.plugins_dir = renderer.plugins_dir;
 
 	/**
@@ -56,8 +56,7 @@ JSmarty.Compiler = function(renderer)
 	 */
 	function genModule(src)
 	{
-		var r = m = new Module(src);
-		var n = m.name, s = m.symbol;
+		var r = m = new Module(src), n = m.name;
 
 		if(0 < Tags.length)
 		{
@@ -95,6 +94,7 @@ JSmarty.Compiler = function(renderer)
 	function genString(s)
 	{
 		if(s && -1 < s.indexOf('"')) s = s.split('"').join('\\"');
+		if(s && 0 == s.indexOf('\\n')) s = s.slice(2);
 		(Tags.length == 0) ? PutString(';\nB[++I]="'+ s + '";\n') : PutString('"'+ s + '"+');
 	};
 	/**
@@ -144,7 +144,8 @@ JSmarty.Compiler = function(renderer)
 		p = TagRegExp;
 		while((r = p.exec(src)) != null)
 		{
-			tag = r[0]; isp = src.indexOf(tag, iap);
+			tag = r[0];
+			isp = src.indexOf(tag, iap);
 			genString(src.slice(iap, isp));
 			genModule(tag.slice(ilp, irp));
 			iap = isp + tag.length;
@@ -174,14 +175,17 @@ JSmarty.Compiler.Module.prototype =
 	name : null, attr : 'O', modif : null, symbol : null,
 	parse : function(src)
 	{
-		var s, i, f, op, iap = -1, imp = -1;
-		var inp = src.length, c = src.charAt(0);
+		var inp = 0, iap = imp = -1;
+		var s, i, f, op, c = src.charAt(0);
 
 		switch(c)
 		{
 			case '"':
 			case "'":
-				this.name = src.slice(0, inp++);
+				do{inp = src.indexOf(c, inp + 1);}
+				while(src.charAt(inp - 1) == '\\');
+				imp = src.indexOf('|', ++inp) + 1;
+				this.name = src.slice(0, inp);
 				this.symbol = c;
 				break;
 			case '*':
@@ -206,7 +210,7 @@ JSmarty.Compiler.Module.prototype =
 			default:
 				iap = src.indexOf(' ');
 				imp = src.indexOf('|');
-				inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : inp;
+				inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : src.length;
 				this.name = src.slice(0, inp);
 				this.symbol = '';
 				break;
@@ -214,12 +218,14 @@ JSmarty.Compiler.Module.prototype =
 
 		if(-1 < iap)
 		{
+			s = src.slice(iap).split('');
+
 			switch(this.name)
 			{
 				case 'if':
 				case 'elsif':
-					s = src.slice(iap).split('');
 					op = JSmarty.Compiler.OPERATORS;
+					outerloop:
 					for(i=0,f=s.length;i<=f;i++)
 					{
 						switch(s[i])
@@ -229,25 +235,27 @@ JSmarty.Compiler.Module.prototype =
 								break;
 							case '"':
 							case "'":
-								c = s[i];
-								while(s[++i] != c) if(f < i) throw new Error("Template Syntax Error");
+								c = s[i++];
+								while(s[i] != c && i <= f) ++i;
+								if(f < i) throw new Error("");
 								if(s[i-1] == '\\') i--;
 								break;
 							case ' ':
 								c = '';
-								while(s[++i] != ' ')
-								{
-									c += s[i], s[i] = '';
-									if(f < i) throw new Error("Template Syntax Error");
-								};
+								while(s[++i] != ' ' && i <= f) c += s[i], s[i] = '';
+								if(f < i) throw new Error("");
 								s[i] = ((op[c]) ? op[c] : c) + ' ';
 								break;
+							case '|':
+								s.splice(i);
+								imp = iap + i + 1;
+								break outerloop;
 						};
 					};
 					s = s.join('');
 					break;
 				default:
-					s = src.slice(iap).split('');
+					outerloop:
 					for(i=0,f=s.length;i<=f;i++)
 					{
 						switch(s[i])
@@ -267,10 +275,15 @@ JSmarty.Compiler.Module.prototype =
 								break;
 							case '"':
 							case "'":
-								c = s[i];
-								while(s[++i] != c);
+								c = s[i++];
+								while(s[i] != c && i <= f) ++i;
+								if(f < i) throw new Error("");
 								if(s[i-1] == '\\') i--;
 								break;
+							case '|':
+								s.splice(i);
+								imp = iap + i + 1;
+								break outerloop;
 						};
 					};
 					s = '{' + s.join('') + '}';
@@ -288,18 +301,25 @@ JSmarty.Compiler.Module.prototype =
 			{
 				switch(s[i])
 				{
+					case '"':
+					case "'":
+						c = s[i++];
+						while(s[i] != c && i <= f) ++i;
+						if(f < i) throw new Error("");
+						if(s[i-1] == '\\') i--;
+						break;
 					case ':':
-						s[i++] = (c) ? '"' : '';
+						s[i++] = (c) ? ',' : '":[,';
 						c = true;
 						break;
 					case '|':
-						s[i++] = (c) ? '' : '":[],"';
+						s[i++] = (c) ? '],"' : '":[],"';
 						c = false;
 						break;
 				};
 			};
-			s[i] = (c) ? '' : '":[]';
-			this.modif = '{"'+ s.join('') +'}';
+			s[i] = (c) ? '' : '":[';
+			this.modif = '{"'+ s.join('') +']}';
 		};
 	},
 	toString : function(block, compiler)

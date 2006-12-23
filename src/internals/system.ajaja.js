@@ -1,6 +1,6 @@
 (function(def)
 {
-	def.prop = { name : 'ajaja', code : 10, auth : 'shogo'};
+	def.prop = { name : 'ajaja', code : 20, auth : 'shogo'};
 	def.fgets = function()
 	{
 		

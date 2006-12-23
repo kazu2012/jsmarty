@@ -150,5 +150,15 @@ var Model =
 	Trimwhitespace : function()
 	{
 		smarty.display('trimwhitespace.txt');
+	},
+	// -- modifier
+	Capitalize : function()
+	{
+	},
+	Cat : function()
+	{
+		smarty.assign("hoge", "Hello");
+		smarty.display('cat.txt');
+		smarty.clear_all_assign();
 	}
 };
