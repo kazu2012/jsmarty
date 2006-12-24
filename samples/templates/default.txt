@@ -1,0 +1,11 @@
+<h2>modifier : default</h2>
+<h3>Model</h3>
+{model name="default"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{""|default:"foo"}<br />
+{$foo|default:"bar"}
+{/literal}
+<h3>Result</h3>
+{""|default:"foo"}<br />
+{$foo|default:"bar"}

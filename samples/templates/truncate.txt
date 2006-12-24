@@ -1,0 +1,21 @@
+<h2>modifier : truncate</h2>
+<h3>Model</h3>
+{model name="truncate"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{$text|truncate}<br />
+{$text|truncate:30}<br />
+{$text|truncate:30:""}<br />
+{$text|truncate:30:"---"}<br />
+{$text|truncate:30:"":true}<br />
+{$text|truncate:30:"...":true}<br />
+{$text|truncate:30:'..':true:true}<br />
+{/literal}
+<h3>Result</h3>
+{$text|truncate}<br />
+{$text|truncate:30}<br />
+{$text|truncate:30:""}<br />
+{$text|truncate:30:"---"}<br />
+{$text|truncate:30:"":true}<br />
+{$text|truncate:30:"...":true}<br />
+{$text|truncate:30:'..':true:true}<br />

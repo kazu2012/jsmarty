@@ -20,9 +20,11 @@ JSmarty.Compiler = function(renderer)
 	var R = renderer.right_delimiter;
 
 	var RcrRegExp = /\r?\n/g;
-	var BlcRegExp = RegExp(L + '\\/(.*?)' + R,'g');
-	var TagRegExp = RegExp(L + '[^'+ R +']+' + R,'g');
+	var VarRegExp = /&&__COM__::__VAR__&&/g;
 	var RmvRegExp = /""\+|\+""|B\[\+\+I\]=""\;\n/g;
+	var BlcRegExp = RegExp(L + '\\/(.*?)' + R,'g');
+	var RsvRegExp = /&&__COM__::__VAR__&&smarty\./g;
+	var TagRegExp = RegExp(L + '[^'+ R +']*' + R,'g');
 
 	var PutString = null, Compiler = JSmarty.Compiler;
 	var Module = Compiler.Module, StringBuffer = Compiler.StringBuffer;
@@ -56,7 +58,8 @@ JSmarty.Compiler = function(renderer)
 	 */
 	function genModule(src)
 	{
-		var r = m = new Module(src), n = m.name;
+		var r = m = new Module(src);
+		var n = m.name, s = m.symbol;
 
 		if(0 < Tags.length)
 		{
@@ -116,6 +119,8 @@ JSmarty.Compiler = function(renderer)
 				break;
 			case 'post':
 				src = src.replace(RmvRegExp,'');
+				src = src.replace(RsvRegExp,'this._');
+				src = src.replace(VarRegExp,'V.');
 				break;
 		};
 		return src;
@@ -198,9 +203,7 @@ JSmarty.Compiler.Module.prototype =
 				break;
 			case '$':
 				imp = src.indexOf('|');
-				isp = src.indexOf('smarty');
-				this.name = (-1 < isp) ? 'this._' : 'V.';
-				this.name += src.slice((-1 < isp) ? isp + 7 : 1, (-1 < imp) ? imp++ : inp);
+				this.name = '&&__COM__::__VAR__&&' + src.slice(1, (-1 < imp) ? imp++ : src.length);
 				this.symbol = c;
 				break;
 			case '/':
@@ -231,19 +234,19 @@ JSmarty.Compiler.Module.prototype =
 						switch(s[i])
 						{
 							case '$':
-								s[i++] = 'V.';
+								s[i++] = '&&__COM__::__VAR__&&';
 								break;
 							case '"':
 							case "'":
 								c = s[i++];
 								while(s[i] != c && i <= f) ++i;
-								if(f < i) throw new Error("");
+								if(f + 1 < i) throw new Error("");
 								if(s[i-1] == '\\') i--;
 								break;
 							case ' ':
 								c = '';
 								while(s[++i] != ' ' && i <= f) c += s[i], s[i] = '';
-								if(f < i) throw new Error("");
+								if(f + 1 < i) throw new Error("");
 								s[i] = ((op[c]) ? op[c] : c) + ' ';
 								break;
 							case '|':
@@ -268,7 +271,7 @@ JSmarty.Compiler.Module.prototype =
 								while(s[i] <= ' ') s[i++] = '';
 								break;
 							case '$':
-								s[i] = 'V.';
+								s[i] = '&&__COM__::__VAR__&&';
 								break;
 							case '=':
 								s[i] = ':';
@@ -301,11 +304,14 @@ JSmarty.Compiler.Module.prototype =
 			{
 				switch(s[i])
 				{
+					case '$':
+						s[i] = '&&__COM__::__VAR__&&';
+						break;
 					case '"':
 					case "'":
 						c = s[i++];
 						while(s[i] != c && i <= f) ++i;
-						if(f < i) throw new Error("");
+						if(f + 1 < i) throw new Error("");
 						if(s[i-1] == '\\') i--;
 						break;
 					case ':':
@@ -341,7 +347,7 @@ JSmarty.Compiler.Module.prototype =
 						return '"").replace(/\\s|\\n/g,"")';
 					case 'foreach':
 					case 'section':
-						return '"";return B.join("");})';
+						return '"";return B.join("");})\nB[++I]=""';
 				};
 				return '"")';
 			case '#':
@@ -369,11 +375,11 @@ JSmarty.Compiler.Module.prototype =
 				return 'this.inEval(';
 			case 'sectionelse':
 			case 'foreachelse':
-				return '"";return B.join("");},function(){var B=[],I=-1;B[++I]=';
+				return '"";return B.join("");},function(){var B=[],I=-1;\nB[++I]=""';
 			case 'foreach':
-				return 'this.inForeach('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;B[++I]=';
+				return 'this.inForeach('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;\nB[++I]=';
 			case 'section':
-				return 'this.inSection('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;B[++I]=';
+				return 'this.inSection('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;\nB[++I]=';
 		};
 
 		var suffix = (block) ? ',' : ')';

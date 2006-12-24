@@ -1,0 +1,11 @@
+<h2>modifier : indent</h2>
+<h3>Model</h3>
+{model name="indent"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+<pre>{"Hello"|indent}</pre>
+<pre>{"Hello"|indent:8:"#"}</pre>
+{/literal}
+<h3>Result</h3>
+<pre>{"Hello"|indent}</pre>
+<pre>{"Hello"|indent:8:"#"}</pre>

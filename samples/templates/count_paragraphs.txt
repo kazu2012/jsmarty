@@ -1,0 +1,7 @@
+<h2>modifier : count_paragraphs</h2>
+<h3>Model</h3>
+{model name="count_paragraphs"}
+<h3>Template</h3>
+{"What is this?\n\nThis is a pen."|count_paragraphs}
+<h3>Result</h3>
+{"What is this?\n\nThis is a pen."|count_paragraphs}

@@ -1,0 +1,11 @@
+<h2>modifier : strip_tags</h2>
+<h3>Model</h3>
+{model name="strip_tags"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+<pre>{"<b>Hello</b> <strong>World!!</strong>"|strip_tags:true}</pre>
+<pre>{"<b>Hello</b> <strong>World!!</strong>"|strip_tags:false}</pre>
+{/literal}
+<h3>Result</h3>
+<pre>{"<b>Hello</b> <strong>World!!</strong>"|strip_tags:true}</pre>
+<pre>{"<b>Hello</b> <strong>World!!</strong>"|strip_tags:false}</pre>

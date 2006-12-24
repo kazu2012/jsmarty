@@ -540,17 +540,8 @@ JSmarty.prototype =
 	 * @param {Function} e contentelse
 	 * @type String
 	 */
-	inSection : function(params, content, contentelse, modifier)
+	inSection : function(p, m, c, e)
 	{
-		if(!params.name)
-		{
-			return this.trigger_error("section : missing 'name' parameter");
-		};
-		if(!params.loop)
-		{
-			this._section[params.name] = { show : false, total : 0 };
-			return (contentelse) ? contentelse.call(this) : '';
-		};
 	}
 };
 

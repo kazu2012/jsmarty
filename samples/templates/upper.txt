@@ -1,0 +1,9 @@
+<h2>modifier : upper</h2>
+<h3>Model</h3>
+{model name="upper"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{"hello"|upper}
+{/literal}
+<h3>Result</h3>
+{"hello"|upper}

@@ -1,0 +1,7 @@
+<h2>modifier : wordwrap</h2>
+<h3>Model</h3>
+{model name="wordwrap"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{/literal}
+<h3>Result</h3>

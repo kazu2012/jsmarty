@@ -160,5 +160,69 @@ var Model =
 		smarty.assign("hoge", "Hello");
 		smarty.display('cat.txt');
 		smarty.clear_all_assign();
+	},
+	Count_characters : function()
+	{
+		smarty.display('count_characters.txt');
+	},
+	Count_paragraphs : function()
+	{
+		smarty.display('count_paragraphs.txt');
+	},
+	Count_sentences : function()
+	{
+		smarty.display('count_sentences.txt');
+	},
+	Count_words : function()
+	{
+		smarty.display('count_words.txt');
+	},
+	Default : function()
+	{
+		smarty.display('default.txt');
+	},
+	Indent : function()
+	{
+		smarty.display('indent.txt');
+	},
+	Lower : function()
+	{
+		smarty.display('lower.txt');
+	},
+	Nl2br : function()
+	{
+		smarty.display('nl2br.txt');
+	},
+	Regex_replace : function()
+	{
+		smarty.display('regex_replace.txt');
+	},
+	Spacify : function()
+	{
+		smarty.display('spacify.txt');
+	},
+	String_format : function()
+	{
+		smarty.display('string_format.txt');
+	},
+	Stripm : function()
+	{
+		smarty.display('stripm.txt');
+	},
+	Strip_tags : function()
+	{
+		smarty.display('strip_tags.txt');
+	},
+	Truncate : function()
+	{
+		smarty.display('truncate.txt');
+	},
+	Upper : function()
+	{
+		smarty.display('upper.txt');
+	},
+	Wordwrap : function()
+	{
+		smarty.display('wordwrap.txt');
 	}
 };

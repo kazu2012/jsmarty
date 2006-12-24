@@ -1,6 +1,6 @@
 /**
  * Provide interfase of Plugin.
- * extended JSmarty.File Object
+ * extended JSmarty.System Object
  * @type JSmarty.Plugin Object
  */
 JSmarty.Plugin = JSmarty.Utility.factory(JSmarty.System);

@@ -1,0 +1,9 @@
+<h2>modifier : lower</h2>
+<h3>Model</h3>
+{model name="lower"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{"HELLO!!"|lower}
+{/literal}
+<h3>Result</h3>
+{"HELLO!!"|lower}
