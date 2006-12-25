@@ -60,8 +60,9 @@ JSmarty.Compiler = function(renderer)
 	{
 		var r = m = new Module(src);
 		var n = m.name, s = m.symbol;
+		var len = Tags.length;
 
-		if(0 < Tags.length)
+		if(0 < len)
 		{
 			if(Block[n])
 			{
@@ -75,7 +76,10 @@ JSmarty.Compiler = function(renderer)
 					return genString(L + src + R);
 			};
 
-			if(0 < Tags.length) r += '+';
+			if(0 < Tags.length)
+			{
+				r += '+';
+			};
 		}
 		else
 		{
@@ -226,7 +230,7 @@ JSmarty.Compiler.Module.prototype =
 			switch(this.name)
 			{
 				case 'if':
-				case 'elsif':
+				case 'elseif':
 					op = JSmarty.Compiler.OPERATORS;
 					outerloop:
 					for(i=0,f=s.length;i<=f;i++)
@@ -310,16 +314,16 @@ JSmarty.Compiler.Module.prototype =
 					case '"':
 					case "'":
 						c = s[i++];
-						while(s[i] != c && i <= f) ++i;
+						while(s[i] != c && i <= f) i++;
 						if(f + 1 < i) throw new Error("");
 						if(s[i-1] == '\\') i--;
 						break;
 					case ':':
-						s[i++] = (c) ? ',' : '":[,';
+						s[i] = (c) ? ',' : '":[,';
 						c = true;
 						break;
 					case '|':
-						s[i++] = (c) ? '],"' : '":[],"';
+						s[i] = (c) ? '],"' : '":[],"';
 						c = false;
 						break;
 				};
@@ -330,7 +334,7 @@ JSmarty.Compiler.Module.prototype =
 	},
 	toString : function(block, compiler)
 	{
-		var Plugin, suffix = ')';
+		var temp, Plugin;
 
 		switch(this.symbol)
 		{
@@ -360,10 +364,10 @@ JSmarty.Compiler.Module.prototype =
 			case 'literal':
 				return 'this.inModif(' + this.modif + ',';
 			case 'if':
-				return '"";\nif('+ this.attr +'){B[++I]=';
+				return '"";\nif('+ this.attr +'){B[++I]=""';
 			case 'else':
 				return '"";}\nelse{B[++I]=""';
-			case 'elsif':
+			case 'elseif':
 				return '"";}\nelse if('+ this.attr +'){B[++I]=""';
 			case 'ldelim':
 				return 'this.left_delimiter';
@@ -379,12 +383,38 @@ JSmarty.Compiler.Module.prototype =
 			case 'foreach':
 				return 'this.inForeach('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;\nB[++I]=';
 			case 'section':
-				return 'this.inSection('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;\nB[++I]=';
+				temp = JSmarty.Compiler.extract(this.attr, 'name');
+				this.attr = JSmarty.Compiler.remove(this.attr, 'name');
+				if(temp == '') throw new Error("section : missing 'name' parameter");
+				return 'this.inSection("'+ temp +'",'+ this.attr +','+ this.modif +',function('+ temp +'){var B=[],I=-1;\nB[++I]=';
 		};
 
-		var suffix = (block) ? ',' : ')';
-		return 'this.inCall("'+ this.name +'",'+ this.attr +','+ this.modif + suffix;
+		temp = (block) ? ',' : ')';
+		return 'this.inCall("'+ this.name +'",'+ this.attr +','+ this.modif + temp;
 	}
+};
+
+/**
+ * extract function
+ * @param {String} src source
+ * @param {String} key
+ * @return {mixed}
+ */
+JSmarty.Compiler.extract = function(src, key)
+{
+	var res = src.match(RegExp(key + ':([^,]+)'));
+	return (res) ? res[1] : '';
+};
+
+/**
+ * remove function
+ * @param {String} src source
+ * @param {String} key
+ * @return {String}
+ */
+JSmarty.Compiler.remove = function(src, key)
+{
+	return src.replace(RegExp(key + ':([^,]+),'),'');
 };
 
 /** StringBuffer **/
@@ -400,5 +430,6 @@ JSmarty.Compiler.OPERATORS =
 {
 	eq : '==', ne : '!=', neq: '!=', gt : '>' ,
 	lt : '<' , ge : '>=', gte: '>=', le : '<=',
-	lte: '<=', not: '!' , and: '&&', or : '||'
+	lte: '<=', not: '!' , and: '&&', or : '||',
+	mod: '%'
 };

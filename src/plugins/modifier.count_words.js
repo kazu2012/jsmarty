@@ -20,6 +20,6 @@ function jsmarty_modifier_count_words(string)
 {
 	var preg_grep = JSmarty.Plugin.getFunction('php.preg_grep');
 	var split = string.split(/\s+/);
-	var words = preg_grep(/[a-zA-Z0-9\\x80-\\xff]/, split);
+	var words = preg_grep(/[a-zA-Z0-9\x80-\xff]/, split);
 	return JSmarty.Plugin.getFunction('php.count')(words);
 };

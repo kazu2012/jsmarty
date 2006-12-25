@@ -77,9 +77,9 @@ var Model =
 	},
 	Section : function()
 	{
-		smarty.assign_by_ref('custid', [ '001', '002', '003' ]);
-		smarty.assign_by_ref('name',   [ 'id', 'shogo', '4405']);
-		smarty.assign_by_ref('address',[ 'hoge@com', 'foo@com', 'bar@com' ]);
+		smarty.assign_by_ref('custid', [ '001', '002', '003', '004', '005' ]);
+		smarty.assign_by_ref('name',   [ 'hoge', 'foo', 'bar', 'foofoo', 'barbar']);
+		smarty.assign_by_ref('address',[ 'hoge@com', 'foo@com', 'bar@com', 'foofoo@com', 'barbar@com']);
 		smarty.display('section.txt');
 		smarty.clear_all_assign();
 	},
@@ -215,6 +215,7 @@ var Model =
 	},
 	Truncate : function()
 	{
+		smarty.assign('text','El ingenioso hidalgo Don Quijote de La Mancha');
 		smarty.display('truncate.txt');
 	},
 	Upper : function()

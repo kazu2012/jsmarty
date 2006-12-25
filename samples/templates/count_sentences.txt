@@ -1,10 +1,5 @@
-<h2>modifier : cat</h2>
+<h2>modifier : count_sentences</h2>
 <h3>Model</h3>
-{model name="cat"}
+{model name="count_sentences"}
 <h3>Template</h3>
-{template|htmlspecialchars|nl2br}
-{fetch file="cat.txt"}
-{/template}
 <h3>Result</h3>
-{"foo"|cat:"bar"}<br />
-{$hoge|cat:"World!!"}

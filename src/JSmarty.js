@@ -1,11 +1,14 @@
 /**
- * File:    JSmarty.js
+ * FILE:
+ * JSmarty.js
  *
- * This library is free software. License under the GNU Lesser General
- * Public License as published by the Free Software Foundation(LGPL).
+ * LICENCE:
+ * This library is free software; you can redistribute it and/or modify
+ * it under the LGPL2.1 as published by the Free Software Foundation.
+ * See the http://www.gnu.org/licenses/lgpl.txt in this distribution.
  *
- * @link http://d.hatena.ne.jp/shogo4405/20060727/1153977238
- * @author shogo < shogo4405 at gmail dot com >
+ * @author shogo < shogo4405 at gmail dot com>
+ * @package JSmarty
  * @version @version@
  */
 
@@ -534,14 +537,60 @@ JSmarty.prototype =
 	},
 	/**
 	 * internals: section function
+	 * @param {String} n name of section
 	 * @param {Object} p params
 	 * @param {Object} m modifier
 	 * @param {Function} c content
 	 * @param {Function} e contentelse
 	 * @type String
 	 */
-	inSection : function(p, m, c, e)
+	inSection : function(n, p, m, c, e)
 	{
+		var name = n, loop = p.loop;
+		var k, t = i = -1, b =[], section;
+
+		if(!loop)
+		{
+			this._section[name] = { show : false, total : 0 };
+			return this.inModif(m, (e) ? e.call(this) : '');
+		};
+
+		var max = p.max || loop.length - 1;
+		var show = p.show || true;
+		var step = p.step || 1;
+		var start = p.start || 0;
+
+		for(k = start;k <= max;k += step) ++t;
+
+		section = this._section[name] =
+		{
+			show : true,
+			loop : 0,
+			last : false,
+			total : t,
+			index : 0,
+			first : true,
+			rownum : 1,
+			iteration : 1,
+			index_next : 0,
+			index_prev : -1
+		};
+
+		for(k = start;k <= max;k += step)
+		{
+			if(t == ++i) section.last = true;
+			b[i] = c.call(this, k);
+			section.loop++;
+			section.index = k + step;
+			section.first = false;
+			section.rownum++;
+			section.iteration++;
+			section.index_prev += step;
+			section.index_next += step;
+		};
+
+		this._section[name] = { show : true, loop : i, total : t };
+		return this.inModif(m, b.join(''));
 	}
 };
 

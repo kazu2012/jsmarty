@@ -23,7 +23,7 @@
  */
 function jsmarty_modifier_truncate(string, length, etc, break_words, middle)
 {
-	length = (length) ? length - 0 : 80;
+	length = (length) ? Number(length) : 80;
 
 	if(length == 0) return '';
 	if(etc == void(0)) etc = '...';
@@ -34,7 +34,7 @@ function jsmarty_modifier_truncate(string, length, etc, break_words, middle)
 	{
 		length -= etc.length;
 		if(!break_words && !middle)
-			string = string.slice(0, length+1).replace(/\s+?(\S+)?/, '');
+			string = string.replace(/\s+?(\S+)?$/,'').slice(0, length+1);
 		if(!middle)
 			return string.slice(0, length) + etc;
 		else

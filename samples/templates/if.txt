@@ -8,9 +8,9 @@
 <h3>Result</h3>
 {if $hoge==1}
 Hello, World!! Part1.
-{elsif $hoge==2}
+{elseif $hoge==2}
 Hello, World!! Part2.
-{elsif $hoge==3}
+{elseif $hoge==3}
 Hello, World!! Part3.
 {else}
 Hello, World!! Part4.

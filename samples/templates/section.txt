@@ -2,28 +2,23 @@
 <h3>Model</h3>
 {model name="section"}
 <h3>Template</h3>
-{literal|htmlspecialchars|nl2br}
-{section name=mydata loop=$custid}
-<p>
-	id: {$custid[mydata]}<br />
-	name: {$name[mydata]}<br />
-	address: {$address[mydata]}<br />
-</p>
-{if !$smarty.section.mydata.last}<hr />{/if}
-{/section}
-{if $smarty.section.mydata.total != 0}
-<p>SECTION TOTAL : {$smarty.section.mydata.total}</p>
-{/if}
-{/literal}
+{template|htmlspecialchars|nl2br}
+{fetch file="section.txt"}
+{/template}
 <h3>Result</h3>
 {section name=mydata loop=$custid}
-<p>
-	id: {$custid[mydata]}<br />
-	name: {$name[mydata]}<br />
-	address: {$address[mydata]}<br />
-</p>
-{if !$smarty.section.mydata.last}<hr />{/if}
-{/section}
-{if $smarty.section.mydata.total != 0}
-<p>SECTION TOTAL : {$smarty.section.mydata.total}</p>
+{if $smarty.section.mydata.first}
+<table border="1" width="50%" cellpadding="8" cellspacing="0">
+  <tr style="background-color:#000000;color:#ffffff;">
+    <th>id</th>
+    <th>name</th>
+    <th>mail</th>
+  </tr>
 {/if}
+  <tr style="background-color:{cycle values="#ffffff,#cccccc"};">
+    <td>{$custid[mydata]}</td>
+    <td>{$name[mydata]}</td>
+    <td>{$address[mydata]}</td>
+  </tr>
+{if $smarty.section.mydata.last}</table>{/if}
+{/section}

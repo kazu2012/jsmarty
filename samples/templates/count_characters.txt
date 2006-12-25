@@ -1,4 +1,4 @@
-<h2>modifier : cat</h2>
+<h2>modifier : count_characters</h2>
 <h3>Model</h3>
 {model name="count_characters"}
 <h3>Template</h3>
