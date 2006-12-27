@@ -2,14 +2,24 @@
 <h3>Model</h3>
 {model name="foreach"}
 <h3>Template</h3>
-{template|htmlspecialchars|nl2br}
-{fetch file="foreach.txt"}
-{/template}
+{template|htmlspecialchars|nl2br}{fetch file="foreach.txt"}{/template}
 <h3>Result</h3>
 {foreach from=$hoge name="mydata" item="datum" key="key"}
-<p>{$key} -&gt; {$datum}, {$smarty.foreach.mydata.total}</p>
+{if $smarty.foreach.mydata.first}
+<table border="1" width="50%" cellpadding="8" cellspacing="0">
+  <tr style="background-color:#000000;color:#ffffff;">
+    <th>key</th>
+    <th>value</th>
+  </tr>
+{/if}
+  <tr style="background-color:{cycle values="#ffffff,#cccccc"};">
+    <td>{$key}</td>
+    <td>{$datum}</td>
+  </tr>
+{if $smarty.foreach.mydata.last}</table>{/if}
 {/foreach}
+
 {foreach from=$bar}
 {foreachelse}
-displayed by sectionelse
+displayed by foreach
 {/foreach}

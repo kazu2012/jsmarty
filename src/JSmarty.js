@@ -481,8 +481,7 @@ JSmarty.prototype =
 	 */
 	inForeach : function(p, m, c, e)
 	{
-		var foreach;
-		var k, t = i = -1, b = [];
+		var k, i = -1, t = 0, b = [], foreach;
 
 		var from = p.from;
 		var key  = p.key  || false;
@@ -491,7 +490,8 @@ JSmarty.prototype =
 
 		if(!from)
 		{
-			
+			if(name) this._foreach[name] = { show : false, total : 0 };
+			return this.inModif(m, (e) ? e.call(this) : '');
 		};
 
 		if(name)
@@ -504,20 +504,20 @@ JSmarty.prototype =
 
 			foreach = this._foreach[name] =
 			{
-				show:true,
-				last:false,
-				first:true,
-				total:t,
-				iterarion:0
+				show : true,
+				last : false,
+				first : true,
+				total : t,
+				iterarion : 0
 			};
 
 			for(k in from)
 			{
 				if(!from.hasOwnProperty(k)) continue;
+				if(t-1 == ++i) foreach.last = true;
 				if(key) this.assign(key, k);
-				if(t == i) foreach.last = true;
 				this.assign(item, from[k]);
-				b[++i] = c.call(this);
+				b[i] = c.call(this);
 				foreach.iteration = i;
 				foreach.first = false;
 			};

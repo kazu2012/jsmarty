@@ -22,7 +22,7 @@ JSmarty.Plugin.empty = function(){
 /**
  * Evalute the source of plugin.
  * @param  {String} $code The sourcecode of javascript.
- * @param  {String} $namespace namespace of plugin
+ * @param  {String} $ns namespace of plugin
  * @return {Boolean} Evalute done, or not.
  */
 JSmarty.Plugin.parse = function($code, $ns)
@@ -45,7 +45,7 @@ JSmarty.Plugin.parse = function($code, $ns)
 
 /**
  * @param {String} ns namaspace of plugin
- * @param {String | Array} dir The repository path of plugins. 
+ * @param {mixed}  dir The repository path of plugins. 
  * @type Boolean
  */
 JSmarty.Plugin.getFunction = function(ns, dir)
@@ -60,7 +60,7 @@ JSmarty.Plugin.getFunction = function(ns, dir)
 /**
  * Load plugin.
  * @param {String} ns namaspace of plugin
- * @param {String | Array} dir The repository path of plugins. 
+ * @param {mixed}  dir The repository path of plugins. 
  * @type Boolean
  */
 JSmarty.Plugin.addPlugin = function(ns, dir)

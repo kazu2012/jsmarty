@@ -21,16 +21,32 @@ JSmarty.Compiler = function(renderer)
 
 	var RcrRegExp = /\r?\n/g;
 	var VarRegExp = /&&__COM__::__VAR__&&/g;
-	var RmvRegExp = /""\+|\+""|B\[\+\+I\]=""\;\n/g;
+	var RmvRegExp = /\+""|B\[\+\+I\]=""\;\n/g;
 	var BlcRegExp = RegExp(L + '\\/(.*?)' + R,'g');
 	var RsvRegExp = /&&__COM__::__VAR__&&smarty\./g;
 	var TagRegExp = RegExp(L + '[^'+ R +']*' + R,'g');
+
+	var inner = false, literal = -1;
 
 	var PutString = null, Compiler = JSmarty.Compiler;
 	var Module = Compiler.Module, StringBuffer = Compiler.StringBuffer;
 
 	/** plugins_dir **/
 	this.plugins_dir = renderer.plugins_dir;
+
+	/**
+	 * isContainer function
+	 * @param {Module} module
+	 */
+	function isContainer(module)
+	{
+		if(Block[module.name])
+		{
+			module.setProperty('type','block');
+			return true;
+		};
+		return false;
+	};
 
 	/**
 	 * SetRegExp function
@@ -51,6 +67,7 @@ JSmarty.Compiler = function(renderer)
 		if(R != renderer.right_delimiter) flag = true, R = renderer.right_delimiter;
 		return flag;
 	};
+	
 	/**
 	 * GenModule function
 	 * @param  {String} src source
@@ -58,58 +75,62 @@ JSmarty.Compiler = function(renderer)
 	 */
 	function genModule(src)
 	{
-		var r = m = new Module(src);
-		var n = m.name, s = m.symbol;
-		var len = Tags.length;
+		var m = new Module(src);
+		var n = m.getProperty('name');
 
-		if(0 < len)
+		if(isContainer(m))
 		{
-			if(Block[n])
+			if(m.isClose())
 			{
-				if(s == '/') Tags.pop();
-				else         Tags.push(n);
-			};
-
-			switch(Tags[0])
+				if(n != Tags.pop()) throw new Error("");
+			}
+			else
 			{
-				case 'literal':
-					return genString(L + src + R);
-			};
-
-			if(0 < Tags.length)
-			{
-				r += '+';
+				Tags.push(n);
+				switch(n)
+				{
+					case 'if':
+						break;
+					default:
+						PutString('B[++I]=');
+						break;
+				};
 			};
 		}
 		else
 		{
-			PutString('B[++I]=');
-			if(Block[n])
+			switch(n)
 			{
-				Tags.push(n);
-				r = m.toString(true);
+				case 'else':
+				case 'elseif':
+				case 'sectionelse':
+				case 'foreachelse':
+					break;
+				default:
+					PutString('B[++I]=');
+					break;
 			};
 		};
 
-		PutString(r);
+		PutString(m);
 	};
 	/**
 	 * GenModule function
-	 * @param  {String} s source
-	 * @return {String}
+	 * @param  {String} src source
 	 */
-	function genString(s)
+	function genString(src)
 	{
-		if(s && -1 < s.indexOf('"')) s = s.split('"').join('\\"');
-		if(s && 0 == s.indexOf('\\n')) s = s.slice(2);
-		(Tags.length == 0) ? PutString(';\nB[++I]="'+ s + '";\n') : PutString('"'+ s + '"+');
+		if(!src) return;
+		if(src && -1 < src.indexOf('"')) src = src.split('"').join('\\"');
+		if(src && 0 == src.indexOf('\\n')) src = src.slice(2);
+		PutString('B[++I]="'+ src + '";\n');
 	};
 	/**
 	 * header function
 	 */
 	function header()
 	{
-		PutString('var I=-1,B=[],O={},V=this._tpl_vars');
+		PutString('var I=-1,B=[],O={},V=this._tpl_vars,self=this;\n');
 	};
 	/**
 	 * filter function
@@ -122,7 +143,7 @@ JSmarty.Compiler = function(renderer)
 				src = src.replace(RcrRegExp,'\\n');
 				break;
 			case 'post':
-				src = src.replace(RmvRegExp,'');
+			//	src = src.replace(RmvRegExp,'');
 				src = src.replace(RsvRegExp,'this._');
 				src = src.replace(VarRegExp,'V.');
 				break;
@@ -147,7 +168,10 @@ JSmarty.Compiler = function(renderer)
 
 		// scan block element
 		p = BlcRegExp;
-		while((r = p.exec(src)) != null) Block[r[1]] = true;
+		while((r = p.exec(src)) != null)
+		{
+			Block[r[1]] = true;
+		};
 
 		// scan tag element and string
 		p = TagRegExp;
@@ -160,7 +184,7 @@ JSmarty.Compiler = function(renderer)
 			iap = isp + tag.length;
 		};
 
-		genString(src.slice(iap));
+		(iap == src.length) ? PutString(';\n') : genString(src.slice(iap));
 	};
 	/**
 	 * execute function - compile a source
@@ -181,7 +205,12 @@ JSmarty.Compiler = function(renderer)
 JSmarty.Compiler.Module = function(src){ this.parse(src); };
 JSmarty.Compiler.Module.prototype =
 {
-	name : null, attr : 'O', modif : null, symbol : null,
+	name : null,
+	attr : 'O',
+	type : 'function',
+	modif : null,
+	inner : false,
+	symbol : null,
 	parse : function(src)
 	{
 		var inp = 0, iap = imp = -1;
@@ -332,28 +361,28 @@ JSmarty.Compiler.Module.prototype =
 			this.modif = '{"'+ s.join('') +']}';
 		};
 	},
-	toString : function(block, compiler)
+	toString : function()
 	{
-		var temp, Plugin;
+		var temp;
 
 		switch(this.symbol)
 		{
 			case '"':
 			case "'":
 			case '$':
-				return 'this.inModif('+ this.modif +','+ this.name +')';
+				return 'self.inModif('+ this.modif +','+ this.name +');\n';
 			case '/':
 				switch(this.name)
 				{
 					case 'if':
-						return '"";}\nB[++I]=""';
+						return '}';
 					case 'strip':
-						return '"").replace(/\\s|\\n/g,"")';
+						return 'return B.join("");}()).replace(/\\s|\\n/g,"");';
 					case 'foreach':
 					case 'section':
-						return '"";return B.join("");})\nB[++I]=""';
+						return 'return B.join("");});\n';
 				};
-				return '"")';
+				return 'return B.join("");}());\n';
 			case '#':
 			case '*':
 				return '""';
@@ -361,37 +390,42 @@ JSmarty.Compiler.Module.prototype =
 
 		switch(this.name)
 		{
-			case 'literal':
-				return 'this.inModif(' + this.modif + ',';
 			case 'if':
-				return '"";\nif('+ this.attr +'){B[++I]=""';
+				return 'if('+ this.attr +'){';
 			case 'else':
-				return '"";}\nelse{B[++I]=""';
+				return '}\nelse{';
 			case 'elseif':
-				return '"";}\nelse if('+ this.attr +'){B[++I]=""';
+				return '}\nelse if('+ this.attr +'){';
 			case 'ldelim':
-				return 'this.left_delimiter';
+				return 'self.left_delimiter;';
 			case 'rdelim':
-				return 'this.right_delimiter';
+				return 'self.right_delimiter;';
 			case 'strip':
-				return 'String(';
+				return 'String(function(){var B=[],I=-1;';
 			case 'javascript':
-				return 'this.inEval(';
+				return 'self.inEval(';
 			case 'sectionelse':
 			case 'foreachelse':
-				return '"";return B.join("");},function(){var B=[],I=-1;\nB[++I]=""';
+				return ';return B.join("");},function(){var B=[],I=-1;';
+			case 'literal':
+				return 'self.inModif(' + this.modif + ',function(){var B=[],I=-1;';
 			case 'foreach':
-				return 'this.inForeach('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;\nB[++I]=';
+				return 'self.inForeach('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;';
 			case 'section':
 				temp = JSmarty.Compiler.extract(this.attr, 'name');
 				this.attr = JSmarty.Compiler.remove(this.attr, 'name');
 				if(temp == '') throw new Error("section : missing 'name' parameter");
-				return 'this.inSection("'+ temp +'",'+ this.attr +','+ this.modif +',function('+ temp +'){var B=[],I=-1;\nB[++I]=';
+				return 'self.inSection("'+ temp +'",'+ this.attr +','+ this.modif +',function('+ temp +'){var B=[],I=-1;';
 		};
 
-		temp = (block) ? ',' : ')';
-		return 'this.inCall("'+ this.name +'",'+ this.attr +','+ this.modif + temp;
-	}
+		temp = (this.isFunction()) ? ');\n' : ',function(){var B=[],I=-1;\n';
+		return 'self.inCall("'+ this.name +'",'+ this.attr +','+ this.modif + temp;
+	},
+	isClose : function(){ return (this.symbol == '/'); },
+	isFunction : function(){ return (this.type == 'function'); },
+	getProperty : function(key){ return this[key]; },
+	setProperty : function(key, value){ if(key in this) this[key] = value; }
+
 };
 
 /**
@@ -402,7 +436,7 @@ JSmarty.Compiler.Module.prototype =
  */
 JSmarty.Compiler.extract = function(src, key)
 {
-	var res = src.match(RegExp(key + ':([^,]+)'));
+	var res = src.match(RegExp(key + ':([^,}]+)'));
 	return (res) ? res[1] : '';
 };
 
@@ -422,7 +456,7 @@ JSmarty.Compiler.StringBuffer = function()
 {
 	var p = -1, b = [];
 	this.apend     = function(s){ b[++p] = s; };
-	this.toString  = function(s){ return b.join(s || ''); };
+	this.toString  = function(s){ return b.join(''); };
 };
 
 /** String Operators **/
