@@ -3,5 +3,7 @@
 {model name="wordwrap"}
 <h3>Template</h3>
 {literal|htmlspecialchars|nl2br}
+{$text|wordwrap:30|nl2br}
 {/literal}
 <h3>Result</h3>
+{$text|wordwrap:30|nl2br}

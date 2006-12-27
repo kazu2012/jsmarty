@@ -2,4 +2,8 @@
 <h3>Model</h3>
 {model name="count_sentences"}
 <h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{"What is this?\n\nThis is a pen."|count_sentences}
+{/literal}
 <h3>Result</h3>
+{"What is this?\n\nThis is a pen."|count_sentences}

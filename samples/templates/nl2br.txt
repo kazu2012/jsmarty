@@ -1,0 +1,9 @@
+<h2>modifier : nl2br</h2>
+<h3>Model</h3>
+{model name="nl2br"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{$html|nl2br}
+{/literal}
+<h3>Result</h3>
+{$html|nl2br}

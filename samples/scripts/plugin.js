@@ -191,7 +191,9 @@ var Model =
 	},
 	Nl2br : function()
 	{
+		smarty.assign("html",'Hello\nWorld!!\n');
 		smarty.display('nl2br.txt');
+		smarty.clear_all_assign();
 	},
 	Regex_replace : function()
 	{
@@ -217,6 +219,7 @@ var Model =
 	{
 		smarty.assign('text','El ingenioso hidalgo Don Quijote de La Mancha');
 		smarty.display('truncate.txt');
+		smarty.clear_all_assign();
 	},
 	Upper : function()
 	{
@@ -224,6 +227,8 @@ var Model =
 	},
 	Wordwrap : function()
 	{
+		smarty.assign('text','El ingenioso hidalgo Don Quijote de La Mancha');
 		smarty.display('wordwrap.txt');
+		smarty.clear_all_assign();
 	}
 };

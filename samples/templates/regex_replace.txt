@@ -1,0 +1,9 @@
+<h2>modifier : regex_replace</h2>
+<h3>Model</h3>
+{model name="regex_replace"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{"Hello foo.Hello foo."|regex_replace:/foo/g:"World!!"}
+{/literal}
+<h3>Result</h3>
+{"Hello foo.Hello foo."|regex_replace:/foo/g:"World!!"}

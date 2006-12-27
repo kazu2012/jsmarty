@@ -23,7 +23,10 @@
 
 		idResource.onkeyup = function()
 		{
-			idResult.innerHTML = compiler.execute(this.value);
+			var s = new Date();
+			var result = compiler.execute(this.value);
+			var e = new Date();
+			idResult.innerHTML = result + (e.getTime() - s.getTime());
 		};
 	};
 	</script>

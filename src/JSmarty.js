@@ -78,9 +78,11 @@ JSmarty.prototype =
 		switch(typeof(value))
 		{
 			case 'undefined':
-				value = null; break;
+				value = null;
+				break;
 			case 'object':
-				value = JSmarty.copy(value); break;
+				value = JSmarty.Utility.objectcopy(value);
+				break;
 		};
 
 		if(key instanceof Object)

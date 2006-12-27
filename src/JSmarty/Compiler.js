@@ -26,9 +26,7 @@ JSmarty.Compiler = function(renderer)
 	var RsvRegExp = /&&__COM__::__VAR__&&smarty\./g;
 	var TagRegExp = RegExp(L + '[^'+ R +']*' + R,'g');
 
-	var inner = false, literal = -1;
-
-	var PutString = null, Compiler = JSmarty.Compiler;
+	var plain = -1, PutString = null, Compiler = JSmarty.Compiler;
 	var Module = Compiler.Module, StringBuffer = Compiler.StringBuffer;
 
 	/** plugins_dir **/
@@ -46,6 +44,11 @@ JSmarty.Compiler = function(renderer)
 			return true;
 		};
 		return false;
+	};
+
+	function isPlain()
+	{
+		return (-1 < plain);
 	};
 
 	/**
@@ -83,6 +86,15 @@ JSmarty.Compiler = function(renderer)
 			if(m.isClose())
 			{
 				if(n != Tags.pop()) throw new Error("");
+				switch(n)
+				{
+					case 'javascript':
+						plain = -1;
+						break;
+					case 'literal':
+						if(plain == Tags.length) plain = -1;
+						break;
+				};
 			}
 			else
 			{
@@ -91,8 +103,25 @@ JSmarty.Compiler = function(renderer)
 				{
 					case 'if':
 						break;
-					default:
+					case 'javascript':
 						PutString('B[++I]=');
+						PutString(m);
+						plain = 0;
+						return;
+					case 'literal':
+						if(isPlain())
+						{
+							PutString(L + src + R);
+						}
+						else
+						{
+							PutString('B[++I]=');
+							PutString(m);
+							plain = Tags.length - 1;
+						};
+						return;
+					default:
+						if(!isPlain()) PutString('B[++I]=');
 						break;
 				};
 			};
@@ -107,12 +136,19 @@ JSmarty.Compiler = function(renderer)
 				case 'foreachelse':
 					break;
 				default:
-					PutString('B[++I]=');
+					if(!isPlain()) PutString('B[++I]=');
 					break;
 			};
 		};
 
-		PutString(m);
+		if(isPlain())
+		{
+			PutString(L + src + R);
+		}
+		else
+		{
+			PutString(m);
+		};
 	};
 	/**
 	 * GenModule function
@@ -121,6 +157,7 @@ JSmarty.Compiler = function(renderer)
 	function genString(src)
 	{
 		if(!src) return;
+		if(isPlain()){ PutString(src); return;};
 		if(src && -1 < src.indexOf('"')) src = src.split('"').join('\\"');
 		if(src && 0 == src.indexOf('\\n')) src = src.slice(2);
 		PutString('B[++I]="'+ src + '";\n');
@@ -381,6 +418,10 @@ JSmarty.Compiler.Module.prototype =
 					case 'foreach':
 					case 'section':
 						return 'return B.join("");});\n';
+					case 'javascript':
+						return '}();\n';
+					case 'literal':
+						return '\');\n';
 				};
 				return 'return B.join("");}());\n';
 			case '#':
@@ -403,12 +444,12 @@ JSmarty.Compiler.Module.prototype =
 			case 'strip':
 				return 'String(function(){var B=[],I=-1;';
 			case 'javascript':
-				return 'self.inEval(';
+				return 'function(){';
 			case 'sectionelse':
 			case 'foreachelse':
 				return ';return B.join("");},function(){var B=[],I=-1;';
 			case 'literal':
-				return 'self.inModif(' + this.modif + ',function(){var B=[],I=-1;';
+				return 'self.inModif(' + this.modif + ',\'';
 			case 'foreach':
 				return 'self.inForeach('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;';
 			case 'section':
