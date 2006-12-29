@@ -17,8 +17,6 @@
 	{
 		
 	};
-	def.print = function(str){
-		print(str);
-	};
+	def.print = function(s){ print(s); };
 	def.getSelfPath = function(){ return '.'; };
 })(JSmarty.System);

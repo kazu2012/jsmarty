@@ -539,14 +539,13 @@ JSmarty.prototype =
 	},
 	/**
 	 * internals: section function
-	 * @param {String} n name of section
 	 * @param {Object} p params
 	 * @param {Object} m modifier
 	 * @param {Function} c content
 	 * @param {Function} e contentelse
 	 * @type String
 	 */
-	inSection : function(n, p, m, c, e)
+	inSection : function(p, m, c, e)
 	{
 		var name = n, loop = p.loop;
 		var k, t = i = -1, b =[], section;

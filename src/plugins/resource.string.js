@@ -38,10 +38,10 @@ var jsmarty_resource_string =
 	 */
 	function(name, data, jsmarty)
 	{
-		if(document && document.lastModified)
+		if(typeof(document) != 'undefined' && document.lastModified)
 			data.time = document.lastModified;
 		else
-			data.time = new Date.getTime();
+			data.time = new Date().getTime();
 		return true;
 	},
 	/**

@@ -162,6 +162,7 @@ JSmarty.Compiler = function(renderer)
 		if(src && 0 == src.indexOf('\\n')) src = src.slice(2);
 		PutString('B[++I]="'+ src + '";\n');
 	};
+
 	/**
 	 * header function
 	 */
@@ -246,7 +247,6 @@ JSmarty.Compiler.Module.prototype =
 	attr : 'O',
 	type : 'function',
 	modif : null,
-	inner : false,
 	symbol : null,
 	parse : function(src)
 	{
@@ -492,12 +492,25 @@ JSmarty.Compiler.remove = function(src, key)
 	return src.replace(RegExp(key + ':([^,]+),'),'');
 };
 
+JSmarty.Compiler.Context = function(){};
+JSmarty.Compiler.Context.prototype =
+{
+	iPlain : -1, buffer : null, Tags : null,
+	left_delimiter: null, right_delimiter : null
+};
+
 /** StringBuffer **/
 JSmarty.Compiler.StringBuffer = function()
 {
 	var p = -1, b = [];
-	this.apend     = function(s){ b[++p] = s; };
 	this.toString  = function(s){ return b.join(''); };
+	this.apend = function()
+	{
+		for(var i=0,f=arguments.length;i<f;i++)
+		{
+			b[++p] = arguments[i];
+		};
+	};
 };
 
 /** String Operators **/

@@ -1,19 +1,24 @@
 /**
  * range function
  *
+ * @subpackage Arrays
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.0RC2
+ * @version 1.0.0
  * @see http://www.php.net/range
- * @param  {mixed} low
- * @param  {mixed} high
- * @param  {Number} step
+ * @param  {mixed}  l low
+ * @param  {mixed}  h high
+ * @param  {Number} n step
  * @return {Array}
  */
-function range(low, high, step)
+function range(l, h, n)
 {
-	var i, k = 0, a = [], s = step || 1;
-	if(s <= 0) throw new Error('step must be a positive number.');
-	var l = (low < high) ? low : high, h = (low < high) ? high : low;
-	for(i=l;i<=h;i+=s) a[k++] = i;
+	var m = (typeof(l) == 'number');
+	var k, i = -1, a = [], n = n || 1;
+	var s = (l < h) ? l : h, e = (l < h) ? h : l;
+	if(n < 1) throw new Error('step must be a positive number.');
+	if(typeof(s) == 'string') s = s.charCodeAt(0);
+	if(typeof(e) == 'string') e = e.charCodeAt(0);
+	if(m) for(k=s;k<=e;k+=n) a[++i] = k;
+	else  for(k=s;k<=e;k+=n) a[++i] = String.fromCharCode(k);
 	return a;
 };

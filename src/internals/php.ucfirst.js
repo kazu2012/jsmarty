@@ -1,12 +1,14 @@
 /**
  * ucfirst function
  *
+ * @subpackage Strings
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0
  * @see http://www.php.net/ucfirst
- * @param  {String} s
+ * @param  {String} s str
  * @return {String}
  */
-function ucfirst(s){
+function ucfirst(s)
+{
 	return s.charAt(0).toUpperCase() + s.slice(1);
 };

@@ -1,6 +1,6 @@
 JSmarty.Browser = function()
 {
-	var path, time = {}, sys  = JSmarty.System;
+	var path, time = {}, sys = JSmarty.System;
 	// -- XMLHttpRequestObject
 	var http = function()
 	{
