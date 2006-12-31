@@ -20,7 +20,7 @@
  * @return   {String}
  */
 
-// cycle_vars
+/* cycle_vars */
 var jsmarty_function_cycle_cycle_vars = {};
 
 function jsmarty_function_cycle(params, jsmarty)

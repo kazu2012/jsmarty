@@ -19,7 +19,7 @@
  * @return   {String}
  */
 
-// counters
+/* counters */
 var jsmarty_function_counter_counters = {};
 
 function jsmarty_function_counter(params, jsmarty)

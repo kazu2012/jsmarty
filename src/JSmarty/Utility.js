@@ -22,3 +22,4 @@ JSmarty.Utility =
 		return s;
 	}
 };
+

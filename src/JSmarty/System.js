@@ -43,3 +43,4 @@ JSmarty.System = new function()
 {
 	def.setProfile(def.genSysCode(this));
 })(JSmarty.System);
+

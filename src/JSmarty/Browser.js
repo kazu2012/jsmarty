@@ -52,3 +52,4 @@ JSmarty.Browser = function()
 
 	sys.getSelfPath = function(){ return path; };
 };
+

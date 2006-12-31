@@ -447,7 +447,7 @@ JSmarty.prototype =
 	 * @param {Object} m modifier
 	 * @param {Object} s source
 	 */
-	inModif : function(m, s)
+	inModify : function(m, s)
 	{
 		var d = this.plugins_dir;
 		var Plugin = JSmarty.Plugin;
