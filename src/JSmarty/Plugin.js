@@ -99,26 +99,24 @@ JSmarty.Plugin.importer = function()
  */
 JSmarty.Plugin.toString = function()
 {
-	var func = this.__func__;
-	var k, i = -1, b = [], w = 73;
-	var date = new Date().toString();
+	var s, t, k, func = this.__func__;
+	var w = 73, date = new Date().toString();
+	var buf = new JSmarty.Utility.StringBuilder();
 
-	b[++i] = 'Table Of Plugins';
-	b[++i] = Array(w).join('-');
+	buf.append('Table Of Plugins').append(Array(w).join('-'));
 
 	for(k in func)
 	{
 		k = k.split('.');
 		if(k.length == 2)
 		{
-			++i;
-			b[i] = '['+ k[0] + ']\t' + k[1] + ' -> ';
-			b[i] += Boolean(func[k.join('.')]) ? 'success' : 'failure';
+			t = (k[0].length < 8) ? '\t\t' : '\t';
+			s = Boolean(func[k.join('.')]) ? 'success' : 'failure';
+			buf.append('['+ k[0] + ']'+ t + k[1] + ' -> ' + s);
 		};
 	};
 
-	b[++i] = Array(w).join('-');
-	b[++i] = Array(w - 31).join(' ') + date;
+	buf.append(Array(w).join('-')).append(Array(w - 33).join(' ') + date);
 
-	return b.join('\n');
+	return buf.toString('\n');
 };

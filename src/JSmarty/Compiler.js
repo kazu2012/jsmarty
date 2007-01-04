@@ -407,7 +407,7 @@ JSmarty.Compiler.Module.prototype =
 			case '"':
 			case "'":
 			case '$':
-				return 'self.inModif('+ this.modif +','+ this.name +');\n';
+				return 'self.inModify('+ this.modif +','+ this.name +');\n';
 			case '/':
 				switch(this.name)
 				{
@@ -449,7 +449,7 @@ JSmarty.Compiler.Module.prototype =
 			case 'foreachelse':
 				return ';return B.join("");},function(){var B=[],I=-1;';
 			case 'literal':
-				return 'self.inModif(' + this.modif + ',\'';
+				return 'self.inModify(' + this.modif + ',\'';
 			case 'foreach':
 				return 'self.inForeach('+ this.attr +','+ this.modif +',function(){var B=[],I=-1;';
 			case 'section':

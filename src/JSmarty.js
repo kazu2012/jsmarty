@@ -81,7 +81,7 @@ JSmarty.prototype =
 				value = null;
 				break;
 			case 'object':
-				value = JSmarty.Utility.objectcopy(value);
+				value = JSmarty.Utility.factory(value);
 				break;
 		};
 
@@ -153,8 +153,7 @@ JSmarty.prototype =
 			return;
 		};
 
-		if(key != '')
-			delete this._tpl_vars[key];
+		if(key != '') delete this._tpl_vars[key];
 	},
 	clear_all_assign : function(){
 		this._tpl_vars = {};
@@ -440,7 +439,7 @@ JSmarty.prototype =
 			case 'function': r = call[ns](a, this); break;
 		};
 
-		return this.inModif(m, r);
+		return this.inModify(m, r);
 	},
 	/**
 	 * internals: modifier function
@@ -524,7 +523,7 @@ JSmarty.prototype =
 				foreach.first = false;
 			};
 
-			return this.inModif(m, b.join(''));
+			return this.inModify(m, b.join(''));
 		};
 
 		for(k in from)
@@ -535,7 +534,7 @@ JSmarty.prototype =
 			b[++i] = c.call(this);
 		};
 
-		return this.inModif(m, b.join(''));
+		return this.inModify(m, b.join(''));
 	},
 	/**
 	 * internals: section function
@@ -553,7 +552,7 @@ JSmarty.prototype =
 		if(!loop)
 		{
 			this._section[name] = { show : false, total : 0 };
-			return this.inModif(m, (e) ? e.call(this) : '');
+			return this.inModify(m, (e) ? e.call(this) : '');
 		};
 
 		var max = p.max || loop.length - 1;
@@ -591,7 +590,7 @@ JSmarty.prototype =
 		};
 
 		this._section[name] = { show : true, loop : i, total : t };
-		return this.inModif(m, b.join(''));
+		return this.inModify(m, b.join(''));
 	}
 };
 
