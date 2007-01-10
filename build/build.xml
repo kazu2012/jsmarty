@@ -16,8 +16,11 @@
 			<filelist dir="${src}/JSmarty" files="Browser.js,Utility.js,System.js,Plugin.js" />
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
-			<filelist dir="${src}/JSmarty" files="Compiler.js" />
-			<filelist dir="${src}/JSmarty/Compiler" files="Text.js,Module.js,Context.js" />
+			<filelist dir="${src}/JSmarty" files="Compiler.js,Context.js" />
+			<filelist dir="${src}/JSmarty/Compiler" files="__MODULE__.js,__STRING__.js,__NOTEXT__.js" />
+			<filelist dir="${src}/JSmarty/Compiler" files="Foreach.js,Foreachelse.js" />
+			<filelist dir="${src}/JSmarty/Compiler" files="Section.js,Sectionelse.js" />
+			<filelist dir="${src}/JSmarty/Compiler" files="Ldelim.js,Rdelim.js" />
 		</concat>
 		<copy todir="${lib}" overwrite="Yes" preservelastmodified="true">
 			<fileset dir="${src}" />

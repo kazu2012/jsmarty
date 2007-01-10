@@ -15,8 +15,13 @@
 	<script type="text/javascript" src="../lib/JSmarty.js"></script>
 	<script type="text/javascript" src="../src/JSmarty/Compiler.js"></script>
 	<script type="text/javascript" src="../src/JSmarty/Compiler/Context.js"></script>
-	<script type="text/javascript" src="../src/JSmarty/Compiler/String.js"></script>
-	<script type="text/javascript" src="../src/JSmarty/Compiler/Notext.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/__MODULE__.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/__NOTEXT__.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/__STRING__.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/Ldelim.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/Rdelim.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/Foreachelse.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/Sectionelse.js"></script>
 	<script type="text/javascript">
 	compiler = new JSmarty.Compiler({left_delimiter:'{',right_delimiter:'}'});
 	window.onload = function()

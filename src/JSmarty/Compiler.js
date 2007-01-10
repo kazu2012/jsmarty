@@ -125,7 +125,7 @@ JSmarty.Compiler = function(renderer)
 JSmarty.Compiler.extend = function(s, o)
 {
 	var i, c = function(t){ this.text = t; };
-	c.prototype = new s();
+	c.prototype = new this[s]();
 	for(i in o) c.prototype[i] = o[i];
 	return c;
 };
@@ -136,7 +136,7 @@ JSmarty.Compiler.newString = function(t)
 	return new this[n](t);
 };
 
-JSmarty.Compiler.newModule = function(text)
+JSmarty.Compiler.newModule = function(t)
 {
 	var inp = 0, iap = imp = -1;
 	var name, type, main = t.charAt(0);
@@ -164,6 +164,7 @@ JSmarty.Compiler.newModule = function(text)
 			type = t.slice()
 			break;
 		default:
+			type = 'function';
 			iap = t.indexOf(' ');
 			imp = t.indexOf('|');
 			inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : t.length;

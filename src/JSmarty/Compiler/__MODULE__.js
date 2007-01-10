@@ -1,18 +1,30 @@
 JSmarty.Compiler.__MODULE__ = function(){};
 JSmarty.Compiler.__MODULE__.prototype =
 {
+	text : null,
 	/** prefix **/
 	sPrefix : 'buf.apend(',
 	/** suffix **/
 	sSuffix : ');\n',
-	parse : function(cx){},
+	/** string **/
+	sString : null,
+	/**
+	 * parse function
+	 */
+	parse : function(){},
+	/**
+	 * prefix function
+	 */
 	prefix : function(){
 		return this.sPrefix;
 	},
+	/**
+	 * suffix function
+	 */
 	suffix : function(){
 		return this.sSuffix;
 	},
 	toString : function(){
-		return this.text;
+		return this.sString;
 	}
 };

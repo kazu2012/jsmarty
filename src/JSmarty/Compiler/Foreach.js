@@ -1,4 +1,4 @@
-JSmarty.Compiler.Foreachelse = JSmarty.Compiler.extend
+JSmarty.Compiler.Foreach = JSmarty.Compiler.extend
 (
 	'__MODULE__',
 	{
