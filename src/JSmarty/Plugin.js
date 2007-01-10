@@ -13,6 +13,14 @@ JSmarty.Plugin = JSmarty.Utility.factory(JSmarty.System);
 JSmarty.Plugin.__func__ = JSmarty.prototype._plugins;
 
 /**
+ * Repository of plugins.
+ * @private
+ * @type Array
+ */
+JSmarty.Plugin.__repo__ = [];
+
+/**
+ * empty function
  * Return blank string.
  */
 JSmarty.Plugin.empty = function(){
@@ -72,14 +80,9 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
 	return this.parse(this.fgets(ns + '.js', dir), ns);
 };
 
-/**
- * Load module.
- * @param {String} ns
- * @param {String} filename
- * @type Boolean
- */
-JSmarty.Plugin.addModule = function(ns)
+JSmarty.Plugin.addRepository = function()
 {
+	
 };
 
 JSmarty.Plugin.importer = function()

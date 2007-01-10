@@ -50,8 +50,7 @@ JSmarty.Compiler = function(renderer)
 	};
 
 	// resolve namespaces
-	var Text    = JSmarty.Compiler.Text;
-	var Module  = JSmarty.Compiler.Module;
+	var Compiler= JSmarty.Compiler;
 	var Context = JSmarty.Compiler.Context;
 	var Builder = JSmarty.Utility.StringBuilder;
 
@@ -103,16 +102,16 @@ JSmarty.Compiler = function(renderer)
 			tag = r[0];
 			isp = src.indexOf(tag, iap);
 
-			t = new Text(src.slice(iap, isp)); t.parse(cx);
+			t = Compiler.newString(src.slice(iap, isp)); t.parse(cx);
 			buf.append(t.prefix(), t.toString(), t.suffix());
 
-			m = new Module(tag.slice(ilp, irp)); m.parse(cx);
+			m = Compiler.newModule(tag.slice(ilp, irp)); m.parse(cx);
 			buf.append(m.prefix(), m.toString(), m.suffix());
 
 			iap = isp + tag.length;
 		};
 
-		t = new Text(src.slice(iap)); t.parse(cx);
+		t = Compiler.newString(src.slice(iap)); t.parse(cx);
 		buf.append
 		(
 			t.prefix(), t.toString(),  t.suffix(),
@@ -121,4 +120,66 @@ JSmarty.Compiler = function(renderer)
 
 		return buf.toString();
 	};
+};
+
+JSmarty.Compiler.extend = function(s, o)
+{
+	var i, c = function(t){ this.text = t; };
+	c.prototype = new s();
+	for(i in o) c.prototype[i] = o[i];
+	return c;
+};
+
+JSmarty.Compiler.newString = function(t)
+{
+	var n = (t) ? '__STRING__' : '__NOTEXT__';
+	return new this[n](t);
+};
+
+JSmarty.Compiler.newModule = function(text)
+{
+	var inp = 0, iap = imp = -1;
+	var name, type, main = t.charAt(0);
+
+	switch(main)
+	{
+		case '*':
+			type = 'comment';
+			break;
+		case '#':
+			type = 'config';
+			break;
+		case '"':
+		case "'":
+			type = 'intext';
+			do{inp = text.indexOf(c, inp + 1);}
+			while(t.charAt(inp - 1) == '\\');
+			imp = t.indexOf('|', ++inp) + 1;
+			break;
+		case '$':
+			type = 'variable';
+			imp = t.indexOf('|');
+			break;
+		case '/':
+			type = t.slice()
+			break;
+		default:
+			iap = t.indexOf(' ');
+			imp = t.indexOf('|');
+			inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : t.length;
+			name = t.slice(0, inp);
+			break;
+	};
+
+	name = this.toUcfirst(name);
+	type = this.toUcfirst(type);
+
+	if(name in this) return new this[name](t);
+	if(type in this) return new this[type](t);
+
+	return new this.__NOTEXT__();
+};
+
+JSmarty.Compiler.toUcfirst = function(s){
+	return s.charAt(0).toUpperCase().concat(s.slice(1));
 };

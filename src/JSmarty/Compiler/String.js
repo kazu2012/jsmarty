@@ -1,8 +1,5 @@
-JSmarty.Compiler.Text = function(text)
-{
-	this.text = text;
-};
-JSmarty.Compiler.Text.prototype =
+JSmarty.Compiler.String = function(t){ this.text = t; };
+JSmarty.Compiler.String.prototype =
 {
 	/** suffix **/
 	__sfix__ : ');\n',
