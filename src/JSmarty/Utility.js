@@ -17,36 +17,21 @@ JSmarty.Utility =
 	},
 	StringBuilder : function()
 	{
-		var idx = -1, len = 0, buf = [];
+		var k = -1, buf = [];
 
-		function toString(s){ return buf.join(s || ''); };
-
-		this.append = function(s)
+		this.append = function()
 		{
-			if(s)
+			for(var i=0,f=arguments.length;i<f;i++)
 			{
-				len += s.length;
-				buf[++idx] = s;
-			};
-			return this;
-		};
-
-		this.getProperty = function(name)
-		{
-			switch(name)
-			{
-				case 'length': return len;
+				this.length += arguments[i].length;
+				buf[++k] = arguments[i];
 			};
 		};
 
-		this.valueOf = this.toString = toString;
+		this.toString = function(s){
+			return buf.join(s || '');
+		};
 	}
 };
 
-JSmarty.Utility.StringBuilder.prototype =
-{
-	length : function()
-	{
-		return this.getProperty('length');
-	}
-};
+JSmarty.Utility.StringBuilder.prototype = { length : 0 };

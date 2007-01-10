@@ -546,7 +546,7 @@ JSmarty.prototype =
 	 */
 	inSection : function(p, m, c, e)
 	{
-		var name = n, loop = p.loop;
+		var name = p.name, loop = p.loop;
 		var k, t = i = -1, b =[], section;
 
 		if(!loop)

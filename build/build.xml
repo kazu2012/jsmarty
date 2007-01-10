@@ -15,6 +15,10 @@
 			<filelist dir="${src}" files="JSmarty.js" />
 			<filelist dir="${src}/JSmarty" files="Browser.js,Utility.js,System.js,Plugin.js" />
 		</concat>
+		<concat destfile="${tmp}/JSmarty/Compiler.js">
+			<filelist dir="${src}/JSmarty" files="Compiler.js" />
+			<filelist dir="${src}/JSmarty/Compiler" files="Text.js,Module.js,Context.js" />
+		</concat>
 		<copy todir="${lib}" overwrite="Yes" preservelastmodified="true">
 			<fileset dir="${src}" />
 			<filterset><filter token="version" value="${version}" /></filterset>
@@ -22,7 +26,11 @@
 		<move file="${tmp}/JSmarty.js" tofile="${lib}/JSmarty.js">
 			<filterset><filter token="version" value="${version}" /></filterset>
 		</move>
+		<move file="${tmp}/JSmarty/Compiler.js" tofile="${lib}/JSmarty/Compiler.js">
+			<filterset><filter token="version" value="${version}" /></filterset>
+		</move>
 		<delete dir="${lib}/JSmarty" excludes="Compiler.js" />
+		<delete dir="${lib}/JSmarty/Compiler" />
 		<delete dir="${tmp}" />
 	</target>
 
