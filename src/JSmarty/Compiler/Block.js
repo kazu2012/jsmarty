@@ -14,9 +14,9 @@ JSmarty.Compiler.Block = JSmarty.Compiler.extend
 		},
 		toString : function()
 		{
-			var name;
-			var attr;
-			var modf;
+			var name = "'"+ this.name + "'";
+			var attr = this.toParameter()
+			var modf = this.toModifier();
 
 			return (!this.isTerminal()) ?
 				'self.inCall('+ name +','+ attr +','+ modf +',' : '}())';

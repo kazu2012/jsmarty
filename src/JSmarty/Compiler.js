@@ -117,8 +117,7 @@ JSmarty.Compiler = function(renderer)
 			iap = isp + tag.length;
 		};
 
-		t = Compiler.newString(src.slice(iap), context);
-		t.parse(context);
+		t = Compiler.newString(src.slice(iap),  context);
 
 		buf.append
 		(
@@ -140,37 +139,49 @@ JSmarty.Compiler.extend = function(s, o)
 
 JSmarty.Compiler.newString = function(t, c)
 {
-	var m, n = (t) ? '__STRING__' : '__NOTEXT__';
-
-	m = new this[n](t);
+	var m = (c.isPlain()) ? new this.Plain(t) : new this.String(t);
 	m.parse(c);
-
 	return m;
 };
 
 JSmarty.Compiler.newModule = function(t, c)
 {
-	var m = (c.isPlain()) ? new this.Plain(t) : null;
-	var name, type, main = t.charAt(0), inp = 0, iap = imp = -1;
+	var inp = 0, iap = imp = -1;
+	var m, name, type, main = t.charAt(0);
+
+	if(c.isPlain())
+	{
+		m = new this.Plain(t);
+		m.parse(c);
+		if(main != '/'){ return m; };
+	};
 
 	switch(main)
 	{
 		case '*':
+			m = new this.__NOTEXT__();
 			break;
 		case '#':
+			m = new this.__NOTEXT__();
 			break;
 		case '"':
 		case "'":
 			do{ inp = t.indexOf(main, inp + 1); }
 			while(t.charAt(inp - 1) == '\\');
 			imp = t.indexOf('|', ++inp) + 1;
+			m = new this.String(t);
+			m.setValue('name', t.slice(1, inp));
 			break;
 		case '$':
 			imp = t.indexOf('|');
+			inp = (-1 < imp) ? imp++ : t.length;
+			m = new this.Variable(t);
+			m.setValue('imp', imp);
+			m.setValue('name', t.slice(1, inp));
 			break;
 		case '/':
 			name = this.toUcfirst(c.setTree(t.slice(1), true));
-			type = this.toUcfirst(c.typeOf(name));
+			type = this.toUcfirst(c.typeOf(name.toLowerCase()));
 			m = (name in this) ? new this[name](t) : new this[type](t);
 			break;
 		default:
@@ -178,18 +189,16 @@ JSmarty.Compiler.newModule = function(t, c)
 			imp = t.indexOf('|');
 			inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : t.length;
 			name = this.toUcfirst(c.setTree(t.slice(0, inp), false));
-			type = this.toUcfirst(c.typeOf(name));
+			type = this.toUcfirst(c.typeOf(name.toLowerCase()));
 			m = (name in this) ? new this[name](t) : new this[type](t);
+			m.setValue('iap', iap);
+			m.setValue('imp', imp);
 			m.setValue('bTerminal', false)
+			m.setValue('name', name.toLowerCase());
 			break;
 	};
 
-//	m.setValue('inp', inp);
-//	m.setValue('iap', iap);
-//	m.setValue('imp', imp);
-
 	m.parse(c);
-
 	return m;
 };
 

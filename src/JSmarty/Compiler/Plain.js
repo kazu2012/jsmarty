@@ -1,4 +1,4 @@
-JSmarty.Compiler.Primitive = JSmarty.Compiler.extend
+JSmarty.Compiler.Plain = JSmarty.Compiler.extend
 (
 	'__MODULE__',
 	{
@@ -6,9 +6,7 @@ JSmarty.Compiler.Primitive = JSmarty.Compiler.extend
 		{
 			this.sPrefix = c.getValue('ldelim');
 			this.sSuffix = c.getValue('rdelim');
-		},
-		toString : function(){
-			return this.text;
+			this.sString = this.text;
 		}
 	}
 );
