@@ -83,9 +83,10 @@ JSmarty.Compiler = function(renderer)
 	 */
 	this.execute = function(src)
 	{
+		var buf = new Builder();
+		var context = new Context();
 		var t, m, r, p, isp, tag, iap = 0;
 		var ilp = L.length, irp = -R.length;
-		var cx = new Context(), buf = new Builder();
 
 		buf.append
 		(
@@ -94,7 +95,9 @@ JSmarty.Compiler = function(renderer)
 		);
 
 		p = BlcRegExp;
-		while((r = p.exec(src)) != null) cx.addNonterminal(r[1]);
+		while((r = p.exec(src)) != null){
+			context.addNonterminal(r[1]);
+		};
 
 		p = TagRegExp;
 		while((r = p.exec(src)) != null)
@@ -102,16 +105,18 @@ JSmarty.Compiler = function(renderer)
 			tag = r[0];
 			isp = src.indexOf(tag, iap);
 
-			t = Compiler.newString(src.slice(iap, isp)); t.parse(cx);
+			t = Compiler.newString(src.slice(iap, isp), context);
 			buf.append(t.prefix(), t.toString(), t.suffix());
 
-			m = Compiler.newModule(tag.slice(ilp, irp)); m.parse(cx);
+			m = Compiler.newModule(tag.slice(ilp, irp), context);
 			buf.append(m.prefix(), m.toString(), m.suffix());
 
 			iap = isp + tag.length;
 		};
 
-		t = Compiler.newString(src.slice(iap)); t.parse(cx);
+		t = Compiler.newString(src.slice(iap), context);
+		t.parse(context);
+
 		buf.append
 		(
 			t.prefix(), t.toString(),  t.suffix(),
@@ -130,55 +135,68 @@ JSmarty.Compiler.extend = function(s, o)
 	return c;
 };
 
-JSmarty.Compiler.newString = function(t)
+JSmarty.Compiler.newString = function(t, c)
 {
-	var n = (t) ? '__STRING__' : '__NOTEXT__';
-	return new this[n](t);
+	var m, n = (t) ? '__STRING__' : '__NOTEXT__';
+
+	m = new this[n](t);
+	m.parse(c);
+
+	return m;
 };
 
-JSmarty.Compiler.newModule = function(t)
+JSmarty.Compiler.newModule = function(t, c)
 {
-	var inp = 0, iap = imp = -1;
+	var prim = c.isPrimitive();
 	var name, type, main = t.charAt(0);
+	var m = null, inp = 0, iap = imp = -1;
 
 	switch(main)
 	{
 		case '*':
-			type = 'comment';
+			name = 'comment';
 			break;
 		case '#':
-			type = 'config';
+			name = 'config';
 			break;
 		case '"':
 		case "'":
-			type = 'intext';
-			do{inp = text.indexOf(c, inp + 1);}
+			name = 'intext';
+			do{ inp = t.indexOf(main, inp + 1); }
 			while(t.charAt(inp - 1) == '\\');
 			imp = t.indexOf('|', ++inp) + 1;
 			break;
 		case '$':
-			type = 'variable';
+			name = 'variable';
 			imp = t.indexOf('|');
 			break;
 		case '/':
-			type = t.slice()
+			name = c.setTree(t.slice(1));
+			prim = c.isPrimitive();
+			type = c.typeOf(name);
 			break;
 		default:
-			type = 'function';
 			iap = t.indexOf(' ');
 			imp = t.indexOf('|');
 			inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : t.length;
-			name = t.slice(0, inp);
+			name = c.setTree(t.slice(0, inp));
+			type = c.typeOf(name);
 			break;
 	};
 
 	name = this.toUcfirst(name);
 	type = this.toUcfirst(type);
 
-	if(name in this) return new this[name](t);
-	if(type in this) return new this[type](t);
+	m = (name in this) ? new this[name](t) :
+		(type in this) ? new this[type](t) : this.__NOTEXT__();
 
-	return new this.__NOTEXT__();
+//	m.setValue('inp', inp);
+//	m.setValue('iap', iap);
+//	m.setValue('imp', imp);
+
+	m.parse(c);
+
+	return m;
 };
 
 JSmarty.Compiler.toUcfirst = function(s){

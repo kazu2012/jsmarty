@@ -7,10 +7,6 @@ JSmarty.Compiler.Context.prototype =
 	__ntml__ : {},
 	/** Primitives **/
 	__prim__ : { literal : 1, javascript : 1 },
-	/** suffix **/
-	__sfix__ : 'buf.append(',
-	/** prefix **/
-	__pfix__ : ');\n',
 	/** index of primitive **/
 	iPrim : -1,
 	/** left_delimiter **/
@@ -40,6 +36,15 @@ JSmarty.Compiler.Context.prototype =
 				if(i == -1 && n in prim) this.iPrim = tags.length - 1;
 			};
 		};
+
+		return n;
+	},
+	/**
+	 * isPrimitive function
+	 * @return Boolean
+	 */
+	isPrimitive : function(){
+		return (0 <= this.iPrim);
 	},
 	/**
 	 * addNonterminal function
@@ -55,7 +60,7 @@ JSmarty.Compiler.Context.prototype =
 		var Plugin = JSmarty.Plugin;
 		return function(n)
 		{
-			if(-1 < this.iPrim) return 'primitive';
+			if(this.isPrimitive()) return 'primitive';
 			if(n in this.__ntml__) return 'block';
 		//	if(Plugin.addPlugin('function.'+ n)) return 'function';
 		//	if(Plugin.addPlugin('compiler.'+ n)) return 'compiler';

@@ -1,6 +1,13 @@
-JSmarty.Compiler.Elseif = JSmarty.Compiler.extend
+JSmarty.Compiler.If = JSmarty.Compiler.extend
 (
-	'If',
+	'__MODULE__',
 	{
+		sSuffix : '',
+		sPrefix : '',
+		toString : function()
+		{
+			return (this.isTerminal()) ?
+				'if(){\n' : '\n}';
+		}
 	}
 );

@@ -4,5 +4,9 @@ JSmarty.Compiler.Foreach = JSmarty.Compiler.extend
 	{
 		sPrefix : '',
 		sString : 'return buf.toString();},',
+		toString : function()
+		{
+			return 'self.inForeach(';
+		}
 	}
 );
