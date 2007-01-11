@@ -7,8 +7,8 @@ JSmarty.Compiler.Context.prototype =
 	__ntml__ : {},
 	/** Primitives **/
 	__prim__ : { literal : 1, javascript : 1 },
-	/** index of primitive **/
-	iPrim : -1,
+	/** index of plain **/
+	iPlain : -1,
 	/** left_delimiter **/
 	ldelim : '{',
 	/** right_delimiter **/
@@ -16,35 +16,35 @@ JSmarty.Compiler.Context.prototype =
 	/**
 	 * setTree function
 	 * @param {String}  n name
-	 * @param {Boolean} t terminal
+	 * @param {Boolean} f terminal
 	 */
-	setTree : function(n, t)
+	setTree : function(n, f)
 	{
-		var i = this.iPrim;
+		var i = this.iPlain;
 		var prim = this.__prim__, tags = this.__tags__;
 
 		if(n in this.__ntml__)
 		{
-			if(t)
+			if(f)
 			{
 				if(n != tags.pop()) throw new Error("");
-				if(n in prim && i == tags.length) this.iPrim = -1;
+				if(n in prim && i == tags.length) this.iPlain = -1;
 			}
 			else
 			{
 				tags.push(n);
-				if(i == -1 && n in prim) this.iPrim = tags.length - 1;
+				if(i == -1 && n in prim) this.iPlain = tags.length - 1;
 			};
 		};
 
 		return n;
 	},
 	/**
-	 * isPrimitive function
+	 * isPlain function
 	 * @return Boolean
 	 */
-	isPrimitive : function(){
-		return (0 <= this.iPrim);
+	isPlain : function(){
+		return (0 <= this.iPlain);
 	},
 	/**
 	 * addNonterminal function
@@ -57,13 +57,13 @@ JSmarty.Compiler.Context.prototype =
 	},
 	typeOf : function()
 	{
-		var Plugin = JSmarty.Plugin;
+		var P = JSmarty.Plugin;
 		return function(n)
 		{
-			if(this.isPrimitive()) return 'primitive';
+			if(this.isPlain()) return 'plain';
 			if(n in this.__ntml__) return 'block';
-		//	if(Plugin.addPlugin('function.'+ n)) return 'function';
-		//	if(Plugin.addPlugin('compiler.'+ n)) return 'compiler';
+		//	if(P.addPlugin('function.'+ n)) return 'function';
+		//	if(P.addPlugin('compiler.'+ n)) return 'compiler';
 			return 'function';
 		}
 	}(),

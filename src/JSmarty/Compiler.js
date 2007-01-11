@@ -88,6 +88,9 @@ JSmarty.Compiler = function(renderer)
 		var t, m, r, p, isp, tag, iap = 0;
 		var ilp = L.length, irp = -R.length;
 
+		context.setValue('ldelim', renderer.left_delimiter);
+		context.setValue('rdelim', renderer.right_delimiter);
+
 		buf.append
 		(
 			'var Builder = JSmarty.Utility.StringBuilder, ',
@@ -147,48 +150,39 @@ JSmarty.Compiler.newString = function(t, c)
 
 JSmarty.Compiler.newModule = function(t, c)
 {
-	var prim = c.isPrimitive();
-	var name, type, main = t.charAt(0);
-	var m = null, inp = 0, iap = imp = -1;
+	var m = (c.isPlain()) ? new this.Plain(t) : null;
+	var name, type, main = t.charAt(0), inp = 0, iap = imp = -1;
 
 	switch(main)
 	{
 		case '*':
-			name = 'comment';
 			break;
 		case '#':
-			name = 'config';
 			break;
 		case '"':
 		case "'":
-			name = 'intext';
 			do{ inp = t.indexOf(main, inp + 1); }
 			while(t.charAt(inp - 1) == '\\');
 			imp = t.indexOf('|', ++inp) + 1;
 			break;
 		case '$':
-			name = 'variable';
 			imp = t.indexOf('|');
 			break;
 		case '/':
-			name = c.setTree(t.slice(1));
-			prim = c.isPrimitive();
-			type = c.typeOf(name);
+			name = this.toUcfirst(c.setTree(t.slice(1), true));
+			type = this.toUcfirst(c.typeOf(name));
+			m = (name in this) ? new this[name](t) : new this[type](t);
 			break;
 		default:
 			iap = t.indexOf(' ');
 			imp = t.indexOf('|');
 			inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : t.length;
-			name = c.setTree(t.slice(0, inp));
-			type = c.typeOf(name);
+			name = this.toUcfirst(c.setTree(t.slice(0, inp), false));
+			type = this.toUcfirst(c.typeOf(name));
+			m = (name in this) ? new this[name](t) : new this[type](t);
+			m.setValue('bTerminal', false)
 			break;
 	};
-
-	name = this.toUcfirst(name);
-	type = this.toUcfirst(type);
-
-	m = (name in this) ? new this[name](t) :
-		(type in this) ? new this[type](t) : this.__NOTEXT__();
 
 //	m.setValue('inp', inp);
 //	m.setValue('iap', iap);

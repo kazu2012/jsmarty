@@ -1,12 +1,11 @@
 JSmarty.Compiler.Foreach = JSmarty.Compiler.extend
 (
-	'__MODULE__',
+	'Block',
 	{
-		sPrefix : '',
-		sString : 'return buf.toString();},',
 		toString : function()
 		{
-			return 'self.inForeach(';
+			return (!this.isTerminal()) ?
+				'self.inForeach(' : '})';
 		}
 	}
 );
