@@ -2,12 +2,18 @@ JSmarty.Compiler.Literal = JSmarty.Compiler.extend
 (
 	'__MODULE__',
 	{
+		sPrefix : '',
+		sSuffix : '',
+		sString : '\'));\n',
 		parse : function(c)
 		{
-			var modf = this.toModifier();
-			this.sPrefix = (!this.isTerminal()) ? 'buf.append(' : '';
-			this.sSuffix = (!this.isTerminal()) ? "'" : '';
-			this.sString = (!this.isTerminal()) ? 'self.inModify(' + modf + ',' : '\');\n';
+			var modf;
+			if(!this.isTerminal())
+			{
+				modf = this.toModifier();
+				this.sPrefix = 'buf.append(';
+				this.sString = 'self.inModify(' + modf + ',' + "'";
+			};
 		}
 	}
 );

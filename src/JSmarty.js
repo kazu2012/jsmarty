@@ -51,15 +51,16 @@ JSmarty.prototype =
 	cache_handler_func : null,
 	autoload_filters   : null,
 
-	config_overwrite    : true,
-	config_booleanize   : true,
-	config_read_hidden  : false,
+	config_class : 'File',
+	config_overwrite : true,
+	config_booleanize : true,
+	config_read_hidden : false,
 	config_fix_newlines : true,
 
-	default_template_handler_func : null,
 	compiler_file  : 'JSmarty/Compiler.js',
 	compiler_class : 'Compiler',
-	config_class   : 'File',
+
+	default_template_handler_func : null,
 
 	_foreach : {},
 	_section : {},

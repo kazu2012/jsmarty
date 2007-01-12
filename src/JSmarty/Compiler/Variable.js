@@ -2,16 +2,18 @@ JSmarty.Compiler.Variable = JSmarty.Compiler.extend
 (
 	'__MODULE__',
 	{
-		toString : function()
+		parse : function(c)
 		{
 			var modf = this.toModifier();
-			var name = 'v.' + this.getValue('name');
+			var name = this.getValue('name');
 
 			if(name.indexOf('smarty') == 0){
 				name = name.replace('smarty','self._');
+			}else{
+				name = 'v.' + name;
 			};
 
-			return 'self.inModify('+ modf +','+ name +')';
+			this.sString = 'self.inModify('+ modf +','+ name +')';
 		}
 	}
 );

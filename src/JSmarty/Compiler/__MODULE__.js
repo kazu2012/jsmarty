@@ -67,7 +67,7 @@ JSmarty.Compiler.__MODULE__.prototype =
 			switch(s[i])
 			{
 				case '$':
-					s[i] = '&&__COM__::__VAR__&&';
+					s[i] = '@@COMPILER::VARIABLE@@';
 					break;
 				case '"':
 				case "'":
@@ -112,7 +112,7 @@ JSmarty.Compiler.__MODULE__.prototype =
 					while(s[i] <= ' ') s[i++] = '';
 					break;
 				case '$':
-					s[i] = '&&__COM__::__VAR__&&';
+					s[i] = '@@COMPILER::VARIABLE@@';
 					break;
 				case '=':
 					s[i] = ':';

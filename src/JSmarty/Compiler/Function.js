@@ -2,13 +2,13 @@ JSmarty.Compiler.Function = JSmarty.Compiler.extend
 (
 	'__MODULE__',
 	{
-		toString : function()
+		parse : function(c)
 		{
 			var name = '"' + this.name + '"';
 			var attr = this.toParameter();
 			var modf = this.toModifier();
 
-			return 'self.inCall('+ name + ','+ attr +','+ modf;
+			this.sString = 'self.inCall('+ name + ','+ attr +','+ modf +')';
 		}
 	}
 );

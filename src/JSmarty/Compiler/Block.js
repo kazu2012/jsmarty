@@ -10,7 +10,7 @@ JSmarty.Compiler.Block = JSmarty.Compiler.extend
 		suffix : function()
 		{
 			return (!this.isTerminal()) ?
-				'function(){var buf = Builder();\n' : ');\n';
+				'function(){var buf = new Builder();\n' : ');\n';
 		},
 		toString : function()
 		{

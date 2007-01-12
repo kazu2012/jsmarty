@@ -2,9 +2,14 @@ JSmarty.Compiler.Elseif = JSmarty.Compiler.extend
 (
 	'If',
 	{
-		toString : function()
+		parse : function(c)
 		{
-			return '}else if(){\n'
+			var exp = this.toExpression();
+			this.sString = '}else if('+ exp +'){\n';
+		},
+		toExpression : function()
+		{
+			return '';
 		}
 	}
 );

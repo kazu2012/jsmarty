@@ -14,52 +14,38 @@
 
 JSmarty.Compiler = function(renderer)
 {
-	var Tags = [], Block = {};
-
-	var L = renderer.left_delimiter;
-	var R = renderer.right_delimiter;
-
-	var RcrRegExp = /\r?\n/g;
-	var VarRegExp = /&&__COM__::__VAR__&&/g;
-	var RmvRegExp = /\+""|B\[\+\+I\]=""\;\n/g;
-	var BlcRegExp = RegExp(L + '\\/(.*?)' + R,'g');
-	var RsvRegExp = /&&__COM__::__VAR__&&smarty\./g;
-	var TagRegExp = RegExp(L + '[^'+ R +']*' + R,'g');
-
-	/** plugins_dir **/
-	this.plugins_dir = renderer.plugins_dir;
-
-	/**
-	 * SetRegExp function
-	 */
-	function SetRegExp()
-	{
-		BlcRegExp.compile(L + '\\/(.+?)' + R,'g');
-		TagRegExp.compile(L + '[^'+ R +']+' + R,'g');
-	};
-	/**
-	 * SetHeader function
-	 * @return {Boolean}
-	 */
-	function SetDelimiters()
-	{
-		var flag = false;
-		if(L != renderer.left_delimiter ) flag = true, L = renderer.left_delimiter;
-		if(R != renderer.right_delimiter) flag = true, R = renderer.right_delimiter;
-		return flag;
-	};
-
 	// resolve namespaces
 	var Compiler= JSmarty.Compiler;
 	var Context = JSmarty.Compiler.Context;
 	var Builder = JSmarty.Utility.StringBuilder;
 
+	var L = renderer.left_delimiter;
+	var R = renderer.right_delimiter;
+
+	// regular expression
+	var regcrl = /\r?\n/g
+	var regvar = /@@COMPILER::VARIABLE@@/g;
+	var regtml = RegExp(L + '\\/(.*?)' + R,'g');
+	var regtag = RegExp(L + '[^'+ R +']*' + R,'g');
+
 	/**
 	 * filter function
-	 * @return {String}
+	 * @return {String} s source
+	 * @return {String} t type of filter
 	 */
-	function filter()
+	function filter(s, t)
 	{
+		switch(t)
+		{
+			case 'pre':
+				s = s.replace(regcrl,'\\n');
+				break;
+			case 'post':
+				s = s.replace(regvar,'v.');
+				break;
+		};
+
+		return s;
 	};
 
 	/**
@@ -67,6 +53,8 @@ JSmarty.Compiler = function(renderer)
 	 */
 	function pattern()
 	{
+		regtml.compile(L + '\\/(.*?)' + R,'g');
+		regtag.compile(L + '[^'+ R +']*' + R,'g');
 	};
 
 	/**
@@ -74,6 +62,20 @@ JSmarty.Compiler = function(renderer)
 	 */
 	function delimiters()
 	{
+		var flag = false;
+
+		if(L != renderer.left_delimiter)
+		{
+			flag = true;
+			L = renderer.left_delimiter;
+		}
+		if(R != renderer.right_delimiter)
+		{
+			flag = true;
+			R = renderer.right_delimiter;
+		};
+
+		return true;
 	};
 
 	/**
@@ -88,21 +90,27 @@ JSmarty.Compiler = function(renderer)
 		var t, m, r, p, isp, tag, iap = 0;
 		var ilp = L.length, irp = -R.length;
 
+		if(delimiters()) pattern();
+
 		context.setValue('ldelim', renderer.left_delimiter);
 		context.setValue('rdelim', renderer.right_delimiter);
 
+		// postfilter
+		src = filter(src, 'pre');
+
 		buf.append
 		(
-			'var Builder = JSmarty.Utility.StringBuilder, ',
-			'buf = Builder(), self = this;\n'
+			'var Builder = JSmarty.Utility.StringBuilder,',
+			'v = this._tpl_vars,',
+			'buf = new Builder(), self = this;\n'
 		);
 
-		p = BlcRegExp;
+		p = regtml;
 		while((r = p.exec(src)) != null){
 			context.addNonterminal(r[1]);
 		};
 
-		p = TagRegExp;
+		p = regtag;
 		while((r = p.exec(src)) != null)
 		{
 			tag = r[0];
@@ -125,7 +133,8 @@ JSmarty.Compiler = function(renderer)
 			'return buf.toString();'
 		);
 
-		return buf.toString();
+		// prefilter
+		return filter(buf.toString(), 'post');
 	};
 };
 
@@ -139,7 +148,7 @@ JSmarty.Compiler.extend = function(s, o)
 
 JSmarty.Compiler.newString = function(t, c)
 {
-	var m = (c.isPlain()) ? new this.Plain(t) : new this.String(t);
+	var m = (c.isPlain()) ? new this.Plains(t) : new this.String(t);
 	m.parse(c);
 	return m;
 };
@@ -151,7 +160,7 @@ JSmarty.Compiler.newModule = function(t, c)
 
 	if(c.isPlain())
 	{
-		m = new this.Plain(t);
+		m = new this.Plainm(t);
 		m.parse(c);
 		if(main != '/'){ return m; };
 	};
@@ -159,10 +168,10 @@ JSmarty.Compiler.newModule = function(t, c)
 	switch(main)
 	{
 		case '*':
-			m = new this.__NOTEXT__();
+			m = new this.String();
 			break;
 		case '#':
-			m = new this.__NOTEXT__();
+			m = new this.String();
 			break;
 		case '"':
 		case "'":
