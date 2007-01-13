@@ -3,7 +3,7 @@
  *
  * @package Date/Time
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.0RC2
+ * @version 1.0.0RC3
  * @see http://www.php.net/date
  * @param  {String} s format
  * @param  {Number} t timestamp
@@ -28,10 +28,11 @@ function date(s, t)
 				s[i] = d.getDate();
 				break;
 			case 'l':
-				s[i] = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()]
+				s[i] = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];
 				break;
 			case 'N':
-				s[i] = [7,1,2,3,4,5,6][d.getDay()];
+				v = d.getDay();
+				s[i] = (v == 0) ? 7 : v ;
 				break;
 			case 'S':
 				v  = d.getDate().toString().slice(-1);
@@ -39,6 +40,12 @@ function date(s, t)
 				break;
 			case 'w':
 				s[i] = d.getDay();
+				break;
+			case 'z':
+				s[i] = Math.ceil((d.getTime() - new Date(d.getFullYear(), 0, 1).getTime()) / 86400000);
+				break;
+			case 'W':
+				s[i] = '';
 				break;
 			case 'F':
 				s[i] = ['January','February','March','April','May','June','July','August','September','October','November','December'][d.getMonth()];
@@ -61,11 +68,14 @@ function date(s, t)
 				v = d.getFullYear();
 				s[i] = (v % 4) ? 0 : (v % 400) ? (v % 100) ? 1 : 0 : 1;
 				break;
-			case 'y':
-				s[i] = d.getFullYear().toString().slice(2,4);
+			case 'o':
+				s[i] = '';
 				break;
 			case 'Y':
 				s[i] = d.getFullYear();
+				break;
+			case 'y':
+				s[i] = d.getFullYear().toString().slice(2,4);
 				break;
 			case 'a':
 				v = d.getHours();
@@ -74,6 +84,9 @@ function date(s, t)
 			case 'A':
 				v = d.getHours();
 				s[i] = (v < 12) ? 'AP' : 'PM';
+				break;
+			case 'B':
+				s[i] = '';
 				break;
 			case 'g':
 				v = d.getHours();
@@ -84,11 +97,12 @@ function date(s, t)
 				break;
 			case 'h':
 				v = d.getHours();
-				s[i] = (v < 12) ? '0' + v : v - 12;
+				v = (v < 12) ? v : v - 12;
+				s[i] = (v < 10) ? '0' + v : v ;
 				break;
 			case 'H':
 				v = d.getHours();
-				s[i] = (v < 12) ? '0' + v : v;
+				s[i] = (v < 10) ? '0' + v : v;
 				break;
 			case 'i':
 				v = d.getMinutes();
@@ -97,6 +111,30 @@ function date(s, t)
 			case 's':
 				v = d.getSeconds();
 				s[i] = (v < 10) ? '0' + v : v;
+				break;
+			case 'e':
+				s[i] = '';
+				break;
+			case 'I':
+				s[i] = '';
+				break;
+			case 'O':
+				s[i] = '';
+				break;
+			case 'P':
+				s[i] = '';
+				break;
+			case 'T':
+				s[i] = '';
+				break;
+			case 'Z':
+				s[i] = '';
+				break;
+			case 'c':
+				s[i] = '';
+				break;
+			case 'r':
+				s[i] = date('D, d M Y H:m:s O', d.getTime());
 				break;
 			case 'U':
 				s[i] = d.getTime();

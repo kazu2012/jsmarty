@@ -14,7 +14,7 @@ function preg_grep(p, b, f)
 {
 	var i, f, m = (b instanceof Array), o = (m) ? [] : {};
 	var c = (f == 'PREG_GREP_INVERT') ? function(b){ return !b; } : function(b){ return b; };
-	if(m){ for(i=0,f=b.length;i<f;i++) if(p.test(b[i])) o[i] = b[i] }
-	else { for(i in b) o[i] = b[i]; }
+	if(m){for(i=0,f=b.length;i<f;i++){if(p.test(b[i])){o[i] = b[i];}}}
+	else {for(i in b){o[i] = b[i];}}
 	return o;
 };

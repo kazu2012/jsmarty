@@ -338,7 +338,7 @@ JSmarty.prototype =
 		};
 
 		try{ return new Function(cpir.execute(src)); }
-		catch(e){ alert(e.message); };
+		catch(e){ };
 	},
 	/**
 	 * test if resource needs compiling

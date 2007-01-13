@@ -12,6 +12,7 @@
 function count(v, m)
 {
 	if(v == null) return 0;
+	if(v instanceof Array) return v.length;
 	var k, i = 0; for(k in v) i++;
 	return i;
 };

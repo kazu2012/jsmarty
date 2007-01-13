@@ -1,17 +1,16 @@
 /**
  * in_array function
  *
- * @package Arrays
+ * @subpackage Arrays
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.2
+ * @version 1.1.0
  * @see http://www.php.net/in_array
- * @param  {mixed} n needle
- * @param  {Array} h haystack
+ * @param  {mixed}   n needle
+ * @param  {Array}   h haystack
+ * @param  {Boolean} s strict
  * @return {Boolean}
  */
-function in_array(n, h)
+function in_array(n, h, s)
 {
-	var i=0, f = h.length;
-	while(i<f) if(n == h[i++]) return true;
-	return false;
+	var i, c = (s) ? function(a,b){return (a===b);} : function(a,b){return (a==b);};
 };

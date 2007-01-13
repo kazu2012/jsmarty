@@ -15,7 +15,6 @@ function range(l, h, n)
 	var m = (typeof(l) == 'number');
 	var k, i = -1, a = [], n = n || 1;
 	var s = (l < h) ? l : h, e = (l < h) ? h : l;
-	if(n < 1) throw new Error('step must be a positive number.');
 	if(typeof(s) == 'string') s = s.charCodeAt(0);
 	if(typeof(e) == 'string') e = e.charCodeAt(0);
 	if(m) for(k=s;k<=e;k+=n) a[++i] = k;

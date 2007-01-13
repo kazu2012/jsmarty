@@ -1,6 +1,7 @@
 /**
  * str_repeat function
  *
+ * @subpackage Strings
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0
  * @see http://www.php.net/str_repeat
@@ -8,6 +9,7 @@
  * @param  {Number} m multiplier
  * @return {String}
  */
-function str_repeat(s, m){
-	return new Array(m + 1).join(s);
+function str_repeat(s, m)
+{
+	return Array(m + 1).join(s);
 };
