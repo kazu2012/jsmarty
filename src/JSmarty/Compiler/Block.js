@@ -2,24 +2,22 @@ JSmarty.Compiler.Block = JSmarty.Compiler.extend
 (
 	'__MODULE__',
 	{
-		prefix : function()
+		parse : function(c)
 		{
-			return (!this.isTerminal()) ?
-				'buf.append(' : 'return buf.toString();';
-		},
-		suffix : function()
-		{
-			return (!this.isTerminal()) ?
-				'function(){var buf = new Builder();\n' : ');\n';
-		},
-		toString : function()
-		{
-			var name = "'"+ this.name + "'";
-			var attr = this.toParameter()
-			var modf = this.toModifier();
+			if(this.isTerminal())
+			{
+				this.sPrefix = '';
+				this.sString = 'return buf.toString();}())';
+			}
+			else
+			{
+				var name = "'" + this.name + "'";
+				var attr = this.toParameter();
+				var modf = this.toModifier();
 
-			return (!this.isTerminal()) ?
-				'self.inCall('+ name +','+ attr +','+ modf +',' : '}())';
+				this.sSuffix = 'function(){var buf = new Builder();\n';
+				this.sString = 'self.inCall('+ name +',' + attr +','+ modf +',';
+			};
 		}
 	}
 );

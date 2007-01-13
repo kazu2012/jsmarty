@@ -107,7 +107,7 @@ JSmarty.Compiler = function(renderer)
 
 		p = regtml;
 		while((r = p.exec(src)) != null){
-			context.addNonterminal(r[1]);
+			context.addElement('block', r[1]);
 		};
 
 		p = regtag;
@@ -155,15 +155,8 @@ JSmarty.Compiler.newString = function(t, c)
 
 JSmarty.Compiler.newModule = function(t, c)
 {
-	var inp = 0, iap = imp = -1;
 	var m, name, type, main = t.charAt(0);
-
-	if(c.isPlain())
-	{
-		m = new this.Plainm(t);
-		m.parse(c);
-		if(main != '/'){ return m; };
-	};
+	var inp = 0, iap = imp = -1, plain = c.isPlain();
 
 	switch(main)
 	{
@@ -177,9 +170,9 @@ JSmarty.Compiler.newModule = function(t, c)
 		case "'":
 			do{ inp = t.indexOf(main, inp + 1); }
 			while(t.charAt(inp - 1) == '\\');
-			imp = t.indexOf('|', ++inp) + 1;
 			m = new this.String(t);
-			m.setValue('name', t.slice(1, inp));
+			m.setValue('imp', t.indexOf('|', ++inp) + 1);
+			m.setValue('sString', t.slice(0, inp));
 			break;
 		case '$':
 			imp = t.indexOf('|');
@@ -205,6 +198,10 @@ JSmarty.Compiler.newModule = function(t, c)
 			m.setValue('bTerminal', false)
 			m.setValue('name', name.toLowerCase());
 			break;
+	};
+
+	if(plain && c.isPlain()){
+		m = new this.Plainm(t);
 	};
 
 	m.parse(c);

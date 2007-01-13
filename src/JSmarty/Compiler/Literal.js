@@ -7,10 +7,11 @@ JSmarty.Compiler.Literal = JSmarty.Compiler.extend
 		sString : '\'));\n',
 		parse : function(c)
 		{
-			var modf;
+			c.addElement('plain','literal');
+
 			if(!this.isTerminal())
 			{
-				modf = this.toModifier();
+				var modf = this.toModifier();
 				this.sPrefix = 'buf.append(';
 				this.sString = 'self.inModify(' + modf + ',' + "'";
 			};

@@ -3,10 +3,10 @@ JSmarty.Compiler.Context.prototype =
 {
 	/** TagStack **/
 	__tags__ : [],
-	/** Nonterminals **/
-	__ntml__ : {},
-	/** Primitives **/
-	__prim__ : { literal : 1, javascript : 1 },
+	/** folded block element **/
+	__blck__ : {},
+	/** folded plain element **/
+	__plan__ : { literal : true, javascript : true },
 	/** index of plain **/
 	iPlain : -1,
 	/** left_delimiter **/
@@ -21,19 +21,20 @@ JSmarty.Compiler.Context.prototype =
 	setTree : function(n, f)
 	{
 		var i = this.iPlain;
-		var prim = this.__prim__, tags = this.__tags__;
+		var tags = this.__tags__;
+		var plain = this.__plan__;
 
-		if(n in this.__ntml__)
+		if(n in this.__blck__)
 		{
 			if(f)
 			{
 				if(n != tags.pop()) throw new Error("");
-				if(n in prim && i == tags.length) this.iPlain = -1;
+				if(n in plain && i == tags.length) this.iPlain = -1;
 			}
 			else
 			{
 				tags.push(n);
-				if(i == -1 && n in prim) this.iPlain = tags.length - 1;
+				if(n in plain && i == -1) this.iPlain = tags.length - 1;
 			};
 		};
 
@@ -47,21 +48,29 @@ JSmarty.Compiler.Context.prototype =
 		return (0 <= this.iPlain);
 	},
 	/**
-	 * addNonterminal function
-	 * add the nonterminal module to this context.
+	 * addElement function
+	 * add the type of element to this context.
+	 * @param {String} t type
 	 * @param {String} n name
 	 */
-	addNonterminal : function(n)
+	addElement : function(t, n)
 	{
-		this.__ntml__[n] = true;
+		switch(t)
+		{
+			case 'block':
+				this.__blck__[n] = true;
+				break;
+			case 'plain':
+				this.__plan__[n] = true;
+				break;
+		};
 	},
 	typeOf : function()
 	{
 		var P = JSmarty.Plugin;
 		return function(n)
 		{
-			if(this.isPlain()) return 'plain';
-			if(n in this.__ntml__) return 'block';
+			if(n in this.__blck__) return 'block';
 		//	if(P.addPlugin('function.'+ n)) return 'function';
 		//	if(P.addPlugin('compiler.'+ n)) return 'compiler';
 			return 'function';

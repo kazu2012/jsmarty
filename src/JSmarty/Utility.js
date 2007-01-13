@@ -21,10 +21,12 @@ JSmarty.Utility =
 
 		this.append = function()
 		{
-			for(var i=0,f=arguments.length;i<f;i++)
+			var arg, i = 0,f = arguments.length;
+			for(;i<f;i++)
 			{
-				this.length += arguments[i].length;
-				buf[++k] = arguments[i];
+				arg = arguments[i];
+				if(arg != null) this.length += arg.length;
+				buf[++k] = arg;
 			};
 		};
 
