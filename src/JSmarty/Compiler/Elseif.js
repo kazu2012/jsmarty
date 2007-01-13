@@ -6,10 +6,6 @@ JSmarty.Compiler.Elseif = JSmarty.Compiler.extend
 		{
 			var exp = this.toExpression();
 			this.sString = '}else if('+ exp +'){\n';
-		},
-		toExpression : function()
-		{
-			return '';
 		}
 	}
 );

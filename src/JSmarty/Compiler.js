@@ -25,6 +25,7 @@ JSmarty.Compiler = function(renderer)
 	// regular expression
 	var regcrl = /\r?\n/g
 	var regvar = /@@COMPILER::VARIABLE@@/g;
+	var regsva = /@@COMPILER::VARIABLE@@smarty\./g;
 	var regtml = RegExp(L + '\\/(.*?)' + R,'g');
 	var regtag = RegExp(L + '[^'+ R +']*' + R,'g');
 
@@ -41,6 +42,7 @@ JSmarty.Compiler = function(renderer)
 				s = s.replace(regcrl,'\\n');
 				break;
 			case 'post':
+				s = s.replace(regsva,'self._');
 				s = s.replace(regvar,'v.');
 				break;
 		};

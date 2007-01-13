@@ -493,7 +493,7 @@ JSmarty.prototype =
 		if(!from)
 		{
 			if(name) this._foreach[name] = { show : false, total : 0 };
-			return this.inModif(m, (e) ? e.call(this) : '');
+			return this.inModify(m, (e) ? e.call(this) : '');
 		};
 
 		if(name)

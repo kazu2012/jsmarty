@@ -4,6 +4,6 @@ JSmarty.Compiler.Foreachelse = JSmarty.Compiler.extend
 	{
 		sPrefix : '',
 		sSuffix : '',
-		sString : 'return buf.toString();},function(){var buf = Builder();\n'
+		sString : 'return buf.toString();},function(){var buf = new Builder();\n'
 	}
 );

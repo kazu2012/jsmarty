@@ -1,11 +1,22 @@
 JSmarty.Compiler.Foreach = JSmarty.Compiler.extend
 (
-	'Block',
+	'__MODULE__',
 	{
-		toString : function()
+		parse : function(c)
 		{
-			return (!this.isTerminal()) ?
-				'self.inForeach(' : '})';
+			if(this.isTerminal())
+			{
+				this.sPrefix = '';
+				this.sString = 'return buf.toString();})';
+			}
+			else
+			{
+				var attr = this.toParameter();
+				var modf = this.toModifier();
+
+				this.sSuffix = 'function(){var buf = new Builder();\n';
+				this.sString = 'self.inForeach('+ attr +','+ modf +',';
+			};
 		}
 	}
 );
