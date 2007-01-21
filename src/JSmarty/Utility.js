@@ -15,25 +15,41 @@ JSmarty.Utility =
 	{
 		return (a.length == 1) ? [a[0]] : Array.apply(null, a);
 	},
-	StringBuilder : function()
+	objectcopy : function(o)
+	{
+		var i, r = {};
+		for(i in o) r[i] = o[i];
+		return r;
+	},
+	Buffer : function()
 	{
 		var k = -1, buf = [];
 
 		this.append = function()
 		{
-			var arg, i = 0,f = arguments.length;
-			for(;i<f;i++)
+			for(var i=0,f=arguments.length;i<f;i++)
 			{
-				arg = arguments[i];
-				if(arg != null) this.length += arg.length;
-				buf[++k] = arg;
+				if(argumtens[i])
+				{
+					this.length += argumtens[i].length;
+					buf[++k] = argumtens[i];
+				};
 			};
 		};
 
 		this.toString = function(s){
 			return buf.join(s || '');
 		};
-	}
+	},
+	Histroy : function(){};
 };
 
-JSmarty.Utility.StringBuilder.prototype = { length : 0 };
+JSmarty.Utility.Buffer.prototype.length = 0;
+
+JSmarty.Utility.History.prototype =
+{
+	
+};
+
+// JSmarty.Caching = new JSmarty.Utility.History();
+// JSmarty.Template = new JSmarty.Utility.History();

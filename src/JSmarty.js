@@ -73,31 +73,45 @@ JSmarty.prototype =
 	_plugins :{
 		pre:[], post:[], output:[]
 	},
-
-	assign : function(key, value)
+	/**
+	 * assign function
+	 * @param {String} k key
+	 * @param {Object} v value
+	 */
+	assign : function(k, v)
 	{
-		switch(typeof(value))
+		switch(typeof(v))
 		{
 			case 'undefined':
-				value = null;
+				v = null;
 				break;
 			case 'object':
-				value = JSmarty.Utility.factory(value);
+				v = JSmarty.Utility.objectcopy(v);
 				break;
 		};
 
-		if(key instanceof Object)
+		if(k instanceof Object)
 		{
-			for(var i in key)
-				this._tpl_vars[i] = key[i];
+			for(var i in k){ this.__vars__[i] = k[i]; }
 			return;
 		};
 
-		if(key != '') this._tpl_vars[key] = value;
+		if(k != '') this.__vars__[k] = value;
 	},
-	assign_by_ref : function(key, value){
-		if(key != '') this._tpl_vars[key] = value;
+	/**
+	 * assign_by_ref function
+	 * @param {String} k key
+	 * @param {String} v value
+	 */
+	assign_by_ref : function(k, v){
+		if(k != '') this.__vars__[k] = v;
 	},
+	/**
+	 * append function
+	 * @param {String} k key
+	 * @param {String} v value
+	 * @param {String} m merge
+	 */
 	append : function(key, value, merge)
 	{
 		var i, k, vars, mkey;
@@ -132,47 +146,81 @@ JSmarty.prototype =
 			vars.push(value);
 		};
 	},
-	append_by_ref : function(key, value, merge)
+	/**
+	 * append_by_ref function
+	 * @param {String} k key
+	 * @param {Object} v value
+	 * @param {Object} m merge
+	 */
+	append_by_ref : function(k, v, m)
 	{
-		if(key != '' && value != void(0)) return;
-		if(!((vars = this._tpl_vars[key]) instanceof Array))
-			vars = this._tpl_vars[key] = [];
-		if(merge && value instanceof Object)
+		var i, vars;
+		if(k != '' && v != void(0)) return;
+		if(!((vars = this.__vars__[k]) instanceof Array)){
+			vars = this.__vars__[k] = [];
+		};
+		if(m && v instanceof Object)
 		{
-			for(var i in value)
-				vars[i] = value[i];
+			for(i in v){ vars[i] = v[i]; }
 			return;
 		};
-		vars.push(value);
+		vars[vars.length] = v;
 	},
-	clear_assign : function(key)
+	/**
+	 * clear_assign function
+	 * @param {Object} k key
+	 */
+	clear_assign : function(k)
 	{
-		if(key instanceof Object)
+		if(k instanceof Array)
 		{
-			for(var i in key)
-				delete this._tpl_vars[key[i]];
+			for(var i=0,f=k.length;i<f;i++){
+				delete this.__vars__[k[i]];
+			};
 			return;
 		};
-
-		if(key != '') delete this._tpl_vars[key];
+		if(k != '') delete this.__vars__[k];
 	},
+	/**
+	 * clear_all_assign function
+	 */
 	clear_all_assign : function(){
-		this._tpl_vars = {};
+		this.__vars__ = {};
 	},
-	get_template_vars : function(key){
-		return (key == void(0)) ? this._tpl_vars[key] : this._tpl_vars;
+	/**
+	 * get_template_vars function
+	 * @param {String} k key
+	 * @return {Object}
+	 */
+	get_template_vars : function(k){
+		return (k == void(0)) ? this.__vars__ : this.__vars__[k];
 	},
-	clear_all_cache : function(){
-		JSmarty.cache = {};
+	/**
+	 * clear_all_cache function
+	 */
+	clear_all_cache : function()
+	{
 	},
-	clear_cache : function(name){
-		delete JSmarty.cache[name];
+	/**
+	 * clear_cache function
+	 * @param {String} n name
+	 */
+	clear_cache : function(n)
+	{
 	},
-	is_cashed : function(name){
-		return false;
+	/**
+	 * is_cashed function
+	 * @param {String} n name
+	 */
+	is_cashed : function(n)
+	{
 	},
-	clear_compiled_tpl : function(name){
-		JSmarty.templates_c[name] = null;
+	/**
+	 * clear_compiled_tpl function
+	 * @param {String} n name
+	 */
+	clear_compiled_tpl : function(n)
+	{
 	},
 	fetch : function(name, ccid, cpid, display)
 	{

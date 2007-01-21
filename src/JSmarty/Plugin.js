@@ -1,6 +1,5 @@
 /**
- * Provide interfase of Plugin.
- * extended JSmarty.System Object
+ * Provide interfase of Plugin extended JSmarty.System Object
  * @type JSmarty.Plugin Object
  */
 JSmarty.Plugin = JSmarty.Utility.factory(JSmarty.System);
@@ -22,6 +21,7 @@ JSmarty.Plugin.__repo__ = [];
 /**
  * empty function
  * Return blank string.
+ * @return {String}
  */
 JSmarty.Plugin.empty = function(){
 	return '';
@@ -97,16 +97,17 @@ JSmarty.Plugin.importer = function()
 };
 
 /**
+ * toString function
  * Return the table of plugins.
- * @type String
+ * @return {String}
  */
 JSmarty.Plugin.toString = function()
 {
 	var s, t, k, func = this.__func__;
+	var buf = new JSmarty.Utility.Buffer();
 	var w = 73, date = new Date().toString();
-	var buf = new JSmarty.Utility.StringBuilder();
 
-	buf.append('Table Of Plugins').append(Array(w).join('-'));
+	buf.append('Table Of Plugins', Array(w).join('-'));
 
 	for(k in func)
 	{
@@ -119,7 +120,7 @@ JSmarty.Plugin.toString = function()
 		};
 	};
 
-	buf.append(Array(w).join('-')).append(Array(w - 33).join(' ') + date);
+	buf.append(Array(w).join('-'), Array(w - 33).join(' '), date);
 
 	return buf.toString('\n');
 };

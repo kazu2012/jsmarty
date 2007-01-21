@@ -140,14 +140,32 @@ JSmarty.Compiler = function(renderer)
 	};
 };
 
-JSmarty.Compiler.extend = function(s, o)
+/**
+ * extend function
+ * @param {Srting} n the name of class.
+ * @param {String} s the name of superclass.
+ * @param {Object} o properties for new class
+ */
+JSmarty.Compiler.extend = function(n, s, o)
 {
+	if(n in this) throw new Error('has already exists the '+ n +' class.');
 	var i, c = function(t){ this.text = t; };
 	c.prototype = new this[s]();
 	for(i in o) c.prototype[i] = o[i];
-	return c;
+	this[n] = c;
 };
 
+JSmarty.Compiler.define = function()
+{
+};
+
+/**
+ * newString function
+ * The factory for Compiler's String object.
+ * @param {String} t text
+ * @param {String} c context
+ * @return {Compiler.String}
+ **/
 JSmarty.Compiler.newString = function(t, c)
 {
 	var m = (c.isPlain()) ? new this.Plains(t) : new this.String(t);

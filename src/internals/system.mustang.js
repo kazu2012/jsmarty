@@ -1,33 +1,35 @@
 (function(def)
 {
+	var File = java.io.File;
+	var StringBuilder = java.lang.StringBuilder;
+	var BufferedReader = java.io.BufferedReader;
+	var FileInputStream = java.io.FileInputStream;
+	var InputStreamReader = java.io.InputStreamReader;
+
 	def.prop = { name : 'mustang', code : 30, auth : 'shogo' };
 
 	def.fgets = function(file, dir)
 	{
-		var txt, StringBuilder = java.lang.StringBuilder;
-		var buf, BufferedReader = java.io.BufferedReader;
-		var fis, FileInputStream = java.io.FileInputStream;
-		var isr, InputStreamReader = java.io.InputStreamReader;
-
+		var i, f, txt, buf;
 		dir = JSmarty.Utility.flatten(dir);
-		for(var i=0,f=dir.length;i<f;i++)
+
+		for(i=0,f=dir.length;i<f;i++)
 		{
-			if(0 < txt.length()) break;
+			if(!(new File(dir[i] + '/' + file).exists())) continue;
 			try
 			{
-				fis = new FileInputStream(dir[i] +'/'+ file);
-				isr = new InputStreamReader(fis);
-				buf = new BufferedReader(isr);
 				txt = new StringBuilder();
-
+				buf = new BufferedReader(
+						new InputStreamReader(
+							new FileInputStream(dir[i] +'/'+ file)
+						)
+					  );
 				while(buf.ready()) txt.append(buf.readLine());
-
 				buf.close();
-				isr.close();
-				fis.close();
 			}
 			catch(e){};
 		};
+
 		return txt.toString();
 	};
 
