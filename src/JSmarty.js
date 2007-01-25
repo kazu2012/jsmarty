@@ -155,7 +155,7 @@ JSmarty.prototype =
 	append_by_ref : function(k, v, m)
 	{
 		var i, vars;
-		if(k != '' && v != void(0)) return;
+		if(k != '' && v != void(0)){ return; };
 		if(!((vars = this.__vars__[k]) instanceof Array)){
 			vars = this.__vars__[k] = [];
 		};
@@ -179,7 +179,7 @@ JSmarty.prototype =
 			};
 			return;
 		};
-		if(k != '') delete this.__vars__[k];
+		if(k != ''){ delete this.__vars__[k]; };
 	},
 	/**
 	 * clear_all_assign function
@@ -312,23 +312,23 @@ JSmarty.prototype =
 		else
 			this.trigger_error("malformed function-list for '"+ type +"' in register_resource");
 	},
-	register_compiler_function : function(name, impl){
-		this._plugins['compiler' + name] = impl;
+	register_compiler_function : function(n, f){
+		this._plugins['compiler' + n] = f;
 	},
-	unregister_block : function(name){
-		this._plugins['block.' + name] = false;
+	unregister_block : function(n){
+		this._plugins['block.' + n] = false;
 	},
-	unregister_function : function(name){
-		this._plugins['function.' + name] = false;
+	unregister_function : function(n){
+		this._plugins['function.' + n] = false;
 	},
-	unregister_modifier : function(name){
-		this._plugins['modifier.' + name] = false;
+	unregister_modifier : function(n){
+		this._plugins['modifier.' + n] = false;
 	},
-	unregister_resource : function(name){
-		this._plugins['resource.' + name] = false;
+	unregister_resource : function(n){
+		this._plugins['resource.' + n] = false;
 	},
-	unregister_compiler_function : function(name){
-		this._plugins['compiler.' + name] = false;
+	unregister_compiler_function : function(n){
+		this._plugins['compiler.' + n] = false;
 	},
 	load_filter : function(type, name)
 	{
@@ -336,23 +336,47 @@ JSmarty.prototype =
 			this._plugins[type].push(name);
 		};
 	},
-	register_prefilter : function(name){
-		this._plugins['prefilter.' + name] = JSmarty.GLOBALS[name];
+	/**
+	 * register_prefilter function
+	 * @param {String} n the name of prefilter
+	 */
+	register_prefilter : function(n){
+		this._plugins['prefilter.' + n] = JSmarty.GLOBALS[n];
 	},
-	register_postfilter : function(name){
-		this._plugins['postfilter.' + name] = JSmarty.GLOBALS[name];
+	/**
+	 * unregister_prefilter function
+	 * @param {String} n the name of prefilter
+	 */
+	unregister_prefilter : function(n){
+		this._plugins['prefilter.' + n] = false;
 	},
-	register_outputfilter : function(name){
-		this._plugins['outputfilter.' + name] = JSmarty.GLOBALS[name];
+	/**
+	 * register_postfilter function
+	 * @param {String} n the name of postfilter
+	 */
+	register_postfilter : function(n){
+		this._plugins['postfilter.' + n] = JSmarty.GLOBALS[n];
 	},
-	unregister_prefilter : function(name){
-		this._plugins['prefilter.' + name] = false;
+	/**
+	 * unregister_postfilter function
+	 * @param {String} n the name of postfilter
+	 */
+	unregister_postfilter : function(n){
+		this._plugins['postfilter.' + n] = false;
 	},
-	unregister_postfilter : function(name){
-		this._plugins['postfilter.' + name] = false;
+	/**
+	 * register_outputfilter function
+	 * @param {String} n the name of postfilter
+	 */
+	register_outputfilter : function(n){
+		this._plugins['outputfilter.' + n] = JSmarty.GLOBALS[n];
 	},
-	unregister_outputfilter : function(name){
-		this._plugins['outputfilter.' + name] = false;
+	/**
+	 * unregister_outputfilter function
+	 * @param {String} n the name of postfilter
+	 */
+	unregister_outputfilter : function(n){
+		this._plugins['outputfilter.' + n] = false;
 	},
 	trigger_error : function(msg, level)
 	{

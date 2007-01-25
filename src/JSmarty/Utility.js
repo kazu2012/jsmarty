@@ -20,36 +20,5 @@ JSmarty.Utility =
 		var i, r = {};
 		for(i in o) r[i] = o[i];
 		return r;
-	},
-	Buffer : function()
-	{
-		var k = -1, buf = [];
-
-		this.append = function()
-		{
-			for(var i=0,f=arguments.length;i<f;i++)
-			{
-				if(argumtens[i])
-				{
-					this.length += argumtens[i].length;
-					buf[++k] = argumtens[i];
-				};
-			};
-		};
-
-		this.toString = function(s){
-			return buf.join(s || '');
-		};
-	},
-	Histroy : function(){};
+	}
 };
-
-JSmarty.Utility.Buffer.prototype.length = 0;
-
-JSmarty.Utility.History.prototype =
-{
-	
-};
-
-// JSmarty.Caching = new JSmarty.Utility.History();
-// JSmarty.Template = new JSmarty.Utility.History();

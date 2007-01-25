@@ -103,8 +103,8 @@ JSmarty.Plugin.importer = function()
  */
 JSmarty.Plugin.toString = function()
 {
+	var buf = new JSmarty.Buffer();
 	var s, t, k, func = this.__func__;
-	var buf = new JSmarty.Utility.Buffer();
 	var w = 73, date = new Date().toString();
 
 	buf.append('Table Of Plugins', Array(w).join('-'));

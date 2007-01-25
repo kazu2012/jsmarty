@@ -155,8 +155,20 @@ JSmarty.Compiler.extend = function(n, s, o)
 	this[n] = c;
 };
 
-JSmarty.Compiler.define = function()
+/**
+ * define function
+ * @param {String} s the name of superclass.
+ * @param {Object} o 
+ */
+JSmarty.Compiler.define = function(s, o)
 {
+	var i, c, n, p = this[p];
+	for(i in o)
+	{
+		c = function(t){ this.text = t; };
+		c.prototype = new p();
+		this[i] = c;
+	};
 };
 
 /**
