@@ -15,26 +15,10 @@
 	<script type="text/javascript" src="../lib/JSmarty.js"></script>
 	<script type="text/javascript" src="../src/JSmarty/Compiler.js"></script>
 	<script type="text/javascript" src="../src/JSmarty/Compiler/Context.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/__MODULE__.js"></script>
+	<script type="text/javascript" src="../src/JSmarty/Compiler/define.js"></script>
 
 	<script type="text/javascript">
-	function load(m)
-	{
-		var i, f, script;
-
-		for(i=0,f=arguments.length;i<f;i++)
-		{
-			script = document.createElement('script');
-			script.setAttribute('src', '../src/JSmarty/Compiler/'.concat(arguments[i].concat('.js')));
-			script.setAttribute('type','text/javascript');
-			document.getElementsByTagName('head').item(0).appendChild(script);
-		}
-	};
-
-	load('__MODULE__','__NOTEXT__');
-	load('Function','Block','Plains','Plainm','Variable','String');
-	load('Literal','Ldelim','Rdelim','If','Elseif','Else');
-	load('Foreach','Foreachelse','Section','Sectionelse');
-
 	compiler = new JSmarty.Compiler({left_delimiter:'{',right_delimiter:'}'});
 
 	window.onload = function()

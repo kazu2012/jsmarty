@@ -8,6 +8,13 @@
 	<property name="lib" value="lib" />
 	<property name="tmp" value="Temp/JSmarty" />
 
+	<scriptdef name="build" language="javascript" src="build/build.js">
+		<attribute name="task" />
+		<attribute name="todir" />
+		<element name="fileset" type="fileset"/>
+	</scriptdef>
+
+	<!-- Target :: build -->
 	<target name="build">
 		<mkdir dir="${lib}" />
 		<mkdir dir="${tmp}" />
@@ -17,10 +24,7 @@
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
 			<filelist dir="${src}/JSmarty" files="Compiler.js" />
-			<filelist dir="${src}/JSmarty/Compiler" files="Context.js,__MODULE__.js" />
-			<filelist dir="${src}/JSmarty/Compiler" files="Function.js,Block.js,Variable.js,String.js,Plains.js,Plainm.js" />
-			<filelist dir="${src}/JSmarty/Compiler" files="Literal.js,Ldelim.js,Rdelim.js,If.js,Elseif.js,Else.js" />
-			<filelist dir="${src}/JSmarty/Compiler" files="Foreach.js,Foreachelse.js,Section.js,Sectionelse.js" />
+			<filelist dir="${src}/JSmarty/Compiler" files="Context.js,__MODULE__.js,define.js" />
 		</concat>
 		<copy todir="${lib}" overwrite="Yes" preservelastmodified="true">
 			<fileset dir="${src}" />
@@ -37,9 +41,14 @@
 		<delete dir="${tmp}" />
 	</target>
 
+	<!-- Target :: main -->
 	<target name="main" depends="build">
 		<mkdir dir="${tmp}" />
-		<copy todir="${tmp}/${lib}"><fileset dir="${lib}" /></copy>
+		<mkdir dir="${tmp}/Config" />
+		<mkdir dir="${tmp}/JSmarty" />
+		<mkdir dir="${tmp}/plugins" />
+		<mkdir dir="${tmp}/internals" />
+		<build task="compress" todir="${tmp/${lib}"><fileset dir="${lib}" /></build>
 		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
 		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />

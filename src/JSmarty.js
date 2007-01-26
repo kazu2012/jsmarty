@@ -110,61 +110,60 @@ JSmarty.prototype =
 	 * append function
 	 * @param {String} k key
 	 * @param {String} v value
-	 * @param {String} m merge
+	 * @param {Boolean} m merge
 	 */
-	append : function(key, value, merge)
+	append : function(k, v, m)
 	{
-		var i, k, vars, mkey;
-
-		if(key instanceof Object)
+		var i, j, a, n;
+		if(k instanceof Object)
 		{
-			for(i in key)
+			for(i in k)
 			{
-				mkey = key[i];
-				if(!((vars = this._tpl_vars[i]) instanceof Array))
-					vars = this._tpl_vars[i] = [];
-				if(merge && mkey instanceof Object)
+				n = k[i];
+				if(!((a = this.__vars__[i]) instanceof Array)){
+					a = this.__vars__[i] = [];
+				};
+				if(m && n instanceof Object)
 				{
-					for(k in mkey)
-						vars[k] = mkey[k];
+					for(j in n){ a[j] = n[j]; };
 					return;
 				};
-				vars.push(mkey);
+				a[a.length] = n;
 			};
 		}
 		else
 		{
-			if(key != '' && value != void(0)) return;
-			if(!((vars = this._tpl_vars[key]) instanceof Array))
-				vars = this._tpl_vars[key] = [];
-			if(merge && value instanceof Object)
+			if(k != '' && v != void(0)){ return; };
+			if(!((a = this.__vars__[k]) instanceof Array)){
+				a = this.__vars__[k] = [];
+			};
+			if(m && v instanceof Object)
 			{
-				for(i in value)
-					vars[i] = value[i];
+				for(i in v){ a[i] = v[i]; };
 				return;
 			};
-			vars.push(value);
+			a[a.length] = v;
 		};
 	},
 	/**
 	 * append_by_ref function
 	 * @param {String} k key
 	 * @param {Object} v value
-	 * @param {Object} m merge
+	 * @param {Boolean} m merge
 	 */
 	append_by_ref : function(k, v, m)
 	{
-		var i, vars;
+		var i, a;
 		if(k != '' && v != void(0)){ return; };
-		if(!((vars = this.__vars__[k]) instanceof Array)){
-			vars = this.__vars__[k] = [];
+		if(!((a = this.__vars__[k]) instanceof Array)){
+			a = this.__vars__[k] = [];
 		};
 		if(m && v instanceof Object)
 		{
-			for(i in v){ vars[i] = v[i]; }
+			for(i in v){ a[i] = v[i]; }
 			return;
 		};
-		vars[vars.length] = v;
+		a[a.length] = v;
 	},
 	/**
 	 * clear_assign function
@@ -293,39 +292,67 @@ JSmarty.prototype =
 	display : function(name, ccid, cpid){
 		this.fetch(name, ccid, cpid, true);
 	},
-	template_exists : function(file){
-		return this._call('file', null, null, 'resource').source(file, null, this);
-	},
-	register_block : function(name, impl){
-		this._plugins['block.' + name] = impl;
-	},
-	register_function : function(name, impl){
-		this._plugins['function.' + name] = impl;
-	},
-	register_modifier : function(name, impl){
-		this._plguins['mofifier.' + name] = impl;
-	},
-	register_resource : function(type, impl)
+	template_exists : function(file)
 	{
-		if(impl instanceof Array && impl.length == 4)
-			this._plugins['resource.' + type] = impl;
-		else
-			this.trigger_error("malformed function-list for '"+ type +"' in register_resource");
 	},
-	register_compiler_function : function(n, f){
-		this._plugins['compiler' + n] = f;
+	/**
+	 * register_block function
+	 * @param {String} n the name of block plugin.
+	 * @param {Function} i
+	 */
+	register_block : function(n, i){
+		this._plugins['block.' + n] = i;
 	},
+	/**
+	 * unregister_block function
+	 * @param {String} n the name of block plugin.
+	 */
 	unregister_block : function(n){
 		this._plugins['block.' + n] = false;
 	},
+	/**
+	 * register_function function
+	 * @param {String} n the name of function plugin.
+	 * @param {Function} i
+	 */
+	register_function : function(n, i){
+		this._plugins['function.' + n] = i;
+	},
+	/**
+	 * unregister_function function
+	 * @param {String} n the name of function plugin.
+	 */
 	unregister_function : function(n){
 		this._plugins['function.' + n] = false;
 	},
+	/**
+	 * register_modifier function
+	 * @param {String} n the name of modifier plugin.
+	 * @param {Function} i
+	 */
+	register_modifier : function(n, i){
+		this._plguins['mofifier.' + n] = i;
+	},
+	/**
+	 * unregister_modifier function
+	 * @param {String} n the name of modifier plugin.
+	 */
 	unregister_modifier : function(n){
 		this._plugins['modifier.' + n] = false;
 	},
+	register_resource : function(t, i)
+	{
+		if(i instanceof Array && i.length == 4){
+			this._plugins['resource.' + t] = i;
+		}else{
+			this.trigger_error("malformed function-list for '"+ t +"' in register_resource");
+		};
+	},
 	unregister_resource : function(n){
 		this._plugins['resource.' + n] = false;
+	},
+	register_compiler_function : function(n, i){
+		this._plugins['compiler' + n] = i;
 	},
 	unregister_compiler_function : function(n){
 		this._plugins['compiler.' + n] = false;

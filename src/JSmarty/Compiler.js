@@ -162,13 +162,15 @@ JSmarty.Compiler.extend = function(n, s, o)
  */
 JSmarty.Compiler.define = function(s, o)
 {
-	var i, c, n, p = this[p];
+	var i, c, n, p = this[s];
+/*
 	for(i in o)
 	{
 		c = function(t){ this.text = t; };
 		c.prototype = new p();
 		this[i] = c;
 	};
+*/
 };
 
 /**
