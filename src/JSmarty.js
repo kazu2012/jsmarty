@@ -62,12 +62,13 @@ JSmarty.prototype =
 
 	default_template_handler_func : null,
 
+	__vars__ : {},
+	__compiler__ : null,
+
 	_foreach : {},
 	_section : {},
 	_capture : {},
 	_version : '@version@',
-	_tpl_vars : {},
-	_compiler : null,
 	_debug_id : 'JSMARTY_DEBUG',
 	_debug_info : [],
 	_plugins :{
@@ -96,7 +97,7 @@ JSmarty.prototype =
 			return;
 		};
 
-		if(k != '') this.__vars__[k] = value;
+		if(k != '') this.__vars__[k] = v;
 	},
 	/**
 	 * assign_by_ref function
@@ -277,6 +278,7 @@ JSmarty.prototype =
 
 		this.autoload_filters = null;
 
+
 		if(display)
 		{
 			if(result){ JSmarty.System.print(result); };
@@ -408,8 +410,8 @@ JSmarty.prototype =
 	trigger_error : function(msg, level)
 	{
 		if(!level) level = 'warn';
-		if(!this.debugging) level = 'none;'
-		JSmarty.trigger_error(msg, level);
+		if(!this.debugging) level = 'none';
+		JSmarty.Error.raise(msg, level);
 	},
 	_compile_resource : function(name)
 	{
@@ -424,20 +426,33 @@ JSmarty.prototype =
 
 		return false;
 	},
-	_compile_source : function(name, src)
+	/**
+	 * compile the given source
+	 *
+	 * @param {String} n the name of resource
+	 * @param {String} s source
+	 */
+	_compile_source : function(n, s)
 	{
-		var cpir = this._compiler;
-		var name = this.compiler_class;
+		var c = this.__compiler__;
 
-		if(cpir == null)
+		if(c == null)
 		{
-			if(JSmarty[name] == void(0)) /* empty */;
-//				JSmarty.Plugin.addModule(this.compiler_file);
-			cpir = this._compiler = new JSmarty[name](this);
+			try
+			{
+				c = new JSmarty[this.compiler_class](this);
+				this.__compiler__ = c;
+			}
+			catch(e){
+				this.trigger_error();
+			};
 		};
 
-		try{ return new Function(cpir.execute(src)); }
-		catch(e){ };
+		try{
+			return new Function(c.execute(s));
+		}catch(e){
+			this.trigger_error();
+		};
 	},
 	/**
 	 * test if resource needs compiling
@@ -697,23 +712,3 @@ JSmarty.prototype =
 JSmarty.GLOBALS = this;
 JSmarty.VERSION = '@version@';
 JSmarty.templates_c = {};
-
-/**
- * JSmarty Error Handler
- * @param {String} msg message
- * @param {String} level error-level
- */
-JSmarty.trigger_error = function(msg, level)
-{
-	if(msg.message) msg = msg.message;
-	msg = 'JSmarty error: ' + msg + '\n';
-
-	switch(level)
-	{
-		case 'warn':
-			JSmarty.System.print(msg); break;
-		case 'die':
-		default:
-			throw new Error(msg); break;
-	};
-};
