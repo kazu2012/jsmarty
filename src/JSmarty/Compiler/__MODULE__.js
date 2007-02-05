@@ -44,6 +44,19 @@ JSmarty.Compiler.__MODULE__.prototype =
 	setValue : function(k, v){
 		if(k in this) this[k] = v;
 	},
+	quoteText : function(str)
+	{
+		var s = str || ''
+		return "'"+ s + "'";
+	},
+	escapeText : function(str)
+	{
+		var s = str || '';
+		if(-1 < s.indexOf("'")){
+			s = s.split("'").join("\'");
+		};
+		return s;
+	},
 	/**
 	 * getValue function
 	 * getter for module.

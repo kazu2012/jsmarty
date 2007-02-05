@@ -20,7 +20,7 @@
 		<mkdir dir="${tmp}" />
 		<concat destfile="${tmp}/JSmarty.js">
 			<filelist dir="${src}" files="JSmarty.js" />
-			<filelist dir="${src}/JSmarty" files="Browser.js,Utility.js,System.js,Plugin.js" />
+			<filelist dir="${src}/JSmarty" files="Buffer.js,Browser.js,Utility.js,System.js,Plugin.js" />
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
 			<filelist dir="${src}/JSmarty" files="Compiler.js" />
@@ -43,6 +43,7 @@
 
 	<!-- Target :: main -->
 	<target name="main" depends="build">
+	<!--
 		<mkdir dir="${tmp}" />
 		<mkdir dir="${tmp}/Config" />
 		<mkdir dir="${tmp}/JSmarty" />
@@ -53,6 +54,7 @@
 		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />
+	-->
 	</target>
 
 </project>

@@ -1,3 +1,7 @@
+String.prototype.toUcfirst = function(){
+	return this.slice(0, 1).toUpperCase() + this.slice(1);
+};
+
 window.onload = function()
 {
 	var i, f, link, hash;
@@ -40,15 +44,15 @@ function postrender(target)
 	document.write = temp;
 };
 
-var Record = {};
+Record = {};
 Record.HashRecord = function(arg)
 {
-	arg = arg.charAt(0).toUpperCase() + arg.slice(1);
+	arg = arg.toUcfirst();
 	if(Model[arg]) return Model[arg];
 	return function(){ return false; };
 };
 
-var Model =
+Model =
 {
 	Index : function()
 	{
@@ -151,7 +155,6 @@ var Model =
 	{
 		smarty.display('trimwhitespace.txt');
 	},
-	// -- modifier
 	Capitalize : function()
 	{
 	},

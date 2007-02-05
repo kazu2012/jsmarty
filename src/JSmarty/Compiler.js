@@ -15,9 +15,9 @@
 JSmarty.Compiler = function(renderer)
 {
 	// resolve namespaces
-	var Compiler= JSmarty.Compiler;
+	var Buffer = JSmarty.Buffer;
+	var Compiler = JSmarty.Compiler;
 	var Context = JSmarty.Compiler.Context;
-	var Builder = JSmarty.Utility.StringBuilder;
 
 	var L = renderer.left_delimiter;
 	var R = renderer.right_delimiter;
@@ -77,7 +77,7 @@ JSmarty.Compiler = function(renderer)
 			R = renderer.right_delimiter;
 		};
 
-		return true;
+		return flag;
 	};
 
 	/**
@@ -87,7 +87,7 @@ JSmarty.Compiler = function(renderer)
 	 */
 	this.execute = function(src)
 	{
-		var buf = new Builder();
+		var buf = new Buffer();
 		var context = new Context();
 		var t, m, r, p, isp, tag, iap = 0;
 		var ilp = L.length, irp = -R.length;
@@ -102,16 +102,18 @@ JSmarty.Compiler = function(renderer)
 
 		buf.append
 		(
-			'var Builder = JSmarty.Utility.StringBuilder,',
-			'v = this._tpl_vars,',
-			'buf = new Builder(), self = this;\n'
+			'var Buffer = JSmarty.Buffer,',
+			'v = this.__vars__,',
+			'buf = new Buffer(), self = this;\n'
 		);
 
+		// lookup block elements
 		p = regtml;
 		while((r = p.exec(src)) != null){
 			context.addElement('block', r[1]);
 		};
 
+		// compile source
 		p = regtag;
 		while((r = p.exec(src)) != null)
 		{
@@ -141,36 +143,21 @@ JSmarty.Compiler = function(renderer)
 };
 
 /**
- * extend function
- * @param {Srting} n the name of class.
- * @param {String} s the name of superclass.
- * @param {Object} o properties for new class
- */
-JSmarty.Compiler.extend = function(n, s, o)
-{
-	if(n in this) throw new Error('has already exists the '+ n +' class.');
-	var i, c = function(t){ this.text = t; };
-	c.prototype = new this[s]();
-	for(i in o) c.prototype[i] = o[i];
-	this[n] = c;
-};
-
-/**
  * define function
  * @param {String} s the name of superclass.
- * @param {Object} o 
+ * @param {Object} o definitive list
  */
 JSmarty.Compiler.define = function(s, o)
 {
-	var i, c, n, p = this[s];
-/*
+	var i, c, d, p = this[s];
 	for(i in o)
 	{
+		d = o[i];
 		c = function(t){ this.text = t; };
 		c.prototype = new p();
+		for(k in d){ c.prototype[k] = d[k]; };
 		this[i] = c;
 	};
-*/
 };
 
 /**
@@ -189,7 +176,7 @@ JSmarty.Compiler.newString = function(t, c)
 
 JSmarty.Compiler.newModule = function(t, c)
 {
-	var m, name, type, main = t.charAt(0);
+	var m, name, type, main = t.slice(0, 1);
 	var inp = 0, iap = imp = -1, plain = c.isPlain();
 
 	switch(main)
@@ -243,5 +230,5 @@ JSmarty.Compiler.newModule = function(t, c)
 };
 
 JSmarty.Compiler.toUcfirst = function(s){
-	return s.charAt(0).toUpperCase().concat(s.slice(1));
+	return s.slice(0,1).toUpperCase().concat(s.slice(1));
 };

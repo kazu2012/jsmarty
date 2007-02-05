@@ -10,11 +10,11 @@
 	<link rel="stylesheet" type="text/css" href="styles/default.css" />
 	<script type="text/javascript" src="../lib/JSmarty.js"></script>
 	<script type="text/javascript" src="../lib/JSmarty/Compiler.js"></script>
+	<script type="text/javascript" src="scripts/insertAdjacent.js"></script>
 	<script type="text/javascript" src="scripts/plugin.js"></script>
 	<script type="text/javascript">
 	smarty = new JSmarty;
 	smarty.plugins_dir = ['../lib/plugins','plugins'];
-	// override the JSmarty.print function...
 	JSmarty.System.print = function(str){
 		document.getElementById('content').innerHTML = str;
 	};

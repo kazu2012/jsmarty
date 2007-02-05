@@ -31,7 +31,7 @@ JSmarty.Compiler.define
 			{
 				var m = this.toModifier();
 				var n = '@@COMPILER::VARIABLE@@' + this.getValue('name');
-				this.sString = 'self.inModify('+ mo +','+ n +')';
+				this.sString = 'self.inModify('+ m +','+ n +')';
 			}
 		},
 		Plains :

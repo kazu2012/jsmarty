@@ -6,8 +6,8 @@ JSmarty.Buffer = function()
 	{
 		for(var i=0,f=arguments.length;i<f;i++)
 		{
-			if(!argumtens[i]){ return; };
-			b[++k] = argumtens[i];
+			if(!arguments[i]){ return; };
+			b[++k] = arguments[i];
 		};
 	};
 
