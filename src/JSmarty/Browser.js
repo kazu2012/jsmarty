@@ -1,19 +1,28 @@
-JSmarty.Browser = function()
+JSmarty.Browser = function(def)
 {
-	var path, time = {}, sys = JSmarty.System;
+	var time = {}
+
+	if(!document.scripts){
+		document.scripts = document.getElementsByTagName('script');
+	};
+
 	// -- XMLHttpRequestObject
 	var http = function()
 	{
-		if(typeof(XMLHttpRequest) != 'undefined')
+		if(typeof(XMLHttpRequest) != 'undefined'){
 			return new XMLHttpRequest;
-		if(typeof(ActiveXObject) != 'undefined')
+		};
+		if(typeof(ActiveXObject) != 'undefined'){
 			return new ActiveXObject('Microsoft.XMLHTTP');
+		};
 		return null;
 	}();
+
 	// -- properties
-	sys.prop = { name : 'http', code : 10, auth : 'shogo' };
+	def.prop = { name : 'http', code : 10, auth : 'shogo' };
+
 	// -- fgets function
-	sys.fgets = function(u, d)
+	def.fgets = function(u, d)
 	{
 		var i, f, t, h = http;
 		d = JSmarty.Utility.flatten(d);
@@ -33,23 +42,24 @@ JSmarty.Browser = function()
 		};
 		return t || '';
 	};
+
 	// -- mtime function
-	sys.mtime = function()
+	def.mtime = function()
 	{
 		
 	};
+
 	// -- print function
-	sys.print = function(s){
+	def.print = function(s){
 		document.write(s);
 	};
-	// -- getSelfPath function
-	path = (function(e)
-	{
-		if(e.nodeName.toLowerCase() == 'script') return e;
-		return arguments.callee(e.lastChild);
-	})(document).getAttribute('src');
-	path = path.slice(0, path.lastIndexOf('/'));
 
-	sys.getSelfPath = function(){ return path; };
+	def.getSelfPath = function()
+	{
+		var self = document.scripts[documents.scripts.length-1];
+		var path = self.getAttribute('src').slice(0, path.lastIndexOf('/'));
+
+		return function(){ return path; };
+	}();
 };
 

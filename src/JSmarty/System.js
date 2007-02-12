@@ -20,7 +20,7 @@ JSmarty.System = new function()
 	{
 		switch(v)
 		{
-			case 10: JSmarty.Browser(); break;
+			case 10: JSmarty.Browser(JSmarty.System); break;
 			case 20: load('./internals/system.ajaja.js'); break;
 			case 30: load('./internals/system.mustang.js'); break;
 			default: c(); break;

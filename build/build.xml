@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSmarty" default="main" basedir="../">
 
-	<property name="version" value="0.2.0" />
+	<property name="version" value="0.3.0" />
 
 	<!-- Directories -->
 	<property name="src" value="src" />
@@ -20,7 +20,7 @@
 		<mkdir dir="${tmp}" />
 		<concat destfile="${tmp}/JSmarty.js">
 			<filelist dir="${src}" files="JSmarty.js" />
-			<filelist dir="${src}/JSmarty" files="Buffer.js,Browser.js,Utility.js,System.js,Plugin.js" />
+			<filelist dir="${src}/JSmarty" files="Error.js,Buffer.js,Browser.js,Utility.js,System.js,Plugin.js" />
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
 			<filelist dir="${src}/JSmarty" files="Compiler.js" />

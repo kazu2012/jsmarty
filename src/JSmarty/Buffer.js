@@ -11,7 +11,8 @@ JSmarty.Buffer = function()
 		};
 	};
 
-	function toString(s){ return b.join(s || ''); };
-	this.valueOf = this.toString = toString;
+	this.valueOf = this.toString = function(s){
+		return b.join(s || '');
+	};
 };
 JSmarty.Buffer.prototype = new String();

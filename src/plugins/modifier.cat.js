@@ -17,8 +17,6 @@
  * @return   {String} string with cat
  */
 
-function jsmarty_modifier_cat(string, cat)
-{
-	// String#concat
+function jsmarty_modifier_cat(string, cat){
 	return string.concat(cat);
 };
