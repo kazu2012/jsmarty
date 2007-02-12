@@ -1,24 +1,21 @@
 JSmarty.Utility =
 {
-	factory : function(o)
+	clone : function(o)
 	{
 		function f(){};
 		f.prototype = o;
-		return new f;
+		return new f();
 	},
-	flatten : function(o)
-	{
-		if(typeof(o) == 'string') o = [o];
-		return o;
+	copyArray : function(){
+		return Array.prototype.slice.call(arguments);
 	},
-	arraycopy : function(a)
-	{
-		return (a.length == 1) ? [a[0]] : Array.apply(null, a);
-	},
-	objectcopy : function(o)
+	copyObject : function(o)
 	{
 		var i, r = {};
-		for(i in o) r[i] = o[i];
+		for(i in o){ r[i] = o[i]; };
 		return r;
+	},
+	toArray : function(o){
+		return (o instanceof Array) ? o : [o];
 	}
 };

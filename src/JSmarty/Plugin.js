@@ -12,13 +12,6 @@ JSmarty.Plugin = JSmarty.Utility.factory(JSmarty.System);
 JSmarty.Plugin.__func__ = JSmarty.prototype._plugins;
 
 /**
- * Repository of plugins.
- * @private
- * @type Array
- */
-JSmarty.Plugin.__repo__ = [];
-
-/**
  * empty function
  * Return blank string.
  * @return {String}
@@ -45,8 +38,15 @@ JSmarty.Plugin.parse = function($code, $ns)
 		default: $func = $func.join('_'); break;
 	};
 
-	try{ $flag = true; eval($code + '$parent[$ns] = '+ $func +' || null'); }
-	catch(e){ JSmarty.trigger_error('Plugin: ' + e.toString(), 'warn'); };
+	try
+	{
+		$flag = true;
+		eval($code + '$parent[$ns] = '+ $func +' || null');
+	}
+	catch(e)
+	{
+		JSmarty.Error.raise('Plugin: ' + e.message || e.toString());
+	};
 
 	return $flag;
 };
@@ -78,11 +78,6 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
 	if(dir == void(0))
 		dir = this.getSelfPath() + '/internals';
 	return this.parse(this.fgets(ns + '.js', dir), ns);
-};
-
-JSmarty.Plugin.addRepository = function()
-{
-	
 };
 
 JSmarty.Plugin.importer = function()
