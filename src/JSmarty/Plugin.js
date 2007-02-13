@@ -2,7 +2,7 @@
  * Provide interfase of Plugin extended JSmarty.System Object
  * @type JSmarty.Plugin Object
  */
-JSmarty.Plugin = JSmarty.Utility.factory(JSmarty.System);
+JSmarty.Plugin = JSmarty.Utility.clone(JSmarty.System);
 
 /**
  * Stack of Plugins

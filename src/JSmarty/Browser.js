@@ -25,7 +25,7 @@ JSmarty.Browser = function(def)
 	def.fgets = function(u, d)
 	{
 		var i, f, t, h = http;
-		d = JSmarty.Utility.flatten(d);
+		d = JSmarty.Utility.toArray(d);
 		for(i=0,f=d.length;i<f;i++)
 		{
 			if(t != null) break;
@@ -56,9 +56,8 @@ JSmarty.Browser = function(def)
 
 	def.getSelfPath = function()
 	{
-		var self = document.scripts[documents.scripts.length-1];
-		var path = self.getAttribute('src').slice(0, path.lastIndexOf('/'));
-
+		var path = document.scripts[document.scripts.length-1].getAttribute('src');
+		path = path.slice(0, path.lastIndexOf('/'));
 		return function(){ return path; };
 	}();
 };

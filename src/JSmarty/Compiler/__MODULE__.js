@@ -44,10 +44,8 @@ JSmarty.Compiler.__MODULE__.prototype =
 	setValue : function(k, v){
 		if(k in this) this[k] = v;
 	},
-	quoteText : function(str)
-	{
-		var s = str || ''
-		return "'"+ s + "'";
+	quoteText : function(s){
+		return (s) ? "'"+ s + "'" : '';
 	},
 	escapeText : function(str)
 	{

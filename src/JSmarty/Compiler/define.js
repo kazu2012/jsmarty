@@ -9,7 +9,7 @@ JSmarty.Compiler.define
 			{
 				if(this.sString == '')
 				{
-					this.sString = this.quoteText(this.escapeText());
+					this.sString = this.quoteText(this.escapeText(this.text));
 					return;
 				};
 
@@ -83,7 +83,7 @@ JSmarty.Compiler.define
 					var attr = this.toParameter();
 					var modf = this.toModifier();
 
-					this.sSuffix = 'function(){var buf = new Builder();\n';
+					this.sSuffix = 'function(){var buf = new Buffer();\n';
 					this.sString = 'self.inCall('+ name +',' + attr +','+ modf +',';
 				};
 			}
@@ -201,7 +201,7 @@ JSmarty.Compiler.define
 					var p = this.toParameter();
 					var m = this.toModifier();
 
-					this.sSuffix = 'function(){var buf = new Builder();\n';
+					this.sSuffix = 'function(){var buf = new Buffer();\n';
 					this.sString = 'self.inForeach('+ p +','+ m +',';
 				};
 			}
@@ -210,7 +210,7 @@ JSmarty.Compiler.define
 		{
 			sPrefix : '',
 			sSuffix : '',
-			sString : 'return buf.toString();},function(){var buf = new Builder();\n'
+			sString : 'return buf.toString();},function(){var buf = new Buffer();\n'
 		},
 		Section :
 		{
@@ -227,7 +227,7 @@ JSmarty.Compiler.define
 					var modf = this.toModifier();
 					var name = this.extract(attr, 'name').slice(1,-1);
 
-					this.sSuffix = 'function('+ name +'){var buf = new Builder();\n';
+					this.sSuffix = 'function('+ name +'){var buf = new Buffer();\n';
 					this.sString = 'self.inSection('+ attr +','+ modf +',';
 				};
 			},

@@ -87,7 +87,7 @@ JSmarty.prototype =
 				v = null;
 				break;
 			case 'object':
-				v = JSmarty.Utility.objectcopy(v);
+				v = JSmarty.Utility.copyObject(v);
 				break;
 		};
 

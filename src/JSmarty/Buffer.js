@@ -4,10 +4,9 @@ JSmarty.Buffer = function()
 
 	this.append = function()
 	{
-		var undefine = void(0);
 		for(var i=0,f=arguments.length;i<f;i++)
 		{
-			if(arguments[k] != undefine){
+			if(arguments[i] != null){
 				b[k++] = arguments[i];
 			};
 		};
