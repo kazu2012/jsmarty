@@ -1,5 +1,9 @@
+if(!document.scripts){
+	document.scripts = document.getElementsByTagName('script');
+};
+
 String.prototype.toUcfirst = function(){
-	return this.slice(0, 1).toUpperCase() + this.slice(1);
+	return this.slice(0, 1).toUpperCase().concat(this.slice(1));
 };
 
 window.onload = function()
@@ -23,19 +27,16 @@ window.onload = function()
 
 function postrender(target)
 {
-	var i, f, script, temp = document.write;
+	var script, temp = document.write;
 	var scripts = target.getElementsByTagName('script');
 
 	document.write = function()
 	{
-		var i, f, span, b = [];
-		for(i=0,f=arguments.length;i<f;i++) b[i] = arguments[i];
-		span = document.createElement('span');
-		span.innerHTML = b.join('');
-		script.parentNode.insertBefore(span, script);
+		var arguments = Array.prototype.slice.call(arguments);
+		script.insertAdjacentHTML('beforeBegin', arguments.join(''));
 	};
 
-	for(i=0,f=scripts.length;i<f;i++)
+	for(var i=0,f=scripts.length;i<f;i++)
 	{
 		script = scripts[i];
 		eval(script.text)

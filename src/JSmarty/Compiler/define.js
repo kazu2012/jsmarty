@@ -23,7 +23,7 @@ JSmarty.Compiler.define
 
 				this.sPrefix = '';
 				this.sSuffix = '';
-			},
+			}
 		},
 		Variable :
 		{
