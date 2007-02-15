@@ -48,6 +48,22 @@ JSmarty.History.prototype =
 			};
 		}
 	},
+	call : function(k, o, a)
+	{
+		var f = this.get(k);
+		if(typeof(f) != 'function'){
+			throw new Error(k +' is not Function.');
+		};
+		return f.apply(o, a);
+	},
+	/**
+	 * did key exist?
+	 * @param {String} k key
+	 * @return {Boolean}
+	 */
+	isExist : function(k){
+		return (0 <= this.__list__[k]) ? true : false;
+	},
 	/**
 	 * 
 	 */

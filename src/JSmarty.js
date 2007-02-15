@@ -57,13 +57,13 @@ JSmarty.prototype =
 	config_read_hidden : false,
 	config_fix_newlines : true,
 
+	compiler : null,
 	compiler_file  : 'JSmarty/Compiler.js',
 	compiler_class : 'Compiler',
 
 	default_template_handler_func : null,
 
 	__vars__ : {},
-	__compiler__ : null,
 
 	_foreach : {},
 	_section : {},
@@ -269,6 +269,7 @@ JSmarty.prototype =
 		{
 			if(debugging) debug.compile_time = new Date().getTime() - start;
 			result = JSmarty.templates_c[name].call(this);
+			//retult = JSmarty.Templatec.call(name, this);
 		};
 
 		// -- outputfilter
@@ -416,11 +417,14 @@ JSmarty.prototype =
 	_compile_resource : function(name)
 	{
 		var src, data = { name:name };
-		if(!this._fetch_resource_info(data)) return false;
-		if(src = this._compile_source(name, data.src))
+
+		if(!this._fetch_resource_info(data)){
+			return false;
+		};
+
+		if(src = this.inCompileSource(name, data.src))
 		{
-			JSmarty.templates_c[name] = src;
-			JSmarty.templates_c[name].timestamp = data.time;
+			JSmarty.Templatec.set(name, src);
 			return true;
 		}
 
@@ -432,16 +436,16 @@ JSmarty.prototype =
 	 * @param {String} n the name of resource
 	 * @param {String} s source
 	 */
-	_compile_source : function(n, s)
+	inCompileSource : function(n, s)
 	{
-		var c = this.__compiler__;
+		var c = this.compiler;
 
 		if(c == null)
 		{
 			try
 			{
 				c = new JSmarty[this.compiler_class](this);
-				this.__compiler__ = c;
+				this.compiler = c;
 			}
 			catch(e){
 				this.trigger_error();
@@ -466,7 +470,7 @@ JSmarty.prototype =
 
 		if(!this.force_compile)
 		{
-			if(JSmarty.templates_c[name])
+			if(JSmarty.Templatec.isExist(name))
 				return true;
 /*
 			if(!this.compile_check)
@@ -544,9 +548,10 @@ JSmarty.prototype =
 		var t = (s == null) ? 'function' : 'block';
 		var r, ns = t + '.' + n, call = this._plugins;
 
-		if(call[ns] == void(0))
+		if(call[ns] == void(0)){
 			JSmarty.Plugin.addPlugin(ns, this.plugins_dir);
-		if(!call[ns]) return '';
+		};
+		if(!call[ns]){ return ''; };
 
 		switch(t)
 		{
