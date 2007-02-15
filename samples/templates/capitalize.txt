@@ -1,0 +1,8 @@
+<h2>modifier : capitalize</h2>
+<h3>Model</h3>
+{model name="capitalize"}
+<h3>Template</h3>
+
+<h3>Result</h3>
+{$foo|capitalize}<br />
+{$foo|capitalize:true}

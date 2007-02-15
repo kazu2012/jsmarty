@@ -15,28 +15,28 @@
  * @param    {String} string
  * @return   {String} digits
  */
-
-var jsmarty_modifier_capitalize_digits = false;
-
 function jsmarty_modifier_capitalize(string, digits)
 {
-	if(digits == void(0)) digits = false;
-	jsmarty_modifier_capitalize_ucfirst(null, digits);
-	return string.replace(/\b\w+\b/, jsmarty_modifier_capitalize_ucfirst);
-};
+	var i, f, b = true, s = string.split('');
 
-function jsmarty_modifier_capitalize_ucfirst(string, digits)
-{
-	var ucfirst = JSmarty.Plugin.getFunction('php.ucfirst');
-
-	if(digits != void(0))
+	for(i=0,f=s.length;i<f;i++)
 	{
-		jsmarty_modifier_capitalize_digits = digits;
-		return;
+		switch(s[i])
+		{
+			case ' ':
+			case '-':
+			case '!':
+				b = true;
+				break;
+			default:
+				if(b)
+				{
+					s[i] = s[i].toUpperCase();
+				};
+				b = false;
+				break;
+		};
 	};
 
-	if(string[0].match(/\d/) || jsmarty_modifier_capitalize_digits)
-		return ucfirst(string[0]);
-	else
-		return string[0];
+	return s.join('');
 };

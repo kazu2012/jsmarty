@@ -6,7 +6,7 @@ JSmarty.Buffer = function()
 	{
 		for(var i=0,f=arguments.length;i<f;i++)
 		{
-			if(arguments[i] != null){
+			if(arguments[i]){
 				b[k++] = arguments[i];
 			};
 		};

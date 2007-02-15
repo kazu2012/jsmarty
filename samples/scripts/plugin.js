@@ -158,10 +158,13 @@ Model =
 	},
 	Capitalize : function()
 	{
+		smarty.assign('foo', 'this is a pen.');
+		smarty.display('capitalize.txt');
+		smarty.clear_all_assign();
 	},
 	Cat : function()
 	{
-		smarty.assign("hoge", "Hello");
+		smarty.assign('hoge', 'Hello');
 		smarty.display('cat.txt');
 		smarty.clear_all_assign();
 	},
