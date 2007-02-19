@@ -98,11 +98,10 @@ JSmarty.Plugin.importer = function()
  */
 JSmarty.Plugin.toString = function()
 {
-	var buf = new JSmarty.Buffer();
-	var s, t, k, func = this.__func__;
-	var w = 73, date = new Date().toString();
+	var s, t, k, w = 73, func = this.__func__;
+	var buf = new JSmarty.Buffer('TABLE Of Plugins');
 
-	buf.append('Table Of Plugins', Array(w).join('-'));
+	buf.append(Array(w).join('-'));
 
 	for(k in func)
 	{
@@ -111,11 +110,12 @@ JSmarty.Plugin.toString = function()
 		{
 			t = (k[0].length < 8) ? '\t\t' : '\t';
 			s = Boolean(func[k.join('.')]) ? 'success' : 'failure';
-			buf.append('['+ k[0] + ']'+ t + k[1] + ' -> ' + s);
+			buf.append('[', k[0], ']', t, k[1], ' -> ', s);
 		};
 	};
 
-	buf.append(Array(w).join('-'), Array(w - 33).join(' '), date);
+	buf.append(Array(w).join('-'));
+	buf.append(Array(w - 33).join(' '), new Date().toString());
 
 	return buf.toString('\n');
 };

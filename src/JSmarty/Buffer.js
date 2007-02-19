@@ -1,11 +1,11 @@
-JSmarty.Buffer = function()
+JSmarty.Buffer = function(s)
 {
-	var b = [];
-	var c = Array.prototype.concat;
+	var c = Array.prototype.join;
+	var b = (s) ? [s] : [], i = b.length;
 
 	this.append = function()
 	{
-		c.apply(b, arguments);
+		b[i++] = c.call(arguments,'');
 		return this;
 	};
 
