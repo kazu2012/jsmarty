@@ -1,15 +1,12 @@
 JSmarty.Buffer = function()
 {
-	var k = 0, b = [];
+	var b = [];
+	var c = Array.prototype.concat;
 
 	this.append = function()
 	{
-		for(var i=0,f=arguments.length;i<f;i++)
-		{
-			if(arguments[i]){
-				b[k++] = arguments[i];
-			};
-		};
+		c.apply(b, arguments);
+		return this;
 	};
 
 	this.valueOf = this.toString = function(s){

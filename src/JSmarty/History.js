@@ -5,8 +5,6 @@ JSmarty.History.prototype =
 	__list__ : {},
 	/** @private **/
 	__pool__ : [],
-	/** @private **/
-	pointer : null,
 	/**
 	 * setter for history
 	 * @param {String} k key
@@ -26,9 +24,8 @@ JSmarty.History.prototype =
 	 */
 	get : function(k)
 	{
-		var i = this.__list__[k];
-		if(0 <= i){
-			return this.__pool__[i];
+		if(this.isExist(k)){
+			return this.__pool__[this.__list__[k]];
 		};
 		return null;
 	},
@@ -39,12 +36,14 @@ JSmarty.History.prototype =
 	{
 		var self = this;
 		return new function(){
-			var l = self.length();
+			var p = self.length();
 			this.next = function(){
-				return self.__pool__[i];
+			};
+			this.prev = function(){
+			};
+			this.hasPrev = function(){
 			};
 			this.hasNext = function(){
-				(d == 'down') ? i-- : i++;
 			};
 		}
 	},
@@ -62,7 +61,6 @@ JSmarty.History.prototype =
 	 * @return {Boolean}
 	 */
 	isExist : function(k){
-		return (0 <= this.__list__[k]) ? true : false;
 	},
 	/**
 	 * 
