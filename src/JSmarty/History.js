@@ -33,7 +33,7 @@ JSmarty.History.prototype =
 	/**
 	 *
 	 */
-	iterator : function()
+	iterator : function(d)
 	{
 		var self = this;
 		return new function(){
@@ -47,13 +47,21 @@ JSmarty.History.prototype =
 			};
 		}
 	},
+	/**
+	 * wrapper for Function#apply
+	 */
 	apply : function(k, o, a)
 	{
 		var f = this.get(k);
 		if(typeof(f) != 'function'){
 			throw new Error(k +' is not Function.');
 		};
-		return f.apply(o, a);
+		switch(arguments.length)
+		{
+			case 1: return f.apply();
+			case 2: return f.apply(o);
+			case 3: return f.apply(o, a);
+		};
 	},
 	/**
 	 * did key exist?
@@ -64,12 +72,27 @@ JSmarty.History.prototype =
 		return (k in this._list_);
 	},
 	/**
-	 * 
+	 * wrapper for Array#length
 	 */
 	length : function(){
 		return this._pool_.length;
+	},
+	/**
+	 *
+	 *
+	 */
+	clear : function(k)
+	{
+		
+	},
+	/**
+	 * clear the all histories
+	 */
+	clearAll : function()
+	{
+		this._list_ = {};
+		this._pool_ = [];
 	}
 };
 
-JSmarty.Caching = new JSmarty.History();
 JSmarty.Templatec = new JSmarty.History();

@@ -5,29 +5,28 @@ JSmarty.Error = new function()
 	/**
 	 * trigger error
 	 *
-	 * @param {String}msg the error message
-	 * @param {String}level error's level, none, warn or die
+	 * @param {String} m the error message
+	 * @param {String} l error's level, none, warn or die
 	 */
-	this.raise = function(msg, level)
+	this.raise = function(m, l)
 	{
-		var pre = '';
+		var p = 'JSmarty Error';
 
-		switch(level)
+		switch(l)
 		{
 			case 'warn':
-				pre = 'JSmarty Error';
-				JSmarty.System.print(pre, msg);
+				JSmarty.System.print(p, m);
 				break;
 			case 'die':
-				pre = 'JSmarty Fatal Error';
-				throw new Error(pre + msg);
+				p = 'JSmarty Fatal Error';
+				throw new Error(p + m);
 				break;
 			case 'none':
 			default:
 				break;
 		};
 
-		buf.append(pre, msg);
+		buf.append(p, m);
 	};
 
 	/**
