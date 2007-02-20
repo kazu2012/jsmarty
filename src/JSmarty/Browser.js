@@ -50,8 +50,8 @@ JSmarty.Browser = function(def)
 	};
 
 	// -- print function
-	def.print = function(s){
-		document.write(s);
+	def.print = function(){
+		document.write(Array.prototype.join.apply(arguments, ''));
 	};
 
 	def.getSelfPath = function()

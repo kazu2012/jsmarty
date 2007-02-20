@@ -82,12 +82,12 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
 
 JSmarty.Plugin.importer = function()
 {
-	var name, parent = this.__func__;
-	var i, f, global = JSmarty.GLOBALS;
+	var n, p = this.__func__;
+	var i, f, g = JSmarty.GLOBALS;
 	for(i=0,f=arguments.length;i<f;i++)
 	{
-		name = arguments[i];
-		global[name.split('.')[1]] = parent[name];
+		n = arguments[i];
+		g[n.split('.')[1]] = p[n];
 	};
 };
 
@@ -98,24 +98,24 @@ JSmarty.Plugin.importer = function()
  */
 JSmarty.Plugin.toString = function()
 {
-	var s, t, k, w = 73, func = this.__func__;
-	var buf = new JSmarty.Buffer('TABLE Of Plugins');
+	var s, t, k, w = 73, f = this.__func__;
+	var b = new JSmarty.Buffer('Table Of Plugins');
 
-	buf.append(Array(w).join('-'));
+	b.append(Array(w).join('-'));
 
-	for(k in func)
+	for(k in f)
 	{
 		k = k.split('.');
 		if(k.length == 2)
 		{
 			t = (k[0].length < 8) ? '\t\t' : '\t';
-			s = Boolean(func[k.join('.')]) ? 'success' : 'failure';
-			buf.append('[', k[0], ']', t, k[1], ' -> ', s);
+			s = Boolean(f[k.join('.')]) ? 'success' : 'failure';
+			b.append('[', k[0], ']', t, k[1], ' -> ', s);
 		};
 	};
 
-	buf.append(Array(w).join('-'));
-	buf.append(Array(w - 33).join(' '), new Date().toString());
+	b.append(Array(w).join('-'));
+	b.append(Array(w - 33).join(' '), new Date().toString());
 
-	return buf.toString('\n');
+	return b.toString('\n');
 };

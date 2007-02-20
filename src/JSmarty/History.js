@@ -2,9 +2,9 @@ JSmarty.History = function(){};
 JSmarty.History.prototype =
 {
 	/** @private **/
-	__list__ : {},
+	_list_ : {},
 	/** @private **/
-	__pool__ : [],
+	_pool_ : [],
 	/**
 	 * setter for history
 	 * @param {String} k key
@@ -13,9 +13,10 @@ JSmarty.History.prototype =
 	 */
 	set : function(k, v)
 	{
-		var p = this.__pool__, i = p.length;
+		var p = this._pool_;
+		var i = p.length;
 		p[i] = v;
-		this.__list__[k] = i;
+		this._list_[k] = i;
 		return v;
 	},
 	/**
@@ -25,18 +26,17 @@ JSmarty.History.prototype =
 	get : function(k)
 	{
 		if(this.isExist(k)){
-			return this.__pool__[this.__list__[k]];
+			return this._pool_[this._list_[k]];
 		};
 		return null;
 	},
 	/**
 	 *
 	 */
-	iterator : function(d)
+	iterator : function()
 	{
 		var self = this;
 		return new function(){
-			var p = self.length();
 			this.next = function(){
 			};
 			this.prev = function(){
@@ -47,7 +47,7 @@ JSmarty.History.prototype =
 			};
 		}
 	},
-	call : function(k, o, a)
+	apply : function(k, o, a)
 	{
 		var f = this.get(k);
 		if(typeof(f) != 'function'){
@@ -61,12 +61,13 @@ JSmarty.History.prototype =
 	 * @return {Boolean}
 	 */
 	isExist : function(k){
+		return (k in this._list_);
 	},
 	/**
 	 * 
 	 */
 	length : function(){
-		return this.__pool__.length;
+		return this._pool_.length;
 	}
 };
 

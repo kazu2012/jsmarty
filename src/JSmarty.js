@@ -68,6 +68,7 @@ JSmarty.prototype =
 	_foreach : {},
 	_section : {},
 	_capture : {},
+
 	_version : '@version@',
 	_debug_id : 'JSMARTY_DEBUG',
 	_debug_info : [],
@@ -268,8 +269,7 @@ JSmarty.prototype =
 		if(this._is_compiled(name) || this._compile_resource(name))
 		{
 			if(debugging) debug.compile_time = new Date().getTime() - start;
-			result = JSmarty.templates_c[name].call(this);
-			//retult = JSmarty.Templatec.call(name, this);
+			result = JSmarty.Templatec.apply(name, this);
 		};
 
 		// -- outputfilter
@@ -716,4 +716,3 @@ JSmarty.prototype =
 
 JSmarty.GLOBALS = this;
 JSmarty.VERSION = '@version@';
-JSmarty.templates_c = {};

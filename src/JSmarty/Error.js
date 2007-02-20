@@ -10,24 +10,24 @@ JSmarty.Error = new function()
 	 */
 	this.raise = function(msg, level)
 	{
-		var prefix;
+		var pre = '';
 
 		switch(level)
 		{
 			case 'warn':
-				prefix = 'JSmarty Error';
-				JSmarty.System.print(prefix + msg);
+				pre = 'JSmarty Error';
+				JSmarty.System.print(pre, msg);
 				break;
 			case 'die':
-				prefix = 'JSmarty Fatal Error';
-				throw new Error(prefix + msg);
+				pre = 'JSmarty Fatal Error';
+				throw new Error(pre + msg);
 				break;
 			case 'none':
 			default:
 				break;
 		};
 
-		buf.append(prefix + msg);
+		buf.append(pre, msg);
 	};
 
 	/**
