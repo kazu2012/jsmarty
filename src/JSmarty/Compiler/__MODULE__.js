@@ -8,7 +8,7 @@ JSmarty.Compiler.__MODULE__.prototype =
 	/** prefix **/
 	sPrefix : 'buf.append(',
 	/** suffix **/
-	sSuffix : ');\n',
+	sSuffix : ');',
 	/** string **/
 	sString : null,
 	/** terminal **/

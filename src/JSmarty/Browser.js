@@ -2,10 +2,6 @@ JSmarty.Browser = function(def)
 {
 	var time = {}
 
-	if(!document.scripts){
-		document.scripts = document.getElementsByTagName('script');
-	};
-
 	// -- XMLHttpRequestObject
 	var http = function()
 	{
@@ -56,9 +52,10 @@ JSmarty.Browser = function(def)
 
 	def.getSelfPath = function()
 	{
-		var path = document.scripts[document.scripts.length-1].getAttribute('src');
-		path = path.slice(0, path.lastIndexOf('/'));
-		return function(){ return path; };
+		var s = document.getElementsByTagName('script');
+		var p = s[s.length - 1].getAttribute('src');
+		p = p.slice(0, p.lastIndexOf('/')), s = null;
+		return function(){ return p; };
 	}();
 };
 
