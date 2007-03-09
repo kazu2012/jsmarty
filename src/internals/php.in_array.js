@@ -12,5 +12,9 @@
  */
 function in_array(n, h, s)
 {
-	var i, c = (s) ? function(a,b){return (a===b);} : function(a,b){return (a==b);};
+	var i, f, c = (s) ? function(v){return (n===v);} : function(v){return (n==v);};
+	for(i=0,f=h.length;i<f;i++){
+		if(c(h[i])){ return true; };
+	};
+	return false;
 };
