@@ -103,8 +103,8 @@ JSmarty.Compiler = function(renderer)
 		buf.append
 		(
 			'var Buffer = JSmarty.Buffer,',
-			'v = this.__vars__,',
-			'buf = new Buffer(), self = this;\n'
+			'v = this._vars_,',
+			'buf = new Buffer(), self = this;'
 		);
 
 		// lookup block elements

@@ -63,7 +63,7 @@ JSmarty.prototype =
 
 	default_template_handler_func : null,
 
-	__vars__ : {},
+	_vars_ : {},
 
 	_foreach : {},
 	_section : {},
@@ -94,11 +94,11 @@ JSmarty.prototype =
 
 		if(k instanceof Object)
 		{
-			for(var i in k){ this.__vars__[i] = k[i]; }
+			for(var i in k){ this._vars_[i] = k[i]; }
 			return;
 		};
 
-		if(k != '') this.__vars__[k] = v;
+		if(k != '') this._vars_[k] = v;
 	},
 	/**
 	 * assign_by_ref function
@@ -106,7 +106,7 @@ JSmarty.prototype =
 	 * @param {String} v value
 	 */
 	assign_by_ref : function(k, v){
-		if(k != '') this.__vars__[k] = v;
+		if(k != '') this._vars_[k] = v;
 	},
 	/**
 	 * append function
@@ -122,8 +122,8 @@ JSmarty.prototype =
 			for(i in k)
 			{
 				n = k[i];
-				if(!((a = this.__vars__[i]) instanceof Array)){
-					a = this.__vars__[i] = [];
+				if(!((a = this._vars_[i]) instanceof Array)){
+					a = this._vars_[i] = [];
 				};
 				if(m && n instanceof Object)
 				{
@@ -136,8 +136,8 @@ JSmarty.prototype =
 		else
 		{
 			if(k != '' && v != void(0)){ return; };
-			if(!((a = this.__vars__[k]) instanceof Array)){
-				a = this.__vars__[k] = [];
+			if(!((a = this._vars_[k]) instanceof Array)){
+				a = this._vars_[k] = [];
 			};
 			if(m && v instanceof Object)
 			{
@@ -157,8 +157,8 @@ JSmarty.prototype =
 	{
 		var i, a;
 		if(k != '' && v != void(0)){ return; };
-		if(!((a = this.__vars__[k]) instanceof Array)){
-			a = this.__vars__[k] = [];
+		if(!((a = this._vars_[k]) instanceof Array)){
+			a = this._vars_[k] = [];
 		};
 		if(m && v instanceof Object)
 		{
@@ -176,17 +176,17 @@ JSmarty.prototype =
 		if(k instanceof Array)
 		{
 			for(var i=0,f=k.length;i<f;i++){
-				delete this.__vars__[k[i]];
+				delete this._vars_[k[i]];
 			};
 			return;
 		};
-		if(k != ''){ delete this.__vars__[k]; };
+		if(k != ''){ delete this._vars_[k]; };
 	},
 	/**
 	 * clear_all_assign function
 	 */
 	clear_all_assign : function(){
-		this.__vars__ = {};
+		this._vars_ = {};
 	},
 	/**
 	 * get_template_vars function
@@ -194,7 +194,7 @@ JSmarty.prototype =
 	 * @return {Object}
 	 */
 	get_template_vars : function(k){
-		return (k == void(0)) ? this.__vars__ : this.__vars__[k];
+		return (k == void(0)) ? this._vars_ : this._vars_[k];
 	},
 	/**
 	 * clear_all_cache function
@@ -220,8 +220,8 @@ JSmarty.prototype =
 	 * clear_compiled_tpl function
 	 * @param {String} n name
 	 */
-	clear_compiled_tpl : function(n)
-	{
+	clear_compiled_tpl : function(n){
+		JSmarty.Templatec.clear(n);
 	},
 	fetch : function(name, ccid, cpid, display)
 	{

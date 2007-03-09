@@ -1,6 +1,12 @@
 (function()
 {
-	if('HTMLElement' in this){
+	if(navigator.vendor == 'Apple Computer, Inc.')
+	{
+		document.createElement('html');
+		window.HTMLElement = { prototype : window["[[DOMElement.prototype]]"] || {}};
+	};
+
+	if('HTMLElement' in window){
 		if('insertAdjacentHTML' in HTMLElement.prototype){return;};
 	}else{
 		return;
@@ -10,14 +16,14 @@
 	{
 		switch(w.toUpperCase())
 		{
-			case 'BEFOREEND':
-				this.appendChild(n);
-				break;
 			case 'BEFOREBEGIN':
 				this.parentNode.insertBefore(n, this);
 				break;
 			case 'AFTERBEGIN':
 				this.insertBefore(n, this.childNodes[0]);
+				break;
+			case 'BEFOREEND':
+				this.appendChild(n);
 				break;
 			case 'AFTEREND':
 				this.parentNode.insertBefore(n, this.nextSibling);
@@ -25,24 +31,18 @@
 		};
 	};
 
-	function insertAdjacentText(w, t){
+	HTMLElement.prototype.insertAdjacentText = function(w, t){
 		insert.call(this, w, document.createTextNode(t || ''));
 	};
 
-	function insertAdjacentHTML(w, h)
+	HTMLElement.prototype.insertAdjacentHTML = function(w, h)
 	{
 		var r = document.createRange(); r.selectNode(this);
 		insert.call(this, w, r.createContextualFragment(h));
 	};
 
-	function insertAdjacentElement(w, n)
-	{
-		insert.call(this, w, n);
-		return n;
+	HTMLElement.prototype.insertAdjacentElement = function(w, n){
+		insert.call(this, w, n); return n;
 	};
-
-	HTMLElement.prototype.insertAdjacentText = insertAdjacentText;
-	HTMLElement.prototype.insertAdjacentHTML = insertAdjacentHTML;
-	HTMLElement.prototype.insertAdjacentElement = insertAdjacentElement;
 
 })();

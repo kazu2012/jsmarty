@@ -43,18 +43,12 @@
 
 	<!-- Target :: main -->
 	<target name="main" depends="build">
-	<!--
 		<mkdir dir="${tmp}" />
-		<mkdir dir="${tmp}/Config" />
-		<mkdir dir="${tmp}/JSmarty" />
-		<mkdir dir="${tmp}/plugins" />
-		<mkdir dir="${tmp}/internals" />
-		<build task="compress" todir="${tmp/${lib}"><fileset dir="${lib}" /></build>
+		<copy todir="${tmp}/${lib}"><fileset dir="${lib}" /></copy>
 		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
 		<zip destfile="JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />
-	-->
 	</target>
 
 </project>

@@ -83,7 +83,7 @@ JSmarty.Compiler.define
 					var attr = this.toParameter();
 					var modf = this.toModifier();
 
-					this.sSuffix = 'function(){var buf = new Buffer();\n';
+					this.sSuffix = 'function(){var buf = new Buffer();';
 					this.sString = 'self.inCall('+ name +',' + attr +','+ modf +',';
 				};
 			}
@@ -126,7 +126,7 @@ JSmarty.Compiler.define
 				else
 				{
 					var exp = this.toExpression();
-					this.sString = 'if('+ exp +'){\n';
+					this.sString = 'if('+ exp +'){';
 				};
 			},
 			toExpression : function()
@@ -168,13 +168,13 @@ JSmarty.Compiler.define
 		{
 			sPrefix : '',
 			sSuffix : '',
-			sString : '}else{\n'
+			sString : '}else{'
 		},
 		Literal :
 		{
 			sPrefix : '',
 			sSuffix : '',
-			sString : '\'));\n',
+			sString : '\'));',
 			parse : function(c)
 			{
 				c.addElement('plain','literal');
@@ -201,7 +201,7 @@ JSmarty.Compiler.define
 					var p = this.toParameter();
 					var m = this.toModifier();
 
-					this.sSuffix = 'function(){var buf = new Buffer();\n';
+					this.sSuffix = 'function(){var buf = new Buffer();';
 					this.sString = 'self.inForeach('+ p +','+ m +',';
 				};
 			}
@@ -210,7 +210,7 @@ JSmarty.Compiler.define
 		{
 			sPrefix : '',
 			sSuffix : '',
-			sString : 'return buf.toString();},function(){var buf = new Buffer();\n'
+			sString : 'return buf.toString();},function(){var buf = new Buffer();'
 		},
 		Section :
 		{
@@ -227,7 +227,7 @@ JSmarty.Compiler.define
 					var modf = this.toModifier();
 					var name = this.extract(attr, 'name').slice(1,-1);
 
-					this.sSuffix = 'function('+ name +'){var buf = new Buffer();\n';
+					this.sSuffix = 'function('+ name +'){var buf = new Buffer();';
 					this.sString = 'self.inSection('+ attr +','+ modf +',';
 				};
 			},
@@ -249,7 +249,7 @@ JSmarty.Compiler.define
 			parse : function(c)
 			{
 				var exp = this.toExpression();
-				this.sString = '}else if('+ exp +'){\n';
+				this.sString = '}else if('+ exp +'){';
 			}
 		}
 	}
