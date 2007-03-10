@@ -1,15 +1,21 @@
 (function()
 {
-	if(navigator.vendor == 'Apple Computer, Inc.')
+	if('HTMLElement' in window)
 	{
-		document.createElement('html');
-		window.HTMLElement = { prototype : window["[[DOMElement.prototype]]"] || {}};
-	};
-
-	if('HTMLElement' in window){
-		if('insertAdjacentHTML' in HTMLElement.prototype){return;};
-	}else{
-		return;
+		if('insertAdjacentHTML' in HTMLElement.prototype){
+			return;
+		};
+	}
+	else
+	{
+		if(navigator.vendor == 'Apple Computer, Inc.')
+		{
+			document.createElement('html');
+			window.HTMLElement = { prototype : window["[[DOMElement.prototype]]"] || {}};
+		}
+		else{
+			return;
+		};
 	};
 
 	function insert(w, n)
