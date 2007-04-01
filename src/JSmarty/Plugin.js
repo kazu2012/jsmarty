@@ -9,7 +9,7 @@ JSmarty.Plugin = JSmarty.Utility.clone(JSmarty.System);
  * @private
  * @type Object
  */
-JSmarty.Plugin.__func__ = JSmarty.prototype._plugins;
+JSmarty.Plugin._func_ = JSmarty.prototype._plugins;
 
 /**
  * empty function
@@ -29,7 +29,7 @@ JSmarty.Plugin.empty = function(){
 JSmarty.Plugin.parse = function($code, $ns)
 {
 	if($code == void(0)) $code = '';
-	var $flag = false, $parent = this.__func__;
+	var $flag = false, $parent = this._func_;
 	var $func = ('jsmarty.' + $ns ).split('.');
 
 	switch($func[1])
@@ -58,10 +58,10 @@ JSmarty.Plugin.parse = function($code, $ns)
  */
 JSmarty.Plugin.getFunction = function(ns, dir)
 {
-	if(ns in this.__func__)
-		return this.__func__[ns] || this.empty;
+	if(ns in this._func_)
+		return this._func_[ns] || this.empty;
 	if(this.addPlugin(ns, dir))
-		return this.__func__[ns];
+		return this._func_[ns];
 	return this.empty;
 };
 
@@ -73,8 +73,8 @@ JSmarty.Plugin.getFunction = function(ns, dir)
  */
 JSmarty.Plugin.addPlugin = function(ns, dir)
 {
-	if(ns in this.__func__)
-		return Boolean(this.__func__[ns]);
+	if(ns in this._func_)
+		return Boolean(this._func_[ns]);
 	if(dir == void(0))
 		dir = this.getSelfPath() + '/internals';
 	return this.parse(this.fgets(ns + '.js', dir), ns);
@@ -82,7 +82,7 @@ JSmarty.Plugin.addPlugin = function(ns, dir)
 
 JSmarty.Plugin.importer = function()
 {
-	var n, p = this.__func__;
+	var n, p = this._func_;
 	var i, f, g = JSmarty.GLOBALS;
 	for(i=0,f=arguments.length;i<f;i++)
 	{
@@ -98,7 +98,7 @@ JSmarty.Plugin.importer = function()
  */
 JSmarty.Plugin.toString = function()
 {
-	var s, t, k, w = 73, f = this.__func__;
+	var s, t, k, w = 73, f = this._func_;
 	var b = new JSmarty.Buffer('Table Of Plugins');
 
 	b.append(Array(w).join('-'));
