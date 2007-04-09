@@ -1,8 +1,8 @@
 (function()
 {
-	if('HTMLElement' in window)
+	if(window.HTMLElement)
 	{
-		if('insertAdjacentHTML' in HTMLElement.prototype){
+		if('insertAdjacentElement' in HTMLElement.prototype){
 			return;
 		};
 	}
@@ -13,42 +13,40 @@
 			document.createElement('html');
 			window.HTMLElement = { prototype : window["[[DOMElement.prototype]]"] || {}};
 		}
-		else{
+		else
+		{
 			return;
 		};
 	};
 
-	function insert(w, n)
+	HTMLElement.prototype.insertAdjacentElement = function(w, n)
 	{
-		switch(w.toUpperCase())
+		switch(w.toLowerCase())
 		{
-			case 'BEFOREBEGIN':
+			case 'beforebegin':
 				this.parentNode.insertBefore(n, this);
 				break;
-			case 'AFTERBEGIN':
+			case 'afterbegin':
 				this.insertBefore(n, this.childNodes[0]);
 				break;
-			case 'BEFOREEND':
+			case 'beforeend':
 				this.appendChild(n);
 				break;
-			case 'AFTEREND':
+			case 'afterend':
 				this.parentNode.insertBefore(n, this.nextSibling);
 				break;
 		};
+		return n;
 	};
 
 	HTMLElement.prototype.insertAdjacentText = function(w, t){
-		insert.call(this, w, document.createTextNode(t || ''));
+		this.insertAdjacentElement(w, document.createTextNode(t || ''));
 	};
 
 	HTMLElement.prototype.insertAdjacentHTML = function(w, h)
 	{
 		var r = document.createRange(); r.selectNode(this);
-		insert.call(this, w, r.createContextualFragment(h));
-	};
-
-	HTMLElement.prototype.insertAdjacentElement = function(w, n){
-		insert.call(this, w, n); return n;
+		this.insertAdjacentElement(w, r.createContextualFragment(h));
 	};
 
 })();

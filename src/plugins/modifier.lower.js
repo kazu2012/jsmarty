@@ -13,11 +13,10 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.modifier.lower.php
- * @param    {String} string
+ * @param    {String} s string
  * @return   {String} lowercased string
  */
-function jsmarty_modifier_lower(string)
+function jsmarty_modifier_lower(s)
 {
-	// String#toLowerCase()
-	return string.toLowerCase();
+	return s.toLowerCase();
 };

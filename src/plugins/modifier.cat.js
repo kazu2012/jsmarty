@@ -13,10 +13,12 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.modifier.cat.php
- * @param    {String} string
+ * @param    {String} s string
+ * @param    {String} s string
  * @return   {String} string with cat
  */
 
-function jsmarty_modifier_cat(string, cat){
-	return string.concat(cat);
+function jsmarty_modifier_cat(s, c)
+{
+	return s.concat(c);
 };

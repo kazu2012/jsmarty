@@ -12,13 +12,13 @@
  * Purpose:  convert \r?\n to <br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.00
- * @param    {String} string
+ * @version  1.0.0
+ * @param    {String} s string
  * @return   {String}
  */
 
-function jsmarty_modifier_nl2br(string)
+function jsmarty_modifier_nl2br(s)
 {
 	/* String#replace \r\n to <br /> */
-	return string.replace(/\r?\n/g,'<br />');
+	return s.replace(/\r?\n/g,'<br />');
 };

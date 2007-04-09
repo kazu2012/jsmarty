@@ -14,12 +14,11 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.modifier.strip.php
- * @param    {String} string
- * @param    {String} replace
+ * @param    {String} s string
+ * @param    {String} r replace
  * @return   {String} string with spaces removed
  */
-function jsmarty_modifier_strip(string, replace)
+function jsmarty_modifier_strip(s, r)
 {
-	if(replace == void(0)) replace = ' ';
-	return string.replace(/ +/g, replace);
+	return s.replace(/ +/g, r || ' ');
 };

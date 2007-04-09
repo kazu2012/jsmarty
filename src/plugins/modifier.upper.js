@@ -13,11 +13,10 @@
  *
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
- * @param    string
- * @return   string
+ * @param    {String} s string
+ * @return   {String}
  */
-function jsmarty_modifier_upper(string)
+function jsmarty_modifier_upper(s)
 {
-	// String#toUpperCase
-	return string.toUpperCase();
+	return s.toUpperCase();
 };

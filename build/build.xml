@@ -8,12 +8,6 @@
 	<property name="lib" value="lib" />
 	<property name="tmp" value="Temp/JSmarty" />
 
-	<scriptdef name="build" language="javascript" src="build/build.js">
-		<attribute name="task" />
-		<attribute name="todir" />
-		<element name="fileset" type="fileset"/>
-	</scriptdef>
-
 	<!-- Target :: build -->
 	<target name="build">
 		<mkdir dir="${lib}" />
