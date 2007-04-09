@@ -13,11 +13,9 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.modifier.spacify.php
- * @param    {String} string
+ * @param    {String} s string
  * @return   {String} string with spaced (eg. a b c d)
  */
-function jsmarty_modifier_spacify(string, spacify_char)
-{
-	if(spacify_char == void(0)) spacify_char = ' ';
-	return string.split(/.{0}/).join(spacify_char);
+function jsmarty_modifier_spacify(s, c){
+	return s.split(/.{0}/).join((c == void(0)) ? ' ' : c);
 };

@@ -16,7 +16,6 @@
  * @param    {String} s string
  * @return   {String}
  */
-function jsmarty_modifier_upper(s)
-{
+function jsmarty_modifier_upper(s){
 	return s.toUpperCase();
 };

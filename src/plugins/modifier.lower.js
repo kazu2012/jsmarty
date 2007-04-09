@@ -16,7 +16,6 @@
  * @param    {String} s string
  * @return   {String} lowercased string
  */
-function jsmarty_modifier_lower(s)
-{
+function jsmarty_modifier_lower(s){
 	return s.toLowerCase();
 };

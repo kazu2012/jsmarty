@@ -18,7 +18,6 @@
  * @param    {String} f format
  * @return   {String}
  */
-function jsmarty_modifier_string_format(s, f)
-{
+function jsmarty_modifier_string_format(s, f){
 	return JSmarty.Plugin.getFunction('php.sprintf')(f, s);
 };

@@ -17,8 +17,6 @@
  * @return   {String}
  */
 
-function jsmarty_modifier_nl2br(s)
-{
-	/* String#replace \r\n to <br /> */
+function jsmarty_modifier_nl2br(s){
 	return s.replace(/\r?\n/g,'<br />');
 };

@@ -13,14 +13,10 @@
  * @author   shogo < shogo4405 at gmail dot com>
  * @version  1.0.0
  * @see      http://smarty.php.net/manual/en/language.modifier.default.php
- * @param    {String} string
+ * @param    {String} s string
+ * @param    {String} d default value
  * @return   {String}
  */
-function jsmarty_modifier_default(string, defaults)
-{
-	if(defaults == void(0)) defaults = '';
-	if(string == void(0) || string == '')
-		return defaults;
-	else
-		return string;
+function jsmarty_modifier_default(s, d){
+	return s ? s : (d == void(0)) ? '' : d;
 };

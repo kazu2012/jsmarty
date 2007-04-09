@@ -18,7 +18,6 @@
  * @param    {String} r replace
  * @return   {String} string with spaces removed
  */
-function jsmarty_modifier_strip(s, r)
-{
+function jsmarty_modifier_strip(s, r){
 	return s.replace(/ +/g, r || ' ');
 };
