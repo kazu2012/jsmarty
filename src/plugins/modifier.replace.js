@@ -11,7 +11,7 @@
  * Name:     replace<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0RC1
+ * @version  1.0.0RC2
  * @see      http://smarty.php.net/manual/en/language.modifier.replace.php
  * @param    {String} s string
  * @param    {String} e search

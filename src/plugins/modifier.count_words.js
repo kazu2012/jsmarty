@@ -11,15 +11,13 @@
  * Name:     count_words<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.modifier.count.words.php
- * @param    {String} string
+ * @param    {String} s string
  * @return   {Number}
  */
-function jsmarty_modifier_count_words(string)
+function jsmarty_modifier_count_words(s)
 {
 	var preg_grep = JSmarty.Plugin.getFunction('php.preg_grep');
-	var split = string.split(/\s+/);
-	var words = preg_grep(/[a-zA-Z0-9\x80-\xff]/, split);
-	return JSmarty.Plugin.getFunction('php.count')(words);
+	return JSmarty.Plugin.getFunction('php.count')(preg_grep(/[a-zA-Z0-9\x80-\xff]/, s.split(/\s+/)));
 };

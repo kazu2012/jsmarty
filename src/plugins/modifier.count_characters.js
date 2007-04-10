@@ -11,16 +11,14 @@
  * Name:     count_sentences<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.modifier.count.characters.php
- * @param    {String} string
+ * @param    {String}  s string
+ * @param    {Boolean} i include spaces
  * @return   {Number}
  */
-function jsmarty_modifier_count_characters(string, include_spaces)
+function jsmarty_modifier_count_characters(s, i)
 {
-	if(include_spaces == void(0)) include_spaces = false;
-	if(include_spaces)
-		return string.length;
-
-	return string.match(/[^\s]/g).length;
+	var f = (i == void(0)) ? false: i;
+	return f ? s.length : s.match(/[^\s]/g).length;
 };

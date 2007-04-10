@@ -12,7 +12,7 @@
  * Purpose:  convert string to uppercase
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @param    {String} s string
  * @return   {String}
  */

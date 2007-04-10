@@ -11,13 +11,11 @@
  * Name:     count_sentences<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.modifier.count.sentences.php
- * @param    {String} string
+ * @param    {String} s string
  * @return   {Number}
  */
-function jsmarty_modifier_count_sentences(string)
-{
-	// count the number on sentences in a string
-	return string.match(/[^\s]\.(?!\w)/g).length;
+function jsmarty_modifier_count_sentences(s){
+	return s.match(/[^\s]\.(?!\w)/g).length;
 };
