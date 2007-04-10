@@ -14,7 +14,7 @@
 		<mkdir dir="${tmp}" />
 		<concat destfile="${tmp}/JSmarty.js">
 			<filelist dir="${src}" files="JSmarty.js" />
-			<filelist dir="${src}/JSmarty" files="Buffer.js,Error.js,Browser.js,Utility.js,System.js,Plugin.js,History.js" />
+			<filelist dir="${src}/JSmarty" files="Buffer.js,Error.js,Utility.js,System.js,Plugin.js,History.js,Browser.js" />
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
 			<filelist dir="${src}/JSmarty" files="Compiler.js" />

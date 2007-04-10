@@ -38,9 +38,3 @@ JSmarty.System = new function()
 		return null;
 	};
 };
-
-(function(def)
-{
-	def.setProfile(def.genSysCode(this));
-})(JSmarty.System);
-

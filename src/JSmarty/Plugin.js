@@ -5,16 +5,21 @@
 JSmarty.Plugin = JSmarty.Utility.clone(JSmarty.System);
 
 /**
- * Stack of Plugins
+ * Stack of plugins
  * @private
  * @type Object
  */
 JSmarty.Plugin._func_ = JSmarty.prototype._plugins;
 
 /**
- * empty function
- * Return blank string.
- * @return {String}
+ * Repository of plugins.
+ * @type Array
+ */
+JSmarty.Plugin.repos = ['.'];
+
+/**
+ * The empty function
+ * @return {String} Return blank string.
  */
 JSmarty.Plugin.empty = function(){
 	return '';
@@ -67,17 +72,24 @@ JSmarty.Plugin.getFunction = function(ns, dir)
 
 /**
  * Load plugin.
- * @param {String} ns namaspace of plugin
- * @param {mixed}  dir The repository path of plugins. 
+ * @param {String} n namaspace of plugin
+ * @param {mixed}  r The repository path of plugins. 
  * @type Boolean
  */
-JSmarty.Plugin.addPlugin = function(ns, dir)
+JSmarty.Plugin.addPlugin = function(n, r)
 {
-	if(ns in this._func_)
-		return Boolean(this._func_[ns]);
-	if(dir == void(0))
-		dir = this.getSelfPath() + '/internals';
-	return this.parse(this.fgets(ns + '.js', dir), ns);
+	if(n in this._func_){
+		return Boolean(this._func_[n]);
+	};
+	return this.parse(this.fgets(n + '.js', r || this.repos), n);
+};
+
+/**
+ * add a repository of plugin.
+ * @param {String} r repository
+ */
+JSmarty.Plugin.addRepository = function(r){
+	this.repos.unshift(r);
 };
 
 JSmarty.Plugin.importer = function()

@@ -50,12 +50,18 @@ JSmarty.Browser = function(def)
 		document.write(Array.prototype.join.apply(arguments, ''));
 	};
 
-	def.getSelfPath = function()
+	// setup for 'internals' dir
+	def.setInternals = function()
 	{
 		var s = document.getElementsByTagName('script');
 		var p = s[s.length - 1].getAttribute('src');
 		p = p.slice(0, p.lastIndexOf('/')), s = null;
-		return function(){ return p; };
+		JSmarty.Plugin.addRepository(p + '/internals');
 	}();
 };
+
+(function(def)
+{
+	def.setProfile(def.genSysCode(this));
+})(JSmarty.System);
 
