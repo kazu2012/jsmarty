@@ -57,17 +57,16 @@ JSmarty.Plugin.parse = function($code, $ns)
 };
 
 /**
- * @param {String} ns namaspace of plugin
- * @param {mixed}  dir The repository path of plugins. 
+ * @param {String} n namaspace of plugin
+ * @param {mixed}  d The repository path of plugins. 
  * @type Boolean
  */
-JSmarty.Plugin.getFunction = function(ns, dir)
+JSmarty.Plugin.getFunction = function(n, r)
 {
-	if(ns in this._func_)
-		return this._func_[ns] || this.empty;
-	if(this.addPlugin(ns, dir))
-		return this._func_[ns];
-	return this.empty;
+	if(!(n in this._func_)){
+		this.addPlugin(n, r);
+	};
+	return this._func_[n] || this.empty;
 };
 
 /**
@@ -88,8 +87,8 @@ JSmarty.Plugin.addPlugin = function(n, r)
  * add a repository of plugin.
  * @param {String} r repository
  */
-JSmarty.Plugin.addRepository = function(r){
-	this.repos.unshift(r);
+JSmarty.Plugin.addRepository = function(){
+	Array.prototype.unshift.apply(this.repos, arguments);
 };
 
 JSmarty.Plugin.importer = function()

@@ -5,16 +5,16 @@
  */
 
 /**
- * JSmarty innerHTML resource plugin
+ * JSmarty id resource plugin
  *
  * Type:     resource<br />
- * Name:     innerHTML<br />
+ * Name:     id<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @type     Array
  */
-var jsmarty_resource_innerHTML =
+var jsmarty_resource_id =
 [
 	/**
 	 * get a template source
