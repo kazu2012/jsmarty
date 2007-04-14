@@ -47,7 +47,7 @@ JSmarty.Browser = function(def)
 
 	// -- print function
 	def.print = function(){
-		document.write(Array.prototype.join.apply(arguments, ''));
+		document.write(Array.prototype.join.call(arguments, ''));
 	};
 
 	// setup for 'internals' dir
@@ -55,7 +55,8 @@ JSmarty.Browser = function(def)
 	{
 		var s = document.getElementsByTagName('script');
 		var p = s[s.length - 1].getAttribute('src');
-		p = p.slice(0, p.lastIndexOf('/')), s = null;
+		var i = p.lastIndexOf('/'), s = null;
+		p = (i == -1) ? '.' : p.slice(0, i);
 		JSmarty.Plugin.addRepository(p + '/internals');
 	}();
 };
