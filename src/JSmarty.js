@@ -430,6 +430,10 @@ JSmarty.prototype =
 
 		return false;
 	},
+	inCompileResource : function(n)
+	{
+		var s, d = new JSmarty.Storage('name');
+	},
 	/**
 	 * compile the given source
 	 *
@@ -519,6 +523,11 @@ JSmarty.prototype =
 
 		return flag;
 	},
+
+	inFetchResourceInfo : function(d)
+	{
+	},
+
 	_parse_resource_name : function(data)
 	{
 		var flag = true;
@@ -535,6 +544,30 @@ JSmarty.prototype =
 		};
 
 		return flag;
+	},
+
+	inParseResourceName : function(d)
+	{
+		
+	},
+
+	/**
+	 * internals : filter function
+	 * @param {String} t type of filter
+	 * @param {String} s source
+	 * @return {String}
+	 */
+	inFilter : function(t, s)
+	{
+		var P = JSmarty.Plugin;
+		var l = "";
+
+		t = t + 'filter.';
+
+		for(var i=0,f=l.length;i<f;i++){
+			s = P.getFunction(t + l[i])(s, this);
+		};
+		return s;
 	},
 	/**
 	 * internals: call function
@@ -583,14 +616,6 @@ JSmarty.prototype =
 		};
 
 		return s;
-	},
-	/**
-	 * internals: wrapper for eval function
-	 * @param {String} s
-	 */
-	inEval : function(s)
-	{
-		return eval(s);
 	},
 	/**
 	 * internals: foreach function
