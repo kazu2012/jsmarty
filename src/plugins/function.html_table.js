@@ -12,7 +12,7 @@
  * Original: Smarty {html_table} function plugin<br />
  *
  * @author   shogo <shogo4405 at gmail dot com>
- * @version  1.0.0RC2
+ * @version  1.0.0RC2.1
  * @see      http://smarty.php.net/manual/en/language.function.html.table.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -107,14 +107,8 @@ function jsmarty_function_html_table(params, jsmarty)
 	return html.join('\n');
 };
 
-function jsmarty_function_html_table_cycle(name, vari, no)
+function jsmarty_function_html_table_cycle(n, v, n)
 {
-	var html;
-
-	if(vari instanceof Array)
-		html = vari[no % vari.length];
-	else
-		html = vari;
-
-	return (html) ? ' '+ html : '';
+	var h = (v instanceof Array) ? v[n % v.length] : v;
+	return (h) ? ' '+ h : '';
 };

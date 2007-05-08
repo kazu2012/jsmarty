@@ -272,14 +272,6 @@ JSmarty.prototype =
 			result = JSmarty.Templatec.apply(name, this);
 		};
 
-		// -- outputfilter
-		for(i=0,f=output.length;i<f;i++){
-			result = Plugin.getFunction('outputfilter.' + output[i])(result, this);
-		};
-
-		this.autoload_filters = null;
-
-
 		if(display)
 		{
 			if(result){ JSmarty.System.print(result); };
@@ -360,10 +352,10 @@ JSmarty.prototype =
 	unregister_compiler_function : function(n){
 		this._plugins['compiler.' + n] = false;
 	},
-	load_filter : function(type, name)
+	load_filter : function(t, n)
 	{
-		if(JSmarty.Plugin.addPlugin(type + 'filter.' + name, this.plugins_dir)){
-			this._plugins[type].push(name);
+		if(JSmarty.Plugin.addPlugin(t + 'filter.' + n, this.plugins_dir)){
+			this._plugins[t].push(n);
 		};
 	},
 	/**
@@ -408,11 +400,17 @@ JSmarty.prototype =
 	unregister_outputfilter : function(n){
 		this._plugins['outputfilter.' + n] = false;
 	},
-	trigger_error : function(msg, level)
+	/**
+	 * trigger_error function
+	 * @param {String} m msg
+	 * @param {String} l level
+	 *
+	 */
+	trigger_error : function(m, l)
 	{
-		if(!level) level = 'warn';
-		if(!this.debugging) level = 'none';
-		JSmarty.Error.raise(msg, level);
+		if(!l){ l = 'warn'; };
+		if(!this.debugging){ l = 'none'; };
+		JSmarty.Error.raise(m, l);
 	},
 	_compile_resource : function(name)
 	{
@@ -429,10 +427,6 @@ JSmarty.prototype =
 		}
 
 		return false;
-	},
-	inCompileResource : function(n)
-	{
-		var s, d = new JSmarty.Storage('name');
 	},
 	/**
 	 * compile the given source
@@ -523,11 +517,6 @@ JSmarty.prototype =
 
 		return flag;
 	},
-
-	inFetchResourceInfo : function(d)
-	{
-	},
-
 	_parse_resource_name : function(data)
 	{
 		var flag = true;
@@ -545,12 +534,6 @@ JSmarty.prototype =
 
 		return flag;
 	},
-
-	inParseResourceName : function(d)
-	{
-		
-	},
-
 	/**
 	 * internals : filter function
 	 * @param {String} t type of filter
@@ -560,13 +543,12 @@ JSmarty.prototype =
 	inFilter : function(t, s)
 	{
 		var P = JSmarty.Plugin;
-		var l = "";
-
-		t = t + 'filter.';
+		var l = this._plugins[t];
 
 		for(var i=0,f=l.length;i<f;i++){
-			s = P.getFunction(t + l[i])(s, this);
+			s = P.getFunction(t + 'filter.' + l[i])(s, this);
 		};
+
 		return s;
 	},
 	/**

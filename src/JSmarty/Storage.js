@@ -3,7 +3,6 @@ JSmarty.Storage = function(){
 		this[arguments[i]] = null;
 	};
 };
-
 JSmarty.Storage.prototype =
 {
 	get : function(k){

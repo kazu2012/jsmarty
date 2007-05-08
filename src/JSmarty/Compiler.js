@@ -40,10 +40,12 @@ JSmarty.Compiler = function(renderer)
 		{
 			case 'pre':
 				s = s.replace(regcrl,'\\n');
+			//	s = renderer.inFilter('pre', s);
 				break;
 			case 'post':
 				s = s.replace(regsva,'self._');
 				s = s.replace(regvar,'v.');
+			//	s = renderer.inFilter('post', s);
 				break;
 		};
 
