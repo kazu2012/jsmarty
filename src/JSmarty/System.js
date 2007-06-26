@@ -21,6 +21,8 @@ JSmarty.System =
 		return (this.fputs != null);
 	},
 
+	getArgs : function(){ return null; },
+
 	getSelfPath : function(){
 		return '.';
 	},

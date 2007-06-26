@@ -29,7 +29,8 @@ JSmarty.prototype =
 
 	debug_tpl : '',
 	debugging : false,
-	debugging_ctrl : 'NONE',
+	debugging_id : 'DEBUGMODE',
+	debugging_ctrl : false,
 
 	compile_check : true,
 	force_compile : false,
@@ -70,7 +71,6 @@ JSmarty.prototype =
 	_capture : {},
 
 	_version : '@version@',
-	_debug_id : 'JSMARTY_DEBUG',
 	_debug_info : [],
 	_plugins :{
 		pre:[], post:[], output:[]
@@ -227,29 +227,12 @@ JSmarty.prototype =
 	{
 		var Plugin = JSmarty.Plugin;
 		var output = this._plugins.output;
-		var debugging = this.debugging;
 		var autoload  = this.autoload_filters;
 		var i, k, f, debug, index, result, start, filters;
 
-		if(!debugging && this.debugging_ctrl == 'URL')
+		if(this.isDebugging())
 		{
-			switch(JSmarty.getArgs(this._debug_id))
-			{
-				case 'on':
-					debugging = true; break;
-				case 'off':
-					debugging = false; break;
-			};
-		};
-
-		if(debugging)
-		{
-			start = new Date().getTime();
-			debug = this._debug_info;
-			index = debug.length;
-			debug = debug[index] = {
-				type : 'template', depth: 0, filename : name
-			};
+			
 		};
 
 		if(autoload)
@@ -263,26 +246,32 @@ JSmarty.prototype =
 			};
 		};
 
-		if(cpid == void(0))
-			cpid = this.compile_id;
-
 		if(this._is_compiled(name) || this._compile_resource(name))
 		{
-			if(debugging) debug.compile_time = new Date().getTime() - start;
+			if(this.isDebugging()){
+			};
 			result = JSmarty.Templatec.apply(name, this);
 		};
 
 		if(display)
 		{
 			if(result){ JSmarty.System.print(result); };
-			if(debugging)
+			if(this.isDebugging())
 			{
-				debug.exec_time = new Date().getTime() - start;
 			};
 			return;
 		};
 
 		return result || '';
+	},
+	isDebugging : function()
+	{
+		if(!this.debugging && this.debugging_ctrl)
+		{
+			var s = JSmarty.System.getArgs(this.debugging_id);
+			this.debugging = (s == 'on') ? true : false;
+		};
+		return this.debugging;
 	},
 	display : function(name, ccid, cpid){
 		this.fetch(name, ccid, cpid, true);
