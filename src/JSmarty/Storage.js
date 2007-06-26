@@ -1,16 +1,17 @@
-JSmarty.Storage = function(){
-	for(var i=0,f=arguments.length;i<f;i++){
-		this[arguments[i]] = null;
+JSmarty.Storage = function(o)
+{
+	for(var i in o){
+		this[i] = o[i]
 	};
 };
 JSmarty.Storage.prototype =
 {
 	get : function(k){
 		if(k in this){ return this[k]; };
-		throw new Error();
+		JSmarty.Error.raise();
 	},
 	set : function(k, v){
-		if(k in this){ this[k] = v; };
-		else{ throw new Error(); };
+		if(k in this){ this[k] = v; }
+		else{ JSmarty.Error.raise(); };
 	}
 };

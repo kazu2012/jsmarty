@@ -1,40 +1,50 @@
 /**
- * Provide interface of File I/O.
- * @type JSmartyFileObject
+ * Provide interface of System.
+ * @type JSmarty.System.Object
  */
-JSmarty.System = new function()
+JSmarty.System =
 {
-	this.prop = { name : null, code : 0, auth : null };
+	IDUNDEF : 10,
+	IDBRWSR : 20,
+	IDAJAJA : 30,
+	IDMSTNG : 40,
+	IDWSCPT : 50,
+	IDXPCOM : 60,
 
-	this.isWritable = function(){ return (this.fputs != null); };
-	this.fputs = this.mtime = this.print = this.getSelfPath = null;
+	fputs : null,
+	mtime : null,
+	print : null,
 
-	this.genSysCode = function(g)
+	property : new JSmarty.Storage({name : null, code : 10}),
+
+	isWritable : function(){
+		return (this.fputs != null);
+	},
+
+	getSelfPath : function(){
+		return '.';
+	},
+
+	genSysCode : function(g)
 	{
-		if(g.window  && g.document) return 10; // Browser
-		if(g.System  && g.Core    ) return 20; // Ajaja
-		if(g.context && g.javax   ) return 30; // Mustang
-	};
+		if(g.window  && g.document){ return this.IDBRWSR; };
+		if(g.System  && g.Core    ){ return this.IDAJAJA; };
+		if(g.context && g.javax   ){ return this.IDMSTNG; };
 
-	this.setProfile = function(v, c)
+		return this.IDUNDEF;
+	},
+
+	setProfile : function(v, c)
 	{
 		switch(v)
 		{
-			case 10: JSmarty.Browser(JSmarty.System); break;
-			case 20: load('./internals/system.ajaja.js'); break;
-			case 30: load('./internals/system.mustang.js'); break;
-			default: c(); break;
+			case this.IDBRWSR: JSmarty.Browser(JSmarty.System); break;
+			case this.IDAJAJA: load('./internals/system.ajaja.js'); break;
+			case this.IDMSTNG: load('./internals/system.mustang.js'); break;
 		};
-	};
+	},
 
-	this.getProperty = function(p)
-	{
-		switch(p)
-		{
-			case 'name': return this.prop.name;
-			case 'code': return this.prop.code;
-			case 'auth': return this.prop.auth;
-		};
-		return null;
-	};
+	getProperty : function(k){
+		return this.property.get(k);
+	}
 };
