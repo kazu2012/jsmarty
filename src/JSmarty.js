@@ -28,7 +28,7 @@ JSmarty.prototype =
 	template_dir : 'templates',
 
 	debug_tpl : '',
-	debugging : false,
+	debugging : true,
 	debugging_id : 'DEBUGMODE',
 	debugging_ctrl : false,
 
@@ -71,7 +71,7 @@ JSmarty.prototype =
 	_capture : {},
 
 	_version : '@version@',
-	_debug_info : [],
+	_debuginfo_ : [],
 	_plugins :{
 		pre:[], post:[], output:[]
 	},
@@ -225,39 +225,34 @@ JSmarty.prototype =
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
-		var Plugin = JSmarty.Plugin;
-		var output = this._plugins.output;
-		var autoload  = this.autoload_filters;
-		var i, k, f, debug, index, result, start, filters;
+		var debug, result, timestamp;
 
 		if(this.isDebugging())
 		{
-			
-		};
-
-		if(autoload)
-		{
-			for(i in autoload)
-			{
-				filters = autoload[i];
-				for(k=0,f=filters.length;k<f;k++){
-					this.load_filter(i, filters[k]);
-				};
-			};
+			timestamp = new Date().getTime();
+			debug = this._debuginfo_;
+			debug = debug[debug.length] = new JSmarty.Storage
+			({
+				COMPILETIME : null, EXECUTETIME : null,
+				TYPE : 'Template', DEPTH : 0, FILENAME : name
+			});
 		};
 
 		if(this._is_compiled(name) || this._compile_resource(name))
 		{
 			if(this.isDebugging()){
+				debug.set('COMPILETIME', new Date().getTime() - timestamp);
 			};
 			result = JSmarty.Templatec.apply(name, this);
 		};
 
 		if(display)
 		{
-			if(result){ JSmarty.System.print(result); };
+			JSmarty.System.print(result || '');
 			if(this.isDebugging())
 			{
+				debug.set('EXECUTETIME', new Date().getTime() - timestamp);
+				JSmarty.Plugin.getFunction('core.display_debug_console')(null, this);
 			};
 			return;
 		};
