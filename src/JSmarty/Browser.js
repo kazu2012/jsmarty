@@ -63,6 +63,6 @@ JSmarty.Browser = function(def)
 
 (function(def)
 {
-	def.setProfile(def.genSysCode(this));
+	def.setProfile(def.getTypeCode(this));
 })(JSmarty.System);
 

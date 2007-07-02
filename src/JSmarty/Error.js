@@ -10,7 +10,7 @@ JSmarty.Error = new function()
 	 */
 	this.raise = function(m, l)
 	{
-		var p = 'JSmarty Error';
+		var p = 'JSmarty Error: ';
 
 		switch(l)
 		{
@@ -18,7 +18,7 @@ JSmarty.Error = new function()
 				JSmarty.System.print(p, m);
 				break;
 			case 'die':
-				p = 'JSmarty Fatal Error';
+				p = 'JSmarty Fatal Error: ';
 				throw new Error(p + m);
 				break;
 			case 'none':

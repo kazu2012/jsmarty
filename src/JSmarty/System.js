@@ -4,30 +4,32 @@
  */
 JSmarty.System =
 {
-	IDUNDEF : 10,
-	IDBRWSR : 20,
-	IDAJAJA : 30,
-	IDMSTNG : 40,
-	IDWSCPT : 50,
-	IDXPCOM : 60,
+	IDUNDEF : 0x1,
+	IDBRWSR : 0x2,
+	IDAJAJA : 0x4,
+	IDMSTNG : 0x8,
+	IDWSCPT : 0x16,
+	IDXPCOM : 0x32,
 
 	fputs : null,
 	mtime : null,
 	print : null,
 
-	property : new JSmarty.Storage({name : null, code : 10}),
+	property : new JSmarty.Storage({name : null, code : 0x1}),
 
 	isWritable : function(){
 		return (this.fputs != null);
 	},
 
-	getArgs : function(){ return null; },
+	getArgs : function(){
+		return null;
+	},
 
 	getSelfPath : function(){
 		return '.';
 	},
 
-	genSysCode : function(g)
+	getTypeCode : function(g)
 	{
 		if(g.window  && g.document){ return this.IDBRWSR; };
 		if(g.System  && g.Core    ){ return this.IDAJAJA; };
