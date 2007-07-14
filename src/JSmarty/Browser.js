@@ -5,11 +5,11 @@ JSmarty.Browser = function(def)
 	// -- XMLHttpRequestObject
 	var http = function()
 	{
-		if(typeof(XMLHttpRequest) != 'undefined'){
-			return new XMLHttpRequest;
-		};
 		if(typeof(ActiveXObject) != 'undefined'){
 			return new ActiveXObject('Microsoft.XMLHTTP');
+		};
+		if(typeof(XMLHttpRequest) != 'undefined'){
+			return new XMLHttpRequest();
 		};
 		return null;
 	}();
@@ -33,8 +33,11 @@ JSmarty.Browser = function(def)
 					t = h.responseText;
 				};
 			}
-			catch(e){/* empty */}
-			finally{ h.abort(); };
+			catch(e){
+			}
+			finally{
+				h.abort();
+			};
 		};
 		return t || '';
 	};

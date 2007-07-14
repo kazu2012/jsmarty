@@ -13,7 +13,7 @@
 	<script type="text/javascript" src="scripts/insertAdjacent.js"></script>
 	<script type="text/javascript" src="scripts/plugin.js"></script>
 	<script type="text/javascript">
-	smarty = new JSmarty;
+	smarty = new JSmarty();
 	smarty.plugins_dir = ['../lib/plugins','plugins'];
 	JSmarty.System.print = function(s){
 		document.getElementById('content').innerHTML = s;
