@@ -94,11 +94,11 @@ JSmarty.prototype =
 
 		if(k instanceof Object)
 		{
-			for(var i in k){ this._vars_[i] = k[i]; }
+			for(var i in k){ this._vars_[i] = k[i]; };
 			return;
 		};
 
-		if(k != '') this._vars_[k] = v;
+		if(k != ''){ this._vars_[k] = v; };
 	},
 	/**
 	 * assign_by_ref function
@@ -106,7 +106,7 @@ JSmarty.prototype =
 	 * @param {String} v value
 	 */
 	assign_by_ref : function(k, v){
-		if(k != '') this._vars_[k] = v;
+		if(k != ''){ this._vars_[k] = v; };
 	},
 	/**
 	 * append function
@@ -162,7 +162,7 @@ JSmarty.prototype =
 		};
 		if(m && v instanceof Object)
 		{
-			for(i in v){ a[i] = v[i]; }
+			for(i in v){ a[i] = v[i]; };
 			return;
 		};
 		a[a.length] = v;
@@ -420,22 +420,8 @@ JSmarty.prototype =
 	 */
 	inCompileSource : function(n, s)
 	{
-		var c = this.compiler;
-
-		if(c == null)
-		{
-			try
-			{
-				c = new JSmarty[this.compiler_class](this);
-				this.compiler = c;
-			}
-			catch(e){
-				this.trigger_error();
-			};
-		};
-
 		try{
-			return new Function(c.execute(s));
+			return new Function(this.getCompiler().execute(s));
 		}catch(e){
 			this.trigger_error();
 		};
@@ -702,6 +688,15 @@ JSmarty.prototype =
 
 		this._section[name] = { show : true, loop : i, total : t };
 		return this.inModify(m, b.join(''));
+	},
+
+	/** getter for compiler **/
+	getCompiler : function()
+	{
+		if(this.compiler == null){
+			this.compiler = new JSmarty[this.compiler_class](this);
+		};
+		return this.compiler;
 	}
 };
 
