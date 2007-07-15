@@ -238,7 +238,7 @@ JSmarty.prototype =
 			});
 		};
 
-		if(this._is_compiled(name) || this._compile_resource(name))
+		if(this.isCompiled(name) || this.compileResource(name))
 		{
 			if(this.isDebugging()){
 				debug.set('COMPILETIME', new Date().getTime() - timestamp);
@@ -264,7 +264,7 @@ JSmarty.prototype =
 		if(!this.debugging && this.debugging_ctrl)
 		{
 			var s = JSmarty.System.getArgs(this.debugging_id);
-			this.debugging = (s == 'on') ? true : false;
+			this.debugging = (s.toLowerCase() == 'on') ? true : false;
 		};
 		return this.debugging;
 	},
@@ -396,29 +396,33 @@ JSmarty.prototype =
 		if(!this.debugging){ l = 'none'; };
 		JSmarty.Error.raise(m, l);
 	},
-	_compile_resource : function(name)
+	/**
+	 * compile the resource
+	 * @param {String} n the name of resource
+	 */
+	compileResource : function(n)
 	{
-		var src, data = { name:name };
+		var src, info;
 
-		if(!this._fetch_resource_info(data)){
-			return false;
-		};
+		info = new JSmarty.Storage({
+			src : null, name : n , type: null
+		});
 
-		if(src = this.inCompileSource(name, data.src))
+		if(this.fetchResourceInfo(info))
 		{
-			JSmarty.Templatec.set(name, src);
-			return true;
-		}
+			src = this.compileSource(info.get('src'));
+			JSmarty.Templatec.set(n, src);
+
+			return Boolean(src);
+		};
 
 		return false;
 	},
 	/**
 	 * compile the given source
-	 *
-	 * @param {String} n the name of resource
 	 * @param {String} s source
 	 */
-	inCompileSource : function(n, s)
+	compileSource : function(s)
 	{
 		try{
 			return new Function(this.getCompiler().execute(s));
@@ -428,78 +432,83 @@ JSmarty.prototype =
 	},
 	/**
 	 * test if resource needs compiling
-	 * @param {String} name - resource_name
-	 * @param {String} cpath - compile_path
+	 * @param {String} n the name of resource
+	 * @param {String} p a compile path
 	 * @return {Boolean} 
 	 */
-	_is_compiled : function(name, path)
+	isCompiled : function(n, p)
 	{
-		var data;
+		var info;
 
 		if(!this.force_compile)
 		{
-			if(JSmarty.Templatec.isExist(name))
+			if(JSmarty.Templatec.isExist(n))
+			{
 				return true;
-/*
-			if(!this.compile_check)
-				return true;
-			data = { name:name, gets:false };
-			if(!this._fetch_resource_info(data))
-				return false;
-			if(data.timestamp <= JSmarty.File.mtime(path))
-				return true;
-*/
+			};
 		};
 
 		return false;
 	},
-	_fetch_resource_info : function(data)
+	/**
+	 *
+	 * @param {Storage} info the information for resource object
+	 */
+	fetchResourceInfo : function(info)
 	{
-		var name, call, sret, flag = true;
-		if(data.gets == void(0)) data.gets = true;
-		if(data.quit == void(0)) data.quit = false;
+		var name, func, sret, flag = true;
 
-		if(this._parse_resource_name(data))
+		info.init('gets', true);
+		info.init('quit', false);
+
+		if(this.parseResourceName(info))
 		{
-			name = data.name;
-			switch(data.type)
+			name = info.get('name');
+			switch(info.get('type'))
 			{
 				case 'file':
-					if(!data.gets) break;
-					data.src  = JSmarty.System.fgets(name, this.template_dir);
-					data.time = JSmarty.System.mtime(name, this.template_dir);
+					if(info.get('gets'))
+					{
+						info.set('src', JSmarty.System.fgets(name, this.template_dir));
+						info.set('timestamp', JSmarty.System.mtime(name, this.template_dir));
+					};
 					break;
 				default:
-					call = JSmarty.Plugin.getFunction('resource.' + data.type);
-					sret = (data.gets) ? call[0](name, data, this) : true;
-					flag = sret && call[1](name, data, this);
+					call = JSmarty.Plugin.getFunction('resource.' + info.get('type'));
+					sret = (info.get('gets')) ? call[0](name, info, this) : true;
+					flag = sret && func[1](name, info, this);
 					break;
 			};
 		};
 
 		if(!flag)
 		{
-			if(!(call = this.default_template_handler_func))
+			if(!(func = this.default_template_handler_func)){
 				this.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
-			else
-				flag = call(type, name, data, this);
-		}
+			}else{
+				flag = func(type, name, info, this);
+			};
+		};
 
 		return flag;
 	},
-	_parse_resource_name : function(data)
+	/**
+	 * parse a resource name
+	 * @param {Storage} info the information for resource object.
+	 */
+	parseResourceName : function(info)
 	{
 		var flag = true;
-		var name = data.name;
+		var name = info.get('name');
 		var part = name.indexOf(':');
 
-		data.type = this.default_resource_type;
+		info.set('type', this.default_resource_type);
 
 		if(part != -1)
 		{
-			data.type = name.slice(0, part);
-			data.name = name.slice(part + 1);
-			flag = JSmarty.Plugin.addPlugin('resource.' + data.type, this.plugins_dir);
+			info.set('type', name.slice(0, part));
+			info.set('name', name.slice(part + 1));
+			flag = JSmarty.Plugin.addPlugin('resource.' + info.get('type'), this.plugins_dir);
 		};
 
 		return flag;

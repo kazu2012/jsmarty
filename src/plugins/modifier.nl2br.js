@@ -18,5 +18,5 @@
  */
 
 function jsmarty_modifier_nl2br(s){
-	return s.replace(/\r?\n/g,'<br />');
+	return s.replace(/\r?\n/g, '<br />');
 };

@@ -48,6 +48,13 @@ JSmarty.Browser = function(def)
 		
 	};
 
+	def.getArgs = function(k)
+	{
+		var s = String(location.search);
+		var v = JSmarty.Plugin.getFunction('php.parse_str')(s);
+		return (k == null) ? v : (v[k] == null) ? 'off' : v[k];
+	};
+
 	// -- print function
 	def.print = function(){
 		document.write(Array.prototype.join.call(arguments, ''));

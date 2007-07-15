@@ -12,34 +12,30 @@
  * Original: Smarty truncate modifier plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.modifier.truncate.php
- * @param    {String} string
- * @param    {Number} length
- * @param    {String} etc
- * @param    {String} break_words
- * @param    {Boolean} middle
+ * @param    {String} s string
+ * @param    {Number} l length
+ * @param    {String} e etc
+ * @param    {String} b break_words
+ * @param    {Boolean} m middle
  * @return   {String}
  */
-function jsmarty_modifier_truncate(string, length, etc, break_words, middle)
+function jsmarty_modifier_truncate(s, l, e, b, m)
 {
-	length = (length) ? Number(length) : 80;
+	l = (l) ? Number(l) : 80;
 
-	if(length == 0) return '';
-	if(etc == void(0)) etc = '...';
-	if(middle == void(0)) middle = false;
-	if(break_words == void(0)) break_words = false;
+	if(l == 0){ return; };
+	if(e == void(0)){ e = '...' };
+	if(m == void(0)){ m = false; };
+	if(b == void(0)){ b = false; };
 
-	if(string.length > length)
+	if(s.length > length)
 	{
-		length -= etc.length;
-		if(!break_words && !middle)
-			string = string.replace(/\s+?(\S+)?$/,'').slice(0, length+1);
-		if(!middle)
-			return string.slice(0, length) + etc;
-		else
-			return string.slice(0, length/2) + etc + string.slice(-length/2);
+		l -= e.length;
+		if(!b && !m){ s = s.replace(/\s+?(\S+)?$/,'').slice(0, l + 1); };
+		return (!m) ? s.slice(0, l) + e : s.slice(0, l/2) + e + s.slice(-l/2);
 	};
 
-	return string;
+	return s;
 };

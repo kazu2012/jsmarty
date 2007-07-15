@@ -12,16 +12,12 @@
  * Original: Smarty truncate modifier plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.1
+ * @version  1.0.2
  * @see      http://smarty.php.net/manual/en/language.modifier.strip_tags.php
  * @param    {String} s string
  * @param    {String} r replace_with_space
  * @return   {String} string with tags removed
  */
-function jsmarty_modifier_strip_tags(s, r)
-{
-	if(!!r){
-		return s.replace(/<[^>]*?>/g,' ');
-	};
-	return s.replace(/<[^>]*?>/g,'');
+function jsmarty_modifier_strip_tags(s, r){
+	return s.replace(/<[^>]*?>/g, (!!r) ? ' ' : '');
 };
