@@ -43,14 +43,9 @@ JSmarty.Browser = function(def)
 
 	def.getArgs = function(k)
 	{
-		var v = {}, s = String(location.hash).slice(1);
-
-		v = this;
-
-		alert(s);
-
+		var v = {}, s = String(location.search).slice(1);
 		JSmarty.Plugin.getFunction('php.parse_str')(s, v);
-		return (k == null) ? v : (v[k] == null) ? 'off' : v[k];
+		return (k == void(0)) ? v : (v[k] == void(0)) ? null : v[k];
 	};
 
 	// -- print function

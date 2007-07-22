@@ -21,7 +21,7 @@ function parse_str(s, o)
 		{
 			n = m[1];
 			if(typeof(o[k]) == 'undefined'){ o[k] = []; };
-			c(o[k], n || o[k].length.toString(), v, p);
+			arguments.callee(o[k], n || o[k].length.toString(), v, p);
 			return;
 		};
 
