@@ -27,9 +27,11 @@ function jsmarty_function_mailto(params, jsmarty)
 		return '';
 	};
 
-	var i = 0 , mail_parms = [];
-	var extra = mail_parm_vals = '';
-	var text = address = params.address;
+	var k, i = 0 , mail_parms = [];
+	var extra, mail_parm_vals, text, address, encode;
+
+	extra = mail_parm_vals = '';
+	text = address = params.address;
 
 	for(k in params)
 	{

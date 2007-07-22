@@ -5,19 +5,15 @@
  */
 
 /**
- * escape_special_chars shared function
+ * JSmarty escape_special_chars shared
  *
- * Function : jsmarty_shared_escape_special_chars
- * @author shogo < shogo4405 at gmail dot com >
- * @param  string
- * @return string
+ * Type:	shared<br />
+ *
+ * @author	shogo < shogo4405 at gmail dot com >
+ * @version	1.0.0
+ * @param	{String} s
+ * @return	{String} 
  */
-function jsmarty_shared_escape_special_chars(string)
-{
-	if(typeof(string) == 'object')
-		string = string.toString();
-
-	string = JSmarty.Plugin.getFunction('php.htmlspecialchars')(string);
-
-	return string;
+function jsmarty_shared_escape_special_chars(s){
+	return JSmarty.Plugin.getFunction('php.htmlspecialchars')(s.toString());
 };

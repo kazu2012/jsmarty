@@ -4,7 +4,6 @@ JSmarty.Error = new function()
 
 	/**
 	 * trigger error
-	 *
 	 * @param {String} m the error message
 	 * @param {String} l error's level, none, warn or die
 	 */
@@ -29,14 +28,12 @@ JSmarty.Error = new function()
 		buf.append(p, m);
 	};
 
-	/**
-	 * display all error messages
-	 */
+	/**  display all error messages **/
 	this.display = function(){
 		JSmarty.System.print(buf.toString('\n'));
 	};
 
-	// toString
+	/** toString **/
 	this.toString = function(){
 		return buf.toString('\n');
 	};

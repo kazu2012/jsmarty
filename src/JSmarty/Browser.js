@@ -1,7 +1,5 @@
 JSmarty.Browser = function(def)
 {
-	var time = {}
-
 	// -- XMLHttpRequestObject
 	var http = function()
 	{
@@ -13,9 +11,6 @@ JSmarty.Browser = function(def)
 		};
 		return null;
 	}();
-
-	// -- properties
-	def.prop = { name : 'http', code : 10, auth : 'shogo' };
 
 	// -- fgets function
 	def.fgets = function(u, d)
@@ -42,16 +37,19 @@ JSmarty.Browser = function(def)
 		return t || '';
 	};
 
-	// -- mtime function
 	def.mtime = function()
 	{
-		
 	};
 
 	def.getArgs = function(k)
 	{
-		var s = String(location.search);
-		var v = JSmarty.Plugin.getFunction('php.parse_str')(s);
+		var v = {}, s = String(location.hash).slice(1);
+
+		v = this;
+
+		alert(s);
+
+		JSmarty.Plugin.getFunction('php.parse_str')(s, v);
 		return (k == null) ? v : (v[k] == null) ? 'off' : v[k];
 	};
 
@@ -75,4 +73,3 @@ JSmarty.Browser = function(def)
 {
 	def.setProfile(def.getTypeCode(this));
 })(JSmarty.System);
-
