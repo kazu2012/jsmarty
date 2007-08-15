@@ -1,6 +1,37 @@
 JSmarty.Browser =
 {
 	loaded : {},
+	/**
+	 * XMLHttpRequest Object
+	 * @type XMLHttpRequest
+	 */
+	Request : function()
+	{
+		var i, x;
+		if(typeof(ActiveXObject) != 'undefined')
+		{
+			x =
+			[
+				'Microsoft.XMLHTTP',
+				'Msxml2.XMLHTTP',
+				'Msxml2.XMLHTTP.3.0',
+				'Msxml2.XMLHTTP.4.0',
+				'Msxml2.XMLHTTP.5.0'
+			];
+
+			for(i=x.length-1;0<=i;i--)
+			{
+				try{ return new ActiveXObject(x[i]); }
+				catch(e){ };
+			};
+		};
+
+		if(typeof(XMLHttpRequest) != 'undefined'){
+			return new XMLHttpRequest();
+		};
+
+		return null;
+	}(),
 	initialize : function()
 	{
 		(function()
@@ -17,7 +48,7 @@ JSmarty.Browser =
 		o.fgets = function(u, d)
 		{
 			var i, f, t, h = JSmarty.Browser.Request;
-			d = JSmarty.Utility.toArray(d);
+			d = JSmarty.Plugin['shared.toArray'](d);
 			for(i=0,f=d.length;i<f;i++)
 			{
 				if(t != null) break;
@@ -38,6 +69,9 @@ JSmarty.Browser =
 			return t || '';
 		};
 
+		o.mtime = function(){
+		};
+
 		o.getArgs = function()
 		{
 			var v = {}, s = String(location.search).slice(1);
@@ -49,26 +83,8 @@ JSmarty.Browser =
 			document.write(Array.prototype.join.call(arguments, ''));
 		};
 
-		o._fetchRequest = function(u, d)
-		{
-		};
-
 		this.initialize = null;
-	},
-	/**
-	 * XMLHttpRequest Object
-	 * @type XMLHttpRequest
-	 */
-	Request : function()
-	{
-		if(typeof(ActiveXObject) != 'undefined'){
-			return new ActiveXObject('Microsoft.XMLHTTP');
-		};
-		if(typeof(XMLHttpRequest) != 'undefined'){
-			return new XMLHttpRequest();
-		};
-		return null;
-	}()
+	}
 };
 
 (function(def)

@@ -88,7 +88,7 @@ JSmarty.prototype =
 				v = null;
 				break;
 			case 'object':
-				v = JSmarty.Utility.copyObject(v);
+				v = JSmarty.Plugin['shared.copyObject'](v);
 				break;
 		};
 
@@ -589,7 +589,7 @@ JSmarty.prototype =
 		};
 
 		return s;
-	},
+	}
 };
 
 JSmarty.GLOBALS = this;
