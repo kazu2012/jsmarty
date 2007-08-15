@@ -75,6 +75,7 @@ JSmarty.prototype =
 	_plugins :{
 		pre:[], post:[], output:[]
 	},
+	_function : {},
 	/**
 	 * assign function
 	 * @param {String} k key
@@ -88,7 +89,7 @@ JSmarty.prototype =
 				v = null;
 				break;
 			case 'object':
-				v = JSmarty.Plugin['shared.copyObject'](v);
+				v = JSmarty.Plugin.getFunction('shared.copyObject')(v);
 				break;
 		};
 
@@ -552,17 +553,15 @@ JSmarty.prototype =
 	inCall : function(n, a, m, s)
 	{
 		var t = (s == null) ? 'function' : 'block';
-		var r, ns = t + '.' + n, call = this._plugins;
-
-		if(call[ns] == void(0)){
-			JSmarty.Plugin.addPlugin(ns, this.plugins_dir);
-		};
-		if(!call[ns]){ return ''; };
+		var r, ns = t + '.' + n;
+		var f = this._function[ns] || JSmarty.Plugin.getFunction(
+			ns, this.plugins_dir
+		);
 
 		switch(t)
 		{
-			case 'block': r = call[ns](a, s, this); break;
-			case 'function': r = call[ns](a, this); break;
+			case 'block': r = f(a, s, this); break;
+			case 'function': r = f(a, this); break;
 		};
 
 		return this.inModify(m, r);
@@ -576,16 +575,14 @@ JSmarty.prototype =
 	{
 		var d = this.plugins_dir;
 		var Plugin = JSmarty.Plugin;
-		var k, plugin = this._plugins;
+		var f, k, s, n, p = this._function;
 
 		for(k in m)
 		{
+			m[k][0] = s;
 			n = 'modifier.' + k;
-			if(plugin[n] || Plugin.addPlugin(n, d))
-			{
-				m[k][0] = s;
-				s = plugin[n].apply(null, m[k]);
-			};
+			f = p[n] || Plugin.getFunction(n, d);
+			s = f.apply(null, m[k]);
 		};
 
 		return s;
