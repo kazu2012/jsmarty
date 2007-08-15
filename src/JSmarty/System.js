@@ -42,9 +42,15 @@ JSmarty.System =
 	{
 		switch(v)
 		{
-			case this.IDBRWSR: JSmarty.Browser(JSmarty.System); break;
-			case this.IDAJAJA: load('./internals/system.ajaja.js'); break;
-			case this.IDMSTNG: load('./internals/system.mustang.js'); break;
+			case this.IDAJAJA:
+				load('./internals/system.ajaja.js');
+				break;
+			case this.IDMSTNG:
+				load('./internals/system.mustang.js');
+				break;
+			default:
+				JSmarty.Browser.initialize();
+				break;
 		};
 	},
 

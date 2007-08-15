@@ -116,13 +116,13 @@ JSmarty.prototype =
 	 */
 	append : function(k, v, m)
 	{
-		var i, j, a, n;
+		var i, j, n, a = this._vars_[k];
 		if(k instanceof Object)
 		{
 			for(i in k)
 			{
 				n = k[i];
-				if(!((a = this._vars_[i]) instanceof Array)){
+				if(!(a instanceof Array)){
 					a = this._vars_[i] = [];
 				};
 				if(m && n instanceof Object)
@@ -135,8 +135,10 @@ JSmarty.prototype =
 		}
 		else
 		{
-			if(k != '' && v != void(0)){ return; };
-			if(!((a = this._vars_[k]) instanceof Array)){
+			if(k != '' && v != void(0)){
+				return;
+			};
+			if(!(a instanceof Array)){
 				a = this._vars_[k] = [];
 			};
 			if(m && v instanceof Object)
@@ -155,9 +157,11 @@ JSmarty.prototype =
 	 */
 	append_by_ref : function(k, v, m)
 	{
-		var i, a;
-		if(k != '' && v != void(0)){ return; };
-		if(!((a = this._vars_[k]) instanceof Array)){
+		var i, a = this._vars_[k];
+		if(k != '' && v != void(0)){
+			return;
+		};
+		if(!(a instanceof Array)){
 			a = this._vars_[k] = [];
 		};
 		if(m && v instanceof Object)
@@ -248,7 +252,7 @@ JSmarty.prototype =
 
 		if(display)
 		{
-			JSmarty.System.print(result || '');
+			JSmarty.System.print(result);
 			if(this.isDebugging())
 			{
 				debug.set('EXECUTETIME', new Date().getTime() - timestamp);
@@ -257,7 +261,7 @@ JSmarty.prototype =
 			return;
 		};
 
-		return result || '';
+		return result;
 	},
 	isDebugging : function()
 	{
@@ -425,7 +429,7 @@ JSmarty.prototype =
 	compileSource : function(s)
 	{
 		try{
-			return new Function(this.getCompiler().execute(s));
+			return new Function(this._getCompiler().execute(s));
 		}catch(e){
 			this.trigger_error();
 		};
@@ -513,6 +517,14 @@ JSmarty.prototype =
 
 		return flag;
 	},
+	/** getter for compiler **/
+	_getCompiler : function()
+	{
+		if(this.compiler == null){
+			this.compiler = new JSmarty[this.compiler_class](this);
+		};
+		return this.compiler;
+	},
 	/**
 	 * internals : filter function
 	 * @param {String} t type of filter
@@ -578,135 +590,6 @@ JSmarty.prototype =
 
 		return s;
 	},
-	/**
-	 * internals: foreach function
-	 * @param {Object} p params
-	 * @param {Object} m modifier
-	 * @param {Function} c content
-	 * @param {Function} e contentelse
-	 * @type String
-	 */
-	inForeach : function(p, m, c, e)
-	{
-		var k, i = -1, t = 0, b = [], foreach;
-
-		var from = p.from;
-		var key  = p.key  || false;
-		var item = p.item || false;
-		var name = p.name || null;
-
-		if(!from)
-		{
-			if(name) this._foreach[name] = { show : false, total : 0 };
-			return this.inModify(m, (e) ? e.call(this) : '');
-		};
-
-		if(name)
-		{
-			for(k in from)
-			{
-				if(!from.hasOwnProperty(k)) continue;
-				++t;
-			};
-
-			foreach = this._foreach[name] =
-			{
-				show : true,
-				last : false,
-				first : true,
-				total : t,
-				iterarion : 0
-			};
-
-			for(k in from)
-			{
-				if(!from.hasOwnProperty(k)) continue;
-				if(t-1 == ++i) foreach.last = true;
-				if(key) this.assign(key, k);
-				this.assign(item, from[k]);
-				b[i] = c.call(this);
-				foreach.iteration = i;
-				foreach.first = false;
-			};
-
-			return this.inModify(m, b.join(''));
-		};
-
-		for(k in from)
-		{
-			if(!from.hasOwnProperty(k)) continue;
-			if(key) this.assign(key, k);
-			this.assign(item, from[k]);
-			b[++i] = c.call(this);
-		};
-
-		return this.inModify(m, b.join(''));
-	},
-	/**
-	 * internals: section function
-	 * @param {Object} p params
-	 * @param {Object} m modifier
-	 * @param {Function} c content
-	 * @param {Function} e contentelse
-	 * @type String
-	 */
-	inSection : function(p, m, c, e)
-	{
-		var name = p.name, loop = p.loop;
-		var k, t = i = -1, b =[], section;
-
-		if(!loop)
-		{
-			this._section[name] = { show : false, total : 0 };
-			return this.inModify(m, (e) ? e.call(this) : '');
-		};
-
-		var max = p.max || loop.length - 1;
-		var show = p.show || true;
-		var step = p.step || 1;
-		var start = p.start || 0;
-
-		for(k = start;k <= max;k += step) ++t;
-
-		section = this._section[name] =
-		{
-			show : true,
-			loop : 0,
-			last : false,
-			total : t,
-			index : 0,
-			first : true,
-			rownum : 1,
-			iteration : 1,
-			index_next : 0,
-			index_prev : -1
-		};
-
-		for(k = start;k <= max;k += step)
-		{
-			if(t == ++i) section.last = true;
-			b[i] = c.call(this, k);
-			section.loop++;
-			section.index = k + step;
-			section.first = false;
-			section.rownum++;
-			section.iteration++;
-			section.index_prev += step;
-			section.index_next += step;
-		};
-
-		this._section[name] = { show : true, loop : i, total : t };
-		return this.inModify(m, b.join(''));
-	},
-
-	/** getter for compiler **/
-	getCompiler : function()
-	{
-		if(this.compiler == null){
-			this.compiler = new JSmarty[this.compiler_class](this);
-		};
-		return this.compiler;
-	}
 };
 
 JSmarty.GLOBALS = this;
