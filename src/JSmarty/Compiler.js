@@ -131,7 +131,7 @@ JSmarty.Compiler = function(renderer)
 			iap = isp + tag.length;
 		};
 
-		t = Compiler.newString(src.slice(iap),  context);
+		t = Compiler.newString(src.slice(iap), context);
 
 		buf.append
 		(
@@ -157,6 +157,7 @@ JSmarty.Compiler.define = function(s, o)
 		d = o[i];
 		c = function(t){ this.text = t; };
 		c.prototype = new p();
+		c.prototype.parent = p.prototype;
 		for(k in d){ c.prototype[k] = d[k]; };
 		this[i] = c;
 	};

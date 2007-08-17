@@ -177,8 +177,6 @@ JSmarty.Compiler.define
 			sString : '\'));',
 			parse : function(c)
 			{
-				c.addElement('plain','literal');
-
 				if(!this.isTerminal())
 				{
 					var m = this.toModifier();
@@ -250,6 +248,24 @@ JSmarty.Compiler.define
 			{
 				var exp = this.toExpression();
 				this.sString = '}else if('+ exp +'){';
+			}
+		}
+	}
+);
+
+JSmarty.Compiler.define
+(
+	'Literal',
+	{
+		Strip :
+		{
+			sString : '\').replace(/\\n/g,\'\')));',
+			parse : function(c)
+			{
+				this.parent.parse.call(this, c);
+				if(!this.isTerminal()){
+					this.sString += '\'+(\'';
+				};
 			}
 		}
 	}
