@@ -2,6 +2,7 @@
 <project name="JSmarty" default="main" basedir="../">
 
 	<property name="version" value="0.4.0" />
+	<taskdef name="yuic" classname="YUICTask" /> 
 
 	<!-- Directories -->
 	<property name="src" value="src" />
@@ -40,7 +41,7 @@
 	<target name="main" depends="build">
 		<mkdir dir="${tmp}" />
 		<mkdir dir="${dist}" />
-		<copy todir="${tmp}/${lib}"><fileset dir="${lib}" /></copy>
+		<yuic todir="${tmp}/${lib}"><fileset dir="${lib}" /></yuic>
 		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
 		<zip destfile="${dist}/JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="${dist}/JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
