@@ -87,3 +87,7 @@ JSmarty.Plugin =
 JSmarty.Plugin['shared.toArray'] = function(o){
 	return (o instanceof Array) ? o : [o];
 };
+
+JSmarty.Plugin['shared.copyArray'] = function(a){
+	return Array.prototype.slice.call(a);
+};

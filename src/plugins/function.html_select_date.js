@@ -231,7 +231,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		{
 			years = range(parseInt(start_year), parseInt(end_year));
 			(reverse_years) ? years.reverse() : years.sort() ;
-			year_values = JSmarty.Utility.copyArray(years);
+			year_values = Plugin.getFunction('shared.copyArray')(years);
 			year[i++] = '<select name="' + year_name + '"';
 			if(year_empty)
 			{

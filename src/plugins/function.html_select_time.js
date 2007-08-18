@@ -12,7 +12,7 @@
  * Original: Smarty {html_select_time} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0RC1
+ * @version  1.0.0RC2
  * @see      http://smarty.php.net/manual/en/language.function.html.select.time.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -26,7 +26,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	var strftime = Plugin.getFunction('php.strftime');
 	var html_options = Plugin.getFunction('function.html_options', jsmarty.plugins_dir);
 
-	var n, k, i = 0, html = [];
+	var n, i, k, html = new JSmarty.Buffer();
 	var hours, hour_fmt, for_max, all_minutes, minutes = [];
 
 	var time = new Date().getTime();
@@ -90,57 +90,74 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	{
 		hours = use_24_hours ? range(0, 23) : range(0, 12);
 		hour_fmt = use_24_hours ? '%H' : '%I';
-		for(k=0,for_max=hours.length;i<for_max;i++)
-			hours[i] = (hours[i] > 9) ? hours[i] : '0' + hours[i];
-		html[i++] = '<select name=';
-		if(field_array !== null)
-			html[i++] = '"' + field_array + '[' + prefix + 'Hour]"';
-		else
-			html[i++] = '"' + prefix + 'Hour"';
-		if(hour_extra !== null)
-			html[i++] = ' ' + hour_extra;
-		if(all_extra !== null)
-			html[i++] = ' ' + all_extra;
-		html[i++] = '>\n';
-		html[i++] = html_options({output: hours, values: hours, selected: strftime(hour_fmt, time)}, jsmarty);
-		html[i++] = '</select>\n'
+		for(i=0,for_max=hours.length;i<for_max;i++){
+			hours[i] = (hours[i] < 10) ? '0' + hours[i] : hours[i];
+		};
+		html.append('<select name="');
+		if(field_array !== null){
+			html.append(field_array, '[', prefix, 'Hour]"');
+		}else{
+			html.append(prefix, 'Hour"');
+		};
+		if(hour_extra !== null){
+			html.apped(' ', hour_extra);
+		};
+		if(all_extra !== null){
+			html.append(' ', all_extra);
+		};
+		html.append(
+			'>\n',
+			html_options({output: hours, values: hours, selected: strftime(hour_fmt, time)}, jsmarty),
+			'</select>\n'
+		);
 	};
 
 	if(display_minutes)
 	{
 		all_minutes = range(0, 59);
-		for(k=0,n=0,for_max=all_minutes.length;k<for_max;k+=minute_interval)
-			minutes[n++] = (all_minutes[k] < 10) ? '0' + all_minutes[k] : all_minutes[k];
+		for(i=0,n=0,for_max=all_minutes.length;i<for_max;i+=minute_interval){
+			minutes[n++] = (all_minutes[i] < 10) ? '0' + all_minutes[i] : all_minutes[i];
+		};
 		selected = parseInt(Math.floor(strftime('%M', time) / minute_interval) * minute_interval);
-		html[i++] = '<select name=';
-		if(field_array !== null)
-			html[i++] = '"' + field_array + '[' + prefix + 'Minute]"';
-		else
-			html[i++] = '"' + prefix + 'Minute"';
-		if(minute_extra !== null)
-			html[i++] = ' ' + minute_extra;
-		if(all_extra !== null)
-			html[i++] = ' ' + all_extra;
-		html[i++] = '>\n';
-		html[i++] = html_options({output: minutes, values: minutes, selected: (selected < 10) ? '0' + selected : selected}, jsmarty);
-		html[i++] = '</select>\n';
+		html.append('<select name="');
+		if(field_array !== null){
+			html.append(field_array, '[', prefix, 'Minute]"');
+		}else{
+			html.append('"', prefix, 'Minute"');
+		};
+		if(minute_extra !== null){
+			html.append(' ', minute_extra);
+		};
+		if(all_extra !== null){
+			html.append(' ', all_extra);
+		};
+		html.append(
+			'>\n',
+			html_options({output: minutes, values: minutes, selected: (selected < 10) ? '0' + selected : selected}, jsmarty),
+			'</select>\n'
+		);
 	};
 
 	if(display_meridian && !use_24_hours)
 	{
-		html[i++] = '<select name=';
-		if(field_array !== null)
-			html[i++] = '"' + field_array + '[' + prefix + 'Meridian]"';
-		else
-			html[i++] = '"' + prefix + 'Meridian"';
-		if(meridian_extra !== null)
-			html[i++] = ' ' + meridian_extra;
-		if(all_extra !== null)
-			html[i++] = ' ' + all_extra;
-		html[i++] = '>\n';
-		html[i++] = html_options({output: ['AM','PM'], values: ['AM','PM'], selected: strftime('%p', time).toLowerCase(), print_result: false}, jsmarty);
-		html[i++] = '</select>\n';
+		html.append('<select name="');
+		if(field_array !== null){
+			html.append(field_array, '[', prefix, 'Meridian]"');
+		}else{
+			html.append(prefix, 'Meridian"');
+		};
+		if(meridian_extra !== null){
+			html.append(' ', meridian_extra);
+		};
+		if(all_extra !== null){
+			html.append(' ', all_extra);
+		};
+		html.append(
+			'>\n',
+			html_options({output: ['AM','PM'], values: ['AM','PM'], selected: strftime('%p', time).toLowerCase(), print_result: false}, jsmarty),
+			'</select>\n'
+		);
 	};
 
-	return html.join('');
+	return html.toString();
 };

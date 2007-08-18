@@ -3,7 +3,7 @@
  *
  * @package Date/Time
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.0RC1
+ * @version 1.0.0RC2
  * @see http://www.php.net/strftime
  * @param  {String} s format
  * @param  {Number} t timestamp
@@ -63,7 +63,9 @@ function strftime(s, t)
 					break;
 				case 'I':
 					v = d.getHours();
-					b[i] = (v < 12) ? v : v - 12;
+					if(v == 0){ v = 24; };
+					if(12 < v){ v -= 12; };
+					b[i] = (v < 10) ? '0' + v : v;
 					break;
 				case 'j':
 					v = Math.ceil((d.getTime() - new Date(d.getFullYear(), 0, 1).getTime()) / 86400000);
