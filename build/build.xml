@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSmarty" default="main" basedir="../">
 
-	<property name="version" value="0.4.0" />
-	<taskdef name="yuic" classname="YUICTask" /> 
+	<!-- Taskdef -->
+	<taskdef name="yuic" classname="YUICTask" classpath="build/bin;build/bin/yuicompressor-1.0.jar" />
+
+	<property name="version" value="0.4.0" /> 
 
 	<!-- Directories -->
 	<property name="src" value="src" />
