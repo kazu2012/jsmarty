@@ -1,6 +1,6 @@
 JSmarty.Compiler.define
 (
-	'__MODULE__',
+	'Module',
 	{
 		String :
 		{
@@ -30,7 +30,7 @@ JSmarty.Compiler.define
 			parse : function(c)
 			{
 				var m = this.toModifier();
-				var n = '@@COMPILER::VARIABLE@@' + this.getValue('name');
+				var n = '@@COMPILER::VARIABLE@@' + this.get('name');
 				this.sString = 'self.inModify('+ m +','+ n +')';
 			}
 		},
@@ -56,8 +56,8 @@ JSmarty.Compiler.define
 			parse : function(c)
 			{
 				var text = this.text, flag = Boolean(text);
-				this.sPrefix = c.getValue('ldelim');
-				this.sSuffix = c.getValue('rdelim');
+				this.sPrefix = c.get('ldelim');
+				this.sSuffix = c.get('rdelim');
 
 				if(flag)
 				{
@@ -131,7 +131,7 @@ JSmarty.Compiler.define
 			},
 			toExpression : function()
 			{
-				var iap = this.getValue('iap'), op = this.OPERATORS;
+				var iap = this.get('iap'), op = this.OPERATORS;
 				var i, f, c, s = this.text.slice(this.iap).split('');
 
 				outerloop:

@@ -22,7 +22,7 @@
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
 			<filelist dir="${src}/JSmarty" files="Compiler.js" />
-			<filelist dir="${src}/JSmarty/Compiler" files="Context.js,__MODULE__.js,define.js" />
+			<filelist dir="${src}/JSmarty/Compiler" files="Context.js,Module.js,define.js" />
 		</concat>
 		<copy todir="${lib}" overwrite="Yes" preservelastmodified="true">
 			<fileset dir="${src}" />

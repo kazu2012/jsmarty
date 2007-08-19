@@ -2,11 +2,11 @@ JSmarty.Compiler.Context = function(){};
 JSmarty.Compiler.Context.prototype =
 {
 	/** TagStack **/
-	__tags__ : [],
+	_tags : [],
 	/** folded block element **/
-	__blck__ : {},
+	_blocks : {},
 	/** folded plain element **/
-	__plan__ : { literal : true, strip : true, javascript : true },
+	_plains : { literal : true, strip : true, javascript : true },
 	/** index of plain **/
 	iPlain : -1,
 	/** left_delimiter **/
@@ -20,21 +20,25 @@ JSmarty.Compiler.Context.prototype =
 	 */
 	setTree : function(n, f)
 	{
-		var i = this.iPlain;
-		var tags = this.__tags__;
-		var plain = this.__plan__;
+		var t = this._tags, p = this._plains;
 
-		if(n in this.__blck__)
+		if(n in this._blocks)
 		{
 			if(f)
 			{
-				if(n != tags.pop()) throw new Error("");
-				if(n in plain && i == tags.length) this.iPlain = -1;
+				if(n != t.pop()){
+					JSmarty.Error.raise("Syntax error");
+				};
+				if(n in p && this.iPlain == t.length){
+					this.iPlain = -1;
+				};
 			}
 			else
 			{
-				tags.push(n);
-				if(n in plain && i == -1) this.iPlain = tags.length - 1;
+				t.push(n);
+				if(n in p && this.iPlain == -1){
+					this.iPlain = t.length - 1;
+				};
 			};
 		};
 
@@ -58,10 +62,10 @@ JSmarty.Compiler.Context.prototype =
 		switch(t)
 		{
 			case 'block':
-				this.__blck__[n] = true;
+				this._blocks[n] = true;
 				break;
 			case 'plain':
-				this.__plan__[n] = true;
+				this._plains[n] = true;
 				break;
 		};
 	},
@@ -70,27 +74,25 @@ JSmarty.Compiler.Context.prototype =
 		var P = JSmarty.Plugin;
 		return function(n)
 		{
-			if(n in this.__blck__) return 'block';
+			if(n in this._blocks) return 'block';
 		//	if(P.addPlugin('function.'+ n)) return 'function';
 		//	if(P.addPlugin('compiler.'+ n)) return 'compiler';
 			return 'function';
 		}
 	}(),
 	/**
-	 * getValue function
 	 * getter for Context
 	 * @param {String} k key in context
 	 */
-	getValue : function(k){
-		if(k in this) return this[k];
+	get : function(k){
+		return (k in this) ? this[k] : null;
 	},
 	/**
-	 * setValue function
 	 * setter for Context
 	 * @param {String} k key in context
 	 * @param {Object} v value
 	 */
-	setValue : function(k, v){
-		if(k in this) this[k] = v;
+	set : function(k, v){
+		if(k in this){ this[k] = v; };
 	}
 };

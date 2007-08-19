@@ -1,5 +1,5 @@
-JSmarty.Compiler.__MODULE__ = function(){};
-JSmarty.Compiler.__MODULE__.prototype =
+JSmarty.Compiler.Module = function(){};
+JSmarty.Compiler.Module.prototype =
 {
 	imp : -1,
 	iap : -1,
@@ -36,13 +36,13 @@ JSmarty.Compiler.__MODULE__.prototype =
 		return this.bTerminal;
 	},
 	/**
-	 * setValue function
+	 * set function
 	 * setter for module.
 	 * @param {String} k key
 	 * @param {Object} v value
 	 */
-	setValue : function(k, v){
-		if(k in this) this[k] = v;
+	set : function(k, v){
+		if(k in this){ this[k] = v; };
 	},
 	quoteText : function(s){
 		return (s) ? "'"+ s + "'" : '';
@@ -56,11 +56,11 @@ JSmarty.Compiler.__MODULE__.prototype =
 		return s;
 	},
 	/**
-	 * getValue function
+	 * get function
 	 * getter for module.
 	 * @param {String} k key
 	 */
-	getValue : function(k){
+	get : function(k){
 		return (k in this) ? this[k] : null;
 	},
 	/**

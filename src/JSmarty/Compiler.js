@@ -96,8 +96,8 @@ JSmarty.Compiler = function(renderer)
 
 		if(delimiters()) pattern();
 
-		context.setValue('ldelim', renderer.left_delimiter);
-		context.setValue('rdelim', renderer.right_delimiter);
+		context.set('ldelim', renderer.left_delimiter);
+		context.set('rdelim', renderer.right_delimiter);
 
 		// postfilter
 		src = filter(src, 'pre');
@@ -195,15 +195,15 @@ JSmarty.Compiler.newModule = function(t, c)
 			do{ inp = t.indexOf(main, inp + 1); }
 			while(t.charAt(inp - 1) == '\\');
 			m = new this.String(t);
-			m.setValue('imp', t.indexOf('|', ++inp) + 1);
-			m.setValue('sString', t.slice(0, inp));
+			m.set('imp', t.indexOf('|', ++inp) + 1);
+			m.set('sString', t.slice(0, inp));
 			break;
 		case '$':
 			imp = t.indexOf('|');
 			inp = (-1 < imp) ? imp++ : t.length;
 			m = new this.Variable(t);
-			m.setValue('imp', imp);
-			m.setValue('name', t.slice(1, inp));
+			m.set('imp', imp);
+			m.set('name', t.slice(1, inp));
 			break;
 		case '/':
 			name = this.toUcfirst(c.setTree(t.slice(1), true));
@@ -217,10 +217,10 @@ JSmarty.Compiler.newModule = function(t, c)
 			name = this.toUcfirst(c.setTree(t.slice(0, inp), false));
 			type = this.toUcfirst(c.typeOf(name.toLowerCase()));
 			m = (name in this) ? new this[name](t) : new this[type](t);
-			m.setValue('iap', iap);
-			m.setValue('imp', imp);
-			m.setValue('bTerminal', false)
-			m.setValue('name', name.toLowerCase());
+			m.set('iap', iap);
+			m.set('imp', imp);
+			m.set('bTerminal', false)
+			m.set('name', name.toLowerCase());
 			break;
 	};
 
