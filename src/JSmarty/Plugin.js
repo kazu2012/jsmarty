@@ -39,18 +39,10 @@ JSmarty.Plugin =
 	 * Return blank string.
 	 * @return {String} Return blank string.
 	 */
-	empty : function(){
-		return '';
-	},
-	importer : function()
+	empty : function()
 	{
-		var n, p = this;
-		var i, f, g = JSmarty.GLOBALS;
-		for(i=0,f=arguments.length;i<f;i++)
-		{
-			n = arguments[i];
-			g[n.split('.')[1]] = p[n];
-		};
+		JSmarty.Error.raise('Plugin: called empty function.');
+		return '';
 	},
 	/**
 	 * add a repository of plugin.
@@ -66,9 +58,7 @@ JSmarty.Plugin =
 	 */
 	getFunction : function(n, r)
 	{
-		if(!(n in this)){
-			this.addPlugin(n, r);
-		};
+		this.addPlugin(n, r);
 		return this[n] || this.empty;
 	},
 	/**
@@ -77,10 +67,16 @@ JSmarty.Plugin =
 	 * @param {mixed}  r The repository path of plugins. 
 	 * @type Boolean
 	 */
-	addPlugin : function(n, r)
+	addPlugin : function(n, r){
+		return (n in this) || this.parse(JSmarty.System.fgets(n + '.js', r || this.repos), n);
+	},
+	/**
+	 * import functions for global scope
+	 * @param {Object} options
+	 * @param {String...} 
+	 */
+	importFunction : function(o)
 	{
-		if(n in this){ return Boolean(this[n]); };
-		return this.parse(JSmarty.System.fgets(n + '.js', r || this.repos), n);
 	}
 };
 

@@ -179,7 +179,7 @@ JSmarty.Compiler.newString = function(t, c)
 
 JSmarty.Compiler.newModule = function(t, c)
 {
-	var m, name, type, main = t.slice(0, 1);
+	var m, imp, name, type, main = t.slice(0, 1);
 	var inp = 0, iap = imp = -1, plain = c.isPlain();
 
 	switch(main)

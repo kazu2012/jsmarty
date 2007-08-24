@@ -1,11 +1,10 @@
 JSmarty.Browser =
 {
-	loaded : {},
 	/**
 	 * XMLHttpRequest Object
 	 * @type XMLHttpRequest
 	 */
-	Request : function()
+	newRequest : function()
 	{
 		var i, x;
 		if(typeof(ActiveXObject) != 'undefined')
@@ -31,7 +30,7 @@ JSmarty.Browser =
 		};
 
 		return null;
-	}(),
+	},
 	initialize : function()
 	{
 		(function()
@@ -72,6 +71,11 @@ JSmarty.Browser =
 		o.mtime = function(){
 		};
 
+		o.fetch = function()
+		{
+			
+		};
+
 		o.getArgs = function()
 		{
 			var v = {}, s = String(location.search).slice(1);
@@ -83,6 +87,7 @@ JSmarty.Browser =
 			document.write(Array.prototype.join.call(arguments, ''));
 		};
 
+		this.Request = this.newRequest();
 		this.initialize = null;
 	}
 };

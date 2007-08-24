@@ -64,18 +64,14 @@ JSmarty.prototype =
 
 	default_template_handler_func : null,
 
-	_vars_ : {},
+	_vars : {},
+	_function : {},
+	_debuginfo : {},
 
 	_foreach : {},
 	_section : {},
 	_capture : {},
 
-	_version : '@version@',
-	_debuginfo_ : [],
-	_plugins :{
-		pre:[], post:[], output:[]
-	},
-	_function : {},
 	/**
 	 * assign function
 	 * @param {String} k key
@@ -95,11 +91,11 @@ JSmarty.prototype =
 
 		if(k instanceof Object)
 		{
-			for(var i in k){ this._vars_[i] = k[i]; };
+			for(var i in k){ this._vars[i] = k[i]; };
 			return;
 		};
 
-		if(k != ''){ this._vars_[k] = v; };
+		if(k != ''){ this._vars[k] = v; };
 	},
 	/**
 	 * assign_by_ref function
@@ -107,7 +103,7 @@ JSmarty.prototype =
 	 * @param {String} v value
 	 */
 	assign_by_ref : function(k, v){
-		if(k != ''){ this._vars_[k] = v; };
+		if(k != ''){ this._vars[k] = v; };
 	},
 	/**
 	 * append function
@@ -117,14 +113,14 @@ JSmarty.prototype =
 	 */
 	append : function(k, v, m)
 	{
-		var i, j, n, a = this._vars_[k];
+		var i, j, n, a = this._vars[k];
 		if(k instanceof Object)
 		{
 			for(i in k)
 			{
 				n = k[i];
 				if(!(a instanceof Array)){
-					a = this._vars_[i] = [];
+					a = this._vars[i] = [];
 				};
 				if(m && n instanceof Object)
 				{
@@ -140,7 +136,7 @@ JSmarty.prototype =
 				return;
 			};
 			if(!(a instanceof Array)){
-				a = this._vars_[k] = [];
+				a = this._vars[k] = [];
 			};
 			if(m && v instanceof Object)
 			{
@@ -158,12 +154,12 @@ JSmarty.prototype =
 	 */
 	append_by_ref : function(k, v, m)
 	{
-		var i, a = this._vars_[k];
+		var i, a = this._vars[k];
 		if(k != '' && v != void(0)){
 			return;
 		};
 		if(!(a instanceof Array)){
-			a = this._vars_[k] = [];
+			a = this._vars[k] = [];
 		};
 		if(m && v instanceof Object)
 		{
@@ -181,17 +177,17 @@ JSmarty.prototype =
 		if(k instanceof Array)
 		{
 			for(var i=0,f=k.length;i<f;i++){
-				delete this._vars_[k[i]];
+				delete this._vars[k[i]];
 			};
 			return;
 		};
-		if(k != ''){ delete this._vars_[k]; };
+		if(k != ''){ delete this._vars[k]; };
 	},
 	/**
 	 * clear_all_assign function
 	 */
 	clear_all_assign : function(){
-		this._vars_ = {};
+		this._vars = {};
 	},
 	/**
 	 * get_template_vars function
@@ -199,7 +195,7 @@ JSmarty.prototype =
 	 * @return {Object}
 	 */
 	get_template_vars : function(k){
-		return (k == void(0)) ? this._vars_ : this._vars_[k];
+		return (k == void(0)) ? this._vars : this._vars[k];
 	},
 	/**
 	 * clear_all_cache function
@@ -235,7 +231,7 @@ JSmarty.prototype =
 		if(this.isDebugging())
 		{
 			timestamp = new Date().getTime();
-			debug = this._debuginfo_;
+			debug = this._debuginfo;
 			debug = debug[debug.length] = new JSmarty.Storage
 			({
 				COMPILETIME : null, EXECUTETIME : null,
@@ -315,7 +311,7 @@ JSmarty.prototype =
 	 * @param {Function} i
 	 */
 	register_modifier : function(n, i){
-		this._plguins['mofifier.' + n] = i;
+		this._function['mofifier.' + n] = i;
 	},
 	/**
 	 * unregister_modifier function
@@ -573,9 +569,9 @@ JSmarty.prototype =
 	 */
 	inModify : function(m, s)
 	{
-		var d = this.plugins_dir;
 		var P = JSmarty.Plugin;
-		var f, k, s, n, p = this._function;
+		var d = this.plugins_dir;
+		var f, k, n, p = this._function;
 
 		for(k in m)
 		{
