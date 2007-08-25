@@ -9,6 +9,10 @@ JSmarty.Buffer = function(s)
 		return this;
 	};
 
+	this.get = function(n){
+		return b[(n < 0) ? b.length + n : n];
+	};
+
 	this.valueOf = this.toString = function(s){
 		return b.join(s || '');
 	};

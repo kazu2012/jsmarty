@@ -6,7 +6,12 @@ JSmarty.Compiler.Context.prototype =
 	/** folded block element **/
 	_blocks : {},
 	/** folded plain element **/
-	_plains : { literal : true, strip : true, javascript : true },
+	_plains :
+	{
+		strip : true,
+		literal : true,
+		javascript : true
+	},
 	/** index of plain **/
 	iPlain : -1,
 	/** left_delimiter **/

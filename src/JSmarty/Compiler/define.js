@@ -187,28 +187,41 @@ JSmarty.Compiler.define
 		},
 		Foreach :
 		{
+			sSuffix : '',
+			sPrefix : '',
 			parse : function(c)
 			{
 				if(this.isTerminal())
 				{
 					this.sPrefix = '';
-					this.sString = 'return buf.toString();})';
-				}
-				else
-				{
-					var p = this.toParameter();
-					var m = this.toModifier();
-
-					this.sSuffix = 'function(){var buf = new Buffer();';
-					this.sString = 'self.inForeach('+ p +','+ m +',';
+					this.sString = '};})();';
+					return;
 				};
+
+				var m = this.toModifier();
+				var p = this.toParameter();
+
+				var n = this.extract(p, 'name');
+				var f = this.extract(p, 'from');
+				var k = this.extract(p, 'key') || 'k';
+				var i = this.extract(p, 'item') || 'i';
+
+				this.sString =
+					'(function(){ for(var i in '+ f +'){' +
+					'v.' + k + ' = ' + 'i;' +
+					'v.' + i + ' = ' + f + '[i];';
+			},
+			extract : function(s, k)
+			{
+				var r = s.match(RegExp(k + ':(\'|"|)([^,}]+)\\1'));
+				return (r) ? r[2] : '';
 			}
 		},
 		Foreachelse :
 		{
 			sPrefix : '',
 			sSuffix : '',
-			sString : 'return buf.toString();},function(){var buf = new Buffer();'
+			sString : '}; if(false){'
 		},
 		Section :
 		{

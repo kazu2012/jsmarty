@@ -75,8 +75,21 @@ JSmarty.Plugin =
 	 * @param {Object} options
 	 * @param {String...} 
 	 */
-	importFunction : function(o)
+	importFunction : function()
 	{
+		var i = arguments.length - 1;
+		var o = arguments[i];
+		var p = o.prefix || '';
+		var d = o.plugin_dir || this.repos;
+		if(typeof(o) == 'object'){ i--; };
+
+		for(;0<=i;i--)
+		{
+			n = p + arguments[i];
+			if(this.addPlugin(n, d)){
+				g[n.split('.')[1]] = this[n];
+			};
+		};
 	}
 };
 

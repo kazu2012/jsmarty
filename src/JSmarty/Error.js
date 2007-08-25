@@ -9,28 +9,21 @@ JSmarty.Error = new function()
 	 */
 	this.raise = function(m, l)
 	{
-		var p = 'JSmarty Error: ';
-
 		switch(l)
 		{
 			case 'warn':
-				JSmarty.System.print(p, m);
+				buf.append('JSmarty Error: ', m);
+				JSmarty.System.print(buf.get(-1));
 				break;
 			case 'die':
-				p = 'JSmarty Fatal Error: ';
-				throw new Error(p + m);
+				buf.append('JSmarty Fatal Error: ', m);
+				throw new Error(buf.get(-1));
 				break;
 			case 'none':
 			default:
+				buf.append('JSmarty Error: ', m);
 				break;
 		};
-
-		buf.append(p, m);
-	};
-
-	/**  display all error messages **/
-	this.display = function(){
-		JSmarty.System.print(buf.toString('\n'));
 	};
 
 	/** toString **/

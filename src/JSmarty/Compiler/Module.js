@@ -83,9 +83,11 @@ JSmarty.Compiler.Module.prototype =
 				case '"':
 				case "'":
 					c = s[i++];
-					while(s[i] != c && i <= f) i++;
-					if(f + 1 < i) throw new Error("");
-					if(s[i-1] == '\\') i--;
+					while(s[i] != c && i <= f){ i++; };
+					if(f + 1 < i){
+						JSmarty.Error.raise('Compiler : templates syntax error. can\'t find quotation.','die');
+					};
+					if(s[i-1] == '\\'){ i--; };
 					break;
 				case ':':
 					s[i] = (c) ? ',' : '":[,';
@@ -132,7 +134,9 @@ JSmarty.Compiler.Module.prototype =
 				case "'":
 					c = s[i++];
 					while(s[i] != c && i <= f) ++i;
-					if(f < i) throw new Error("");
+					if(f < i){
+						JSmarty.Error.raise('Compiler : templates syntax error. can\'t find quotation.','die');
+					};
 					if(s[i-1] == '\\') i--;
 					break;
 				case '|':

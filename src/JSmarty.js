@@ -391,11 +391,8 @@ JSmarty.prototype =
 	 * @param {String} l level
 	 *
 	 */
-	trigger_error : function(m, l)
-	{
-		if(!l){ l = 'warn'; };
-		if(!this.debugging){ l = 'none'; };
-		JSmarty.Error.raise(m, l);
+	trigger_error : function(m, l){
+		JSmarty.Error.raise(m, (l == 'die') ? 'die' : (this.debugging) ? 'warn' : l);
 	},
 	/**
 	 * compile the resource
@@ -428,7 +425,7 @@ JSmarty.prototype =
 		try{
 			return new Function(this._getCompiler().execute(s));
 		}catch(e){
-			this.trigger_error();
+			this.trigger_error('Compiler : ' + e.message || e.toString(), 'die');
 		};
 	},
 	/**
