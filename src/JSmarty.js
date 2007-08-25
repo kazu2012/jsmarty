@@ -456,8 +456,8 @@ JSmarty.prototype =
 	{
 		var name, func, sret, flag = true;
 
-		info.init('gets', true);
-		info.init('quit', false);
+		info.ini('gets', true);
+		info.ini('quit', false);
 
 		if(this.parseResourceName(info))
 		{

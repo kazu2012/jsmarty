@@ -36,41 +36,14 @@ JSmarty.Compiler.Module.prototype =
 		return this.bTerminal;
 	},
 	/**
-	 * set function
-	 * setter for module.
-	 * @param {String} k key
-	 * @param {Object} v value
-	 */
-	set : function(k, v){
-		if(k in this){ this[k] = v; };
-	},
-	quoteText : function(s){
-		return (s) ? "'"+ s + "'" : '';
-	},
-	escapeText : function(str)
-	{
-		var s = str || '';
-		if(-1 < s.indexOf("'")){
-			s = s.split("'").join("\'");
-		};
-		return s;
-	},
-	/**
-	 * get function
-	 * getter for module.
-	 * @param {String} k key
-	 */
-	get : function(k){
-		return (k in this) ? this[k] : null;
-	},
-	/**
 	 * modifier function
 	 */
-	toModifier : function()
+	toModify : function()
 	{
 		if(this.imp < 0) return '{}';
 
 		var i, f, c = false;
+		var v = JSmarty.Compiler.VALSYMBL;
 		var s = this.text.slice(this.imp).split('');
 
 		for(i=0,f=s.length;i<=f;i++)
@@ -78,15 +51,13 @@ JSmarty.Compiler.Module.prototype =
 			switch(s[i])
 			{
 				case '$':
-					s[i] = '@@COMPILER::VARIABLE@@';
+					s[i] = v;
 					break;
 				case '"':
 				case "'":
 					c = s[i++];
 					while(s[i] != c && i <= f){ i++; };
-					if(f + 1 < i){
-						JSmarty.Error.raise('Compiler : templates syntax error. can\'t find quotation.','die');
-					};
+					if(f + 1 < i){ this._error(); };
 					if(s[i-1] == '\\'){ i--; };
 					break;
 				case ':':
@@ -106,38 +77,38 @@ JSmarty.Compiler.Module.prototype =
 	/**
 	 * parameter function
 	 */
-	toParameter : function()
+	toParams : function()
 	{
 		if(this.iap < 0) return '{}';
 
-		var i, f, s = this.text.slice(this.iap).split('');
+		var i, f;
+		var v = JSmarty.Compiler.VALSYMBL;
+		var s = this.text.slice(this.iap).split('');
 
 		outerloop:
 		for(i=0,f=s.length;i<=f;i++)
 		{
 			switch(s[i])
 			{
+				case '$':
+					s[i] = v;
+					break;
+				case '=':
+					s[i] = ':';
+					break;
 				case ' ':
 				case '\t':
 				case '\r':
 				case '\n':
 					s[i++] = ',';
-					while(s[i] <= ' ') s[i++] = '';
-					break;
-				case '$':
-					s[i] = '@@COMPILER::VARIABLE@@';
-					break;
-				case '=':
-					s[i] = ':';
+					while(s[i] <= ' '){ s[i++] = ''; };
 					break;
 				case '"':
 				case "'":
 					c = s[i++];
-					while(s[i] != c && i <= f) ++i;
-					if(f < i){
-						JSmarty.Error.raise('Compiler : templates syntax error. can\'t find quotation.','die');
-					};
-					if(s[i-1] == '\\') i--;
+					while(s[i] != c && i <= f){ ++i; };
+					if(f < i){ this._error(); };
+					if(s[i-1] == '\\'){ i--; };
 					break;
 				case '|':
 					s.splice(i);
@@ -148,7 +119,42 @@ JSmarty.Compiler.Module.prototype =
 
 		return '{' + s.join('') + '}';
 	},
+	/**
+	 * get a text
+	 * @return {String}
+	 */
+	getText : function(){
+		return this.escape(this.text);
+	},
+	getName : function(){
+		return this.quote(this.name);
+	},
+	/**
+	 * quote a string of argument
+	 * @param {String} s string
+	 * @return {String} quoted string
+	 */
+	quote : function(s){
+		return (s) ? "'" + s + "'" : '';
+	},
+	/**
+	 * escape a string of argument
+	 * @param {String} s string
+	 * @return {String}
+	 */
+	escape : function(s){
+		return (s.indexOf("'") == -1) ? s : s.split("'").join("\\'");
+	},
 	toString : function(){
 		return this.sString;
+	},
+	_error : function(){
+		JSmarty.Error.raise('Compiler : templates syntax error: can\'t find quotation.','die');
 	}
 };
+
+JSmarty.Plugin.getFunction('shared.mergeObject')
+(
+	JSmarty.Storage.prototype,
+	JSmarty.Compiler.Module.prototype
+);

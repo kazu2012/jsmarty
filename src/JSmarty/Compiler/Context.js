@@ -18,6 +18,7 @@ JSmarty.Compiler.Context.prototype =
 	ldelim : '{',
 	/** right_delimiter **/
 	rdelim : '}',
+	className : 'Context',
 	/**
 	 * setTree function
 	 * @param {String}  n name
@@ -32,7 +33,7 @@ JSmarty.Compiler.Context.prototype =
 			if(f)
 			{
 				if(n != t.pop()){
-					JSmarty.Error.raise("Syntax error");
+					this._error();
 				};
 				if(n in p && this.iPlain == t.length){
 					this.iPlain = -1;
@@ -74,30 +75,15 @@ JSmarty.Compiler.Context.prototype =
 				break;
 		};
 	},
-	typeOf : function()
+	typeOf : function(n)
 	{
-		var P = JSmarty.Plugin;
-		return function(n)
-		{
-			if(n in this._blocks) return 'block';
-		//	if(P.addPlugin('function.'+ n)) return 'function';
-		//	if(P.addPlugin('compiler.'+ n)) return 'compiler';
-			return 'function';
-		}
-	}(),
-	/**
-	 * getter for Context
-	 * @param {String} k key in context
-	 */
-	get : function(k){
-		return (k in this) ? this[k] : null;
-	},
-	/**
-	 * setter for Context
-	 * @param {String} k key in context
-	 * @param {Object} v value
-	 */
-	set : function(k, v){
-		if(k in this){ this[k] = v; };
+		if(n in this._blocks) return 'block';
+		return 'function';
 	}
 };
+
+JSmarty.Plugin.getFunction('shared.mergeObject')
+(
+	JSmarty.Storage.prototype,
+	JSmarty.Compiler.Context.prototype
+);

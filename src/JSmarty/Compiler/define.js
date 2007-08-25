@@ -9,14 +9,14 @@ JSmarty.Compiler.define
 			{
 				if(this.sString == '')
 				{
-					this.sString = this.quoteText(this.escapeText(this.text));
+					this.sString = this.quote(this.getText());
 					return;
 				};
 
 				if(this.sString != '')
 				{
-					var m = this.toModifier();
-					var s = this.escapeText( this.sString );
+					var m = this.toModify();
+					var s = this.escape(this.sString);
 					this.sString = 'self.inModify('+ m +',' + s + ')';
 					return;
 				};
@@ -29,8 +29,8 @@ JSmarty.Compiler.define
 		{
 			parse : function(c)
 			{
-				var m = this.toModifier();
-				var n = '@@COMPILER::VARIABLE@@' + this.get('name');
+				var m = this.toModify();
+				var n = JSmarty.Compiler.VALSYMBL + this.get('name');
 				this.sString = 'self.inModify('+ m +','+ n +')';
 			}
 		},
@@ -39,33 +39,17 @@ JSmarty.Compiler.define
 			sPrefix : '',
 			sSuffix : '',
 			sString : '',
-			parse : function(c)
-			{
-				var text = this.text, flag = Boolean(text);
-				if(flag)
-				{
-					if(0 <= text.indexOf("'")){
-						text = text.split("'").join("\\'");
-					};
-					this.sString = text;
-				};
+			parse : function(c){
+				this.sString = this.getText();
 			}
 		},
 		Plainm :
 		{
 			parse : function(c)
 			{
-				var text = this.text, flag = Boolean(text);
 				this.sPrefix = c.get('ldelim');
 				this.sSuffix = c.get('rdelim');
-
-				if(flag)
-				{
-					if(0 <= text.indexOf("'")){
-						text = text.split("'").join("\\'");
-					};
-					this.sString = text;
-				};
+				this.sString = this.getText();
 			}
 		},
 		Block :
@@ -76,26 +60,24 @@ JSmarty.Compiler.define
 				{
 					this.sPrefix = '';
 					this.sString = 'return buf.toString();}())';
+					return;
 				}
-				else
-				{
-					var name = "'" + this.name + "'";
-					var attr = this.toParameter();
-					var modf = this.toModifier();
 
-					this.sSuffix = 'function(){var buf = new Buffer();';
-					this.sString = 'self.inCall('+ name +',' + attr +','+ modf +',';
-				};
+				this.sSuffix = 'function(){var buf = new Buffer();';
+				this.sString =
+					'self.inCall('+ this.getName() +',' + this.toParams() +
+					','+ this.toModify() +',';
+			},
+			genString : function(){
 			}
 		},
 		Function :
 		{
 			parse : function(c)
 			{
-				var m = this.toModifier();
-				var p = this.toParameter();
-				var n = this.quoteText( this.name );
-				this.sString = 'self.inCall('+ n +','+ p +','+ m +')';
+				this.sString =
+					'self.inCall('+ this.getName() +','+ this.toParams() +
+					','+ this.toModify() +')';
 			}
 		},
 		Ldelim :
@@ -122,12 +104,10 @@ JSmarty.Compiler.define
 				if(this.isTerminal())
 				{
 					this.sString = '}\n';
-				}
-				else
-				{
-					var exp = this.toExpression();
-					this.sString = 'if('+ exp +'){';
+					return;
 				};
+
+				this.sString = 'if('+ this.toExpression() +'){';
 			},
 			toExpression : function()
 			{
@@ -140,19 +120,21 @@ JSmarty.Compiler.define
 					switch(s[i])
 					{
 						case '$':
-							s[i++] = '@@COMPILER::VARIABLE@@';
+							s[i++] = JSmarty.Compiler.VALSYMBL;
 							break;
 						case '"':
 						case "'":
 							c = s[i++];
-							while(s[i] != c && i <= f) ++i;
-							if(f + 1 < i) throw new Error("");
+							while(s[i] != c && i <= f){ ++i; };
+							if(f + 1 < i){ this._error(); };
 							if(s[i-1] == '\\') i--;
 							break;
 						case ' ':
 							c = '';
-							while(s[++i] != ' ' && i <= f) c += s[i], s[i] = '';
-							if(f + 1 < i) throw new Error("");
+							while(s[++i] != ' ' && i <= f){
+								c += s[i], s[i] = '';
+							};
+							if(f + 1 < i){ this._error(); };
 							s[i] = ((op[c]) ? op[c] : c) + ' ';
 							break;
 						case '|':
@@ -179,7 +161,7 @@ JSmarty.Compiler.define
 			{
 				if(!this.isTerminal())
 				{
-					var m = this.toModifier();
+					var m = this.toModify();
 					this.sPrefix = 'buf.append(';
 					this.sString = 'self.inModify(' + m + ',' + "'";
 				};
@@ -198,8 +180,8 @@ JSmarty.Compiler.define
 					return;
 				};
 
-				var m = this.toModifier();
-				var p = this.toParameter();
+				var m = this.toModify();
+				var p = this.toParams();
 
 				var n = this.extract(p, 'name');
 				var f = this.extract(p, 'from');
@@ -227,25 +209,6 @@ JSmarty.Compiler.define
 		{
 			parse : function(c)
 			{
-				if(this.isTerminal())
-				{
-					this.sPrefix = '';
-					this.sString = 'return buf.toString();})';
-				}
-				else
-				{
-					var attr = this.toParameter();
-					var modf = this.toModifier();
-					var name = this.extract(attr, 'name').slice(1,-1);
-
-					this.sSuffix = 'function('+ name +'){var buf = new Buffer();';
-					this.sString = 'self.inSection('+ attr +','+ modf +',';
-				};
-			},
-			extract : function(s, k)
-			{
-				var r = s.match(RegExp(k + ':([^,}]+)'));
-				return (r) ? r[1] : '';
 			}
 		}
 	}
@@ -257,10 +220,8 @@ JSmarty.Compiler.define
 	{
 		Elseif :
 		{
-			parse : function(c)
-			{
-				var exp = this.toExpression();
-				this.sString = '}else if('+ exp +'){';
+			parse : function(c){
+				this.sString = '}else if('+ this.toExpression() +'){';
 			}
 		}
 	}

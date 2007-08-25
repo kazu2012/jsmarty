@@ -100,3 +100,7 @@ JSmarty.Plugin['shared.toArray'] = function(o){
 JSmarty.Plugin['shared.copyArray'] = function(a){
 	return Array.prototype.slice.call(a);
 };
+
+JSmarty.Plugin['shared.mergeObject'] = function(s, c){
+	for(var k in s){ if(!(k in c)){ c[k] = s[k]; }; };
+};

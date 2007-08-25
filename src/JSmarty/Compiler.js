@@ -24,10 +24,10 @@ JSmarty.Compiler = function(renderer)
 
 	// regular expression
 	var regcrl = /\r?\n/g
-	var regvar = /@@COMPILER::VARIABLE@@/g;
-	var regsva = /@@COMPILER::VARIABLE@@smarty\./g;
 	var regtml = RegExp(L + '\\/(.*?)' + R,'g');
 	var regtag = RegExp(L + '[^'+ R +']*' + R,'g');
+	var regvar = RegExp(Compiler.VALSYMBL, 'g');
+	var regsva = RegExp(Compiler.VALSYMBL + 'smarty\.', 'g');
 
 	/**
 	 * filter function
@@ -105,7 +105,7 @@ JSmarty.Compiler = function(renderer)
 		buf.append
 		(
 			'var Buffer = JSmarty.Buffer,',
-			'v = this._vars_,',
+			'v = this._vars,',
 			'buf = new Buffer(), self = this;'
 		);
 
@@ -231,6 +231,10 @@ JSmarty.Compiler.newModule = function(t, c)
 	m.parse(c);
 	return m;
 };
+
+JSmarty.Compiler.VALSYMBL = '@@COMPILER::VARIABLE@@';
+JSmarty.Compiler.FNCSYMBL = '@@COMPILER::FUNCTION@@';
+JSmarty.Compiler.MODSYMBL = '@@COMPILER::MODIFIER@@';
 
 JSmarty.Compiler.toUcfirst = function(s){
 	return s.slice(0,1).toUpperCase().concat(s.slice(1));
