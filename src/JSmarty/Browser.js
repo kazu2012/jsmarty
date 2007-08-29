@@ -1,5 +1,6 @@
 JSmarty.Browser =
 {
+	timestamp : {},
 	/**
 	 * XMLHttpRequest Object
 	 * @type XMLHttpRequest
@@ -31,7 +32,7 @@ JSmarty.Browser =
 
 		return null;
 	},
-	initialize : function()
+	buildSystemObject : function()
 	{
 		(function()
 		{
@@ -39,60 +40,71 @@ JSmarty.Browser =
 			var p = s[s.length - 1].getAttribute('src');
 			var i = p.lastIndexOf('/'), s = null;
 			p = (i == -1) ? '.' : p.slice(0, i);
+			JSmarty.System.path = p;
 			JSmarty.Plugin.addRepository(p + '/internals');
 		})();
 
-		var o = JSmarty.System;
+		var def = JSmarty.System;
 
-		o.fgets = function(u, d)
+		def.read = function(f, d)
 		{
-			var i, f, t, h = JSmarty.Browser.Request;
-			d = JSmarty.Plugin['shared.toArray'](d);
-			for(i=0,f=d.length;i<f;i++)
+			var Browser = JSmarty.Browser;
+
+			var i, l, r, s = false;
+			var h = Browser.Request;
+			var a = this.buildPath(f, d);
+
+			for(i=0,l=a.length;i<l;i++)
 			{
-				if(t != null) break;
 				try
 				{
-					h.open('GET', d[i] + '/' + u, false); h.send('');
+					h.open('GET', a[i], false);
+					h.send('');
 					if(h.status == 200 || h.status == 0)
 					{
-						t = h.responseText;
+						s = true;
+						r = h.responseText;
+						Browser.timestamp[a[i]] = h.getResponseHeader();
+						break;
 					};
 				}
-				catch(e){
-				}
-				finally{
-					h.abort();
-				};
+				catch(e){}
+				finally{ h.abort(); };
 			};
-			return t || '';
+
+			return r || function()
+			{
+				JSmarty.Error.raise('System : can\'t load the ' + f);
+				return null;
+			}();
 		};
 
-		o.mtime = function(){
-		};
-
-		o.fetch = function()
+		def.time = function(f, d)
 		{
-			
+			var t = JSmarty.Browser.timestamp;
+			var i, f, a = this.buildPath(f, d);
+			for(i=0,f=a.length;i<f;i++){
+				if(a[i] in t){ break; };
+			};
+			return t[a[i]];
 		};
 
-		o.getArgs = function()
+		def.getArgs = function()
 		{
 			var v = {}, s = String(location.search).slice(1);
 			JSmarty.Plugin.getFunction('php.parse_str')(s, v);
 			return (k == void(0)) ? v : (v[k] == void(0)) ? null : v[k];
 		};
 
-		o.print = function(){
+		def.print = function(){
 			document.write(Array.prototype.join.call(arguments, ''));
 		};
 
+		def.outputString = document.write;
+
 		this.Request = this.newRequest();
-		this.initialize = null;
+		this.buildSystemObject = null;
 	}
 };
 
-(function(def)
-{
-	def.setProfile(def.getTypeCode(this));
-})(JSmarty.System);
+JSmarty.System.forName(JSmarty.System.getName());

@@ -467,8 +467,8 @@ JSmarty.prototype =
 				case 'file':
 					if(info.get('gets'))
 					{
-						info.set('src', JSmarty.System.fgets(name, this.template_dir));
-						info.set('timestamp', JSmarty.System.mtime(name, this.template_dir));
+						info.set('src', JSmarty.System.read(name, this.template_dir));
+						info.set('timestamp', JSmarty.System.time(name, this.template_dir));
 					};
 					break;
 				default:

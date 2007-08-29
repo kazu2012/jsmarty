@@ -68,7 +68,7 @@ JSmarty.Plugin =
 	 * @type Boolean
 	 */
 	addPlugin : function(n, r){
-		return (n in this) || this.parse(JSmarty.System.fgets(n + '.js', r || this.repos), n);
+		return (n in this) || this.parse(JSmarty.System.read(n + '.js', r || this.repos), n);
 	},
 	/**
 	 * import functions for global scope
@@ -91,10 +91,6 @@ JSmarty.Plugin =
 			};
 		};
 	}
-};
-
-JSmarty.Plugin['shared.toArray'] = function(o){
-	return (o instanceof Array) ? o : [o];
 };
 
 JSmarty.Plugin['shared.copyArray'] = function(a){

@@ -4,57 +4,51 @@
  */
 JSmarty.System =
 {
-	IDUNDEF : 0x1,
-	IDBRWSR : 0x2,
-	IDAJAJA : 0x4,
-	IDMSTNG : 0x8,
-	IDWSCPT : 0x16,
-	IDXPCOM : 0x32,
-
-	fputs : null,
-	mtime : null,
-	print : null,
-
-	property : new JSmarty.Storage({name : null, code : 0x1}),
-
-	isWritable : function(){
-		return (this.fputs != null);
-	},
-
+	path : null,
+	isWritable : false,
 	getArgs : function(){
 		return null;
 	},
-
 	getSelfPath : function(){
 		return '.';
 	},
-
-	getTypeCode : function(g)
+	buildPath : function(p, d)
 	{
-		if(g.window  && g.document){ return this.IDBRWSR; };
-		if(g.System  && g.Core    ){ return this.IDAJAJA; };
-		if(g.context && g.javax   ){ return this.IDMSTNG; };
-
-		return this.IDUNDEF;
+		var i, a = [].concat(d);
+		for(i=a.length-1;0<=i;i--){
+			a[i] = a[i] + '/' + p;
+		};
+		return a;
 	},
-
-	setProfile : function(v, c)
+	getName : function()
 	{
-		switch(v)
+		var g = JSmarty.GLOBALS;
+		if(g.System && g.Core         ){ return 'ajaja'; };
+		if(g.System && g.System.Gadget){ return 'gadget'; };
+		if(g.window && g.document     ){ return 'browser'; };
+	},
+	forName : function(n)
+	{
+		switch(n)
 		{
-			case this.IDAJAJA:
+			case 'ajaja':
 				load('./internals/system.ajaja.js');
 				break;
-			case this.IDMSTNG:
+			case 'mustang':
 				load('./internals/system.mustang.js');
 				break;
+			case 'gadget':
+				var i, r, p = String(System.Gadget.path).replace(/\\/g, '/');
+				JSmarty.Browser.buildSystemObject();
+				r = JSmarty.Plugin.repos;
+				for(i=r.length-1;0<=i;i--){
+					r[i] = (r[i] == '.') ? p : p + '/' + r[i];
+				};
+				eval(JSmarty.System.read('system.gadget.js', r));
+				break;
 			default:
-				JSmarty.Browser.initialize();
+				JSmarty.Browser.buildSystemObject();
 				break;
 		};
-	},
-
-	getProperty : function(k){
-		return this.property.get(k);
 	}
 };
