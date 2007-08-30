@@ -36,6 +36,13 @@ JSmarty.Plugin =
 		return $flag;
 	},
 	/**
+	 * build namespace of plugin
+	 * @return {String} namespace
+	 */
+	namespace : function(t, n){
+		return t + '.' + n;
+	},
+	/**
 	 * Return blank string.
 	 * @return {String} Return blank string.
 	 */
@@ -68,24 +75,22 @@ JSmarty.Plugin =
 	 * @type Boolean
 	 */
 	addPlugin : function(n, r){
-		return (n in this) || this.parse(JSmarty.System.read(n + '.js', r || this.repos), n);
+		return (n in this) || this.parse(
+			JSmarty.System.read(n + '.js', r || this.repos), n
+		);
 	},
 	/**
 	 * import functions for global scope
 	 * @param {Object} options
 	 * @param {String...} 
 	 */
-	importFunction : function()
+	importFunctions : function()
 	{
-		var i = arguments.length - 1;
-		var o = arguments[i];
-		var p = o.prefix || '';
-		var d = o.plugin_dir || this.repos;
-		if(typeof(o) == 'object'){ i--; };
-
-		for(;0<=i;i--)
+		var i, d = this.repos;
+		var n, g = JSmarty.GLOBALS;
+		for(i=arguments.length-1;0<=i;i--)
 		{
-			n = p + arguments[i];
+			n = arguments[i];
 			if(this.addPlugin(n, d)){
 				g[n.split('.')[1]] = this[n];
 			};

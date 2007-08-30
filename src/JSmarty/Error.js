@@ -13,7 +13,7 @@ JSmarty.Error = new function()
 		{
 			case 'warn':
 				buf.append('JSmarty Error: ', m);
-				JSmarty.System.print(buf.get(-1));
+				JSmarty.System.outputString(buf.get(-1));
 				break;
 			case 'die':
 				buf.append('JSmarty Fatal Error: ', m);

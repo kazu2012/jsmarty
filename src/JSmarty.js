@@ -281,14 +281,14 @@ JSmarty.prototype =
 	 * @param {Function} i
 	 */
 	register_block : function(n, i){
-		this._function['block.' + n] = i;
+		this._plugin['block.' + n] = i;
 	},
 	/**
 	 * unregister_block function
 	 * @param {String} n the name of block plugin.
 	 */
 	unregister_block : function(n){
-		this._function['block.' + n] = false;
+		this._plugin['block.' + n] = false;
 	},
 	/**
 	 * register_function function
@@ -296,14 +296,14 @@ JSmarty.prototype =
 	 * @param {Function} i
 	 */
 	register_function : function(n, i){
-		this._function['function.' + n] = i;
+		this._plugin['function.' + n] = i;
 	},
 	/**
 	 * unregister_function function
 	 * @param {String} n the name of function plugin.
 	 */
 	unregister_function : function(n){
-		this._function['function.' + n] = false;
+		this._plugin['function.' + n] = false;
 	},
 	/**
 	 * register_modifier function
@@ -311,36 +311,36 @@ JSmarty.prototype =
 	 * @param {Function} i
 	 */
 	register_modifier : function(n, i){
-		this._function['mofifier.' + n] = i;
+		this._plugin['mofifier.' + n] = i;
 	},
 	/**
 	 * unregister_modifier function
 	 * @param {String} n the name of modifier plugin.
 	 */
 	unregister_modifier : function(n){
-		this._function['modifier.' + n] = false;
+		this._plugin['modifier.' + n] = false;
 	},
 	register_resource : function(t, i)
 	{
 		if(i instanceof Array && i.length == 4){
-			this._function['resource.' + t] = i;
+			this._plugin['resource.' + t] = i;
 		}else{
 			this.trigger_error("malformed function-list for '"+ t +"' in register_resource");
 		};
 	},
 	unregister_resource : function(n){
-		this._function['resource.' + n] = false;
+		this._plugin['resource.' + n] = false;
 	},
 	register_compiler_function : function(n, i){
-		this._function['compiler' + n] = i;
+		this._plugin['compiler' + n] = i;
 	},
 	unregister_compiler_function : function(n){
-		this._function['compiler.' + n] = false;
+		this._plugin['compiler.' + n] = false;
 	},
 	load_filter : function(t, n)
 	{
 		if(JSmarty.Plugin.addPlugin(t + 'filter.' + n, this.plugins_dir)){
-			this._function[t].push(n);
+			this._plugin[t].push(n);
 		};
 	},
 	/**
@@ -348,42 +348,42 @@ JSmarty.prototype =
 	 * @param {String} n the name of prefilter
 	 */
 	register_prefilter : function(n){
-		this._function['prefilter.' + n] = JSmarty.GLOBALS[n];
+		this._plugin['prefilter.' + n] = JSmarty.GLOBALS[n];
 	},
 	/**
 	 * unregister_prefilter function
 	 * @param {String} n the name of prefilter
 	 */
 	unregister_prefilter : function(n){
-		this._function['prefilter.' + n] = false;
+		this._plugin['prefilter.' + n] = false;
 	},
 	/**
 	 * register_postfilter function
 	 * @param {String} n the name of postfilter
 	 */
 	register_postfilter : function(n){
-		this._function['postfilter.' + n] = JSmarty.GLOBALS[n];
+		this._plugin['postfilter.' + n] = JSmarty.GLOBALS[n];
 	},
 	/**
 	 * unregister_postfilter function
 	 * @param {String} n the name of postfilter
 	 */
 	unregister_postfilter : function(n){
-		this._function['postfilter.' + n] = false;
+		this._plugin['postfilter.' + n] = false;
 	},
 	/**
 	 * register_outputfilter function
 	 * @param {String} n the name of postfilter
 	 */
 	register_outputfilter : function(n){
-		this._function['outputfilter.' + n] = JSmarty.GLOBALS[n];
+		this._plugin['outputfilter.' + n] = JSmarty.GLOBALS[n];
 	},
 	/**
 	 * unregister_outputfilter function
 	 * @param {String} n the name of postfilter
 	 */
 	unregister_outputfilter : function(n){
-		this._function['outputfilter.' + n] = false;
+		this._plugin['outputfilter.' + n] = false;
 	},
 	/**
 	 * trigger_error function
@@ -514,10 +514,11 @@ JSmarty.prototype =
 	/** getter for compiler **/
 	_getCompiler : function()
 	{
-		if(this.compiler == null){
-			this.compiler = new JSmarty[this.compiler_class](this);
-		};
-		return this.compiler;
+		return this.compiler || function(o)
+		{
+			o.compiler = new JSmarty[o.compiler_class](o);
+			return o.compiler;
+		}(this);
 	},
 	/**
 	 * internals : filter function
@@ -547,7 +548,7 @@ JSmarty.prototype =
 	{
 		var t = (s == null) ? 'function' : 'block';
 		var r, ns = t + '.' + n;
-		var f = this._function[ns] || JSmarty.Plugin.getFunction(
+		var f = this._plugin[ns] || JSmarty.Plugin.getFunction(
 			ns, this.plugins_dir
 		);
 
@@ -568,12 +569,12 @@ JSmarty.prototype =
 	{
 		var P = JSmarty.Plugin;
 		var d = this.plugins_dir;
-		var f, k, n, p = this._function;
+		var f, k, n, p = this._plugin;
 
 		for(k in m)
 		{
 			m[k][0] = s;
-			n = 'modifier.' + k;
+			n = P.namespace('modifier', k);
 			f = p[n] || P.getFunction(n, d);
 			s = f.apply(null, m[k]);
 		};

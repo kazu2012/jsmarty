@@ -1,6 +1,5 @@
 JSmarty.Browser =
 {
-	timestamp : {},
 	/**
 	 * XMLHttpRequest Object
 	 * @type XMLHttpRequest
@@ -46,15 +45,14 @@ JSmarty.Browser =
 
 		var def = JSmarty.System;
 
+		def.modified = {};
+
 		def.read = function(f, d)
 		{
-			var Browser = JSmarty.Browser;
-
-			var i, l, r, s = false;
-			var h = Browser.Request;
 			var a = this.buildPath(f, d);
+			var i, t, r, h = JSmarty.Browser.Request;
 
-			for(i=0,l=a.length;i<l;i++)
+			for(i=a.length-1;0<=i;i--)
 			{
 				try
 				{
@@ -62,9 +60,9 @@ JSmarty.Browser =
 					h.send('');
 					if(h.status == 200 || h.status == 0)
 					{
-						s = true;
 						r = h.responseText;
-						Browser.timestamp[a[i]] = h.getResponseHeader();
+						t = h.getResponseHeader('last-modified');
+						this.modified[f] = (t) ? new Date(t).getTime() : new Date().getTime();
 						break;
 					};
 				}
@@ -81,12 +79,12 @@ JSmarty.Browser =
 
 		def.time = function(f, d)
 		{
-			var t = JSmarty.Browser.timestamp;
-			var i, f, a = this.buildPath(f, d);
-			for(i=0,f=a.length;i<f;i++){
-				if(a[i] in t){ break; };
-			};
-			return t[a[i]];
+			var m = this.modified;
+			return m[f] || function(o)
+			{
+				o.read(f, d);
+				return m[f] || null;
+			}(this);
 		};
 
 		def.getArgs = function()
@@ -102,8 +100,8 @@ JSmarty.Browser =
 
 		def.outputString = document.write;
 
-		this.Request = this.newRequest();
 		this.buildSystemObject = null;
+		this.Request = this.newRequest();
 	}
 };
 
