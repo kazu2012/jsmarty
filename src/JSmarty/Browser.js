@@ -33,21 +33,11 @@ JSmarty.Browser =
 	},
 	buildSystemObject : function()
 	{
-		(function()
-		{
-			var s = document.getElementsByTagName('script');
-			var p = s[s.length - 1].getAttribute('src');
-			var i = p.lastIndexOf('/'), s = null;
-			p = (i == -1) ? '.' : p.slice(0, i);
-			JSmarty.System.path = p;
-			JSmarty.Plugin.addRepository(p + '/internals');
-		})();
+		var o = JSmarty.System;
 
-		var def = JSmarty.System;
+		o.modified = {};
 
-		def.modified = {};
-
-		def.read = function(f, d)
+		o.read = function(f, d)
 		{
 			var a = this.buildPath(f, d);
 			var i, t, r, h = JSmarty.Browser.Request;
@@ -72,12 +62,12 @@ JSmarty.Browser =
 
 			return r || function()
 			{
-				JSmarty.Error.raise('System : can\'t load the ' + f);
+				JSmarty.Error.log('System', 'can\'t load the ' + f);
 				return null;
 			}();
 		};
 
-		def.time = function(f, d)
+		o.time = function(f, d)
 		{
 			var m = this.modified;
 			return m[f] || function(o)
@@ -87,18 +77,14 @@ JSmarty.Browser =
 			}(this);
 		};
 
-		def.getArgs = function()
+		o.getArgs = function(k)
 		{
 			var v = {}, s = String(location.search).slice(1);
 			JSmarty.Plugin.getFunction('php.parse_str')(s, v);
 			return (k == void(0)) ? v : (v[k] == void(0)) ? null : v[k];
 		};
 
-		def.print = function(){
-			document.write(Array.prototype.join.call(arguments, ''));
-		};
-
-		def.outputString = document.write;
+		o.outputString = document.write;
 
 		this.buildSystemObject = null;
 		this.Request = this.newRequest();

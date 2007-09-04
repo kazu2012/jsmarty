@@ -30,7 +30,7 @@ JSmarty.Plugin =
 		}
 		catch(e)
 		{
-			JSmarty.Error.raise('Plugin: ' + e.message || e.toString());
+			JSmarty.Error.log('Plugin', e, 'die');
 		};
 
 		return $flag;
@@ -48,7 +48,7 @@ JSmarty.Plugin =
 	 */
 	empty : function()
 	{
-		JSmarty.Error.raise('Plugin: called empty function.');
+		JSmarty.Error.log('Plugin', 'called empty function');
 		return '';
 	},
 	/**
@@ -84,7 +84,7 @@ JSmarty.Plugin =
 	 * @param {Object} options
 	 * @param {String...} 
 	 */
-	importFunctions : function()
+	importer : function()
 	{
 		var i, d = this.repos;
 		var n, g = JSmarty.GLOBALS;
@@ -103,5 +103,5 @@ JSmarty.Plugin['shared.copyArray'] = function(a){
 };
 
 JSmarty.Plugin['shared.mergeObject'] = function(s, c){
-	for(var k in s){ if(!(k in c)){ c[k] = s[k]; }; };
+	for(var k in s){ if(!(k in c)){ c[k] = s[k];}; };
 };

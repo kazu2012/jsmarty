@@ -21,6 +21,6 @@ JSmarty.Storage.prototype =
 		return (k in this);
 	},
 	_error : function(k){
-		JSmarty.Error.raise(this.className + ': ' + k + ' is not defined.');
+		JSmarty.Error.log(this.className, k + ' is not defined');
 	}
 };

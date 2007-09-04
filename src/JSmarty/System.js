@@ -4,14 +4,9 @@
  */
 JSmarty.System =
 {
-	path : null,
+	internals : null,
 	isWritable : false,
-	getArgs : function(){
-		return null;
-	},
-	getSelfPath : function(){
-		return '.';
-	},
+	getArgs : function(){ return null; },
 	buildPath : function(p, d)
 	{
 		var i, a = [].concat(d);
@@ -38,13 +33,8 @@ JSmarty.System =
 				load('./internals/system.mustang.js');
 				break;
 			case 'gadget':
-				var i, r, p = String(System.Gadget.path).replace(/\\/g, '/');
 				JSmarty.Browser.buildSystemObject();
-				r = JSmarty.Plugin.repos;
-				for(i=r.length-1;0<=i;i--){
-					r[i] = (r[i] == '.') ? p : p + '/' + r[i];
-				};
-				eval(JSmarty.System.read('system.gadget.js', r));
+				eval(this.read('system.gadget.js', this.internals));
 				break;
 			default:
 				JSmarty.Browser.buildSystemObject();
