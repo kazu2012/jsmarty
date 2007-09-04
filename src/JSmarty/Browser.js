@@ -1,9 +1,5 @@
 JSmarty.Browser =
 {
-	/**
-	 * XMLHttpRequest Object
-	 * @type XMLHttpRequest
-	 */
 	newRequest : function()
 	{
 		var i, x;
@@ -36,6 +32,15 @@ JSmarty.Browser =
 		var o = JSmarty.System;
 
 		o.modified = {};
+
+		(function()
+		{
+			var s = document.getElementsByTagName('script');
+			var p = s[s.length - 1].getAttribute('src');
+			var i = p.lastIndexOf('/'), s = null;
+			p = (i == -1) ? o.path : o.path + p.slice(0, i);
+			JSmarty.Plugin.repos = [p + '/plugins', p + '/internals'];
+		})();
 
 		o.read = function(f, d)
 		{

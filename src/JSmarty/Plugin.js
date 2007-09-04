@@ -74,7 +74,8 @@ JSmarty.Plugin =
 	 * @param {mixed}  r The repository path of plugins. 
 	 * @type Boolean
 	 */
-	addPlugin : function(n, r){
+	addPlugin : function(n, r)
+	{
 		return (n in this) || this.parse(
 			JSmarty.System.read(n + '.js', r || this.repos), n
 		);
@@ -86,8 +87,9 @@ JSmarty.Plugin =
 	 */
 	importer : function()
 	{
-		var i, d = this.repos;
-		var n, g = JSmarty.GLOBALS;
+		var n, i, d = this.repos;
+		var g = this.getFunction('global')();
+
 		for(i=arguments.length-1;0<=i;i--)
 		{
 			n = arguments[i];
@@ -97,6 +99,10 @@ JSmarty.Plugin =
 		};
 	}
 };
+
+JSmarty.Plugin['shared.global'] = function(g){
+	return function(){ return g; };
+}(this);
 
 JSmarty.Plugin['shared.copyArray'] = function(a){
 	return Array.prototype.slice.call(a);

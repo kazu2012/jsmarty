@@ -65,7 +65,7 @@ JSmarty.prototype =
 	default_template_handler_func : null,
 
 	_vars : {},
-	_function : {},
+	_plugin : {},
 	_debuginfo : {},
 
 	_foreach : {},
@@ -392,7 +392,7 @@ JSmarty.prototype =
 	 *
 	 */
 	trigger_error : function(m, l){
-		JSmarty.Error.raise(m, (l == 'die') ? 'die' : (this.debugging) ? 'warn' : l);
+		JSmarty.Error.log('Process', m, (l == 'die') ? 'die' : (this.debugging) ? 'warn' : l);
 	},
 	/**
 	 * compile the resource
@@ -425,7 +425,7 @@ JSmarty.prototype =
 		try{
 			return new Function(this._getCompiler().execute(s));
 		}catch(e){
-			this.trigger_error('Compiler : ' + e.message || e.toString(), 'die');
+			this.trigger_error(e, 'die');
 		};
 	},
 	/**
@@ -583,5 +583,4 @@ JSmarty.prototype =
 	}
 };
 
-JSmarty.GLOBALS = this;
 JSmarty.VERSION = '@version@';
