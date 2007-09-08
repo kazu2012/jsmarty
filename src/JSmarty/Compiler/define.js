@@ -17,7 +17,7 @@ JSmarty.Compiler.define
 				{
 					var m = this.toModify();
 					var s = this.escape(this.sString);
-					this.sString = 'self.inModify('+ m +',' + s + ')';
+					this.sString = '$.inModify('+ m +',' + s + ')';
 					return;
 				};
 
@@ -31,7 +31,7 @@ JSmarty.Compiler.define
 			{
 				var m = this.toModify();
 				var n = JSmarty.Compiler.VALSYMBL + this.get('name');
-				this.sString = 'self.inModify('+ m +','+ n +')';
+				this.sString = '$.inModify('+ m +','+ n +')';
 			}
 		},
 		Plains :
@@ -59,13 +59,13 @@ JSmarty.Compiler.define
 				if(this.isTerminal())
 				{
 					this.sPrefix = '';
-					this.sString = 'return buf.toString();}())';
+					this.sString = 'return $b.toString();}())';
 					return;
 				}
 
-				this.sSuffix = 'function(){var buf = new Buffer();';
+				this.sSuffix = 'function(){var $b = new Buffer();';
 				this.sString =
-					'self.inCall('+ this.getName() +',' + this.toParams() +
+					'$.inCall('+ this.getName() +',' + this.toParams() +
 					','+ this.toModify() +',';
 			},
 			genString : function(){
@@ -76,17 +76,17 @@ JSmarty.Compiler.define
 			parse : function(c)
 			{
 				this.sString =
-					'self.inCall('+ this.getName() +','+ this.toParams() +
+					'$.inCall('+ this.getName() +','+ this.toParams() +
 					','+ this.toModify() +')';
 			}
 		},
 		Ldelim :
 		{
-			sString : 'self.left_delimiter'
+			sString : '$.left_delimiter'
 		},
 		Rdelim :
 		{
-			sString : 'self.right_delimiter'
+			sString : '$.right_delimiter'
 		},
 		If :
 		{
@@ -127,7 +127,7 @@ JSmarty.Compiler.define
 							c = s[i++];
 							while(s[i] != c && i <= f){ ++i; };
 							if(f + 1 < i){ this._error(); };
-							if(s[i-1] == '\\') i--;
+							if(s[i-1] == '\\'){ i--; };
 							break;
 						case ' ':
 							c = '';
@@ -162,8 +162,8 @@ JSmarty.Compiler.define
 				if(!this.isTerminal())
 				{
 					var m = this.toModify();
-					this.sPrefix = 'buf.append(';
-					this.sString = 'self.inModify(' + m + ',' + "'";
+					this.sPrefix = '$b.append(';
+					this.sString = '$.inModify(' + m + ',' + "'";
 				};
 			}
 		},
@@ -181,35 +181,52 @@ JSmarty.Compiler.define
 				};
 
 				var m = this.toModify();
-				var p = this.toParams();
+				var p = this.toObject(this.toParams());
+				var b = new JSmarty.Buffer();
 
-				var n = this.extract(p, 'name');
-				var f = this.extract(p, 'from');
-				var k = this.extract(p, 'key') || 'k';
-				var i = this.extract(p, 'item') || 'i';
+				b.append('(function(){');
 
-				this.sString =
-					'(function(){ for(var i in '+ f +'){' +
-					'v.' + k + ' = ' + 'i;' +
-					'v.' + i + ' = ' + f + '[i];';
-			},
-			extract : function(s, k)
-			{
-				var r = s.match(RegExp(k + ':(\'|"|)([^,}]+)\\1'));
-				return (r) ? r[2] : '';
+				if(p.name)
+				{
+					b.append('$.$foreach.', p.name,'={total:0,index:-1,iteration:0};');
+					b.append('var $f=$.$foreach.', p.name,';');
+					b.append('$f.first=true,$f.last=false;');
+					b.append('for(var k in ', p.from, '){$f.total++;};');
+				};
+
+				b.append('for(var k in ', p.from, '){');
+
+				if(p.key){
+					b.append('$v.', p.key, '=k;');
+				};
+
+				if(p.item){
+					b.append('$v.', p.item, '=', p.from, '[k];');
+				};
+
+				if(p.name)
+				{
+					b.append('$f.index++, $f.iteration++;');
+					b.append('$f.first=($f.index==0), $f.last=($f.iteration==$f.total);');
+				};
+
+				this.sString = b.toString('\n');
 			}
 		},
 		Foreachelse :
 		{
 			sPrefix : '',
 			sSuffix : '',
-			sString : '}; if(false){'
+			sString : '}; if(!k){'
 		},
 		Section :
 		{
 			parse : function(c)
 			{
 			}
+		},
+		Sectionelse :
+		{
 		}
 	}
 );
@@ -244,5 +261,3 @@ JSmarty.Compiler.define
 		}
 	}
 );
-
-JSmarty.Compiler.Sectionelse = JSmarty.Compiler.Foreachelse;

@@ -190,7 +190,7 @@ JSmarty.prototype =
 	 * @param {String} k key
 	 * @return {Object}
 	 */
-	get_template$vars : function(k){
+	get_template_vars : function(k){
 		return (k == void(0)) ? this.$vars : this.$vars[k];
 	},
 	/**
@@ -545,7 +545,7 @@ JSmarty.prototype =
 		switch(t)
 		{
 			case 'function':
-				return this.inModify(m, f(a, this);
+				return this.inModify(m, f(a, this));
 			case 'block':
 				return this.inModify(m, f(a, s, this));
 		};

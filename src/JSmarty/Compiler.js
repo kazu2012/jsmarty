@@ -43,8 +43,8 @@ JSmarty.Compiler = function(renderer)
 			//	s = renderer.inFilter('pre', s);
 				break;
 			case 'post':
-				s = s.replace(regsva,'self._');
-				s = s.replace(regvar,'v.');
+				s = s.replace(regsva,'$.$');
+				s = s.replace(regvar,'$v.');
 			//	s = renderer.inFilter('post', s);
 				break;
 		};
@@ -102,12 +102,8 @@ JSmarty.Compiler = function(renderer)
 		// postfilter
 		src = filter(src, 'pre');
 
-		buf.append
-		(
-			'var Buffer = JSmarty.Buffer,',
-			'v = this._vars,',
-			'buf = new Buffer(), self = this;'
-		);
+		buf.append('var $ = this, Buffer = JSmarty.Buffer;');
+		buf.append('var $v = $.$vars, $b = new Buffer();');
 
 		// lookup block elements
 		p = regtml;
@@ -133,10 +129,9 @@ JSmarty.Compiler = function(renderer)
 
 		t = Compiler.newString(src.slice(iap), context);
 
-		buf.append
-		(
+		buf.append(
 			t.prefix(), t.toString(),  t.suffix(),
-			'return buf.toString();'
+			'return $b.toString();'
 		);
 
 		// prefilter

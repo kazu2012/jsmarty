@@ -6,7 +6,7 @@ JSmarty.Compiler.Module.prototype =
 	name : null,
 	text : null,
 	/** prefix **/
-	sPrefix : 'buf.append(',
+	sPrefix : '$b.append(',
 	/** suffix **/
 	sSuffix : ');',
 	/** string **/
@@ -119,6 +119,19 @@ JSmarty.Compiler.Module.prototype =
 
 		return '{' + s.join('') + '}';
 	},
+	toObject : function()
+	{
+		var p = /([^:,]+):('|"|)([^,]+)\2/g;
+		return function(s)
+		{
+			var r, o = {};
+			s = s.slice(1, s.length - 1)
+			while((r = p.exec(s)) != null){
+				o[r[1]] = r[3];
+			};
+			return o;
+		};
+	}(),
 	/**
 	 * get a text
 	 * @return {String}
@@ -149,7 +162,7 @@ JSmarty.Compiler.Module.prototype =
 		return this.sString;
 	},
 	_error : function(){
-		JSmarty.Error.raise('Compiler : templates syntax error: can\'t find quotation.','die');
+		JSmarty.Error.log('Compiler : templates syntax error: can\'t find quotation.','die');
 	}
 };
 
