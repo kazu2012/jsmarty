@@ -12,7 +12,7 @@
  * Original: Smarty {html_options} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.5
+ * @version  1.0.6
  * @see      http://smarty.php.net/manual/en/language.function.html.options.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -23,13 +23,13 @@ function jsmarty_function_html_options(params, jsmarty)
 {
 	var Plugin = JSmarty.Plugin;
 
+	Plugin.add('shared.escape_special_chars', jsmarty.plugins_dir);
+
 	var k, f, value, i = 0, html = [];
 	var optoutput = jsmarty_function_html_options_optoutput;
 	var strval = Plugin.getFunction('php.strval');
 	var array_map = Plugin.getFunction('php.array_map');
 	var array_values = Plugin.getFunction('php.array_values');
-
-	Plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
 
 	var name = null;
 	var extra = [];
@@ -89,6 +89,7 @@ function jsmarty_function_html_options(params, jsmarty)
 function jsmarty_function_html_options_optoutput(key, value, selected)
 {
 	var optgroup = jsmarty_function_html_options_optgroup;
+
 	var i = 0, html = [], Plugin = JSmarty.Plugin;
 	var escape_special_chars = Plugin.getFunction('shared.escape_special_chars');
 	var is_array = Plugin.getFunction('php.is_array'), in_array = Plugin.getFunction('php.in_array');

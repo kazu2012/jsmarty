@@ -67,6 +67,7 @@ JSmarty.prototype =
 	$vars : {},
 	$foreach : {},
 	$section : {},
+	$template : null,
 
 	/**
 	 * assign function
