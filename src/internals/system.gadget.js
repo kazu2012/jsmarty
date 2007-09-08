@@ -1,10 +1,11 @@
 (function(def)
 {
-	var p = String(System.Gadget.path + '\\').replace(/\\/g, '/');
+	var p = JSmarty.System.path;
 
 	def.compile_dir = p + 'templates_c';
-	def.plugins_dir = [p + 'plugins'];
+	def.plugins_dir = [p + 'plugins'].concat(JSmarty.Plugin.repos);
 	def.template_dir = p + 'templates';
+
 })(JSmarty.prototype);
 
 JSmarty.System.newFileSystemObject = function(){

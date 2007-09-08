@@ -34,7 +34,7 @@ JSmarty.System =
 			case 'gadget':
 				this.path = String(System.Gadget.path).replace(/\\/g, '/') + '/';
 				JSmarty.Browser.buildSystemObject();
-				eval(this.read('system.gadget.js'), JSmarty.Plugin.repos);
+				eval(this.read('system.gadget.js', JSmarty.Plugin.repos));
 				break;
 			case 'browser':
 				this.path = ''; // temp

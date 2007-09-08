@@ -78,7 +78,7 @@ JSmarty.Plugin =
 	importer : function()
 	{
 		var n, i, d = this.repos;
-		var g = this.getFunction('global')();
+		var g = this.getFunction('shared.global')();
 
 		for(i=arguments.length-1;0<=i;i--)
 		{
