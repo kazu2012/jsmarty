@@ -59,22 +59,12 @@ JSmarty.Plugin =
 		Array.prototype.unshift.apply(this.repos, arguments);
 	},
 	/**
-	 * @param {String} n namaspace of plugin
-	 * @param {mixed}  d The repository path of plugins. 
-	 * @type Boolean
-	 */
-	getFunction : function(n, r)
-	{
-		this.addPlugin(n, r);
-		return this[n] || this.empty;
-	},
-	/**
-	 * Load plugin.
+	 * load plugin
 	 * @param {String} n namaspace of plugin
 	 * @param {mixed}  r The repository path of plugins. 
 	 * @type Boolean
 	 */
-	addPlugin : function(n, r)
+	add : function(n, r)
 	{
 		return (n in this) || this.parse(
 			JSmarty.System.read(n + '.js', r || this.repos), n
@@ -93,10 +83,35 @@ JSmarty.Plugin =
 		for(i=arguments.length-1;0<=i;i--)
 		{
 			n = arguments[i];
-			if(this.addPlugin(n, d)){
+			if(this.add(n, d)){
 				g[n.split('.')[1]] = this[n];
 			};
 		};
+	},
+	/**
+	 * @param n namespace of plugin
+	 * @param f function
+	 */
+	setFunction : function(n, f){
+		this[n] = f;
+	},
+	/**
+	 * @param {String} n namaspace of plugin
+	 * @param {mixed}  d The repository path of plugins. 
+	 * @type Boolean
+	 */
+	getFunction : function(n, r)
+	{
+		this.add(n, r);
+		return this[n] || this.empty;
+	},
+	/**
+	 * @param n namespace of plugin
+	 */
+	delFunction : function(n)
+	{
+		this[n] = null;
+		delete this[n];
 	}
 };
 
