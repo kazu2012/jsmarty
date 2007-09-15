@@ -7,7 +7,3 @@
 	def.template_dir = p + 'templates';
 
 })(JSmarty.prototype);
-
-JSmarty.System.newFileSystemObject = function(){
-	return new ActiveXObject('Scripting.FileSystemObject');
-};

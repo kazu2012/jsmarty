@@ -31,8 +31,6 @@ JSmarty.Browser =
 	{
 		var o = JSmarty.System;
 
-		o.modified = {};
-
 		(function()
 		{
 			var s = document.getElementsByTagName('script');

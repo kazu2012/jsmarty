@@ -4,6 +4,7 @@
  */
 JSmarty.System =
 {
+	modified : {},
 	isWritable : false,
 	getArgs : function(){ return null; },
 	buildPath : function(p, d)

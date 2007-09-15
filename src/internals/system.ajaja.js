@@ -1,22 +1,24 @@
-(function(def)
+JSmarty.System.read = function(f, d)
 {
-	def.prop = { name : 'ajaja', code : 20, auth : 'shogo'};
-	def.fgets = function(file, dir)
+	var i, c, p = this.buildPath(f, d);
+	for(i=p.length-1;0<=i;i--)
 	{
-		var i, f, t;
-		dir = JSmarty.Utility.flatten(dir);
-		for(i=0,f=dir.length;i<f;i++)
+		try
 		{
-			if(t) break;
-			try{ t = System.readFile(dir[i] + '/' + file) }
-			catch(e){ /* empty */ };
-		};
-		return t || '';
+			c = System.readFile(p[i]);
+			this.modified[f] = new Date().getTime();
+			break;
+		}
+		catch(e){};
 	};
-	def.mtime = function()
+
+	return c || function()
 	{
-		
-	};
-	def.print = function(s){ print(s); };
-	def.getSelfPath = function(){ return '.'; };
-})(JSmarty.System);
+		JSmarty.Error.log('System', 'can\'t load the ' + f);
+		return null;
+	}();
+};
+
+JSmarty.System.outputString = function(){
+	print(Array.prototype.join.call(arguments,''));
+};

@@ -83,7 +83,7 @@ function strftime(s, t)
 					break;
 				case 'p':
 					v = d.getHours();
-					b[i] = (v < 12) ? 'PM' : 'AM';
+					b[i] = (v < 12) ? 'AM' : 'PM';
 					break;
 				case 'r':
 					v = d.getHours();

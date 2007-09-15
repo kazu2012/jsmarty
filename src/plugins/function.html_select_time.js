@@ -12,7 +12,7 @@
  * Original: Smarty {html_select_time} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0RC2
+ * @version  1.0.0RC3
  * @see      http://smarty.php.net/manual/en/language.function.html.select.time.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -26,7 +26,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	var strftime = Plugin.getFunction('php.strftime');
 	var html_options = Plugin.getFunction('function.html_options', jsmarty.plugins_dir);
 
-	var n, i, k, html = new JSmarty.Buffer();
+	var n, i, k, html = JSmarty.Buffer.create(), options;
 	var hours, hour_fmt, for_max, all_minutes, minutes = [];
 
 	var time = new Date().getTime();
@@ -83,6 +83,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 				second_interval = parseInt(params[k]); break;
 			default:
 				jsmarty.trigger_error('html_select_time: unknown parameter '+ k, 'warn');
+				break;
 		};
 	};
 
@@ -93,23 +94,22 @@ function jsmarty_function_html_select_time(params, jsmarty)
 		for(i=0,for_max=hours.length;i<for_max;i++){
 			hours[i] = (hours[i] < 10) ? '0' + hours[i] : hours[i];
 		};
+		options = html_options
+				(
+					{
+						output: hours,
+						values: hours,
+						selected: strftime(hour_fmt, time)
+					},
+					jsmarty
+				);
+
 		html.append('<select name="');
-		if(field_array !== null){
-			html.append(field_array, '[', prefix, 'Hour]"');
-		}else{
-			html.append(prefix, 'Hour"');
-		};
-		if(hour_extra !== null){
-			html.apped(' ', hour_extra);
-		};
-		if(all_extra !== null){
-			html.append(' ', all_extra);
-		};
-		html.append(
-			'>\n',
-			html_options({output: hours, values: hours, selected: strftime(hour_fmt, time)}, jsmarty),
-			'</select>\n'
-		);
+		html.appendIf(field_array)(field_array, '[', prefix, 'Hour]"');
+		html.appendIf(!field_array)(prefix, 'Hour"');
+		html.appendIf(hour_extra)(' ', hour_extra);
+		html.appendIf(all_extra)(' ', all_extra)
+		html.append('>\n', options, '</select>\n');
 	};
 
 	if(display_minutes)
@@ -119,44 +119,43 @@ function jsmarty_function_html_select_time(params, jsmarty)
 			minutes[n++] = (all_minutes[i] < 10) ? '0' + all_minutes[i] : all_minutes[i];
 		};
 		selected = parseInt(Math.floor(strftime('%M', time) / minute_interval) * minute_interval);
+		options = html_options
+				(
+					{
+						output: minutes,
+						values: minutes,
+						selected: (selected < 10) ? '0' + selected : selected
+					},
+					jsmarty
+				);
+
 		html.append('<select name="');
-		if(field_array !== null){
-			html.append(field_array, '[', prefix, 'Minute]"');
-		}else{
-			html.append('"', prefix, 'Minute"');
-		};
-		if(minute_extra !== null){
-			html.append(' ', minute_extra);
-		};
-		if(all_extra !== null){
-			html.append(' ', all_extra);
-		};
-		html.append(
-			'>\n',
-			html_options({output: minutes, values: minutes, selected: (selected < 10) ? '0' + selected : selected}, jsmarty),
-			'</select>\n'
-		);
+		html.appendIf(field_array)(field_array, '[', prefix, 'Minute]"');
+		html.appendIf(!field_array)('"', prefix, 'Minute"');
+		html.appendIf(minute_extra)(' ', minute_extra);
+		html.appendIf(all_extra)(' ', all_extra);
+		html.append('>\n', options, '</select>\n');
 	};
 
 	if(display_meridian && !use_24_hours)
 	{
+		options = html_options
+				(
+					{
+						output: ['AM','PM'],
+						values: ['AM','PM'],
+						selected: strftime('%p', time).toUpperCase(),
+						print_result: false
+					},
+					jsmarty
+				);
+
 		html.append('<select name="');
-		if(field_array !== null){
-			html.append(field_array, '[', prefix, 'Meridian]"');
-		}else{
-			html.append(prefix, 'Meridian"');
-		};
-		if(meridian_extra !== null){
-			html.append(' ', meridian_extra);
-		};
-		if(all_extra !== null){
-			html.append(' ', all_extra);
-		};
-		html.append(
-			'>\n',
-			html_options({output: ['AM','PM'], values: ['AM','PM'], selected: strftime('%p', time).toLowerCase(), print_result: false}, jsmarty),
-			'</select>\n'
-		);
+		html.appendIf(field_array)(field_array, '[', prefix, 'Meridian]"');
+		html.appendIf(!field_array)(prefix, 'Meridian"');
+		html.appendIf(meridian_extra)(' ', meridian_extra);
+		html.appendIf(all_extra)(' ', all_extra);
+		html.append('>\n', options, '</select>\n');
 	};
 
 	return html.toString();
