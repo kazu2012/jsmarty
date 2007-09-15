@@ -118,11 +118,9 @@ JSmarty.Plugin =
 JSmarty.Plugin['shared.global'] = function(g){
 	return function(){ return g; };
 }(this);
-
 JSmarty.Plugin['shared.copyArray'] = function(a){
 	return Array.prototype.slice.call(a);
 };
-
 JSmarty.Plugin['shared.mergeObject'] = function(s, c){
 	for(var k in s){ if(!(k in c)){ c[k] = s[k];}; };
 };

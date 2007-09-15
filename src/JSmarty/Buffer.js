@@ -1,7 +1,7 @@
-JSmarty.Buffer = function(s)
+JSmarty.Buffer = function()
 {
+	var i =0, b = [];
 	var c = Array.prototype.join;
-	var b = (s) ? [s] : [], i = b.length;
 
 	this.append = function()
 	{
@@ -17,4 +17,8 @@ JSmarty.Buffer = function(s)
 		return b.join(s || '');
 	};
 };
+JSmarty.Buffer.create = function(){ return new this(); };
 JSmarty.Buffer.prototype = new String();
+JSmarty.Buffer.prototype.appendIf = function(f){
+	return (f) ? this.append : function(){};
+};

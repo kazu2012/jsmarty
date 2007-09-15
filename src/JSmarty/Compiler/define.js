@@ -179,35 +179,29 @@ JSmarty.Compiler.define
 					return;
 				};
 
-				var b = new JSmarty.Buffer();
+				var b = JSmarty.Buffer().create();
 				var p = this.toObject(this.toParams());
 
-				b.append('$.inModify(', this.toModify(), ',');
-				b.append('function(){var $b = new Buffer();');
-
-				if(p.name)
-				{
-					b.append('$.$foreach.', p.name,'={total:0,index:-1,iteration:0};');
-					b.append('var $f=$.$foreach.', p.name,';');
-					b.append('$f.first=true,$f.last=false;');
-					b.append('for(var k in ', p.from, '){$f.total++;};');
-				};
-
+				b.append
+				(
+					'$.inModify(', this.toModify(), ',',
+					'function(){var $b = new Buffer();'
+				);
+				b.appendIf(p.name)
+				(
+					'$.$foreach.', p.name,'={total:0,index:-1,iteration:0};',
+					'var $f=$.$foreach.', p.name,';',
+					'$f.first=true,$f.last=false;',
+					'for(var k in ', p.from, '){$f.total++;};'
+				);
 				b.append('for(var k in ', p.from, '){');
-
-				if(p.key){
-					b.append('$v.', p.key, '=k;');
-				};
-
-				if(p.item){
-					b.append('$v.', p.item, '=', p.from, '[k];');
-				};
-
-				if(p.name)
-				{
-					b.append('$f.index++, $f.iteration++;');
-					b.append('$f.first=($f.index==0), $f.last=($f.iteration==$f.total);');
-				};
+				b.appendIf(p.key)('$v.', p.key, '=k;');
+				b.appendIf(p.item)('$v.', p.item, '=', p.from, '[k];');
+				b.appendIf(p.name)
+				(
+					'$f.index++, $f.iteration++;',
+					'$f.first=($f.index==0), $f.last=($f.iteration==$f.total);'
+				);
 
 				this.sString = b.toString('\n');
 			}
@@ -231,29 +225,29 @@ JSmarty.Compiler.define
 				};
 
 				var p = this.toObject(this.toParams());
-				var e, k = p.name || 'i', b = new JSmarty.Buffer();
+				var e, k = p.name || 'i', b = JSmarty.Buffer.create();
 
 				e =	k +'=' + (p.start || 0) + ';'+ k +'<=' +
 					(p.max || p.loop + '.length-1') + ';'+ k +'+='+ (p.step || 1);
 
-				b.append('$.inModify(', this.toModify(), ',');
-				b.append('function(){var ', k,', $b = new Buffer();');
-
-				if(p.name)
-				{
-					b.append('$.$section.', p.name,'={total:0,index:-1,iteration:0};');
-					b.append('var $l=$.$section.', p.name,';');
-					b.append('$l.first=true,$l.last=false;');
-					b.append('for(', e,'){$l.total++;};');
-				};
-
+				b.append
+				(
+					'$.inModify(', this.toModify(), ',',
+					'function(){var ', k,', $b = Buffer.create();'
+				);
+				b.appendIf(p.name)
+				(
+					'$.$section.', p.name,'={total:0,index:-1,iteration:0};',
+					'var $l=$.$section.', p.name,';',
+					'$l.first=true,$l.last=false;',
+					'for(', e,'){$l.total++;};'
+				);
 				b.append('for(', e, '){');
-
-				if(p.name)
-				{
-					b.append('$l.index++, $l.rownum = $l.iteration++;');
-					b.append('$l.first=($l.index==0), $l.last=($l.iteration==$l.total);');
-				};
+				b.appendIf(p.name)
+				(
+					'$l.index++, $l.rownum = $l.iteration++;',
+					'$l.first=($l.index==0), $l.last=($l.iteration==$l.total);'
+				);
 
 				this.sString = b.toString('\n');
 			}
