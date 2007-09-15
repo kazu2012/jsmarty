@@ -59,7 +59,7 @@ JSmarty.prototype =
 	config_fix_newlines : true,
 
 	compiler : null,
-	compiler_file  : 'JSmarty/Compiler.js',
+	compiler_file : 'JSmarty/Compiler.js',
 	compiler_class : 'Compiler',
 
 	default_template_handler_func : null,
@@ -246,7 +246,7 @@ JSmarty.prototype =
 
 		if(display)
 		{
-			JSmarty.System.print(result);
+			JSmarty.System.outputString(result);
 			if(this.isDebugging())
 			{
 				debug.set('EXECUTETIME', new Date().getTime() - timestamp);

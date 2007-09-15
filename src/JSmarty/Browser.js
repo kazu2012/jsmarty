@@ -89,7 +89,9 @@ JSmarty.Browser =
 			return (k == void(0)) ? v : (v[k] == void(0)) ? null : v[k];
 		};
 
-		o.outputString = document.write;
+		o.outputString = function(){
+			document.write(Array.prototype.join.call(argumetns,''));
+		};
 
 		this.buildSystemObject = null;
 		this.Request = this.newRequest();

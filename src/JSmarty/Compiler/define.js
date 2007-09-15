@@ -170,21 +170,20 @@ JSmarty.Compiler.define
 		Foreach :
 		{
 			sSuffix : '',
-			sPrefix : '',
 			parse : function(c)
 			{
 				if(this.isTerminal())
 				{
 					this.sPrefix = '';
-					this.sString = '};})();';
+					this.sString = '};return $b.toString();}()));';
 					return;
 				};
 
-				var m = this.toModify();
-				var p = this.toObject(this.toParams());
 				var b = new JSmarty.Buffer();
+				var p = this.toObject(this.toParams());
 
-				b.append('(function(){');
+				b.append('$.inModify(', this.toModify(), ',');
+				b.append('function(){var $b = new Buffer();');
 
 				if(p.name)
 				{
@@ -221,12 +220,49 @@ JSmarty.Compiler.define
 		},
 		Section :
 		{
+			sSuffix : '',
 			parse : function(c)
 			{
+				if(this.isTerminal())
+				{
+					this.sPrefix = '';
+					this.sString = '};return $b.toString();}()));';
+					return;
+				};
+
+				var p = this.toObject(this.toParams());
+				var e, k = p.name || 'i', b = new JSmarty.Buffer();
+
+				e =	k +'=' + (p.start || 0) + ';'+ k +'<=' +
+					(p.max || p.loop + '.length-1') + ';'+ k +'+='+ (p.step || 1);
+
+				b.append('$.inModify(', this.toModify(), ',');
+				b.append('function(){var ', k,', $b = new Buffer();');
+
+				if(p.name)
+				{
+					b.append('$.$section.', p.name,'={total:0,index:-1,iteration:0};');
+					b.append('var $l=$.$section.', p.name,';');
+					b.append('$l.first=true,$l.last=false;');
+					b.append('for(', e,'){$l.total++;};');
+				};
+
+				b.append('for(', e, '){');
+
+				if(p.name)
+				{
+					b.append('$l.index++, $l.rownum = $l.iteration++;');
+					b.append('$l.first=($l.index==0), $l.last=($l.iteration==$l.total);');
+				};
+
+				this.sString = b.toString('\n');
 			}
 		},
 		Sectionelse :
 		{
+			sPrefix : '',
+			sSuffix : '',
+			sString : '}; if(0){'
 		}
 	}
 );
