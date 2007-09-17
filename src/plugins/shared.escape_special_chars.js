@@ -15,5 +15,5 @@
  * @return	{String} 
  */
 function jsmarty_shared_escape_special_chars(s){
-	return JSmarty.Plugin.getFunction('php.htmlspecialchars')(s.toString());
+	return JSmarty.Plugin.get('php.htmlspecialchars')(s.toString());
 };

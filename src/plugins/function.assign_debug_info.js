@@ -19,6 +19,6 @@
  */
 function jsmarty_function_assign_debug_info(params, jsmarty)
 {
-	var array_keys = JSmarty.Plugin.getFunction('array_keys');
-	var array_values = JSmarty.Plugin.getFunction('array_values');
+	var array_keys = JSmarty.Plugin.get('array_keys');
+	var array_values = JSmarty.Plugin.get('array_values');
 };

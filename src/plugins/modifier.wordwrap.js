@@ -24,5 +24,5 @@ function jsmarty_modifier_wordwrap(n, l, s, c)
 	if(l == void(0)){ l = 80; };
 	if(s == void(0)){ s = '\n'; };
 	if(c == void(0)){ c = false; };
-	return JSmarty.Plugin.getFunction('php.wordwrap')(n, l, s, c);
+	return JSmarty.Plugin.get('php.wordwrap')(n, l, s, c);
 };

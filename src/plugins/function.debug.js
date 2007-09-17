@@ -21,7 +21,7 @@
 
 function jsmarty_function_debug(params, jsmarty)
 {
-	var console = JSmarty.Plugin.getFunction('core.display_debug_console');
+	var console = JSmarty.Plugin.get('core.display_debug_console');
 	if(params.output != void(0))
 		jsamrty.assign('_jsmarty_debug_output', params.output);
 };

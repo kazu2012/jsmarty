@@ -18,14 +18,15 @@
  * @param    {JSmarty} jsmarty
  * @return   {String}
  */
+
 function jsmarty_function_html_checkboxes(params, jsmarty)
 {
 	var Plugin = JSmarty.Plugin;
 
 	Plugin.add('shared.escape_special_chars', jsmarty.plugins_dir);
 
-	var array_map = Plugin.getFunction('php.array_map');
-	var array_values = Plugin.getFunction('php.array_values');
+	var array_map = Plugin.get('php.array_map');
+	var array_values = Plugin.get('php.array_values');
 
 	var k, v, html = new JSmarty.Buffer();
 	var outputf = jsmarty_function_html_checkboxes_outputf;
@@ -98,8 +99,8 @@ function jsmarty_function_html_checkboxes_outputf(name, value, output, selected,
 {
 	var Plugin = JSmarty.Plugin;
 
-	var in_array = Plugin.getFunction('php.in_array');
-	var escape_special_chars = Plugin.getFunction('shared.escape_special_chars');
+	var in_array = Plugin.get('php.in_array');
+	var escape_special_chars = Plugin.get('shared.escape_special_chars');
 
 	var html = new JSmarty.Buffer((labels) ? '<label>' : '');
 

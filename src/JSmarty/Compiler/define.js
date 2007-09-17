@@ -17,7 +17,7 @@ JSmarty.Compiler.define
 				{
 					var m = this.toModify();
 					var s = this.escape(this.sString);
-					this.sString = '$.inModify('+ m +',' + s + ')';
+					this.sString = '$.$m('+ m +',' + s + ')';
 					return;
 				};
 
@@ -31,7 +31,7 @@ JSmarty.Compiler.define
 			{
 				var m = this.toModify();
 				var n = JSmarty.Compiler.VALSYMBL + this.get('name');
-				this.sString = '$.inModify('+ m +','+ n +')';
+				this.sString = '$.$m('+ m +','+ n +')';
 			}
 		},
 		Plains :
@@ -65,7 +65,7 @@ JSmarty.Compiler.define
 
 				this.sSuffix = 'function(){var $b = new Buffer();';
 				this.sString =
-					'$.inCall('+ this.getName() +',' + this.toParams() +
+					'$.$p('+ this.getName() +',' + this.toParams() +
 					','+ this.toModify() +',';
 			},
 			genString : function(){
@@ -76,7 +76,7 @@ JSmarty.Compiler.define
 			parse : function(c)
 			{
 				this.sString =
-					'$.inCall('+ this.getName() +','+ this.toParams() +
+					'$.$p('+ this.getName() +','+ this.toParams() +
 					','+ this.toModify() +')';
 			}
 		},
@@ -163,7 +163,7 @@ JSmarty.Compiler.define
 				{
 					var m = this.toModify();
 					this.sPrefix = '$b.append(';
-					this.sString = '$.inModify(' + m + ',' + "'";
+					this.sString = '$.$m(' + m + ',' + "'";
 				};
 			}
 		},
@@ -184,7 +184,7 @@ JSmarty.Compiler.define
 
 				b.append
 				(
-					'$.inModify(', this.toModify(), ',',
+					'$.$m(', this.toModify(), ',',
 					'function(){var $b = new Buffer();'
 				);
 				b.appendIf(p.name)
@@ -232,7 +232,7 @@ JSmarty.Compiler.define
 
 				b.append
 				(
-					'$.inModify(', this.toModify(), ',',
+					'$.$m(', this.toModify(), ',',
 					'function(){var ', k,', $b = Buffer.create();'
 				);
 				b.appendIf(p.name)

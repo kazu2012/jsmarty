@@ -4,7 +4,7 @@ JSmarty.Plugin =
 	 * Repository
 	 * @type Array
 	 */
-	repos : ['.'],
+	dir : ['.'],
 	/**
 	 * Evalute the source of plugin.
 	 * @param  {String} $code The sourcecode of javascript.
@@ -36,27 +36,22 @@ JSmarty.Plugin =
 		return $flag;
 	},
 	/**
-	 * build namespace of plugin
-	 * @return {String} namespace
+	 * @param n namespace of plugin
+	 * @param f function
 	 */
-	namespace : function(t, n){
-		return t + '.' + n;
+	set : function(n, f){
+		this[n] = f;
 	},
 	/**
-	 * Return blank string.
-	 * @return {String} Return blank string.
+	 * @param {String} n namaspace of plugin
+	 * @param {mixed}  d The repository path of plugins. 
+	 * @type Boolean
 	 */
-	empty : function()
+	get : function(n, r)
 	{
-		JSmarty.Error.log('Plugin', 'called empty function');
-		return '';
-	},
-	/**
-	 * add a repository of plugin.
-	 * @param {String} r repository
-	 */
-	addRepository : function(){
-		Array.prototype.unshift.apply(this.repos, arguments);
+		return this[n] || function(o){
+			return (o.add(n, r)) ? o[n] : o['__none__'];
+		}(this);
 	},
 	/**
 	 * load plugin
@@ -67,8 +62,19 @@ JSmarty.Plugin =
 	add : function(n, r)
 	{
 		return (n in this) || this.parse(
-			JSmarty.System.read(n + '.js', r || this.repos), n
+			JSmarty.System.read(n + '.js', r || this.dir), n
 		);
+	},
+	/**
+	 * @param n namespace of plugin
+	 */
+	remove : function(n)
+	{
+		this[n] = null;
+		delete this[n];
+	},
+	namespace : function(t, n){
+		return t + '.' + n;
 	},
 	/**
 	 * import functions for global scope
@@ -77,8 +83,8 @@ JSmarty.Plugin =
 	 */
 	importer : function()
 	{
-		var n, i, d = this.repos;
-		var g = this.getFunction('shared.global')();
+		var i, n, d = this.dir;
+		var g = this.get('__global__')();
 
 		for(i=arguments.length-1;0<=i;i--)
 		{
@@ -87,35 +93,14 @@ JSmarty.Plugin =
 				g[n.split('.')[1]] = this[n];
 			};
 		};
-	},
-	/**
-	 * @param n namespace of plugin
-	 * @param f function
-	 */
-	setFunction : function(n, f){
-		this[n] = f;
-	},
-	/**
-	 * @param {String} n namaspace of plugin
-	 * @param {mixed}  d The repository path of plugins. 
-	 * @type Boolean
-	 */
-	getFunction : function(n, r)
-	{
-		this.add(n, r);
-		return this[n] || this.empty;
-	},
-	/**
-	 * @param n namespace of plugin
-	 */
-	delFunction : function(n)
-	{
-		this[n] = null;
-		delete this[n];
 	}
 };
-
-JSmarty.Plugin['shared.global'] = function(g){
+JSmarty.Plugin['__none__'] = function()
+{
+	JSmarty.Error.log('Plugin', 'called undefined function');
+	return '';
+};
+JSmarty.Plugin['__global__'] = function(g){
 	return function(){ return g; };
 }(this);
 JSmarty.Plugin['shared.copyArray'] = function(a){

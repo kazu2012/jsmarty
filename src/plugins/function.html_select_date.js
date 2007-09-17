@@ -22,11 +22,11 @@ function jsmarty_function_html_select_date(params, jsmarty)
 {
 	var dir = jsmarty.plugins_dir, Plugin = JSmarty.Plugin;
 
-	var range = Plugin.getFunction('php.range');
-	var sprintf = Plugin.getFunction('php.sprintf');
-	var strftime = Plugin.getFunction('php.strftime');
-	var html_options = Plugin.getFunction('function.html_options', dir);
-	var escape_special_chars = Plugin.getFunction('shared.escape_special_chars', dir);
+	var range = Plugin.get('php.range');
+	var sprintf = Plugin.get('php.sprintf');
+	var strftime = Plugin.get('php.strftime');
+	var html_options = Plugin.get('function.html_options', dir);
+	var escape_special_chars = Plugin.get('shared.escape_special_chars', dir);
 
 	var n, i = 0, k = 0, html = [], month = [], day = [], year = [];
 	var days, day_values, month_names, month_values, years, year_values, year_name;
@@ -231,7 +231,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		{
 			years = range(parseInt(start_year), parseInt(end_year));
 			(reverse_years) ? years.reverse() : years.sort() ;
-			year_values = Plugin.getFunction('shared.copyArray')(years);
+			year_values = Plugin.get('shared.copyArray')(years);
 			year[i++] = '<select name="' + year_name + '"';
 			if(year_empty)
 			{

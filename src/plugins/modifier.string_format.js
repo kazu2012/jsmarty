@@ -19,5 +19,5 @@
  * @return   {String}
  */
 function jsmarty_modifier_string_format(s, f){
-	return JSmarty.Plugin.getFunction('php.sprintf')(f, s);
+	return JSmarty.Plugin.get('php.sprintf')(f, s);
 };

@@ -27,9 +27,9 @@ function jsmarty_function_html_options(params, jsmarty)
 
 	var k, f, value, i = 0, html = [];
 	var optoutput = jsmarty_function_html_options_optoutput;
-	var strval = Plugin.getFunction('php.strval');
-	var array_map = Plugin.getFunction('php.array_map');
-	var array_values = Plugin.getFunction('php.array_values');
+	var strval = Plugin.get('php.strval');
+	var array_map = Plugin.get('php.array_map');
+	var array_values = Plugin.get('php.array_values');
 
 	var name = null;
 	var extra = [];
@@ -91,8 +91,8 @@ function jsmarty_function_html_options_optoutput(key, value, selected)
 	var optgroup = jsmarty_function_html_options_optgroup;
 
 	var i = 0, html = [], Plugin = JSmarty.Plugin;
-	var escape_special_chars = Plugin.getFunction('shared.escape_special_chars');
-	var is_array = Plugin.getFunction('php.is_array'), in_array = Plugin.getFunction('php.in_array');
+	var escape_special_chars = Plugin.get('shared.escape_special_chars');
+	var is_array = Plugin.get('php.is_array'), in_array = Plugin.get('php.in_array');
 
 	if(!is_array(value))
 	{

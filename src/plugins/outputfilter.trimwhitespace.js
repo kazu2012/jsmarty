@@ -18,7 +18,7 @@
  */
 function jsmarty_outputfilter_trimwhitespace(source, jsmarty)
 {
-	var trim = JSmarty.Plugin.getFunction('php.trim');
+	var trim = JSmarty.Plugin.get('php.trim');
 
 	var pretxt = /<pre>.*?<\/pre>/ig;
 	var script = /<script[^>]+>.*?<\/script>/ig;

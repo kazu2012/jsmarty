@@ -17,7 +17,7 @@ JSmarty.System =
 	},
 	getName : function()
 	{
-		var g = JSmarty.Plugin.getFunction('shared.global')();
+		var g = JSmarty.Plugin.get('__global__')();
 		if(g.System && g.Core         ){ return 'ajaja'; };
 		if(g.System && g.System.Gadget){ return 'gadget'; };
 		if(g.window && g.document     ){ return 'browser'; };
