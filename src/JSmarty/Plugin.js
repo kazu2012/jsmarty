@@ -68,7 +68,7 @@ JSmarty.Plugin =
 	/**
 	 * @param n namespace of plugin
 	 */
-	remove : function(n)
+	clear : function(n)
 	{
 		this[n] = null;
 		delete this[n];

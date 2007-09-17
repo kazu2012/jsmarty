@@ -12,7 +12,7 @@
  * Original: Smarty {counter} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.2
+ * @version  1.0.3
  * @see      http://smarty.php.net/manual/en/language.function.counter.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -24,51 +24,51 @@ var jsmarty_function_counter_counters = {};
 
 function jsmarty_function_counter(params, jsmarty)
 {
+	var k, v, assign, direction, counter;
 	var counters = jsmarty_function_counter_counters;
-	var retval, print, counter, name = params.name || 'default';
+	var retval, print, name = params.name || 'default';
 
-	if(!counters[name])
+	counter = counters[name] || function()
 	{
-		counters[name] =
+		counters[name] = {start:1, skip:1, count:1, direction:'up'};
+		return counters[name];
+	}();
+
+	assign = counter.assign;
+	direction = counter.direction;
+	print = (counter.assign != 0 && !counter.assign);
+
+	for(k in params)
+	{
+		v = params[k];
+		switch(k)
 		{
-			start: 1,
-			skip : 1,
-			count: 1,
-			direction : 'up'
+			case 'print':
+				print = !!v;
+				break;
+			case 'skip':
+				counter.skip = v;
+				break;
+			case 'assign':
+				assign = counter.assing = v;
+				break;
+			case 'direction':
+				direction = counter.direction = v;
+				break;
+			case 'start':
+				counter.start = counter.count = Number(v);
+				break;
 		};
-	}
+	};
 
-	counter = counters[name];
+	retval = (print) ? counter.count : '';
+	if(assign){ jsmarty.assign(assign, counter.count); };
 
-	if(params.start != void(0))
-		counter.start = counter.count = Number(params.start);
-
-	if(!params.assign)
-		counter.assign = params.assign;
-
-	if(counter.assign)
-		jsmarty.assign(counter.assign, counter.count);
-
-	if(params.print)
-		print = Boolean(params.print);
-	else
-		print = (counter.assign != 0 && !counter.assign) ? true : false;
-
-	if(print)
-		retval = counter.count;
-	else
-		retval = '';
-
-	if(params.skip)
-		counter.skip = params.skip;
-
-	if(params.direction)
-		counter.direction = params.direction;
-
-	if(counter.direction == 'down')
+	if(direction == 'down'){
 		counter.count -= Number(counter.skip);
-	else
+	}else{
 		counter.count += Number(counter.skip);
+	};
 
 	return retval;
-}
+};

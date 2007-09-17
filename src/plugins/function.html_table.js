@@ -12,7 +12,7 @@
  * Original: Smarty {html_table} function plugin<br />
  *
  * @author   shogo <shogo4405 at gmail dot com>
- * @version  1.0.0RC2.1
+ * @version  1.0.0RC3
  * @see      http://smarty.php.net/manual/en/language.function.html.table.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -24,10 +24,11 @@ function jsmarty_function_html_table(params, jsmarty)
 	if(!params.loop)
 	{
 		jsmarty.trigger_error("html_table: missing 'loop' parameter");
-		return '';
+		return;
 	};
 
-	var c, r, k, x, rx, html = [], i = 0;
+	var c, r, v, k, x, rx;
+	var html = JSmarty.Buffer.create();
 	var cycle = jsmarty_function_html_table_cycle;
 
 	var loop = params.loop;
@@ -45,66 +46,77 @@ function jsmarty_function_html_table(params, jsmarty)
 
 	for(k in params)
 	{
-		if(!params.hasOwnProperty(k)) continue;
-
+		v = params[k];
 		switch(k)
 		{
 			case 'loop':
-				loop = params[k]; break;
+				loop = v;
+				break;
 			case 'cols':
-				cols = parseInt(params[k]);
+				cols = parseInt(v);
+				break;
 			case 'rows':
-				rows = parseInt(params[k]);
+				rows = parseInt(v);
+				break;
 			case 'hdir':
-				hdir = String(params[k]);
+				hdir = v;
+				break;
 			case 'vdir':
-				vdir = String(params[k]);
+				vdir = v;
+				break;
 			case 'inner':
-				inner = String(params[k]);
+				inner = v;
+				break;
 			case 'trailpad':
-				trailpad = String(params[k]);
+				trailpad = v;
+				break;
 			case 'table_attr':
-				table_attr = ' '+ String(params[k]);
+				table_attr = ' ' + v;
+				break;
 			case 'tr_attr':
-				tr_attr = params[k];
+				tr_attr = v;
+				break;
 			case 'td_attr':
-				td_attr = params[k];
+				td_attr = v;
+				break;
 		};
 	};
 
-	if(params.rows == void(0))
+	if(params.rows == void(0)){
 		rows = Math.ceil(loop_count / cols);
-	else if(params.cols == void(0))
-	{
-		if(params.cols != void(0))
-			cols = Math.ceil(loop_count / rows);
 	};
 
-	html[i++] = '<table'+ table_attr +'>';
+	if(params.cols == void(0)){
+		cols = Math.ceil(loop_count / rows);
+	};
 
-	for(r=0; r < rows; r++)
+	html.append('<table', table_attr, '>');
+
+	for(r=0;r<rows; r++)
 	{
-		html[i++] = '<tr' + cycle('tr', tr_attr, r) +'>';
+		html.append('<tr', cycle('tr', tr_attr, r), '>');
 		rx = (vdir == 'down') ? r*cols : (rows-1-r)*cols;
 
-		for(c=0; c < cols; c++)
+		for(c=0;c<cols;c++)
 		{
 			x = (hdir == 'right') ? rx + c : rx + cols -1 -c;
-			if(inner != 'cols')
+			if(inner != 'cols'){
 				x = Math.floor(x / cols) + (x % cols) * rows;
+			};
 
-			if(x < loop_count)
-				html[i++] = '<td'+ cycle('td', td_attr, c) +'>'+ loop[x] +'</td>';
-			else
-				html[i++] = '<td'+ cycle('td', td_attr, c) +'>'+ trailpad +'</td>';
+			if(x < loop_count){
+				html.append('<td', cycle('td', td_attr, c) ,'>', loop[x] ,'</td>');
+			}else{
+				html.append('<td', cycle('td', td_attr, c) ,'>', trailpad ,'</td>');
+			};
 		};
 
-		html[i++] = '</tr>';
+		html.append('</tr>');
 	};
 
-	html[i++] = '</table>';
+	html.append('</table>');
 
-	return html.join('\n');
+	return html.toString('\n');
 };
 
 function jsmarty_function_html_table_cycle(n, v, n)
