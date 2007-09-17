@@ -37,7 +37,7 @@ JSmarty.Browser =
 			var p = s[s.length - 1].getAttribute('src');
 			var i = p.lastIndexOf('/'), s = null;
 			p = (i == -1) ? o.path : o.path + p.slice(0, i);
-			JSmarty.Plugin.repos = [p + '/plugins', p + '/internals'];
+			JSmarty.Plugin.dir = [p + '/plugins', p + '/internals'];
 		})();
 
 		o.read = function(f, d)
@@ -83,7 +83,7 @@ JSmarty.Browser =
 		o.getArgs = function(k)
 		{
 			var v = {}, s = String(location.search).slice(1);
-			JSmarty.Plugin.getFunction('php.parse_str')(s, v);
+			JSmarty.Plugin.get('php.parse_str')(s, v);
 			return (k == void(0)) ? v : (v[k] == void(0)) ? null : v[k];
 		};
 

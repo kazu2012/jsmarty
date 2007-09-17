@@ -1,6 +1,6 @@
 JSmarty.Error = new function()
 {
-	var buf = new JSmarty.Buffer();
+	var buf = JSmarty.Buffer.create();
 
 	/**
 	 * error toggle

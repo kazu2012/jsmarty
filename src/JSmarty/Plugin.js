@@ -30,7 +30,7 @@ JSmarty.Plugin =
 		}
 		catch(e)
 		{
-			JSmarty.Error.log('Plugin', e, 'die');
+			JSmarty.Error.log($ns, e, 'die');
 		};
 
 		return $flag;
