@@ -90,33 +90,33 @@ function jsmarty_function_html_options_optoutput(key, value, selected)
 {
 	var optgroup = jsmarty_function_html_options_optgroup;
 
-	var i = 0, html = [], Plugin = JSmarty.Plugin;
+	var html = JSmarty.Buffer.create(), Plugin = JSmarty.Plugin;
 	var escape_special_chars = Plugin.get('shared.escape_special_chars');
 	var is_array = Plugin.get('php.is_array'), in_array = Plugin.get('php.in_array');
 
 	if(!is_array(value))
 	{
 		value = escape_special_chars(value);
-		html[i++] = '<option label="' + value + '" value="' + escape_special_chars(key) +'"';
-		if(in_array(key, selected)) html[i++] = ' selected="selected"';
-		html[i++] = '>' + value + '</option>';
+		html.append('<option label="', value, '" value="', escape_special_chars(key), '"');
+		html.appendIf(in_array(key, selected))(' selected="selected"');
+		html.append('>', value, '</option>');
 	};
 
-	return (0 < i) ? html.join('') : optgroup(key, value, selected);
+	return html.toString() || optgroup(key, value, selected);
 };
 
 function jsmarty_function_html_options_optgroup(key, value, selected)
 {
-	var k, i = 0, html = [];
+	var k, html = JSmarty.Buffer.create();
 	var optoutput = jsmarty_function_html_options_optoutput;
 
-	html[i++] = '<optgroup label="' + key + '">';
+	html.append('<optgroup label="', key, '">');
 	for(k in value)
 	{
-		if(!value.hasOwnProperty(k)) continue;
-		html[i++] = optoutput(key, value, selected);
+		if(!value.hasOwnProperty(k)){ continue; };
+		html.append(optoutput(key, value, selected));
 	};
-	html[i++] = '</optgroup>';
+	html.append('</optgroup>');
 
-	return html.join('');
+	return html.toString();
 };

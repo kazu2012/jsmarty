@@ -12,7 +12,7 @@
  * Original: Smarty {html_radios} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.2
+ * @version  1.0.2.1
  * @see      http://smarty.php.net/manual/en/language.function.html.radios.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -20,7 +20,7 @@
  */
 function jsmarty_function_html_radios(params, jsmarty)
 {
-	JSmarty.Plugin.addPlugin('shared.escape_special_chars', jsmarty.plugins_dir);
+	JSmarty.Plugin.add('shared.escape_special_chars', jsmarty.plugins_dir);
 
 	var k, i = 0, html = [];
 	var outputf = jsmarty_function_html_radios_outputf;
@@ -101,7 +101,7 @@ function jsmarty_function_html_radios(params, jsmarty)
 
 function jsmarty_function_html_radios_outputf(name, value, output, selected, extra, separator, labels, label_ids)
 {
-	var id, i= 0, html = [];
+	var id, html = JSmarty.Buffer.create();
 	var escape_special_chars = JSmarty.Plugin.get('shared.escape_special_chars');
 
 	if(labels)
@@ -109,28 +109,25 @@ function jsmarty_function_html_radios_outputf(name, value, output, selected, ext
 		if(label_ids)
 		{
 			id = escape_special_chars((name + '_' + value).replace(/[^\w\-\.]/g,'_'));
-			html[i++] = '<label for="'+ id +'">';
+			html.append('<label for="', id,'">');
 		}
 		else
 		{
-			html[i++] = '<label>';
-		}
+			html.append('<label>');
+		};
 	};
 
-	html[i++] =
-		'<input type="radio" name="' +
-		escape_special_chars(name) + '" value="' +
-		escape_special_chars(value) + '"';
+	html.append
+	(
+		'<input type="radio" name="',
+		escape_special_chars(name), '" value="',
+		escape_special_chars(value), '"'
+	);
+	html.appendIf(id)(' id="', id ,'"');
+	html.appendIf(value == selected)(' checked="checked"');
+	html.append(extra.join(''), ' />', output);
+	html.appendIf(labels)('</label>');
+	html.append(separator);
 
-	if(labels && label_ids)
-		html[i++] = ' id="'+ id +'"';
-
-	if(value == selected)
-		html[i++] = ' checked="checked"';
-
-	html[i++] = extra.join('') + ' />' + output;
-	if (labels) html[i++] = '</label>';
-	html[i++] = separator;
-
-	return html.join('');
+	return html.toString('');
 };

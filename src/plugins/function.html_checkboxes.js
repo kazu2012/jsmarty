@@ -97,26 +97,16 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 
 function jsmarty_function_html_checkboxes_outputf(name, value, output, selected, extra, separator, labels)
 {
-	var Plugin = JSmarty.Plugin;
+	var in_array = JSmarty.Plugin.get('php.in_array');
+	var esc = JSmarty.Plugin.get('shared.escape_special_chars');
 
-	var in_array = Plugin.get('php.in_array');
-	var escape_special_chars = Plugin.get('shared.escape_special_chars');
+	var html = JSmarty.Buffer.create();
 
-	var html = new JSmarty.Buffer((labels) ? '<label>' : '');
-
-	html.append
-	(
-		'<input type="checkbox" name="',
-		escape_special_chars(name), '[]" value="',
-		escape_special_chars(value), '"'
-	);
-
-	if(in_array(value, selected)){
-		html.append(' checked="checked"');
-	};
-
+	html.appendIf(labels)('<label>');
+	html.append('<input type="checkbox" name="', esc(name), '[]" value="', esc(value), '"');
+	html.appendIf(in_array(value, selected))(' checked="checked"');
 	html.append(extra.join(' '), ' />', output);
-	if(labels){ html.append('</label>'); };
+	html.appendIf(labels)('</label>');
 	html.append(separator);
 
 	return html.toString('');
