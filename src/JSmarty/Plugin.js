@@ -50,7 +50,7 @@ JSmarty.Plugin =
 	get : function(n, r)
 	{
 		return this[n] || function(o){
-			return (o.add(n, r)) ? o[n] : o['__none__'];
+			return (o.add(n, r)) ? o[n] : o['shared.none'];
 		}(this);
 	},
 	/**
@@ -84,7 +84,7 @@ JSmarty.Plugin =
 	importer : function()
 	{
 		var i, n, d = this.dir;
-		var g = this.get('__global__')();
+		var g = this.get('shared.global')();
 
 		for(i=arguments.length-1;0<=i;i--)
 		{
@@ -95,12 +95,12 @@ JSmarty.Plugin =
 		};
 	}
 };
-JSmarty.Plugin['__none__'] = function()
+JSmarty.Plugin['shared.none'] = function()
 {
 	JSmarty.Error.log('Plugin', 'called undefined function');
 	return '';
 };
-JSmarty.Plugin['__global__'] = function(g){
+JSmarty.Plugin['shared.global'] = function(g){
 	return function(){ return g; };
 }(this);
 JSmarty.Plugin['shared.copyArray'] = function(a){
@@ -109,3 +109,4 @@ JSmarty.Plugin['shared.copyArray'] = function(a){
 JSmarty.Plugin['shared.mergeObject'] = function(s, c){
 	for(var k in s){ if(!(k in c)){ c[k] = s[k];}; };
 };
+JSmarty.prototype.plugin = JSmarty.Plugin;
