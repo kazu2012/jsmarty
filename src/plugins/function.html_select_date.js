@@ -12,7 +12,7 @@
  * Original: Smarty {html_select_date} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0RC1
+ * @version  1.0.0RC2
  * @see      http://smarty.php.net/manual/en/language.function.html.select.date.php
  * @param    {Object} params
  * @param    {JSmarty} jsmarty
@@ -28,7 +28,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 	var html_options = Plugin.get('function.html_options', dir);
 	var escape_special_chars = Plugin.get('shared.escape_special_chars', dir);
 
-	var n, i = 0, k = 0, html = [], month = [], day = [], year = [];
+	var n, i = 0, k = 0, month, day, year, html = JSmarty.Buffer.create();
 	var days, day_values, month_names, month_values, years, year_values, year_name;
 
 	var time = new Date().getTime();
@@ -154,34 +154,35 @@ function jsmarty_function_html_select_date(params, jsmarty)
 
 	if(display_months)
 	{
+		month = JSmarty.Buffer.create();
 		n = 0, month_names = [], month_values = [];
+
 		if(month_empty)
 		{
 			month_names[0] = month_empty;
 			month_values[0] = '', n++;
 		};
+
 		for(k=0;k<12;k++)
 		{
 			month_names[n+k] = strftime(month_format, new Date(2000, k).getTime());
 			month_values[n+k] = strftime(month_value_format, new Date(2000, k).getTime());
 		};
-		month[i++] = '<select name=';
-		if(field_array !== null)
-			month[i++] = '"' + field_array + '[' + prefix + 'Month]"';
-		else
-			month[i++] = '"' + prefix + 'Month"';
-		if(month_size !== null)
-			month[i++] = ' size="' + month_size + '"';
-		if(month_extra !== null)
-			month[i++] = ' ' + all_extra;
-		month[i++] = extra_attrs + '>\n';
-		month[i++] = html_options({ output:month_names, values:month_values, selected: time[1] ? strftime(month_value_format, new Date(2000, time[1] - 1).getTime()) : ''}, jsmarty);
-		month[i++] = '\n</select>';
+
+		month.append('<select name=');
+		month.appendIf(field_array)('"', prefix, 'Month"');
+		month.appendIf(!field_array)('"', field_array, '[' + prefix + 'Month]"');
+		month.appendIf(month_size)(' size="', month_size, '"');
+		month.appendIf(month_extra)(' ', all_extra);
+		month.append(extra_attrs, '>\n');
+		month.append(html_options({ output:month_names, values:month_values, selected: time[1] ? strftime(month_value_format, new Date(2000, time[1] - 1).getTime()) : ''}, jsmarty));
+		month.append('\n</select>');
 	};
 
 	if(display_days)
 	{
-		i = 0, n = 0, days = [], day_values = [];
+		day = JSmarty.Buffer.create();
+		n = 0, days = [], day_values = [];
 
 		if(day_empty)
 		{
@@ -195,56 +196,49 @@ function jsmarty_function_html_select_date(params, jsmarty)
 			day_values[n+k] = sprintf(day_value_format, k+1);
 		};
 
-		day[i++] = '<select name=';
-		if(field_array !== null)
-			day[i++] = '"' + field_array + '[' + prefix + 'Day]"';
-		else
-			day[i++] = '"' + prefix + 'Day"';
-		if(day_size !== null)
-			day[i++] = ' size="'+ day_size + '"';
-		if(all_extra !== null)
-			day[i++] = ' ' + all_extra;
-		if(day_extra !== null)
-			day[i++] = ' ' + day_extra;
-		day[i++] = extra_attrs + '>\n';
-		day[i++] = html_options({ output:days, values:day_values, selected:time[2] }, jsmarty);
-		day[i++] = '\n</select>';
+		day.append('<select name=');
+		day.appendIf(field_array)('"', field_array, '[', prefix, 'Day]"');
+		day.appendIf(!field_array)('"', prefix, 'Day"');
+		day.appendIf(day_size !== null)(' size="', day_size, '"');
+		day.appendIf(all_extra !== null)(' ', all_extra);
+		day.appendIf(day_extra !== null)(' ', day_extra);
+		day.append(extra_attrs, '>\n');
+		day.append(html_options({ output:days, values:day_values, selected:time[2] }, jsmarty));
+		day.append('\n</select>');
 	};
 
 	if(display_years)
 	{
-		i = 0;
+		year = JSmarty.Buffer.create();
 		year_name = (field_array) ? field_array + '[' + prefix + 'Year]' : prefix + 'Year' ;
 
 		if(year_as_text)
 		{
-			year[i++] =
-				'<input type="text" name="' + year_name + '" value="' +
-				time[0] + '" size="4" maxlength="4"';
-			if(all_extra !== null)
-				year[i++] = ' ' + all_extra;
-			if(year_extra !== null)
-				year[i++] = ' ' + year_extra;
-			year[i++] = ' />';
+			year.append
+			(
+				'<input type="text" name="', year_name, '" value="',
+				time[0], '" size="4" maxlength="4"'
+			);
+			year.appendIf(all_extra !== null)(' ', all_extra);
+			year.appendIf(year_extra !== null)(' ', year_extra);
+			year.append(' />');
 		}
 		else
 		{
 			years = range(parseInt(start_year), parseInt(end_year));
 			(reverse_years) ? years.reverse() : years.sort() ;
 			year_values = Plugin.get('shared.copyArray')(years);
-			year[i++] = '<select name="' + year_name + '"';
 			if(year_empty)
 			{
 				years.unshift(year_empty);
 				year_values.unshift('');
 			};
-			if(year_size !== null)
-				year[i++] = ' size="' + year_size + '"';
-			if(all_extra !== null)
-				year[i++] = ' ' + year_extra;
-			year[i++] = extra_attrs + '>\n';
-			year[i++] = html_options({ output:years, values:year_values, selected:time[0] }, jsmarty);
-			year[i++] = '\n</select>';
+			year.append('<select name="', year_name, '"');
+			year.appendIf(year_size !== null)(' size="', year_size, '"');
+			year.appendIf(all_extra !== null)(' ', year_extra);
+			year.append(extra_attrs, '>\n');
+			year.append(html_options({ output:years, values:year_values, selected:time[0] }, jsmarty));
+			year.apepnd('\n</select>');
 		};
 	};
 
@@ -252,11 +246,11 @@ function jsmarty_function_html_select_date(params, jsmarty)
 	{
 		switch(field_order.charAt(i))
 		{
-			case 'D': html[i] = day.join(''); break;
-			case 'Y': html[i] = year.join(''); break;
-			case 'M': html[i] = month.join(''); break;
+			case 'D': html.append(day.toString()); break;
+			case 'Y': html.append(year.toString()); break;
+			case 'M': html.append(month.toString()); break;
 		};
 	};
 
-	return html.join(field_separator);
+	return html.toString(field_separator);
 };

@@ -64,4 +64,3 @@ JSmarty.System.write = function(p, c)
 	// fso release
 	fso = text = file = null;
 };
-

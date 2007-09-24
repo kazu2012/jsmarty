@@ -22,8 +22,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 {
 	var Plugin = JSmarty.Plugin;
 
-	var range = Plugin.get('php.range');
-	var strftime = Plugin.get('php.strftime');
+	var range = Plugin.get('php.range'), strftime = Plugin.get('php.strftime');
 	var html_options = Plugin.get('function.html_options', jsmarty.plugins_dir);
 
 	var n, i, k, html = JSmarty.Buffer.create(), options;
