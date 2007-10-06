@@ -238,7 +238,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 			year.appendIf(all_extra !== null)(' ', year_extra);
 			year.append(extra_attrs, '>\n');
 			year.append(html_options({ output:years, values:year_values, selected:time[0] }, jsmarty));
-			year.apepnd('\n</select>');
+			year.append('\n</select>');
 		};
 	};
 

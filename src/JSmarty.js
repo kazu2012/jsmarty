@@ -507,7 +507,7 @@ JSmarty.prototype =
 		{
 			info.set('type', name.slice(0, part));
 			info.set('name', name.slice(part + 1));
-			flag = JSmarty.Plugin.add('resource.' + info.get('type'), JSmarty.Plugins_dir);
+			flag = JSmarty.Plugin.add('resource.' + info.get('type'), this.plugins_dir);
 		};
 
 		return flag;
@@ -542,7 +542,7 @@ JSmarty.prototype =
 	{
 		var t = (s == null) ? 'function' : 'block';
 		var r, ns = t + '.' + n;
-		var f = JSmarty.Plugin.get(ns, JSmarty.Plugins_dir);
+		var f = JSmarty.Plugin.get(ns, this.plugins_dir);
 
 		switch(t)
 		{
@@ -560,15 +560,14 @@ JSmarty.prototype =
 	$m : function(m, s)
 	{
 		var d, k, p = JSmarty.Plugin;
-		d = p.dir, p.dir = JSmarty.Plugins_dir;
+		d = this.plugins_dir;
 
 		for(k in m)
 		{
 			m[k][0] = s;
-			s = p.get('modifier' + k).apply(null, m[k]);
+			s = p.get('modifier.' + k, d).apply(null, m[k]);
 		};
 
-		p.dir = d;
 		return s;
 	}
 };
