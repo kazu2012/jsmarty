@@ -88,7 +88,7 @@ JSmarty.Browser =
 		};
 
 		o.outputString = function(){
-			document.write(Array.prototype.join.call(argumetns,''));
+			document.write(Array.prototype.join.call(arguments,''));
 		};
 
 		this.buildSystemObject = null;

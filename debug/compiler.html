@@ -31,7 +31,7 @@
 			var s = new Date();
 			var result = compiler.execute(this.value);
 			var e = new Date();
-			idResult.innerHTML = result + (e.getTime() - s.getTime());
+			idResult.value = result + (e.getTime() - s.getTime());
 		};
 	};
 	</script>

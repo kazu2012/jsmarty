@@ -559,15 +559,12 @@ JSmarty.prototype =
 	 */
 	$m : function(m, s)
 	{
-		var d, k, p = JSmarty.Plugin;
-		d = this.plugins_dir;
-
+		var k, d = this.plugins_dir, p = JSmarty.Plugin;
 		for(k in m)
 		{
 			m[k][0] = s;
 			s = p.get('modifier.' + k, d).apply(null, m[k]);
 		};
-
 		return s;
 	}
 };

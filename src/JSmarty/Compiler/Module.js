@@ -40,7 +40,7 @@ JSmarty.Compiler.Module.prototype =
 	 */
 	toModify : function()
 	{
-		if(this.imp < 0) return '{}';
+		if(this.imp < 0){ return '{}'; };
 
 		var i, f, c = false;
 		var v = JSmarty.Compiler.VALSYMBL;
@@ -79,9 +79,9 @@ JSmarty.Compiler.Module.prototype =
 	 */
 	toParams : function()
 	{
-		if(this.iap < 0) return '{}';
+		if(this.iap < 0){ return '{}'; };
 
-		var i, f;
+		var i, c, f;
 		var v = JSmarty.Compiler.VALSYMBL;
 		var s = this.text.slice(this.iap).split('');
 
