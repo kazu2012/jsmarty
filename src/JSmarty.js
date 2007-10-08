@@ -72,28 +72,17 @@ JSmarty.prototype =
 
 	/**
 	 * assign function
-	 * @param {String} k key
+	 * @param {Object} k key
 	 * @param {Object} v value
 	 */
 	assign : function(k, v)
 	{
-		switch(typeof(v))
-		{
-			case 'undefined':
-				v = null;
-				break;
-			case 'object':
-				v = JSmarty.Plugin.get('shared.copyObject')(v);
-				break;
+		var o = this.$vars, c = JSmarty.Plugin.get('shared.copy_object');
+		if(k instanceof Object){
+			for(var i in k){ o[i] = c(k[i])};
+		}else if(k != ''){
+			o[k] = c(v);
 		};
-
-		if(k instanceof Object)
-		{
-			for(var i in k){ this.$vars[i] = k[i]; };
-			return;
-		};
-
-		if(k != ''){ this.$vars[k] = v; };
 	},
 	/**
 	 * assign_by_ref function

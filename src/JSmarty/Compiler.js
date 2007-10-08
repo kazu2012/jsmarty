@@ -146,7 +146,7 @@ JSmarty.Compiler = function(renderer)
  */
 JSmarty.Compiler.define = function(s, o)
 {
-	var i, c, d, p = this[s];
+	var i, c, k, d, p = this[s];
 	for(i in o)
 	{
 		d = o[i];
@@ -233,4 +233,8 @@ JSmarty.Compiler.MODSYMBL = '@@COMPILER::MODIFIER@@';
 
 JSmarty.Compiler.toUcfirst = function(s){
 	return s.slice(0,1).toUpperCase().concat(s.slice(1));
+};
+
+JSmarty.Compiler.mergeObject = function(s, c){
+	for(var k in s){ if(!(k in c)){ c[k] = s[k];}; };
 };

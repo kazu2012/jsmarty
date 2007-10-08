@@ -166,7 +166,7 @@ JSmarty.Compiler.Module.prototype =
 	}
 };
 
-JSmarty.Plugin.get('shared.mergeObject')
+JSmarty.Compiler.mergeObject
 (
 	JSmarty.Storage.prototype,
 	JSmarty.Compiler.Module.prototype

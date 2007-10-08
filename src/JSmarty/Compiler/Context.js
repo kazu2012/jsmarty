@@ -82,7 +82,7 @@ JSmarty.Compiler.Context.prototype =
 	}
 };
 
-JSmarty.Plugin.get('shared.mergeObject')
+JSmarty.Compiler.mergeObject
 (
 	JSmarty.Storage.prototype,
 	JSmarty.Compiler.Context.prototype

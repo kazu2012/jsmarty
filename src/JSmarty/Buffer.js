@@ -17,7 +17,7 @@ JSmarty.Buffer = function()
 		return b.join(s || '');
 	};
 };
-JSmarty.Buffer.create = function(){ return new this(); };
+JSmarty.Buffer.create = function(){ return new JSmarty.Buffer(); };
 JSmarty.Buffer.prototype = new String();
 JSmarty.Buffer.prototype.appendIf = function(f){
 	return (f) ? this.append : function(){};

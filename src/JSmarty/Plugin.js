@@ -50,7 +50,7 @@ JSmarty.Plugin =
 	get : function(n, r)
 	{
 		return this[n] || function(o){
-			return (o.add(n, r)) ? o[n] : o['shared.none'];
+			return (o.add(n, r)) ? o[n] : o['shared.notice'];
 		}(this);
 	},
 	/**
@@ -95,17 +95,36 @@ JSmarty.Plugin =
 		};
 	}
 };
-JSmarty.Plugin['shared.none'] = function()
+JSmarty.Plugin['shared.global'] = function(g){
+	return function(){ return g; };
+}(this);
+JSmarty.Plugin['shared.notice'] = function()
 {
 	JSmarty.Error.log('Plugin', 'called undefined function');
 	return '';
 };
-JSmarty.Plugin['shared.global'] = function(g){
-	return function(){ return g; };
-}(this);
-JSmarty.Plugin['shared.copyArray'] = function(a){
-	return Array.prototype.slice.call(a);
+JSmarty.Plugin['shared.copy_array'] = function(a){
+	return [].concat(a);
 };
-JSmarty.Plugin['shared.mergeObject'] = function(s, c){
-	for(var k in s){ if(!(k in c)){ c[k] = s[k];}; };
+JSmarty.Plugin['shared.copy_object'] = function(o)
+{
+	var P = JSmarty.Plugin;
+	switch(typeof(o))
+	{
+		case 'object':
+			switch(true)
+			{
+				case (o instanceof Array):
+					return P['shared.copy_array'](o);
+				case (o instanceof Object):
+					var i, c = {}, f = P['shared.copy_object'];
+					for(i in o){ c[i] = f(o[i]); };
+					return c;
+			};
+			return null;
+		case 'undefined':
+			return null;
+		default:
+			return o;
+	};
 };
