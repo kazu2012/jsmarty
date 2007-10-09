@@ -119,10 +119,12 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		};
 	};
 
-	if(time.match && time.match(/^-\d+$/))
+	if(time.match && time.match(/^-\d+$/)){
 		time = date('Y-m-d', time);
-	if(!(time.match && time.match(/^\d{0,4}-\d{0.2}-\d{0,2}$/)))
+	};
+	if(!(time.match && time.match(RegExp('^\d{0,4}-\d{0,2}-\d{0,2}$')))){
 		time = strftime('%Y-%m-%d', new Date(time).getTime());
+	};
 
 	time = time.split('-');
 

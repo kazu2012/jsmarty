@@ -6,34 +6,36 @@ JSmarty.Plugin =
 	 */
 	dir : ['.'],
 	/**
+	* plugin types
+	* @type Object
+	*/
+	types :
+	{
+		compiler:true, prefilter:true, postfilter:true, outputfilter:true,
+		core:true, block:true, shared:true, 'function':true, modifier:true
+	},
+	/**
 	 * Evalute the source of plugin.
 	 * @param  {String} $code The sourcecode of javascript.
 	 * @param  {String} $ns namespace of plugin
 	 * @return {Boolean} Evalute done, or not.
 	 */
-	parse : function($code, $ns)
+	parse : function(c, n)
 	{
-		if($code == void(0)) $code = '';
-		var $flag = false, $parent = this;
-		var $func = ('jsmarty.' + $ns ).split('.');
-
-		switch($func[1])
-		{
-			case 'php': $func = $func[2]; break;
-			default: $func = $func.join('_'); break;
-		};
+		var f = true;
+		var r = 'return ' + this.realname(n) + ';';
 
 		try
 		{
-			$flag = true;
-			eval($code + '$parent[$ns] = '+ $func +' || null');
+			this[n] = new Function((c || '') + r)();
 		}
 		catch(e)
 		{
-			JSmarty.Error.log($ns, e, 'die');
+			f = false, this[n] = null;
+			JSmarty.Error.log(n, e, 'die');
 		};
 
-		return $flag;
+		return f;
 	},
 	/**
 	 * @param n namespace of plugin
@@ -72,6 +74,14 @@ JSmarty.Plugin =
 	{
 		this[n] = null;
 		delete this[n];
+	},
+	realname : function(n)
+	{
+		var e = n.split('.');
+		if(e[0] in this.types){
+			return ['jsmarty'].concat(e).join('_');
+		};
+		return e[1];
 	},
 	namespace : function(t, n){
 		return t + '.' + n;

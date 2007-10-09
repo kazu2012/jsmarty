@@ -26,7 +26,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	var html_options = Plugin.get('function.html_options', jsmarty.plugins_dir);
 
 	var n, i, k, html = JSmarty.Buffer.create(), options;
-	var hours, hour_fmt, for_max, all_minutes, minutes = [];
+	var hours, hour_fmt, for_max, all_minutes, selected, minutes = [];
 
 	var time = new Date().getTime();
 	var prefix = "Time_";
