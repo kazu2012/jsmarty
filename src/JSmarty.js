@@ -559,4 +559,5 @@ JSmarty.prototype =
 };
 
 JSmarty.VERSION = '@version@';
+JSmarty.Classes = {};
 JSmarty.Debugging = [];
