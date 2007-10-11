@@ -168,6 +168,6 @@ JSmarty.Compiler.Module.prototype =
 
 JSmarty.Compiler.mergeObject
 (
-	JSmarty.Storage.prototype,
+	JSmarty.Classes.Storage.prototype,
 	JSmarty.Compiler.Module.prototype
 );

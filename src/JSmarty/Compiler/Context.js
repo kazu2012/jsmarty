@@ -84,6 +84,6 @@ JSmarty.Compiler.Context.prototype =
 
 JSmarty.Compiler.mergeObject
 (
-	JSmarty.Storage.prototype,
+	JSmarty.Classes.Storage.prototype,
 	JSmarty.Compiler.Context.prototype
 );

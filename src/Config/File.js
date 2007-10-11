@@ -10,7 +10,9 @@
  */
 
 // Setup for namespace
-if(typeof(Config) == 'undefined') var Config = {};
+if(typeof(Config) == 'undefined'){
+	var Config = {};
+};
 
 /**
  *

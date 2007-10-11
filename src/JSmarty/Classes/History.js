@@ -1,10 +1,10 @@
-JSmarty.History = function(){};
-JSmarty.History.prototype =
+JSmarty.Classes.History = function(){};
+JSmarty.Classes.History.prototype =
 {
 	/** @private **/
-	_list_ : {},
+	list : {},
 	/** @private **/
-	_pool_ : [],
+	pool : [],
 	/**
 	 * setter for history
 	 * @param {String} k key
@@ -13,10 +13,10 @@ JSmarty.History.prototype =
 	 */
 	set : function(k, v)
 	{
-		var p = this._pool_;
+		var p = this.pool;
 		var i = p.length;
 		p[i] = v;
-		this._list_[k] = i;
+		this.list[k] = i;
 		return v;
 	},
 	/**
@@ -26,7 +26,7 @@ JSmarty.History.prototype =
 	get : function(k)
 	{
 		if(this.isExist(k)){
-			return this._pool_[this._list_[k]];
+			return this.pool[this.list[k]];
 		};
 		return null;
 	},
@@ -48,34 +48,18 @@ JSmarty.History.prototype =
 		}
 	},
 	/**
-	 * wrapper for Function#apply
-	 */
-	apply : function(k, o, a)
-	{
-		var f = this.get(k);
-		if(typeof(f) != 'function'){
-			throw new Error(k +' is not Function.');
-		};
-		switch(arguments.length)
-		{
-			case 1: return f.apply();
-			case 2: return f.apply(o);
-			case 3: return f.apply(o, a);
-		};
-	},
-	/**
 	 * did key exist?
 	 * @param {String} k key
 	 * @return {Boolean}
 	 */
 	isExist : function(k){
-		return (k in this._list_);
+		return (k in this.list);
 	},
 	/**
 	 * wrapper for Array#length
 	 */
 	length : function(){
-		return this._pool_.length;
+		return this.pool.length;
 	},
 	/**
 	 *
@@ -88,11 +72,8 @@ JSmarty.History.prototype =
 	/**
 	 * clear the all histories
 	 */
-	clearAll : function()
-	{
-		this._list_ = {};
-		this._pool_ = [];
+	clearAll : function(){
+		this.list = {}, this.pool = [];
 	}
 };
-
-JSmarty.Templatec = new JSmarty.History();
+JSmarty.prototype.cache = new JSmarty.Classes.History();

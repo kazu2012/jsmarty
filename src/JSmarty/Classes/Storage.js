@@ -1,7 +1,7 @@
-JSmarty.Storage = function(o){
+JSmarty.Classes.Storage = function(o){
 	for(var i in o){ this[i] = o[i] };
 };
-JSmarty.Storage.prototype =
+JSmarty.Classes.Storage.prototype =
 {
 	className : 'Storage',
 	get : function(k)
@@ -21,6 +21,6 @@ JSmarty.Storage.prototype =
 		return (k in this);
 	},
 	_error : function(k){
-		JSmarty.Error.log(this.className, k + ' is not defined');
+		JSmarty.Logging.info(this.className, k + ' is not defined');
 	}
 };

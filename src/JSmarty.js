@@ -187,22 +187,22 @@ JSmarty.prototype =
 	/**
 	 * clear_all_cache function
 	 */
-	clear_all_cache : function()
-	{
+	clear_all_cache : function(){
+		this.cache.clearAll();
 	},
 	/**
 	 * clear_cache function
 	 * @param {String} n name
 	 */
-	clear_cache : function(n)
-	{
+	clear_cache : function(n){
+		this.cache.clear(n);
 	},
 	/**
 	 * is_cashed function
 	 * @param {String} n name
 	 */
-	is_cashed : function(n)
-	{
+	is_cashed : function(n){
+		return this.cache.isExist(n);
 	},
 	/**
 	 * clear_compiled_tpl function
@@ -231,7 +231,7 @@ JSmarty.prototype =
 			if(this.isDebugging()){
 				debug.set('COMPILETIME', new Date().getTime() - timestamp);
 			};
-			result = JSmarty.Templatec.apply(name, this);
+			result = JSmarty.Templatec.call(name, this);
 		};
 
 		if(display)
@@ -382,7 +382,7 @@ JSmarty.prototype =
 	 *
 	 */
 	trigger_error : function(m, l){
-		JSmarty.Error.log('Process', m, (l == 'die') ? 'die' : (this.debugging) ? 'warn' : l);
+		JSmarty.Logging.main((this.debugging) ? 'warn' : l, 'Process', m);
 	},
 	/**
 	 * compile the resource
@@ -392,7 +392,7 @@ JSmarty.prototype =
 	{
 		var src, info;
 
-		info = new JSmarty.Storage({
+		info = new JSmarty.Classes.Storage({
 			src : null, name : n , type: null
 		});
 
@@ -559,5 +559,5 @@ JSmarty.prototype =
 };
 
 JSmarty.VERSION = '@version@';
-JSmarty.Classes = {};
 JSmarty.Debugging = [];
+JSmarty.Classes = {};
