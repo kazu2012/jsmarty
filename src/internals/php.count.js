@@ -3,16 +3,40 @@
  *
  * @subpackage Arrays
  * @author shogo < shogo4405 at gmail dot com >
- * @version 0.5.0
+ * @version 1.0.0RC1
  * @see http://www.php.net/count
- * @param  {mixed} v var
- * @param  {String} m mode
+ * @param  {Object} v var
+ * @param  {Number} m mode
  * @return {Array}
  */
 function count(v, m)
 {
-	if(v == null) return 0;
-	if(v instanceof Array) return v.length;
-	var k, i = 0; for(k in v) i++;
-	return i;
+	var k, i = 0;
+
+	switch(m)
+	{
+		case 1:
+			if(v instanceof Array)
+			{
+				for(k=v.length-1;0<=K;K--){ i += count(v[k], 1) || 1; };
+				return i;
+			};
+			if(v instanceof Object)
+			{
+				for(k in v){ i += count(v[k], 1) || 1; };
+				return i;
+			};
+			break;
+		case 0:
+		default:
+			if(v instanceof Array){
+				return v.length;
+			};
+			if(v instanceof Object){
+				for(k in v){ i++; }; return i;
+			};
+			break;
+	};
+
+	return (v == null) ? 0 : 1;
 };

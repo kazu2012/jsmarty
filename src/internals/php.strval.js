@@ -4,7 +4,7 @@
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0
  * @see http://www.php.net/strval
- * @param  {mixed} v value
+ * @param  {Object} v value
  * @return {String}
  */
 function strval(v){
