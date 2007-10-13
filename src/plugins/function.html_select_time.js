@@ -25,7 +25,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 	var range = Plugin.get('php.range'), strftime = Plugin.get('php.strftime');
 	var html_options = Plugin.get('function.html_options', jsmarty.plugins_dir);
 
-	var n, i, k, html = JSmarty.Buffer.create(), options;
+	var n, i, k, html = new JSmarty.Classes.Buffer(), options;
 	var hours, hour_fmt, for_max, all_minutes, selected, minutes = [];
 
 	var time = new Date().getTime();
@@ -46,42 +46,41 @@ function jsmarty_function_html_select_time(params, jsmarty)
 
 	for(k in params)
 	{
-		if(!params.hasOwnProperty(k)) continue;
-
+		v = params[k];
 		switch(k)
 		{
-			case 'prefix':
-				prefix = params[k]; break;
 			case 'time':
-				time = params[k]; break;
-			case 'field_array':
-				field_array = params[k]; break;
+				time = v; break;
+			case 'prefix':
+				prefix = v; break;
 			case 'all_extra':
-				all_extra = params[k]; break;
+				all_extra = v; break;
 			case 'hour_extra':
-				hour_extra = params[k]; break;
-			case 'minute_extra':
-				minute_extra = params[k]; break;
-			case 'second_extra':
-				second_extra = params[k]; break;
-			case 'meridian_extra':
-				meridian_extra = params[k]; break;
-			case 'display_hours':
-				display_hours = params[k]; break;
-			case 'display_minutes':
-				display_minutes = params[k]; break;
-			case 'display_hours':
-				display_hours = params[k]; break;
-			case 'display_meridian':
-				display_meridian = params[k]; break;
+				hour_extra = v; break;
+			case 'field_array':
+				field_array = v; break;
 			case 'use_24_hours':
-				use_24_hours = params[k]; break;
+				use_24_hours = v; break;
+			case 'minute_extra':
+				minute_extra = v; break;
+			case 'second_extra':
+				second_extra = v; break;
+			case 'display_hours':
+				display_hours = v; break;
+			case 'display_hours':
+				display_hours = v; break;
+			case 'meridian_extra':
+				meridian_extra = v; break;
+			case 'display_minutes':
+				display_minutes = v; break;
+			case 'display_meridian':
+				display_meridian = v; break;
 			case 'minute_interval':
-				minute_interval = parseInt(params[k]); break;
+				minute_interval = parseInt(v); break;
 			case 'second_interval':
-				second_interval = parseInt(params[k]); break;
+				second_interval = parseInt(v); break;
 			default:
-				jsmarty.trigger_error('html_select_time: unknown parameter '+ k, 'warn');
+				jsmarty.trigger_error('html_select_time: unknown parameter '+ k, 'info');
 				break;
 		};
 	};

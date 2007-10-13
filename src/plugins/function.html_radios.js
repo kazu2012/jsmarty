@@ -101,7 +101,7 @@ function jsmarty_function_html_radios(params, jsmarty)
 
 function jsmarty_function_html_radios_outputf(name, value, output, selected, extra, separator, labels, label_ids)
 {
-	var id, html = JSmarty.Buffer.create();
+	var id, html = JSmarty.Classes.Buffer()();
 	var escape_special_chars = JSmarty.Plugin.get('shared.escape_special_chars');
 
 	if(labels)

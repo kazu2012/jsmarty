@@ -100,7 +100,7 @@ function jsmarty_function_html_checkboxes_outputf(name, value, output, selected,
 	var in_array = JSmarty.Plugin.get('php.in_array');
 	var esc = JSmarty.Plugin.get('shared.escape_special_chars');
 
-	var html = JSmarty.Buffer.create();
+	var html = JSmarty.Classes.Buffer()();
 
 	html.appendIf(labels)('<label>');
 	html.append('<input type="checkbox" name="', esc(name), '[]" value="', esc(value), '"');

@@ -28,7 +28,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 	var html_options = Plugin.get('function.html_options', dir);
 	var escape_special_chars = Plugin.get('shared.escape_special_chars', dir);
 
-	var n, i = 0, k = 0, month, day, year, html = JSmarty.Buffer.create();
+	var n, i = 0, k = 0, month, day, year, html = new JSmarty.Classes.Buffer();
 	var days, day_values, month_names, month_values, years, year_values, year_name;
 
 	var time = new Date().getTime();
@@ -156,7 +156,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 
 	if(display_months)
 	{
-		month = JSmarty.Buffer.create();
+		month = new JSmarty.Classes.Buffer();
 		n = 0, month_names = [], month_values = [];
 
 		if(month_empty)
@@ -183,7 +183,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 
 	if(display_days)
 	{
-		day = JSmarty.Buffer.create();
+		day = new JSmarty.Classes.Buffer();
 		n = 0, days = [], day_values = [];
 
 		if(day_empty)
@@ -211,7 +211,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 
 	if(display_years)
 	{
-		year = JSmarty.Buffer.create();
+		year = new JSmarty.Classes.Buffer();
 		year_name = (field_array) ? field_array + '[' + prefix + 'Year]' : prefix + 'Year' ;
 
 		if(year_as_text)

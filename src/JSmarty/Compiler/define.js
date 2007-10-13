@@ -179,7 +179,7 @@ JSmarty.Compiler.define
 					return;
 				};
 
-				var b = JSmarty.Buffer.create();
+				var b = new JSmarty.Classes.Buffer();
 				var p = this.toObject(this.toParams());
 
 				b.append
@@ -225,7 +225,7 @@ JSmarty.Compiler.define
 				};
 
 				var p = this.toObject(this.toParams());
-				var e, k = p.name || 'i', b = JSmarty.Buffer.create();
+				var e, k = p.name || 'i', b = new JSmarty.Classes.Buffer();
 
 				e =	k +'=' + (p.start || 0) + ';'+ k +'<=' +
 					(p.max || p.loop + '.length-1') + ';'+ k +'+='+ (p.step || 1);
