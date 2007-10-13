@@ -28,7 +28,7 @@ function jsmarty_function_html_checkboxes(params, jsmarty)
 	var array_map = Plugin.get('php.array_map');
 	var array_values = Plugin.get('php.array_values');
 
-	var k, v, html = new JSmarty.Buffer();
+	var k, v, html = new JSmarty.Classes.Buffer();
 	var outputf = jsmarty_function_html_checkboxes_outputf;
 
 	var name = 'checkbox';
@@ -100,7 +100,7 @@ function jsmarty_function_html_checkboxes_outputf(name, value, output, selected,
 	var in_array = JSmarty.Plugin.get('php.in_array');
 	var esc = JSmarty.Plugin.get('shared.escape_special_chars');
 
-	var html = JSmarty.Classes.Buffer()();
+	var html = new JSmarty.Classes.Buffer();
 
 	html.appendIf(labels)('<label>');
 	html.append('<input type="checkbox" name="', esc(name), '[]" value="', esc(value), '"');

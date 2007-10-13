@@ -90,7 +90,7 @@ function jsmarty_function_html_options_optoutput(key, value, selected)
 {
 	var optgroup = jsmarty_function_html_options_optgroup;
 
-	var html = JSmarty.Classes.Buffer()(), Plugin = JSmarty.Plugin;
+	var html = new JSmarty.Classes.Buffer(), Plugin = JSmarty.Plugin;
 	var escape_special_chars = Plugin.get('shared.escape_special_chars');
 	var is_array = Plugin.get('php.is_array'), in_array = Plugin.get('php.in_array');
 
@@ -107,7 +107,7 @@ function jsmarty_function_html_options_optoutput(key, value, selected)
 
 function jsmarty_function_html_options_optgroup(key, value, selected)
 {
-	var k, html = JSmarty.Classes.Buffer()();
+	var k, html = new JSmarty.Classes.Buffer();
 	var optoutput = jsmarty_function_html_options_optoutput;
 
 	html.append('<optgroup label="', key, '">');

@@ -101,14 +101,14 @@ function jsmarty_function_html_radios(params, jsmarty)
 
 function jsmarty_function_html_radios_outputf(name, value, output, selected, extra, separator, labels, label_ids)
 {
-	var id, html = JSmarty.Classes.Buffer()();
-	var escape_special_chars = JSmarty.Plugin.get('shared.escape_special_chars');
+	var id, html = new JSmarty.Classes.Buffer();
+	var esc = JSmarty.Plugin.get('shared.escape_special_chars');
 
 	if(labels)
 	{
 		if(label_ids)
 		{
-			id = escape_special_chars((name + '_' + value).replace(/[^\w\-\.]/g,'_'));
+			id = esc((name + '_' + value).replace(/[^\w\-\.]/g,'_'));
 			html.append('<label for="', id,'">');
 		}
 		else
@@ -117,12 +117,7 @@ function jsmarty_function_html_radios_outputf(name, value, output, selected, ext
 		};
 	};
 
-	html.append
-	(
-		'<input type="radio" name="',
-		escape_special_chars(name), '" value="',
-		escape_special_chars(value), '"'
-	);
+	html.append('<input type="radio" name="', esc(name), '" value="', esc(value), '"');
 	html.appendIf(id)(' id="', id ,'"');
 	html.appendIf(value == selected)(' checked="checked"');
 	html.append(extra.join(''), ' />', output);

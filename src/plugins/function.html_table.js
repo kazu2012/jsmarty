@@ -28,7 +28,7 @@ function jsmarty_function_html_table(params, jsmarty)
 	};
 
 	var c, r, v, k, x, rx;
-	var html = JSmarty.Classes.Buffer()();
+	var html = new JSmarty.Classes.Buffer();
 	var cycle = jsmarty_function_html_table_cycle;
 
 	var loop = params.loop;

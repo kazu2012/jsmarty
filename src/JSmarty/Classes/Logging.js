@@ -20,7 +20,7 @@ JSmarty.Classes.Logging.prototype =
 		(f || JSmarty.System.outputString)(this.buffer.toString());
 	},
 	append : function(){
-		this.buffer.append();
+		this.buffer.append.apply(null, arguments);
 	},
 	toString : function(){
 		return this.buffer.toString('\n');
