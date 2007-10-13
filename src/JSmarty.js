@@ -217,19 +217,20 @@ JSmarty.prototype =
 		var Templatec = JSmarty.Templatec;
 
 		name = this.getTemplateName(name);
+		Templatec.renderer = this;
 
 		if(this.isDebugging())
 		{
 			timestamp = new Date().getTime();
 			debug = JSmarty.Debugging;
-			debug = debug[debug.length] = new JSmarty.Storage
+			debug = debug[debug.length] = new JSmarty.Classes.Storage
 			({
 				COMPILETIME : null, EXECUTETIME : null,
 				TYPE : 'Template', DEPTH : 0, FILENAME : name
 			});
 		};
 
-		if(Templatec.isCompiled(name, this) || Templatec.newFunction(name, this))
+		if(Templatec.isCompiled(name) || Templatec.newFunction(name))
 		{
 			if(this.isDebugging()){
 				debug.set('COMPILETIME', new Date().getTime() - timestamp);

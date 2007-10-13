@@ -1,54 +1,55 @@
 JSmarty.Templatec = new JSmarty.Classes.History();
+JSmarty.Templatec.renderer = null;
 JSmarty.Templatec.call = function(k, o){
-	return this.get(k)(o);
+	return (this.get(k) || function(){})(o);
 };
-JSmarty.Templatec.isCompiled = function(n, j)
+JSmarty.Templatec.isCompiled = function(n)
 {
-	if(j.force_compile){ return false; };
+	if(this.renderer.force_compile){ return false; };
 	return this.isExist(n);
 };
-JSmarty.Templatec.newFunction = function(n, j)
+JSmarty.Templatec.newFunction = function(n)
 {
-	var s, r = this.fetchResourceObject(n, j);
+	var s, f, r = this.fetchResourceObject(n);
+	if(!r.isSucess){ return false; };
 
-	if(r.isSucess)
+	try
 	{
-		try
-		{
-			s = j.getCompiler().execute(r.get('src'));
-			f = this.set(r.namespace, new Function('$', s));
-			f.timestamp = new Date().getTime();
-			return true;
-		}
-		catch(e){
-		};
+		s = this.renderer.getCompiler().execute(r.get('src'));
+		f = this.set(r.namespace, new Function('$', s));
+		f.timestamp = new Date().getTime();
+		return true;
+	}
+	catch(e)
+	{
+		JSmarty.Logging.warn('Templatec', e);
 	};
 
-	return true;
+	return false;
 };
-JSmarty.Templatec.fetchResourceObject = function(n, j)
+JSmarty.Templatec.fetchResourceObject = function(n)
 {
-	var r = this.newResourceObject(n, j);
+	var f, r = this.newResourceObject(n);
 
 	if(r.isRequire)
 	{
-		f = JSmarty.Plugin.get('resource.' + r.type, j.plugins_dir);
+		f = JSmarty.Plugin.get('resource.' + r.type, this.renderer.plugins_dir);
 		r.isSucess = f[0](r.name, r, j) && f[1](r.name, r, j);
 	};
 
 	if(!r.isSucess)
 	{
-		f = j.default_template_handler_func;
+		f = this.renderer.default_template_handler_func;
 		if(typeof(f) == 'function'){
 			r.isSucess = f(r.type, r.name, r, j);
 		}else{
-			j.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
+			this.renderer.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
 		};
 	};
 
 	return r;
 };
-JSmarty.Templatec.newResourceObject = function(n, j)
+JSmarty.Templatec.newResourceObject = function(n)
 {
 	n = n.split(':');
 	return new JSmarty.Classes.Storage
@@ -59,6 +60,6 @@ JSmarty.Templatec.newResourceObject = function(n, j)
 		namespace : n.join(':'),
 		timestamp : null,
 		isSuccess : false,
-		isRequire : JSmarty.Plugin.add('resource.' + n[0], j.plugins_dir)
+		isRequire : JSmarty.Plugin.add('resource.' + n[0], this.renderer.plugins_dir)
 	});
 };
