@@ -138,3 +138,18 @@ JSmarty.Plugin['shared.copy_object'] = function(o)
 			return o;
 	};
 };
+JSmarty.Plugin['resource.file'] =
+[
+	function(n, r, j)
+	{
+		r.set('src', JSmarty.System.read(n, j.template_dir));
+		return !!(r.get('src'));
+	},
+	function(n, r, j)
+	{
+		r.set('timestamp', JSmarty.System.time(n, j.template_dir));
+		return !!(r.get('timestamp'));
+	},
+	function(){ return true; },
+	function(){ return true; }
+];
