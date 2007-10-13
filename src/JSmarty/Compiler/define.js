@@ -233,7 +233,7 @@ JSmarty.Compiler.define
 				b.append
 				(
 					'$.$m(', this.toModify(), ',',
-					'function(){var ', k,', $b = Buffer.create();'
+					'function(){var ', k,', $b = new Buffer();'
 				);
 				b.appendIf(p.name)
 				(

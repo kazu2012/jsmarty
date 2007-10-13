@@ -15,9 +15,9 @@
 JSmarty.Compiler = function(renderer)
 {
 	// resolve namespaces
-	var Buffer = JSmarty.Buffer;
-	var Compiler = JSmarty.Compiler;
+	var Buffer = JSmarty.Classes.Buffer;
 	var Context = JSmarty.Compiler.Context;
+	var Compiler = JSmarty.Compiler;
 
 	var L = renderer.left_delimiter;
 	var R = renderer.right_delimiter;
