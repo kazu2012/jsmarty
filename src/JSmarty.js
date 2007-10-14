@@ -18,8 +18,9 @@
  * @class This is the JSmarty class
  * @constructor
  */
-function JSmarty(){};
-
+function JSmarty(){
+	this.cache = new JSmarty.Classes.History();
+};
 JSmarty.prototype =
 {
 	config_dir   : 'configs',
@@ -35,6 +36,7 @@ JSmarty.prototype =
 	compile_check : true,
 	force_compile : false,
 
+	caching : 0,
 	cache_lifetime : 3600,
 	cache_modified_check : false,
 
@@ -213,15 +215,14 @@ JSmarty.prototype =
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
-		var debug, result, timestamp;
 		var Templatec = JSmarty.Templatec;
+		var debug, result, timestamp = (new Date()).getTime();
 
 		name = this.getTemplateName(name);
 		Templatec.renderer = this;
 
 		if(this.isDebugging())
 		{
-			timestamp = new Date().getTime();
 			debug = JSmarty.Debugging;
 			debug = debug[debug.length] = new JSmarty.Classes.Storage
 			({
@@ -241,6 +242,15 @@ JSmarty.prototype =
 		if(display)
 		{
 			JSmarty.System.outputString(result);
+
+			switch(this.caching)
+			{
+				case 1:
+				case 2:
+					this.cache(timestamp, result);
+					break;
+			};
+
 			if(this.isDebugging())
 			{
 				debug.set('EXECUTETIME', new Date().getTime() - timestamp);
@@ -450,4 +460,3 @@ JSmarty.prototype =
 
 JSmarty.VERSION = '@version@';
 JSmarty.Debugging = [];
-JSmarty.Classes = {};

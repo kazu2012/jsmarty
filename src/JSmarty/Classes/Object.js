@@ -1,9 +1,7 @@
-JSmarty.Classes.Storage = function(o){
-	for(var i in o){ this[i] = o[i] };
-};
-JSmarty.Classes.Storage.prototype =
+JSmarty.Classes.Object = function(){};
+JSmarty.Classes.Object.prototype =
 {
-	className : 'Storage',
+	className : 'Object',
 	get : function(k)
 	{
 		if(this.isExit(k)){ return this[k]; };
@@ -13,9 +11,6 @@ JSmarty.Classes.Storage.prototype =
 	{
 		if(this.isExit(k)){ this[k] = v; }
 		else{ this._error(k) };
-	},
-	ini : function(k, v){
-		if(!this.isExit(k)){ this[k] = v; };
 	},
 	isExit : function(k){
 		return (k in this);

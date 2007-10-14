@@ -10,8 +10,9 @@ JSmarty.Templatec.isCompiled = function(n)
 };
 JSmarty.Templatec.newFunction = function(n)
 {
-	var s, f, r = this.fetchResourceObject(n);
-	if(!r.isSucess){ return false; };
+	var s, f, o = JSmarty.Classes.Resource.fetch(n, this.renderer);
+
+	if(o.isFailure){ return false; };
 
 	try
 	{
@@ -26,40 +27,4 @@ JSmarty.Templatec.newFunction = function(n)
 	};
 
 	return false;
-};
-JSmarty.Templatec.fetchResourceObject = function(n)
-{
-	var f, r = this.newResourceObject(n);
-
-	if(r.isRequire)
-	{
-		f = JSmarty.Plugin.get('resource.' + r.type, this.renderer.plugins_dir);
-		r.isSucess = f[0](r.name, r, j) && f[1](r.name, r, j);
-	};
-
-	if(!r.isSucess)
-	{
-		f = this.renderer.default_template_handler_func;
-		if(typeof(f) == 'function'){
-			r.isSucess = f(r.type, r.name, r, j);
-		}else{
-			this.renderer.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
-		};
-	};
-
-	return r;
-};
-JSmarty.Templatec.newResourceObject = function(n)
-{
-	n = n.split(':');
-	return new JSmarty.Classes.Storage
-	({
-		src : null,
-		type : n[0],
-		name : n.slice(1).join(':'),
-		namespace : n.join(':'),
-		timestamp : null,
-		isSuccess : false,
-		isRequire : JSmarty.Plugin.add('resource.' + n[0], this.renderer.plugins_dir)
-	});
 };

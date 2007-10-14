@@ -1,10 +1,12 @@
-JSmarty.Classes.History = function(){};
+JSmarty.Classes.History = function(){
+	this.list = {}, this.pool = [];
+};
 JSmarty.Classes.History.prototype =
 {
 	/** @private **/
-	list : {},
+	list : null,
 	/** @private **/
-	pool : [],
+	pool : null,
 	/**
 	 * setter for history
 	 * @param {String} k key
@@ -33,17 +35,22 @@ JSmarty.Classes.History.prototype =
 	/**
 	 *
 	 */
-	iterator : function(d)
+	iterator : function()
 	{
-		var self = this;
+		var p = this.pool;
+		var l, i = l = p.length - 1;
 		return new function(){
 			this.next = function(){
+				return p[i++];
 			};
 			this.prev = function(){
+				return p[i--];
 			};
 			this.hasPrev = function(){
+				return (i != 0);
 			};
 			this.hasNext = function(){
+				return (i != l);
 			};
 		}
 	},
@@ -76,4 +83,3 @@ JSmarty.Classes.History.prototype =
 		this.list = {}, this.pool = [];
 	}
 };
-JSmarty.prototype.cache = new JSmarty.Classes.History();

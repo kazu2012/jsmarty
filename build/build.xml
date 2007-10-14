@@ -17,8 +17,8 @@
 		<mkdir dir="${lib}" />
 		<mkdir dir="${tmp}" />
 		<concat destfile="${tmp}/JSmarty.js">
-			<filelist dir="${src}" files="JSmarty.js" />
-			<filelist dir="${src}/JSmarty/Classes" files="History.js,Buffer.js,Storage.js,Logging.js" />
+			<filelist dir="${src}" files="JSmarty.js,JSmarty/Classes.js" />
+			<filelist dir="${src}/JSmarty/Classes" files="History.js,Buffer.js,Object.js,Logging.js,Resource.js" />
 			<filelist dir="${src}/JSmarty" files="System.js,Plugin.js,Templatec.js,Browser.js" />
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
@@ -36,6 +36,7 @@
 			<filterset><filter token="version" value="${version}" /></filterset>
 		</move>
 		<delete dir="${lib}/JSmarty" excludes="Compiler.js" />
+		<delete dir="${lib}/JSmarty/Classes" />
 		<delete dir="${lib}/JSmarty/Compiler" />
 		<delete dir="${tmp}" />
 	</target>

@@ -20,18 +20,27 @@
  */
 function jsmarty_function_fetch(params, jsmarty)
 {
-	if(!params.file)
+	var name, cache, caches = jsmarty_function_fetch.caches;
+
+	if(!('file' in params)){
+		jsmarty.trigger_error('fetch : parameter "file" cannot be empty', 'die');
+		return;
+	};
+	name = jsmarty.getTemplateName(params.file);
+
+	cache = caches[name] || function()
 	{
-		jsmarty.trigger_error('fetch : parameter "file" cannot be empty','die');
+		caches[name] = JSmarty.Templatec.fetchResourceObject(name);
+		return caches[name];
+	}();
+
+	if(params.assign)
+	{
+		jsmarty.assign(params.assign, cache.get('src'));
 		return;
 	};
 
-	var content = '';
-
-	content = JSmarty.System.read(params.file, jsmarty.template_dir);
-
-	if(params.assign)
-		jsmarty.assign(params.assign, content);
-	else
-		return content;
+	return cache.get('src');
 };
+
+jsmarty_function_fetch.caches = {};
