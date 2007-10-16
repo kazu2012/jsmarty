@@ -2,6 +2,10 @@ JSmarty.Classes =
 {
 	create : function(s)
 	{
+		if(typeof(s) != 'function'){
+			return function(){ this.initialize(); };
+		};
+
 		var f = function()
 		{
 			this.getSuper = function(){ return s; };
@@ -9,15 +13,18 @@ JSmarty.Classes =
 		};
 
 		function c(){};
-		c.prototype = (s) ? s.prototype : {};
+		c.prototype = s.prototype;
 		f.prototype = new c();
-		f.extend = JSmarty.Classes.extend;
 
+		f.define = JSmarty.Classes.extend(f.prototype);
 		return f;
 	},
 	extend : function(o)
 	{
-		var i, p = this.prototype || this;
-		for(i in o){ p[i] = o[i]; };
+		return function(m)
+		{
+			for(var i in m){ o[i] = m[i]; };
+			return o;
+		}
 	}
 };

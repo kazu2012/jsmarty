@@ -1,5 +1,5 @@
 JSmarty.Classes.Resource = JSmarty.Classes.create(JSmarty.Classes.Storage);
-JSmarty.Classes.Resource.extend
+JSmarty.Classes.Resource.define
 ({
 	src : null,
 	type : null,

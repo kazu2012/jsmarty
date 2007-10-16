@@ -1,6 +1,4 @@
-JSmarty.Classes.Logging = function(){
-	this.buffer = new JSmarty.Classes.Buffer();
-};
+JSmarty.Classes.Logging = JSmarty.Classes.create(null);
 JSmarty.Classes.Logging.prototype =
 {
 	buffer : null,
