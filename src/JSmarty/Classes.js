@@ -1,9 +1,23 @@
 JSmarty.Classes =
 {
-	create : function(o)
+	create : function(s)
 	{
-		var i, p = new JSmarty.Classes.Object();
-		for(i in o){ p[k] = o[k]; };
-		return p;
+		var f = function()
+		{
+			this.getSuper = function(){ return s; };
+			this.initialize();
+		};
+
+		function c(){};
+		c.prototype = (s) ? s.prototype : {};
+		f.prototype = new c();
+		f.extend = JSmarty.Classes.extend;
+
+		return f;
+	},
+	extend : function(o)
+	{
+		var i, p = this.prototype || this;
+		for(i in o){ p[i] = o[i]; };
 	}
 };

@@ -1,5 +1,5 @@
-JSmarty.Classes.Resource = function(){};
-JSmarty.Classes.Resource.prototype = JSmarty.Classes.create
+JSmarty.Classes.Resource = JSmarty.Classes.create(JSmarty.Classes.Storage);
+JSmarty.Classes.Resource.extend
 ({
 	src : null,
 	type : null,
@@ -7,7 +7,8 @@ JSmarty.Classes.Resource.prototype = JSmarty.Classes.create
 	namespace : null,
 	timestamp : null,
 	isFailure : true,
-	doRequest : false
+	doRequest : false,
+	initialize : function(){}
 });
 
 JSmarty.Classes.Resource.fetch = function(n, r)

@@ -1,85 +1,57 @@
-JSmarty.Classes.History = function(){
-	this.list = {}, this.pool = [];
-};
-JSmarty.Classes.History.prototype =
-{
+JSmarty.Classes.History = JSmarty.Classes.create();
+JSmarty.Classes.History.extend
+({
 	/** @private **/
-	list : null,
+	$pool : null,
 	/** @private **/
-	pool : null,
+	$keys : null,
+	/** @private **/
+	$maps : null,
 	/**
-	 * setter for history
-	 * @param {String} k key
-	 * @param {Object} v value
-	 * @return {Object} v value
+	 * initizlise for History
 	 */
+	initialize : function()
+	{
+		this.$maps = {};
+		this.$pool = [];
+		this.$keys = [];
+	},
 	set : function(k, v)
 	{
-		var p = this.pool;
-		var i = p.length;
-		p[i] = v;
-		this.list[k] = i;
-		return v;
+		var i = this.length();
+		this.$pool[i] = v;
+		this.$keys[i] = k;
+		this.$maps[k] = i;
 	},
-	/**
-	 * getter for history
-	 * @param {String} k
-	 */
-	get : function(k)
-	{
-		if(this.isExist(k)){
-			return this.pool[this.list[k]];
-		};
-		return null;
+	get : function(k){
+		return this.$pool[$maps[k]];
 	},
-	/**
-	 *
-	 */
-	iterator : function()
-	{
-		var p = this.pool;
-		var l, i = l = p.length - 1;
-		return new function(){
-			this.next = function(){
-				return p[i++];
-			};
-			this.prev = function(){
-				return p[i--];
-			};
-			this.hasPrev = function(){
-				return (i != 0);
-			};
-			this.hasNext = function(){
-				return (i != l);
-			};
-		}
-	},
-	/**
-	 * did key exist?
-	 * @param {String} k key
-	 * @return {Boolean}
-	 */
-	isExist : function(k){
-		return (k in this.list);
-	},
-	/**
-	 * wrapper for Array#length
-	 */
-	length : function(){
-		return this.pool.length;
-	},
-	/**
-	 *
-	 *
-	 */
 	clear : function(k)
 	{
-		
+		var o, i = this.$maps[k]
+		this.$pool.splice(i, 1);
+		this.$keys.splice(i, 1);
+		k = this.$keys, o = this.$maps;
+		for(i=this.length()-1;0<=i;i--){ o[k[i]] = i; };
 	},
-	/**
-	 * clear the all histories
-	 */
 	clearAll : function(){
-		this.list = {}, this.pool = [];
+		this.initilize();
+	},
+	iterator : function()
+	{
+		return new function()
+		{
+			this.next = function(){
+			};
+			this.prev = function(){
+			};
+			this.hasNext = function(){
+			};
+			this.hasPrev = function(){
+			};
+		};
+	},
+	length : function(){
+		return this.$pool.length;
 	}
-};
+});

@@ -1,7 +1,7 @@
-JSmarty.Classes.Object = function(){};
-JSmarty.Classes.Object.prototype =
+JSmarty.Classes.Storage = function(){};
+JSmarty.Classes.Storage.prototype =
 {
-	className : 'Object',
+	className : 'Storage',
 	get : function(k)
 	{
 		if(this.isExit(k)){ return this[k]; };
