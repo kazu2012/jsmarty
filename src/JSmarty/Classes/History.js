@@ -1,6 +1,6 @@
 JSmarty.Classes.History = JSmarty.Classes.create(null);
-JSmarty.Classes.History.prototype
-({
+JSmarty.Classes.History.prototype =
+{
 	/** @private **/
 	$pool : null,
 	/** @private **/
@@ -22,9 +22,10 @@ JSmarty.Classes.History.prototype
 		this.$pool[i] = v;
 		this.$keys[i] = k;
 		this.$maps[k] = i;
+		return v;
 	},
 	get : function(k){
-		return this.$pool[$maps[k]];
+		return this.$pool[this.$maps[k]];
 	},
 	clear : function(k)
 	{
@@ -53,5 +54,8 @@ JSmarty.Classes.History.prototype
 	},
 	length : function(){
 		return this.$pool.length;
+	},
+	isExist : function(k){
+		return (k in this.$maps);
 	}
-});
+};

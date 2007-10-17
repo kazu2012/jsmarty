@@ -289,7 +289,7 @@ JSmarty.prototype =
 	 * @param {String} n the name of block plugin.
 	 */
 	unregister_block : function(n){
-		JSmarty.Plugin.clear('block.' + n);
+		JSmarty.Plugin.unset('block.' + n);
 	},
 	/**
 	 * register_function function
@@ -304,7 +304,7 @@ JSmarty.prototype =
 	 * @param {String} n the name of function plugin.
 	 */
 	unregister_function : function(n){
-		JSmarty.Plugin.clear('function.' + n);
+		JSmarty.Plugin.unset('function.' + n);
 	},
 	/**
 	 * register_modifier function
@@ -319,7 +319,7 @@ JSmarty.prototype =
 	 * @param {String} n the name of modifier plugin.
 	 */
 	unregister_modifier : function(n){
-		JSmarty.Plugin.clear('modifier.' + n);
+		JSmarty.Plugin.unset('modifier.' + n);
 	},
 	register_resource : function(n, f)
 	{
@@ -330,13 +330,13 @@ JSmarty.prototype =
 		};
 	},
 	unregister_resource : function(n){
-		JSmarty.Plugin.clear('resource.' + n);
+		JSmarty.Plugin.unset('resource.' + n);
 	},
 	register_compiler_function : function(n, f){
 		JSmarty.Plugin.set('compiler.' + n, f);
 	},
 	unregister_compiler_function : function(n){
-		JSmarty.Plugin.clear('compiler.' + n);
+		JSmarty.Plugin.unset('compiler.' + n);
 	},
 	load_filter : function(t, n)
 	{
@@ -355,7 +355,7 @@ JSmarty.prototype =
 	 * @param {String} n the name of prefilter
 	 */
 	unregister_prefilter : function(n){
-		JSmarty.Plugin.clear('prefilter.' + n);
+		JSmarty.Plugin.unset('prefilter.' + n);
 	},
 	/**
 	 * register_postfilter function
@@ -371,7 +371,7 @@ JSmarty.prototype =
 	 * @param {String} n the name of postfilter
 	 */
 	unregister_postfilter : function(n){
-		JSmarty.Plugin.clear('postfilter.' + n);
+		JSmarty.Plugin.unset('postfilter.' + n);
 	},
 	/**
 	 * register_outputfilter function
@@ -387,7 +387,7 @@ JSmarty.prototype =
 	 * @param {String} n the name of postfilter
 	 */
 	unregister_outputfilter : function(n){
-		JSmarty.Plugin.clear('outputfilter.' + n);
+		JSmarty.Plugin.unset('outputfilter.' + n);
 	},
 	/**
 	 * trigger_error function

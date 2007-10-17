@@ -1,5 +1,5 @@
 JSmarty.Classes.Resource = JSmarty.Classes.create(JSmarty.Classes.Storage);
-JSmarty.Classes.Resource.define
+JSmarty.Classes.Resource.extend
 ({
 	src : null,
 	type : null,
@@ -7,23 +7,25 @@ JSmarty.Classes.Resource.define
 	namespace : null,
 	timestamp : null,
 	isFailure : true,
-	doRequest : false,
-	initialize : function(){}
+	className : 'Resource',
+	initialize : function(args)
+	{
+		var n = args[0].split(':');
+		this.type = n[0];
+		this.name = n[1];
+		this.namespace = args[0];
+	}
 });
 
 JSmarty.Classes.Resource.fetch = function(n, r)
 {
 	var P = JSmarty.Plugin;
-	var f, o = new this(), s = n.split(':');
+	var f, o = new this(n);
 
-	o.type = s[0];
-	o.name = s.slice(1).join(':');
-	o.doRequest = P.add('resource.' + o.type, r.plugins_dir);
-
-	if(o.doRequest)
+	if(P.add('resource.' + o.type, r.plugins_dir))
 	{
 		f = P.get('resource.' + o.type, r.plugins_dir);
-		o.isFailure = !((o.name, o, r) && f[1](o.name, o, r));
+		o.isFailure = !(f[0](o.name, o, r) && f[1](o.name, o, r));
 	};
 
 	if(o.isFailure)

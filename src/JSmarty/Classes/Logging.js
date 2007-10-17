@@ -2,6 +2,9 @@ JSmarty.Classes.Logging = JSmarty.Classes.create(null);
 JSmarty.Classes.Logging.prototype =
 {
 	buffer : null,
+	initialize : function(){
+		this.buffer = new JSmarty.Classes.Buffer();
+	},
 	info : function(f, m){
 		return this.main('info', f, m);
 	},

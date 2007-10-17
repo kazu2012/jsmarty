@@ -1,4 +1,4 @@
-JSmarty.Classes.Storage = function(){};
+JSmarty.Classes.Storage = JSmarty.Classes.create(null);
 JSmarty.Classes.Storage.prototype =
 {
 	className : 'Storage',

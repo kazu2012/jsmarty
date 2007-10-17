@@ -30,7 +30,7 @@ function jsmarty_function_fetch(params, jsmarty)
 
 	cache = caches[name] || function()
 	{
-		caches[name] = JSmarty.Templatec.fetchResourceObject(name);
+		caches[name] = JSmarty.Classes.Resource.fetch(name, jsmarty);
 		return caches[name];
 	}();
 

@@ -16,8 +16,8 @@ JSmarty.Templatec = JSmarty.Classes.extend(new JSmarty.Classes.History())
 
 		try
 		{
-			s = this.renderer.getCompiler().execute(r.get('src'));
-			f = this.set(r.namespace, new Function('$', s));
+			s = this.renderer.getCompiler().execute(o.get('src'));
+			f = this.set(o.namespace, new Function('$', s));
 			f.timestamp = new Date().getTime();
 			return true;
 		}

@@ -32,70 +32,69 @@ JSmarty.Browser =
 	},
 	buildSystemObject : function()
 	{
-		var o = JSmarty.System;
-
 		(function()
 		{
+			var path = JSmarty.System.path;
 			var s = document.getElementsByTagName('script');
 			var p = s[s.length - 1].getAttribute('src');
 			var i = p.lastIndexOf('/'), s = null;
-			p = (i == -1) ? o.path : o.path + p.slice(0, i);
+			p = (i == -1) ? path : path + p.slice(0, i);
 			JSmarty.Plugin.dir = [p + '/plugins', p + '/internals'];
 		})();
 
-		o.read = function(f, d)
-		{
-			var a = this.buildPath(f, d);
-			var i, t, r, h = JSmarty.Browser.Request;
-
-			for(i=a.length-1;0<=i;i--)
-			{
-				try
-				{
-					h.open('GET', a[i], false);
-					h.send('');
-					if(h.status == 200 || h.status == 0)
-					{
-						r = h.responseText;
-						t = h.getResponseHeader('last-modified');
-						this.modified[f] = (t) ? new Date(t).getTime() : new Date().getTime();
-						break;
-					};
-				}
-				catch(e){}
-				finally{ h.abort(); };
-			};
-
-			return r || function()
-			{
-				JSmarty.Logging.info('System', 'can\'t load the ' + f);
-				return null;
-			}();
-		};
-
-		o.time = function(f, d)
-		{
-			var m = this.modified;
-			return m[f] || function(o)
-			{
-				o.read(f, d);
-				return m[f] || null;
-			}(this);
-		};
-
-		o.getArgs = function(k)
-		{
-			var v = {}, s = String(location.search).slice(1);
-			JSmarty.Plugin.get('php.parse_str')(s, v);
-			return (k == void(0)) ? v : (v[k] == void(0)) ? null : v[k];
-		};
-
-		o.outputString = function(){
-			document.write(Array.prototype.join.call(arguments,''));
-		};
-
-		this.buildSystemObject = null;
+		delete(this.buildSystemObject);
 		this.Request = this.newRequest();
+
+		JSmarty.Classes.extend(JSmarty.System)
+		({
+			read : function(f, d)
+			{
+				var a = this.buildPath(f, d);
+				var i, t, r, h = JSmarty.Browser.Request;
+
+				for(i=a.length-1;0<=i;i--)
+				{
+					try
+					{
+						h.open('GET', a[i], false);
+						h.send('');
+						if(h.status == 200 || h.status == 0)
+						{
+							r = h.responseText;
+							t = h.getResponseHeader('last-modified');
+							this.modified[f] = (t) ? new Date(t).getTime() : new Date().getTime();
+							break;
+						};
+					}
+					catch(e){}
+					finally{ h.abort(); };
+				};
+
+				return r || function()
+				{
+					JSmarty.Logging.info('System', 'can\'t load the ' + f);
+					return null;
+				}();
+			},
+			time : function(f, d)
+			{
+				var m = this.modified;
+				return m[f] || function(o)
+				{
+					o.read(f, d);
+					return m[f] || null;
+				}(this);
+			},
+			getArgs : function(k)
+			{
+				var v = {}, s = String(location.search).slice(1);
+				JSmarty.Plugin.get('php.parse_str')(s, v);
+				return (k == void(0)) ? v : (v[k] == void(0)) ? null : v[k];
+			},
+			outputString : function(){
+				document.write(Array.prototype.join.call(arguments,''));
+			}
+		});
 	}
 };
 

@@ -32,7 +32,7 @@ JSmarty.Plugin =
 		catch(e)
 		{
 			f = false, this[n] = null;
-			JSmarty.Error.log(n, e, 'die');
+			JSmarty.Logging.warn(n, e);
 		};
 
 		return f;
@@ -67,13 +67,10 @@ JSmarty.Plugin =
 			JSmarty.System.read(n + '.js', r || this.dir), n
 		);
 	},
-	/**
-	 * @param n namespace of plugin
-	 */
-	clear : function(n)
+	unset : function(n)
 	{
 		this[n] = null;
-		delete this[n];
+		delete(this[n]);
 	},
 	realname : function(n)
 	{
@@ -103,53 +100,51 @@ JSmarty.Plugin =
 				g[n.split('.')[1]] = this[n];
 			};
 		};
-	}
-};
-JSmarty.Plugin['shared.global'] = function(g){
-	return function(){ return g; };
-}(this);
-JSmarty.Plugin['shared.notice'] = function()
-{
-	JSmarty.Error.log('Plugin', 'called undefined function');
-	return '';
-};
-JSmarty.Plugin['shared.copy_array'] = function(a){
-	return [].concat(a);
-};
-JSmarty.Plugin['shared.copy_object'] = function(o)
-{
-	var P = JSmarty.Plugin;
-	switch(typeof(o))
-	{
-		case 'object':
-			switch(true)
-			{
-				case (o instanceof Array):
-					return P['shared.copy_array'](o);
-				case (o instanceof Object):
-					var i, c = {}, f = P['shared.copy_object'];
-					for(i in o){ c[i] = f(o[i]); };
-					return c;
-			};
-			return null;
-		case 'undefined':
-			return null;
-		default:
-			return o;
-	};
-};
-JSmarty.Plugin['resource.file'] =
-[
-	function(n, r, j)
-	{
-		r.set('src', JSmarty.System.read(n, j.template_dir));
-		return !!(r.get('src'));
 	},
-	function(n, r, j)
-	{
-		r.set('timestamp', JSmarty.System.time(n, j.template_dir));
-		return !!(r.get('timestamp'));
+	'shared.global' : function(g){
+		return function(){ return g; };
+	}(this),
+	'shared.notice' : function(){
+		JSmarty.Logging.info('Plugin', 'called undefined function');
 	},
-	function(){ return true; },
-	function(){ return true; }
-];
+	'shared.copy_array' : function(a){
+		return [].concat(a);
+	},
+	'shared.copy_object' : function()
+	{
+		var P = JSmarty.Plugin;
+		switch(typeof(o))
+		{
+			case 'object':
+				switch(true)
+				{
+					case (o instanceof Array):
+						return P['shared.copy_array'](o);
+					case (o instanceof Object):
+						var i, c = {}, f = P['shared.copy_object'];
+						for(i in o){ c[i] = f(o[i]); };
+						return c;
+				};
+				return null;
+			case 'undefined':
+				return null;
+			default:
+				return o;
+		};
+	},
+	'resource.file' :
+	[
+		function(n, r, j)
+		{
+			r.set('src', JSmarty.System.read(n, j.template_dir));
+			return !!(r.get('src'));
+		},
+		function(n, r, j)
+		{
+			r.set('timestamp', JSmarty.System.time(n, j.template_dir));
+			return !!(r.get('timestamp'));
+		},
+		function(){ return true; },
+		function(){ return true; }
+	]
+};
