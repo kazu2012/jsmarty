@@ -1,5 +1,5 @@
 JSmarty.Classes = function(className){
-	return new this[className]();
+	return new JSmarty.Classes[className]();
 };
 
 JSmarty.Classes.extend = function(target)
