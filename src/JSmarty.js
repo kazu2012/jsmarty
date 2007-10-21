@@ -18,8 +18,10 @@
  * @class This is the JSmarty class
  * @constructor
  */
-function JSmarty(){
-	this.cache = new JSmarty.Classes.History();
+function JSmarty()
+{
+	this.initialize();
+	delete(this.initialize);
 };
 JSmarty.prototype =
 {
@@ -215,48 +217,35 @@ JSmarty.prototype =
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
-		var Templatec = JSmarty.Templatec;
-		var debug, result, timestamp = (new Date()).getTime();
+		var result, logging, Templatec;
 
 		name = this.getTemplateName(name);
+
+		Templatec = JSmarty.Templatec;
+	//	Templatec.setRenderer(this);
 		Templatec.renderer = this;
 
 		if(this.isDebugging())
 		{
-			debug = JSmarty.Debugging;
-			debug = debug[debug.length] = new JSmarty.Classes.Storage
-			({
-				COMPILETIME : null, EXECUTETIME : null,
-				TYPE : 'Template', DEPTH : 0, FILENAME : name
-			});
+			logging = JSmarty.Logging;
+			logging.time('EXECUTE');
+			logging.time('COMPILE');
 		};
 
 		if(Templatec.isCompiled(name) || Templatec.newFunction(name))
 		{
 			if(this.isDebugging()){
-				debug.set('COMPILETIME', new Date().getTime() - timestamp);
+				logging.timeEnd('COMPILE');
 			};
 			result = Templatec.call(name, this);
 		};
 
-		if(display)
-		{
+		if(display){
 			JSmarty.System.outputString(result);
+		};
 
-			switch(this.caching)
-			{
-				case 1:
-				case 2:
-					this.cache(timestamp, result);
-					break;
-			};
-
-			if(this.isDebugging())
-			{
-				debug.set('EXECUTETIME', new Date().getTime() - timestamp);
-				JSmarty.Plugin.get('core.display_debug_console')(null, this);
-			};
-			return;
+		if(this.isDebugging()){
+			logging.timeEnd('EXECUTE');
 		};
 
 		return result;
@@ -275,6 +264,9 @@ JSmarty.prototype =
 	},
 	template_exists : function(file)
 	{
+	},
+	initialize : function(){
+		this.cache = {};
 	},
 	/**
 	 * register_block function
@@ -393,10 +385,9 @@ JSmarty.prototype =
 	 * trigger_error function
 	 * @param {String} m msg
 	 * @param {String} l level
-	 *
 	 */
 	trigger_error : function(m, l){
-		JSmarty.Logging.main((this.debugging) ? 'warn' : l, 'Process', m);
+		JSmarty.Logging[l || 'warn'](m, 'from', 'JSmarty');
 	},
 	/** getter for compiler **/
 	getCompiler : function()
@@ -459,4 +450,3 @@ JSmarty.prototype =
 };
 
 JSmarty.VERSION = '@version@';
-JSmarty.Debugging = [];

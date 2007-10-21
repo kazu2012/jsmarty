@@ -10,11 +10,8 @@ JSmarty.Classes.History.prototype =
 	/**
 	 * initizlise for History
 	 */
-	initialize : function()
-	{
-		this.$maps = {};
-		this.$pool = [];
-		this.$keys = [];
+	initialize : function(){
+		this.clearAll();
 	},
 	set : function(k, v)
 	{
@@ -35,8 +32,11 @@ JSmarty.Classes.History.prototype =
 		k = this.$keys, o = this.$maps;
 		for(i=this.length()-1;0<=i;i--){ o[k[i]] = i; };
 	},
-	clearAll : function(){
-		this.initilize();
+	clearAll : function()
+	{
+		this.$maps = {};
+		this.$pool = [];
+		this.$keys = [];
 	},
 	iterator : function()
 	{

@@ -6,143 +6,136 @@ JSmarty.Plugin =
 	 */
 	dir : ['.'],
 	/**
-	* plugin types
-	* @type Object
-	*/
-	types :
-	{
-		compiler:true, prefilter:true, postfilter:true, outputfilter:true,
-		core:true, block:true, shared:true, 'function':true, modifier:true
-	},
+	 * additional plugin types
+	 * @type Object
+	 */
+	additional : { php:true },
 	/**
 	 * Evalute the source of plugin.
-	 * @param  {String} $code The sourcecode of javascript.
-	 * @param  {String} $ns namespace of plugin
-	 * @return {Boolean} Evalute done, or not.
+	 * @param  {String} script The sourcecode of javascript.
+	 * @param  {String} namespace namespace of plugin
+	 * @return {Boolean} evalute done, or not.
 	 */
-	parse : function(c, n)
+	parse : function(script, namespace)
 	{
-		var f = true;
-		var r = 'return ' + this.realname(n) + ';';
+		var f, suffix = 'return ' + this.realname(namespace) + ';';
 
 		try
 		{
-			this[n] = new Function((c || '') + r)();
+			f = new Function((script || '') + suffix);
+			this[namespace] = f();
 		}
 		catch(e)
 		{
-			f = false, this[n] = null;
-			JSmarty.Logging.warn(n, e);
+			this[namespace] = null;
+			JSmarty.Logging.error(e);
 		};
 
-		return f;
+		return !!f;
 	},
 	/**
-	 * @param n namespace of plugin
+	 * @param namespace namespace of plugin
 	 * @param f function
 	 */
-	set : function(n, f){
-		this[n] = f;
+	set : function(namespace, f){
+		this[namespace] = f;
 	},
 	/**
-	 * @param {String} n namaspace of plugin
-	 * @param {mixed}  d The repository path of plugins. 
+	 * @param {String} namespace namaspace of plugin
+	 * @param {Array} repository repository path of plugins. 
 	 * @type Boolean
 	 */
-	get : function(n, r)
+	get : function(namespace, repository)
 	{
-		return this[n] || function(o){
-			return (o.add(n, r)) ? o[n] : o['shared.notice'];
+		return this[namespace] || function(self){
+			return (self.add(namespace, repository)) ? self[namespace] : self['shared.notice'];
 		}(this);
 	},
 	/**
 	 * load plugin
-	 * @param {String} n namaspace of plugin
-	 * @param {mixed}  r The repository path of plugins. 
+	 * @param {String} namespace namaspace of plugin
+	 * @param {mixed}  repository The repository path of plugins. 
 	 * @type Boolean
 	 */
-	add : function(n, r)
+	add : function(namespace, repository)
 	{
-		return (n in this) || this.parse(
-			JSmarty.System.read(n + '.js', r || this.dir), n
+		return (namespace in this) || this.parse(
+			JSmarty.System.read(namespace + '.js', repository || this.dir), namespace
 		);
 	},
-	unset : function(n)
+	unset : function(namespace)
 	{
-		this[n] = null;
-		delete(this[n]);
+		this[namespace] = null;
+		delete(this[namespace]);
 	},
-	realname : function(n)
+	realname : function(namespace)
 	{
-		var e = n.split('.');
-		if(e[0] in this.types){
-			return ['jsmarty'].concat(e).join('_');
-		};
-		return e[1];
-	},
-	namespace : function(t, n){
-		return t + '.' + n;
+		var names = namespace.split('.');
+		if(this.additional[names[0]]){ return names[1]; };
+		return ['jsmarty'].concat(names).join('_');
 	},
 	/**
-	 * import functions for global scope
-	 * @param {Object} options
-	 * @param {String...} 
+	 * import functions for globalObject
+	 * @param {String...}
 	 */
 	importer : function()
 	{
-		var i, n, d = this.dir;
-		var g = this.get('shared.global')();
+		var i, namespace, dir = this.dir;
+		var globalObject = this.get('shared.global')();
 
 		for(i=arguments.length-1;0<=i;i--)
 		{
-			n = arguments[i];
-			if(this.add(n, d)){
-				g[n.split('.')[1]] = this[n];
+			namespace = arguments[i];
+			if(this.add(namespace, dir)){
+				globalObject[namespace.split('.')[1]] = this[namespace];
 			};
 		};
+
+		globalObject = null;
 	},
-	'shared.global' : function(g){
-		return function(){ return g; };
+	'shared.global' : function(globalObject){
+		return function(){ return globalObject; };
 	}(this),
 	'shared.notice' : function(){
 		JSmarty.Logging.info('Plugin', 'called undefined function');
 	},
-	'shared.copy_array' : function(a){
-		return [].concat(a);
+	'shared.copy_array' : function(v){
+		return [].concat(v);
 	},
-	'shared.copy_object' : function()
+	'shared.copy_object' : function(v)
 	{
-		var P = JSmarty.Plugin;
-		switch(typeof(o))
+		var Plugin = JSmarty.Plugin;
+		switch(typeof(v))
 		{
 			case 'object':
 				switch(true)
 				{
-					case (o instanceof Array):
-						return P['shared.copy_array'](o);
-					case (o instanceof Object):
-						var i, c = {}, f = P['shared.copy_object'];
-						for(i in o){ c[i] = f(o[i]); };
-						return c;
+					case (value instanceof Array):
+						return Plugin['shared.copy_array'](value);
+					case (value instanceof Object):
+						var i, o = {};
+						var copy_object = Plugin['shared.copy_object'];
+						for(i in v){ o[i] = copy_object(v[i]); };
+						return o;
 				};
 				return null;
 			case 'undefined':
 				return null;
 			default:
-				return o;
+				return v;
 		};
 	},
 	'resource.file' :
 	[
-		function(n, r, j)
+		function(name, resource, jsmarty)
 		{
-			r.set('src', JSmarty.System.read(n, j.template_dir));
-			return !!(r.get('src'));
+			resource.set('src', JSmarty.System.read(name, jsmarty.template_dir));
+			return !!(resource.get('src'));
 		},
-		function(n, r, j)
+		function(name, resource, jsmarty)
 		{
-			r.set('timestamp', JSmarty.System.time(n, j.template_dir));
-			return !!(r.get('timestamp'));
+			resource.set('timestamp', JSmarty.System.time(name, jsmarty.template_dir));
+			return !!(resource.get('timestamp'));
 		},
 		function(){ return true; },
 		function(){ return true; }

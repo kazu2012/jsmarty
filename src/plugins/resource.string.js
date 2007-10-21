@@ -24,9 +24,9 @@ var jsmarty_resource_string =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	function(name, data, jsmarty)
+	function(name, resource, jsmarty)
 	{
-		data.src = name;
+		resource.set('src', name);
 		return true;
 	},
 	/**
@@ -36,26 +36,24 @@ var jsmarty_resource_string =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	function(name, data, jsmarty)
+	function(name, resource, jsmarty)
 	{
-		if(typeof(document) != 'undefined' && document.lastModified)
-			data.time = document.lastModified;
-		else
-			data.time = new Date().getTime();
+		resource.set
+		(
+			'timestamp',
+			((typeof(document) != 'undefined') && document.lastModified) ?
+			document.lastModified : new Date().getTime()
+		);
 		return true;
 	},
 	/**
 	 * secure?
 	 * @return {Boolean} true
 	 */
-	function(){
-		return true;
-	},
+	function(){ return true; },
 	/**
 	 * trusted?
 	 * @return {Boolean} true
 	 */
-	function(){
-		return true;
-	}
+	function(){ return true; }
 ];

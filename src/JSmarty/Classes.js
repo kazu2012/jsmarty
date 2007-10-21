@@ -1,33 +1,45 @@
-JSmarty.Classes =
+JSmarty.Classes = function(className){
+	return new this[className]();
+};
+
+JSmarty.Classes.extend = function(target)
 {
-	extend : function(o)
+	return function(object)
 	{
-		return function(m)
+		for(var i in object){ target[i] = object[i]; };
+		return target;
+	};
+};
+
+JSmarty.Classes.create = function(superclass)
+{
+	if(typeof(superclass) != 'function')
+	{
+		return function()
 		{
-			for(var i in m){ o[i] = m[i]; };
-			return o;
-		}
-	},
-	create : function(s)
-	{
-		if(typeof(s) != 'function'){
-			return function(){
-				if(this.initialize){this.initialize(arguments);};
+			if(this.initialize)
+			{
+				this.initialize(arguments);
+				delete(this.initialize);
 			};
 		};
+	};
 
-		var f = function()
+	var f = function()
+	{
+		this.getSuper = function(){ return superclass; };
+		if(this.initialize)
 		{
-			this.getSuper = function(){ return s; };
-			if(this.initialize){this.initialize(arguments);};
+			this.initialize(arguments);
+			delete(this.initialize);
 		};
+	};
 
-		function c(){};
-		c.prototype = s.prototype;
-		f.prototype = new c();
-		f.prototype.constructor = s;
-		f.extend = JSmarty.Classes.extend(f.prototype);
+	function c(){};
+	c.prototype = superclass.prototype;
+	f.prototype = new c();
+	f.prototype.constructor = superclass;
+	f.extend = JSmarty.Classes.extend(f.prototype);
 
-		return f;
-	}
+	return f;
 };

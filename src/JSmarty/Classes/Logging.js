@@ -1,33 +1,16 @@
 JSmarty.Classes.Logging = JSmarty.Classes.create(null);
-JSmarty.Classes.Logging.prototype =
+JSmarty.Classes.Logging.prototype = (typeof(console) != 'undefined') ? console : 
 {
-	buffer : null,
-	initialize : function(){
-		this.buffer = new JSmarty.Classes.Buffer();
+	timelines : null,
+	log : function(){},
+	info : function(){},
+	warn : function(){},
+	error : function(){},
+	time : function(name){
+		this.timelines[name] = new Date().getTime();
 	},
-	info : function(f, m){
-		return this.main('info', f, m);
-	},
-	warn : function(f, m){
-		return this.main('warn', f, m);
-	},
-	main : function(l, f, m)
-	{
-		var s = (m instanceof Error) ? m.message || m.toString() : m;
-		this.append('[', l ,']', s, ' from ', f);
-		return m;
-	},
-	show : function(f){
-		(f || JSmarty.System.outputString)(this.buffer.toString());
-	},
-	append : function(){
-		this.buffer.append.apply(null, arguments);
-	},
-	toString : function(){
-		return this.buffer.toString('\n');
-	}
+	timeEnd : function(){},
+	debug : function(){},
+	initialize : function(){ this.timelines = {}; }
 };
 JSmarty.Logging = new JSmarty.Classes.Logging();
-if(typeof(console) != 'undefined'){
-	JSmarty.Classes.Logging.prototype.append = console.log;
-};

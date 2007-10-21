@@ -23,7 +23,7 @@ JSmarty.Templatec = JSmarty.Classes.extend(new JSmarty.Classes.History())
 		}
 		catch(e)
 		{
-			JSmarty.Logging.warn('Templatec', e);
+			JSmarty.Logging.error(e, 'from Templatec#newFunction');
 		};
 
 		return false;
