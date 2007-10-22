@@ -192,21 +192,21 @@ JSmarty.prototype =
 	 * clear_all_cache function
 	 */
 	clear_all_cache : function(){
-		this.cache.clearAll();
+		this.cache = {};
 	},
 	/**
 	 * clear_cache function
 	 * @param {String} n name
 	 */
-	clear_cache : function(n){
-		this.cache.clear(n);
+	clear_cache : function(name){
+		this.cache[this.getResourceName(name)] = null;
 	},
 	/**
 	 * is_cashed function
 	 * @param {String} n name
 	 */
-	is_cashed : function(n){
-		return this.cache.isExist(n);
+	is_cashed : function(name){
+		return !!this.cache[this.getResourceName(name)];
 	},
 	/**
 	 * clear_compiled_tpl function
@@ -219,7 +219,7 @@ JSmarty.prototype =
 	{
 		var result, logging, Templatec;
 
-		name = this.getTemplateName(name);
+		name = this.getResourceName(name);
 
 		Templatec = JSmarty.Templatec;
 	//	Templatec.setRenderer(this);
@@ -392,14 +392,14 @@ JSmarty.prototype =
 	/** getter for compiler **/
 	getCompiler : function()
 	{
-		return this.compiler || function(o)
+		return this.compiler || function(self)
 		{
-			o.compiler = new JSmarty[o.compiler_class](o);
-			return o.compiler;
+			self.compiler = new JSmarty[o.compiler_class](self);
+			return self.compiler;
 		}(this);
 	},
-	getTemplateName : function(n){
-		return (0 <= n.indexOf(':')) ? n : this.default_resource_type + ':' + n;
+	getResourceName : function(name){
+		return (0 <= name.indexOf(':')) ? name : this.default_resource_type + ':' + name;
 	},
 	/**
 	 * internals : filter function
@@ -418,19 +418,17 @@ JSmarty.prototype =
 	 * @param {Object} m modifier
 	 * @param {String} s source
 	 */
-	$p : function(n, a, m, s)
+	$p : function(name, params, modify, src)
 	{
-		var t = (s == null) ? 'function' : 'block';
-		var r, ns = t + '.' + n;
-		var f = JSmarty.Plugin.get(ns, this.plugins_dir);
+		var Plugin = JSmarty.Plugin;
+		var type = (src != null) ? 'block' : 'function';
+		var f, namespace = Plugin.namespace(type, name);
 
-		switch(t)
-		{
-			case 'function':
-				return this.$m(m, f(a, this));
-			case 'block':
-				return this.$m(m, f(a, s, this));
-		};
+		f = Plugin.get(namespace, this.plugins_dir);
+		if(type == 'function'){
+			return this.$m(modify, f(params, this));
+		}
+		return this.$m(modify, f(params, src, this));
 	},
 	/**
 	 * internals: modifier function

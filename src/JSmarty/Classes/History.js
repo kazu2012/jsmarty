@@ -13,13 +13,34 @@ JSmarty.Classes.History.prototype =
 	initialize : function(){
 		this.clearAll();
 	},
-	set : function(k, v)
+	/**
+	 * setter for History
+	 * @param {String} key
+	 * @param {Object} val 
+	 */
+	set : function(key, val)
 	{
-		var i = this.length();
-		this.$pool[i] = v;
-		this.$keys[i] = k;
-		this.$maps[k] = i;
-		return v;
+		var len = this.length();
+
+		switch(typeof(val))
+		{
+			case 'string' :
+				val = new String(val); break;
+			case 'number': 
+				val = new Number(val); break;
+			case 'boolean':
+				val = new Boolean(val); break;
+		};
+
+		if(!val.timestamp){
+			val.timestamp = new Date().getTime();
+		};
+
+		this.$pool[len] = val;
+		this.$keys[len] = key;
+		this.$maps[key] = len;
+
+		return val;
 	},
 	get : function(k){
 		return this.$pool[this.$maps[k]];
@@ -52,6 +73,7 @@ JSmarty.Classes.History.prototype =
 			};
 		};
 	},
+	update : function(lifetime){},
 	length : function(){
 		return this.$pool.length;
 	},

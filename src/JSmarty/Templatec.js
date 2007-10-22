@@ -11,14 +11,13 @@ JSmarty.Templatec = JSmarty.Classes.extend(new JSmarty.Classes.History())
 	},
 	newFunction : function(n)
 	{
-		var s, f, o = JSmarty.Classes.Resource.fetch(n, this.renderer);
+		var src, o = JSmarty.Classes.Resource.fetch(n, this.renderer);
 		if(o.isFailure){ return false; };
 
 		try
 		{
-			s = this.renderer.getCompiler().execute(o.get('src'));
-			f = this.set(o.namespace, new Function('$', s));
-			f.timestamp = new Date().getTime();
+			src = this.renderer.getCompiler().execute(o.get('src'));
+			this.set(o.namespace, new Function('$', src));
 			return true;
 		}
 		catch(e)

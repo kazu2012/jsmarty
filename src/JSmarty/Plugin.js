@@ -74,6 +74,9 @@ JSmarty.Plugin =
 		if(this.additional[names[0]]){ return names[1]; };
 		return ['jsmarty'].concat(names).join('_');
 	},
+	namespace : function(type, name){
+		return type + '.' + name;
+	},
 	/**
 	 * import functions for globalObject
 	 * @param {String...}
