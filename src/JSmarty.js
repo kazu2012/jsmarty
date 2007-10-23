@@ -81,7 +81,7 @@ JSmarty.prototype =
 	 */
 	assign : function(k, v)
 	{
-		var o = this.$vars, c = JSmarty.Plugin.get('shared.copy_object');
+		var o = this.$vars, c = JSmarty.Plugin.get('core.copy_object');
 		if(k instanceof Object){
 			for(var i in k){ o[i] = c(k[i])};
 		}else if(k != ''){
@@ -394,7 +394,7 @@ JSmarty.prototype =
 	{
 		return this.compiler || function(self)
 		{
-			self.compiler = new JSmarty[o.compiler_class](self);
+			self.compiler = new JSmarty[self.compiler_class](self);
 			return self.compiler;
 		}(this);
 	},
@@ -435,15 +435,18 @@ JSmarty.prototype =
 	 * @param {Object} m modifier
 	 * @param {Object} s source
 	 */
-	$m : function(m, s)
+	$m : function(modify, src)
 	{
-		var k, d = this.plugins_dir, p = JSmarty.Plugin;
-		for(k in m)
+		var dir = this.plugins_dir;
+		var k, Plugin = JSmarty.Plugin;
+
+		for(k in modify)
 		{
-			m[k][0] = s;
-			s = p.get('modifier.' + k, d).apply(null, m[k]);
+			modify[k][0] = src;
+			src = Plugin.get('modifier.' + k, dir).apply(null, modify[k]);
 		};
-		return s;
+
+		return src;
 	}
 };
 

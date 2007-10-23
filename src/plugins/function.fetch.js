@@ -12,7 +12,7 @@
  * Original: Smarty {fetch} function plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0RC1
+ * @version  1.0.0RC2
  * @see      http://smarty.php.net/manual/en/language.function.fetch.php
  * @param    {Object}  params parameters
  * @param    {JSmarty} jsmarty JSmarty
@@ -26,8 +26,8 @@ function jsmarty_function_fetch(params, jsmarty)
 		jsmarty.trigger_error('fetch : parameter "file" cannot be empty', 'die');
 		return;
 	};
-	name = jsmarty.getTemplateName(params.file);
 
+	name = jsmarty.getResourceName(params.file);
 	cache = caches[name] || function()
 	{
 		caches[name] = JSmarty.Classes.Resource.fetch(name, jsmarty);

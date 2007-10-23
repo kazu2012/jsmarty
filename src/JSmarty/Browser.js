@@ -27,7 +27,7 @@ JSmarty.Browser =
 			return new XMLHttpRequest();
 		};
 
-		JSmarty.Logging.info('Browser', 'cant\'t create XMLHttpRequestObject');
+		JSmarty.Logging.warn('cant\'t create XMLHttpRequestObject', 'from', 'Browser#newRequest');
 		return null;
 	},
 	buildSystemObject : function()
@@ -72,7 +72,7 @@ JSmarty.Browser =
 
 				return r || function()
 				{
-					JSmarty.Logging.info('System', 'can\'t load the ' + f);
+					JSmarty.Logging.info('can\'t load the ' + f, 'from', 'System#read');
 					return null;
 				}();
 			},

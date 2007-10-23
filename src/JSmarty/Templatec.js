@@ -1,6 +1,6 @@
 JSmarty.Templatec = JSmarty.Classes.extend(new JSmarty.Classes.History())
 ({
-	rendrer : null,
+	renderer : null,
 	call : function(k, o){
 		return (this.get(k) || function(){})(o);
 	},

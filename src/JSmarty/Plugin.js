@@ -48,7 +48,7 @@ JSmarty.Plugin =
 	get : function(namespace, repository)
 	{
 		return this[namespace] || function(self){
-			return (self.add(namespace, repository)) ? self[namespace] : self['shared.notice'];
+			return (self.add(namespace, repository)) ? self[namespace] : self['core.notice'];
 		}(this);
 	},
 	/**
@@ -84,7 +84,7 @@ JSmarty.Plugin =
 	importer : function()
 	{
 		var i, namespace, dir = this.dir;
-		var globalObject = this.get('shared.global')();
+		var globalObject = this.get('core.global')();
 
 		for(i=arguments.length-1;0<=i;i--)
 		{
@@ -96,16 +96,16 @@ JSmarty.Plugin =
 
 		globalObject = null;
 	},
-	'shared.global' : function(globalObject){
+	'core.global' : function(globalObject){
 		return function(){ return globalObject; };
 	}(this),
-	'shared.notice' : function(){
-		JSmarty.Logging.info('Plugin', 'called undefined function');
+	'core.notice' : function(){
+		JSmarty.Logging.info('called undefined function','from','Plugin');
 	},
-	'shared.copy_array' : function(v){
+	'core.copy_array' : function(v){
 		return [].concat(v);
 	},
-	'shared.copy_object' : function(v)
+	'core.copy_object' : function(v)
 	{
 		var Plugin = JSmarty.Plugin;
 		switch(typeof(v))
@@ -114,10 +114,10 @@ JSmarty.Plugin =
 				switch(true)
 				{
 					case (value instanceof Array):
-						return Plugin['shared.copy_array'](value);
+						return Plugin['core.copy_array'](value);
 					case (value instanceof Object):
 						var i, o = {};
-						var copy_object = Plugin['shared.copy_object'];
+						var copy_object = Plugin['core.copy_object'];
 						for(i in v){ o[i] = copy_object(v[i]); };
 						return o;
 				};

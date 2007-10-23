@@ -229,7 +229,7 @@ function jsmarty_function_html_select_date(params, jsmarty)
 		{
 			years = range(parseInt(start_year), parseInt(end_year));
 			(reverse_years) ? years.reverse() : years.sort() ;
-			year_values = Plugin.get('shared.copy_array')(years);
+			year_values = Plugin.get('core.copy_array')(years);
 			if(year_empty)
 			{
 				years.unshift(year_empty);

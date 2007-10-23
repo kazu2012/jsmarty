@@ -162,7 +162,7 @@ JSmarty.Compiler.Module.prototype =
 		return this.sString;
 	},
 	_error : function(){
-		JSmarty.Error.log('Compiler : templates syntax error: can\'t find quotation.','die');
+		JSmarty.Logging.error('Compiler : templates syntax error: can\'t find quotation.','die');
 	}
 };
 
