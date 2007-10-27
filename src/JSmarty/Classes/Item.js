@@ -1,5 +1,5 @@
-JSmarty.Class.Item = JSmarty.Class.create(JSmarty.Class.Hash);
-JSmarty.Class.Item.extend
+JSmarty.Classes.Item = JSmarty.Class.create(JSmarty.Classes.HashMap);
+JSmarty.Classes.Item.extend
 ({
 	src : null,
 	type : null,
@@ -17,7 +17,7 @@ JSmarty.Class.Item.extend
 	}
 });
 
-JSmarty.Class.Item.fetch = function(n, r)
+JSmarty.Classes.Item.fetch = function(n, r)
 {
 	var P = JSmarty.Plugin;
 	var f, o = new this(n);

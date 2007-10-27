@@ -1,4 +1,4 @@
-JSmarty.Templatec = JSmarty.Classes.extend(new JSmarty.Classes.History())
+JSmarty.Templatec = JSmarty.Classes.extend(JSmarty.Classes('History'))
 ({
 	renderer : null,
 	call : function(k, o){

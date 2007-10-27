@@ -1,4 +1,4 @@
-JSmarty.Class.Buffer = function()
+JSmarty.Classes.Buffer = function()
 {
 	var i =0, b = [], o = this;
 	var c = Array.prototype.join;
@@ -11,11 +11,11 @@ JSmarty.Class.Buffer = function()
 		return b.join(s || '');
 	};
 };
-JSmarty.Class.Buffer.prototype = new String();
-JSmarty.Class.Buffer.prototype.appendIf = function(flag){
+JSmarty.Classes.Buffer.prototype = new String();
+JSmarty.Classes.Buffer.prototype.appendIf = function(flag){
 	return (flag) ? this.append : this.NullFunction;
 };
-JSmarty.Class.Buffer.prototype.appendUnless = function(flag){
+JSmarty.Classes.Buffer.prototype.appendUnless = function(flag){
 	return (flag) ? this.NullFunction : this.append;
 };
-JSmarty.Class.Buffer.prototype.NullFunction = function(){};
+JSmarty.Classes.Buffer.prototype.NullFunction = function(){};

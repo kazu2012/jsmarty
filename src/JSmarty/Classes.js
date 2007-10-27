@@ -1,7 +1,6 @@
 JSmarty.Classes = function(className){
 	return new JSmarty.Classes[className]();
 };
-
 JSmarty.Classes.extend = function(target)
 {
 	return function(object)
@@ -10,7 +9,6 @@ JSmarty.Classes.extend = function(target)
 		return target;
 	};
 };
-
 JSmarty.Classes.create = function(superclass)
 {
 	if(typeof(superclass) != 'function')

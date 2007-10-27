@@ -1,5 +1,5 @@
-JSmarty.Class.Hash = JSmarty.Class.create(null);
-JSmarty.Class.Hash.prototype =
+JSmarty.Classes.HashMap = JSmarty.Class.create(null);
+JSmarty.Classes.HashMap.prototype =
 {
 	logger : JSmarty.Logger,
 	get : function(k)

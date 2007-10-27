@@ -97,5 +97,4 @@ JSmarty.Browser =
 		});
 	}
 };
-
 JSmarty.System.forName(JSmarty.System.getName());

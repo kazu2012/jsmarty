@@ -1,5 +1,5 @@
-JSmarty.Class.String = JSmarty.Class.create(null);
-JSmarty.Class.String.prototype =
+JSmarty.Classes.String = JSmarty.Classes.create(null);
+JSmarty.Classes.String.prototype =
 {
 	initialize : function(args)
 	{

@@ -1,5 +1,5 @@
-JSmarty.Class.History = JSmarty.Class.create(null);
-JSmarty.Class.History.prototype =
+JSmarty.Classes.History = JSmarty.Classes.create(null);
+JSmarty.Classes.History.prototype =
 {
 	/** @private **/
 	$pool : null,
