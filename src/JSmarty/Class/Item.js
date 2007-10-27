@@ -1,5 +1,5 @@
-JSmarty.Classes.Resource = JSmarty.Classes.create(JSmarty.Classes.Storage);
-JSmarty.Classes.Resource.extend
+JSmarty.Class.Item = JSmarty.Class.create(JSmarty.Class.Hash);
+JSmarty.Class.Item.extend
 ({
 	src : null,
 	type : null,
@@ -17,7 +17,7 @@ JSmarty.Classes.Resource.extend
 	}
 });
 
-JSmarty.Classes.Resource.fetch = function(n, r)
+JSmarty.Class.Item.fetch = function(n, r)
 {
 	var P = JSmarty.Plugin;
 	var f, o = new this(n);

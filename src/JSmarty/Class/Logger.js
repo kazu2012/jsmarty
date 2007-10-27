@@ -1,5 +1,5 @@
-JSmarty.Classes.Logging = JSmarty.Classes.create(null);
-JSmarty.Classes.Logging.prototype = (typeof(console) != 'undefined') ? console :
+JSmarty.Class.Logger = JSmarty.Class.create(null);
+JSmarty.Class.Logger.prototype = (typeof(console) != 'undefined') ? console :
 {
 	buffer : null,
 	timeline : null,
@@ -32,10 +32,10 @@ JSmarty.Classes.Logging.prototype = (typeof(console) != 'undefined') ? console :
 	initialize : function()
 	{
 		this.timeline = {};
-		this.buffer = JSmarty.Classes('Buffer');
+		this.buffer = JSmarty.Class('Buffer');
 	},
 	toString : function(){
 		return this.buffer.toString('\n');
 	}
 };
-JSmarty.Logging = new JSmarty.Classes.Logging();
+JSmarty.Logger = new JSmarty.Class.Logger();
