@@ -19,6 +19,12 @@ JSmarty.Compiler.Context.prototype =
 	/** right_delimiter **/
 	rdelim : '}',
 	className : 'Context',
+	set : function(key, value){
+		this[key] = value;
+	},
+	get : function(key){
+		return this[key];
+	},
 	/**
 	 * setTree function
 	 * @param {String}  n name

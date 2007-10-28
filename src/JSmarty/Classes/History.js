@@ -1,7 +1,7 @@
 JSmarty.Classes.History = JSmarty.Classes.create(JSmarty.Classes.HashMap);
 JSmarty.Classes.History.extend
 ({
-	put : function(key, values)
+	put : function(key, value)
 	{
 		switch(typeof(value))
 		{
@@ -17,7 +17,7 @@ JSmarty.Classes.History.extend
 			value.timestamp = JSmarty.System.timestamp();
 		};
 
-		return this.getSuper().put.call(this, key, values);
+		return this.superclass.put.call(this, key, value);
 	},
 	update : function(lifetime){}
 });

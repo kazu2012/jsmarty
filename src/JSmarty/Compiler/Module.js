@@ -161,7 +161,10 @@ JSmarty.Compiler.Module.prototype =
 	toString : function(){
 		return this.sString;
 	},
-	_error : function(){
-		JSmarty.Logging.error('Compiler : templates syntax error: can\'t find quotation.','die');
+	set : function(key, value){
+		this[key] = value;
+	},
+	get : function(key){
+		return this[key];
 	}
 };

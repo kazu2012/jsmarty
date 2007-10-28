@@ -168,11 +168,11 @@ JSmarty.prototype =
 		if(k instanceof Array)
 		{
 			for(var i=0,f=k.length;i<f;i++){
-				delete this.$vars[k[i]];
+				delete(this.$vars[k[i]]);
 			};
 			return;
 		};
-		if(k != ''){ delete this.$vars[k]; };
+		if(k != ''){ delete(this.$vars[k]); };
 	},
 	/**
 	 * clear_all_assign function

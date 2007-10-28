@@ -7,6 +7,9 @@ JSmarty.System =
 	modified : {},
 	isWritable : false,
 	getArgs : function(){ return null; },
+	timestamp : function(){
+		return (new Date()).getTime();
+	},
 	buildPath : function(p, d)
 	{
 		var i, a = [].concat(d);

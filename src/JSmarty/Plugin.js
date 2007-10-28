@@ -10,6 +10,11 @@ JSmarty.Plugin =
 	 * @type Object
 	 */
 	additional : { php:true },
+	F : function()
+	{
+		JSmarty.Logger.info('called undefined function','from','Plugin');
+		return '';
+	},
 	/**
 	 * Evalute the source of plugin.
 	 * @param  {String} script The sourcecode of javascript.
@@ -28,7 +33,7 @@ JSmarty.Plugin =
 		catch(e)
 		{
 			this[namespace] = null;
-			JSmarty.Logging.error(e);
+			JSmarty.Logger.error(e);
 		};
 
 		return !!f;
@@ -48,7 +53,7 @@ JSmarty.Plugin =
 	get : function(namespace, repository)
 	{
 		return this[namespace] || function(self){
-			return (self.add(namespace, repository)) ? self[namespace] : self['core.notice'];
+			return (self.add(namespace, repository)) ? self[namespace] : self.F;
 		}(this);
 	},
 	/**
@@ -99,9 +104,6 @@ JSmarty.Plugin =
 	'core.global' : function(globalObject){
 		return function(){ return globalObject; };
 	}(this),
-	'core.notice' : function(){
-		JSmarty.Logging.info('called undefined function','from','Plugin');
-	},
 	'core.copy_array' : function(v){
 		return [].concat(v);
 	},

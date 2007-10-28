@@ -26,6 +26,7 @@ JSmarty.Classes.create = function(superclass)
 	var f = function()
 	{
 		this.getSuper = function(){ return superclass; };
+		this.superclass = superclass.prototype;
 		if(this.initialize)
 		{
 			this.initialize(arguments);

@@ -158,16 +158,17 @@ JSmarty.Compiler.define = function(s, o)
 
 /**
  * newString function
- * The factory for Compiler's String object.
- * @param {String} t text
- * @param {String} c context
+ * The factory for Compiler's StringObject
+ * @param {String} src
+ * @param {String} con context
  * @return {Compiler.String}
  **/
-JSmarty.Compiler.newString = function(t, c)
+JSmarty.Compiler.newString = function(src, con)
 {
-	var m = (c.isPlain()) ? new this.Plains(t) : new this.String(t);
-	m.parse(c);
-	return m;
+	var module;
+	module = (con.isPlain()) ? new this.Plains(src): new this.String(src);
+	module.parse(con);
+	return module;
 };
 
 JSmarty.Compiler.newModule = function(t, c)
@@ -228,11 +229,6 @@ JSmarty.Compiler.newModule = function(t, c)
 JSmarty.Compiler.VALSYMBL = '@@COMPILER::VARIABLE@@';
 JSmarty.Compiler.FNCSYMBL = '@@COMPILER::FUNCTION@@';
 JSmarty.Compiler.MODSYMBL = '@@COMPILER::MODIFIER@@';
-
 JSmarty.Compiler.toUcfirst = function(s){
 	return s.slice(0,1).toUpperCase().concat(s.slice(1));
-};
-
-JSmarty.Compiler.mergeObject = function(s, c){
-	for(var k in s){ if(!(k in c)){ c[k] = s[k];}; };
 };

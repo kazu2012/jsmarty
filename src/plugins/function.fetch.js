@@ -30,7 +30,7 @@ function jsmarty_function_fetch(params, jsmarty)
 	name = jsmarty.getResourceName(params.file);
 	cache = caches[name] || function()
 	{
-		caches[name] = JSmarty.Classes.Resource.fetch(name, jsmarty);
+		caches[name] = JSmarty.Classes.Item.fetch(name, jsmarty);
 		return caches[name];
 	}();
 
