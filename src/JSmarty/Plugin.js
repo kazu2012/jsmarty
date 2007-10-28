@@ -120,7 +120,7 @@ JSmarty.Plugin =
 					case (value instanceof Object):
 						var i, o = {};
 						var copy_object = Plugin['core.copy_object'];
-						for(i in v){ o[i] = copy_object(v[i]); };
+						for(i in value){ o[i] = copy_object(value[i]); };
 						return o;
 				};
 				return null;
@@ -132,14 +132,14 @@ JSmarty.Plugin =
 	},
 	'resource.file' :
 	[
-		function(name, item, jsmarty)
+		function(name, item, renderer)
 		{
-			item.put('src', JSmarty.System.read(name, jsmarty.template_dir));
+			item.put('src', JSmarty.System.read(name, renderer.template_dir));
 			return !!(item.get('src'));
 		},
-		function(name, item, jsmarty)
+		function(name, item, renderer)
 		{
-			item.put('timestamp', JSmarty.System.time(name, jsmarty.template_dir));
+			item.put('timestamp', JSmarty.System.time(name, renderer.template_dir));
 			return !!(item.get('timestamp'));
 		},
 		function(){ return true; },
