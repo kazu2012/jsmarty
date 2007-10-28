@@ -1,4 +1,4 @@
-JSmarty.Classes.HashMap = JSmarty.Class.create(null);
+JSmarty.Classes.HashMap = JSmarty.Classes.create(null);
 JSmarty.Classes.HashMap.prototype =
 {
 	$pool : null,

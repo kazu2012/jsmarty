@@ -53,14 +53,10 @@ var jsmarty_resource_id =
 	 * secure?
 	 * @return {Boolean} true
 	 */
-	function(){
-		return true;
-	},
+	function(){ return true; },
 	/**
 	 * trusted?
 	 * @return {Boolean} true
 	 */
-	function(){
-		return true;
-	}
+	function(){ return true; }
 ];

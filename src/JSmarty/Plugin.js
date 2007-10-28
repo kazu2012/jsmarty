@@ -130,15 +130,15 @@ JSmarty.Plugin =
 	},
 	'resource.file' :
 	[
-		function(name, resource, jsmarty)
+		function(name, item, jsmarty)
 		{
-			resource.set('src', JSmarty.System.read(name, jsmarty.template_dir));
-			return !!(resource.get('src'));
+			item.put('src', JSmarty.System.read(name, jsmarty.template_dir));
+			return !!(item.get('src'));
 		},
-		function(name, resource, jsmarty)
+		function(name, item, jsmarty)
 		{
-			resource.set('timestamp', JSmarty.System.time(name, jsmarty.template_dir));
-			return !!(resource.get('timestamp'));
+			item.put('timestamp', JSmarty.System.time(name, jsmarty.template_dir));
+			return !!(item.get('timestamp'));
 		},
 		function(){ return true; },
 		function(){ return true; }

@@ -165,9 +165,3 @@ JSmarty.Compiler.Module.prototype =
 		JSmarty.Logging.error('Compiler : templates syntax error: can\'t find quotation.','die');
 	}
 };
-
-JSmarty.Compiler.mergeObject
-(
-	JSmarty.Classes.Storage.prototype,
-	JSmarty.Compiler.Module.prototype
-);

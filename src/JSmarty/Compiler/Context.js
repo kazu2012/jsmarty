@@ -81,9 +81,3 @@ JSmarty.Compiler.Context.prototype =
 		return 'function';
 	}
 };
-
-JSmarty.Compiler.mergeObject
-(
-	JSmarty.Classes.Storage.prototype,
-	JSmarty.Compiler.Context.prototype
-);

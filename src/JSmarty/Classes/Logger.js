@@ -1,4 +1,4 @@
-JSmarty.Classes.Logger = JSmarty.Class.create(null);
+JSmarty.Classes.Logger = JSmarty.Classes.create(null);
 JSmarty.Classes.Logger.prototype = (typeof(console) != 'undefined') ? console :
 {
 	buffer : null,

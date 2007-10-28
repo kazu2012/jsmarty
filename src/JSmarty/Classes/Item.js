@@ -1,46 +1,45 @@
 JSmarty.Classes.Item = JSmarty.Classes.create(JSmarty.Classes.HashMap);
 JSmarty.Classes.Item.extend
 ({
-	src : null,
-	type : null,
-	name : null,
-	namespace : null,
-	timestamp : null,
-	isFailure : true,
-	className : 'Resource',
 	initialize : function(args)
 	{
-		var n = args[0].split(':');
-		this.type = n[0];
-		this.name = n[1];
-		this.namespace = args[0];
+		var parts = args[0].split(':');
+
+		this.clear();
+		this.put('type', parts[0]);
+		this.put('name', parts[1]);
+		this.put('namespace', args[0]);
 	}
 });
 
-JSmarty.Classes.Item.fetch = function(n, r)
+JSmarty.Classes.Item.fetch = function(name, renderer)
 {
-	var P = JSmarty.Plugin;
-	var f, o = new this(n);
+	var item = new this(name);
+	var f, Plugin = JSmarty.Plugin;
+	var dir = renderer.plugins_dir;
 
-	if(P.add('resource.' + o.type, r.plugins_dir))
+	if(Plugin.add('resource.' + item.get('type'), dir))
 	{
-		f = P.get('resource.' + o.type, r.plugins_dir);
-		o.isFailure = !(f[0](o.name, o, r) && f[1](o.name, o, r));
+		f = Plugin.get('resource.' + item.get('type'), dir);
+		item.put('isFailure',
+			!(f[0](item.get('name'), item, renderer)
+			&&f[1](item.get('name'), item, renderer))
+		);
 	};
 
-	if(o.isFailure)
+	if(item.get('isFailure'))
 	{
-		f = r.default_template_handler_func;
+		f = renderer.default_template_handler_func;
 		switch(typeof(f))
 		{
 			case 'function':
-				o.isFailure = !f(o.type, o.name, o, r);
+				item.put('isFailure', !f(item.get('type'), item.get('name'), item, renderer));
 				break;
 			default:
-				r.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
+				renderer.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
 				break;
 		};
 	};
 
-	return o;
+	return item;
 };

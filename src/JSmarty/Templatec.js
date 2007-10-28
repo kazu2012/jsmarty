@@ -1,28 +1,31 @@
 JSmarty.Templatec = JSmarty.Classes.extend(JSmarty.Classes('History'))
 ({
 	renderer : null,
+	NullFunction : function(){},
 	call : function(k, o){
-		return (this.get(k) || function(){})(o);
+		return (this.get(k) || this.NullFunction)(o);
 	},
 	isCompiled : function(n)
 	{
 		if(this.renderer.force_compile){ return false; };
-		return this.isExist(n);
+		return this.containsKey(n);
 	},
-	newFunction : function(n)
+	newFunction : function(name)
 	{
-		var src, o = JSmarty.Classes.Resource.fetch(n, this.renderer);
-		if(o.isFailure){ return false; };
+		var src, item = JSmarty.Classes.Item.fetch(name, this.renderer);
 
-		try
+		if(!item.get('isFailure'))
 		{
-			src = this.renderer.getCompiler().execute(o.get('src'));
-			this.set(o.namespace, new Function('$', src));
-			return true;
-		}
-		catch(e)
-		{
-			JSmarty.Logging.error(e, 'from Templatec#newFunction');
+			try
+			{
+				src = this.renderer.getCompiler().execute(item.get('src'));
+				this.put(item.get('namespace'), new Function('$', src));
+				return true;
+			}
+			catch(e)
+			{
+				JSmarty.Logger.error(e, 'from Templatec#newFunction');
+			};
 		};
 
 		return false;

@@ -11,7 +11,7 @@
  * Name:     string<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @type     Array
  */
 
@@ -24,9 +24,9 @@ var jsmarty_resource_string =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	function(name, resource, jsmarty)
+	function(name, item, jsmarty)
 	{
-		resource.set('src', name);
+		item.put('src', name);
 		return true;
 	},
 	/**
@@ -36,9 +36,9 @@ var jsmarty_resource_string =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	function(name, resource, jsmarty)
+	function(name, item, jsmarty)
 	{
-		resource.set
+		item.put
 		(
 			'timestamp',
 			((typeof(document) != 'undefined') && document.lastModified) ?
