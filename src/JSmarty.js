@@ -210,10 +210,10 @@ JSmarty.prototype =
 	},
 	/**
 	 * clear_compiled_tpl function
-	 * @param {String} n name
+	 * @param {String} name the name of template
 	 */
-	clear_compiled_tpl : function(n){
-		JSmarty.Templatec.clear(n);
+	clear_compiled_tpl : function(name){
+		JSmarty.Templatec.remove(this.getResourceName(name));
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
