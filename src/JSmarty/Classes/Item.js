@@ -1,4 +1,4 @@
-JSmarty.Classes.Item = JSmarty.Class.create(JSmarty.Classes.HashMap);
+JSmarty.Classes.Item = JSmarty.Classes.create(JSmarty.Classes.HashMap);
 JSmarty.Classes.Item.extend
 ({
 	src : null,

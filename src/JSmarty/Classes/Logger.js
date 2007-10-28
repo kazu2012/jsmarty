@@ -32,10 +32,10 @@ JSmarty.Classes.Logger.prototype = (typeof(console) != 'undefined') ? console :
 	initialize : function()
 	{
 		this.timeline = {};
-		this.buffer = JSmarty.Class('Buffer');
+		this.buffer = JSmarty.Classes('Buffer');
 	},
 	toString : function(){
 		return this.buffer.toString('\n');
 	}
 };
-JSmarty.Logger = JSmarty.Class('Logger');
+JSmarty.Logger = JSmarty.Classes('Logger');
