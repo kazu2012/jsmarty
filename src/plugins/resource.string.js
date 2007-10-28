@@ -24,7 +24,7 @@ var jsmarty_resource_string =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	function(name, item, jsmarty)
+	function(name, item, renderer)
 	{
 		item.put('src', name);
 		return true;
@@ -36,14 +36,13 @@ var jsmarty_resource_string =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	function(name, item, jsmarty)
+	function(name, item, renderer)
 	{
-		item.put
-		(
-			'timestamp',
-			((typeof(document) != 'undefined') && document.lastModified) ?
-			document.lastModified : new Date().getTime()
-		);
+		try{
+			item.put('timestamp', JSmarty.System.timestamp(document.lastModified));
+		}catch(e){
+			item.put('timestamp', JSmarty.System.timestamp());
+		};
 		return true;
 	},
 	/**

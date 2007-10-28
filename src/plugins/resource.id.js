@@ -11,7 +11,7 @@
  * Name:     id<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.1
+ * @version  1.0.2
  * @type     Array
  */
 var jsmarty_resource_id =
@@ -23,12 +23,17 @@ var jsmarty_resource_id =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	function(name, data, jsmarty)
+	function(name, item, renderer)
 	{
-		var element = document.getElementById(name);
-		if(!element) return false;
-		data.src = element.innerHTML;
-		return true;
+		var element;
+		try
+		{
+			item.put('src', document.getElementById(name).innerHTML);
+			return true;
+		}
+		catch(e){ renderer.trigger_error(e); };
+
+		return false;
 	},
 	/**
 	 * get a template timestamp
@@ -37,16 +42,16 @@ var jsmarty_resource_id =
 	 * @param {JSmarty} jsmarty
 	 * @return {Boolean} 
 	 */
-	function(name, data, jsmarty)
+	function(name, item, renderer)
 	{
-		var element = document.getElementById(name);
-		if(!element) return false;
-
-		if(document.lastModified)
-			data.time = document.lastModified;
-		else
-			data.time = new Date.getTime();
-
+		try
+		{
+			item.put('timestamp', JSmarty.System.timestamp(document.lastModified));
+		}
+		catch(e)
+		{
+			item.put('timestamp', JSmarty.System.timestamp());
+		};
 		return true;
 	},
 	/**
