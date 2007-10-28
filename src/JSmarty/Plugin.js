@@ -107,10 +107,10 @@ JSmarty.Plugin =
 	'core.copy_array' : function(v){
 		return [].concat(v);
 	},
-	'core.copy_object' : function(v)
+	'core.copy_object' : function(value)
 	{
 		var Plugin = JSmarty.Plugin;
-		switch(typeof(v))
+		switch(typeof(value))
 		{
 			case 'object':
 				switch(true)
@@ -127,7 +127,7 @@ JSmarty.Plugin =
 			case 'undefined':
 				return null;
 			default:
-				return v;
+				return value;
 		};
 	},
 	'resource.file' :
