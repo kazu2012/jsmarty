@@ -7,8 +7,10 @@ JSmarty.System =
 	modified : {},
 	isWritable : false,
 	getArgs : function(){ return null; },
-	timestamp : function(){
-		return (new Date()).getTime();
+	timestamp : function(time)
+	{
+		var date = (time) ? new Date(time) : new Date();
+		return date.getTime();
 	},
 	buildPath : function(p, d)
 	{
