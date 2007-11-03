@@ -7,11 +7,7 @@ JSmarty.System =
 	modified : {},
 	isWritable : false,
 	getArgs : function(){ return null; },
-	timestamp : function(time)
-	{
-		var date = (time) ? new Date(time) : new Date();
-		return date.getTime();
-	},
+
 	buildPath : function(p, d)
 	{
 		var i, a = [].concat(d);
@@ -22,30 +18,32 @@ JSmarty.System =
 	},
 	getName : function()
 	{
-		var g = JSmarty.Plugin.get('core.global')();
-		if(g.System && g.Core         ){ return 'ajaja'; };
-		if(g.System && g.System.Gadget){ return 'gadget'; };
-		if(g.window && g.document     ){ return 'browser'; };
+		var global = JSmarty.Plugin.get('core.global');
+		if(global('System', 'Core')){ return 'ajaja'; };
+		if(global('window', 'System')){ return 'gadget'; };
+		if(global('window', 'document')){ return 'browser'; };
 	},
-	forName : function(n)
+	forName : function(name)
 	{
-		switch(n)
+		switch(name)
 		{
 			case 'ajaja':
-				load('./internals/system.ajaja.js');
-				break;
 			case 'mustang':
-				load('./internals/system.mustang.js');
+				load('./internals/system.'+ name +'.js');
 				break;
 			case 'gadget':
 				this.path = String(System.Gadget.path).replace(/\\/g, '/') + '/';
 				JSmarty.Browser.buildSystemObject();
-				eval(this.read('system.gadget.js', JSmarty.Plugin.repos));
+				JSmarty.System.loadScript('system.gadget.js', JSmarty.Plugin.repos);
 				break;
 			case 'browser':
 				this.path = ''; // temp
 				JSmarty.Browser.buildSystemObject();
 				break;
 		};
+	},
+
+	timestamp : function(value){
+		return (value) ? new Date(time).getTime() : new Date().getTime();
 	}
 };

@@ -101,8 +101,19 @@ JSmarty.Plugin =
 
 		globalObject = null;
 	},
-	'core.global' : function(globalObject){
-		return function(){ return globalObject; };
+	'core.global' : function(globalObject)
+	{
+		return function()
+		{
+			var i, c;
+			if(arguments.length == 0){
+				return globalObject;
+			};
+			for(i=c=arguments.length-1;0<=i;i--){
+				if(i in globalObject){ c--; };
+			};
+			return (c == 0);
+		};
 	}(this),
 	'core.copy_array' : function(v){
 		return [].concat(v);

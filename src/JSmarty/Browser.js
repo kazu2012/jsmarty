@@ -91,6 +91,20 @@ JSmarty.Browser =
 			},
 			outputString : function(){
 				document.write(Array.prototype.join.call(arguments,''));
+			},
+			loadScript : function(path, dir)
+			{
+				var flag = true;
+				try
+				{
+					(new Function(this.read(path, dir)))();
+				}
+				catch(e)
+				{
+					flag = false;
+					JSmarty.Logger.warn(e, 'from System#loadScript');
+				};
+				return flag;
 			}
 		});
 	}
