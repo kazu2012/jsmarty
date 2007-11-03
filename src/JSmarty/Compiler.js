@@ -100,8 +100,8 @@ JSmarty.Compiler = function(renderer)
 		// postfilter
 		src = filter(src, 'pre');
 
-		buf.append('var Buffer = JSmarty.Classes.Buffer;');
-		buf.append('var $v = $.$vars, $b = new Buffer();');
+		buf.append('var $C = JSmarty.Classes;');
+		buf.append('var $v = $.$vars, $b = $C("Buffer");');
 
 		// lookup block elements
 		p = regtml;

@@ -65,7 +65,7 @@ JSmarty.Compiler.define
 					return;
 				}
 
-				this.sSuffix = 'function(){var $b = new Buffer();';
+				this.sSuffix = 'function(){var $b = $C("Buffer");';
 				this.sString =
 					'$.$p('+ this.getName() +',' + this.toParams() +
 					','+ this.toModify() +',';
@@ -187,7 +187,7 @@ JSmarty.Compiler.define
 				b.append
 				(
 					'$.$m(', this.toModify(), ',',
-					'function(){var $b = new Buffer();'
+					'function(){var $b = $C("Buffer");'
 				);
 				b.appendIf(p.name)
 				(
@@ -239,7 +239,7 @@ JSmarty.Compiler.define
 				buf.append
 				(
 					'$.$m(', this.toModify(), ',',
-					'function(){var ', k,', $b = new Buffer();'
+					'function(){var ', k,', $b = $C("Buffer");'
 				);
 				buf.appendIf(p.name)
 				(

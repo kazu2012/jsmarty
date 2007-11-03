@@ -222,8 +222,7 @@ JSmarty.prototype =
 		name = this.getResourceName(name);
 
 		Templatec = JSmarty.Templatec;
-	//	Templatec.setRenderer(this);
-		Templatec.renderer = this;
+		Templatec.setRenderer(this);
 
 		if(this.isDebugging())
 		{
