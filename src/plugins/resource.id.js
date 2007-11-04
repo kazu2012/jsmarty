@@ -17,41 +17,41 @@
 var jsmarty_resource_id =
 [
 	/**
-	 * get a template source
-	 * @param {String} name Template name
-	 * @param {Object} data Template data
-	 * @param {JSmarty} jsmarty
+	 * get a source of resource
+	 * @param {String} the name of Element
+	 * @param {HashMap} resourceObject
+	 * @param {JSmarty} the instance of JSmarty
 	 * @return {Boolean} 
 	 */
 	function(name, item, renderer)
 	{
-		var element;
 		try
 		{
 			item.put('src', document.getElementById(name).innerHTML);
 			return true;
 		}
-		catch(e){ renderer.trigger_error(e); };
+		catch(e)
+		{
+			renderer.trigger_error(e);
+		};
 
 		return false;
 	},
 	/**
-	 * get a template timestamp
-	 * @param {String} name Template name
-	 * @param {Object} data Template data
-	 * @param {JSmarty} jsmarty
+	 * get a timestamp of template
+	 * @param {String} the name of Element
+	 * @param {HashMap} resourceObject
+	 * @param {JSmarty} the instance of JSmarty
 	 * @return {Boolean} 
 	 */
 	function(name, item, renderer)
 	{
-		try
-		{
+		try{
 			item.put('timestamp', JSmarty.System.timestamp(document.lastModified));
-		}
-		catch(e)
-		{
+		}catch(e){
 			item.put('timestamp', JSmarty.System.timestamp());
 		};
+
 		return true;
 	},
 	/**

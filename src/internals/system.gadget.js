@@ -1,9 +1,11 @@
-(function(def)
+(function()
 {
-	var p = JSmarty.System.path;
+	var path = JSmarty.System.path;
 
-	def.compile_dir = p + 'templates_c';
-	def.plugins_dir = [p + 'plugins'].concat(JSmarty.Plugin.repos);
-	def.template_dir = p + 'templates';
-
-})(JSmarty.prototype);
+	JSmarty.Classes.extend(JSmarty.prototype)
+	({
+		compile_dir : path + 'templates_c',
+		plugins_dir : [path + 'plugins'].concat(JSmarty.Plugin.repos),
+		template_dir : path + 'templates'
+	});
+})();

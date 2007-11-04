@@ -11,17 +11,17 @@
  * Name:     string<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.1
+ * @version  1.0.2
  * @type     Array
  */
 
 var jsmarty_resource_string =
 [
 	/**
-	 * get a template source
-	 * @param {String} name Template name
-	 * @param {Object} data Template data
-	 * @param {JSmarty} jsmarty
+	 * get a source of resource
+	 * @param {String} name of template
+	 * @param {HashMap} data templateObject
+	 * @param {JSmarty} the instance of JSmarty
 	 * @return {Boolean} 
 	 */
 	function(name, item, renderer)
@@ -30,10 +30,10 @@ var jsmarty_resource_string =
 		return true;
 	},
 	/**
-	 * get a template timestamp
-	 * @param {String} name Template name
-	 * @param {Object} data Template data
-	 * @param {JSmarty} jsmarty
+	 * get a timestamp of resource
+	 * @param {String} name of template
+	 * @param {HashMap} data of templateObject
+	 * @param {JSmarty} the instance of JSmarty
 	 * @return {Boolean} 
 	 */
 	function(name, item, renderer)
