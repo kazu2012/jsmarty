@@ -110,9 +110,9 @@ JSmarty.Plugin =
 				return globalObject;
 			};
 			for(i=c=arguments.length-1;0<=i;i--){
-				if(i in globalObject){ c--; };
+				if(arguments[i] in globalObject){ c--; };
 			};
-			return (c == 0);
+			return (c == -1);
 		};
 	}(this),
 	'core.copy_array' : function(v){

@@ -18,7 +18,9 @@ JSmarty.Classes.create = function(superclass)
 
 	if(typeof(superclass) == 'function')
 	{
-		f.prototype = JSmarty.Plugin['core.clone'](superclass.prototype);
+		function c(){};
+		c.prototype = superclass.prototype;
+		f.prototype = new c();
 		f.prototype.getSuper = function(){ return superclass; };
 		f.prototype.superclass = superclass.prototype;
 		f.extend = JSmarty.Classes.extend(f.prototype);

@@ -1,14 +1,14 @@
 JSmarty.Classes.Item = JSmarty.Classes.create(JSmarty.Classes.HashMap);
 JSmarty.Classes.Item.extend
 ({
-	initialize : function(args)
+	initialize : function(namespace)
 	{
-		var parts = args[0].split(':');
+		var parts = namespace.split(':');
 
 		this.clear();
 		this.put('type', parts[0]);
 		this.put('name', parts[1]);
-		this.put('namespace', args[0]);
+		this.put('namespace', namespace);
 	}
 });
 
