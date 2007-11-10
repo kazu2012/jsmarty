@@ -104,7 +104,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 
 		html.append('<select name="');
 		html.appendIf(field_array)(field_array, '[', prefix, 'Hour]"');
-		html.appendIf(!field_array)(prefix, 'Hour"');
+		html.appendUnless(field_array)(prefix, 'Hour"');
 		html.appendIf(hour_extra)(' ', hour_extra);
 		html.appendIf(all_extra)(' ', all_extra)
 		html.append('>\n', options, '</select>\n');
@@ -129,7 +129,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 
 		html.append('<select name="');
 		html.appendIf(field_array)(field_array, '[', prefix, 'Minute]"');
-		html.appendIf(!field_array)('"', prefix, 'Minute"');
+		html.appendUnless(field_array)('"', prefix, 'Minute"');
 		html.appendIf(minute_extra)(' ', minute_extra);
 		html.appendIf(all_extra)(' ', all_extra);
 		html.append('>\n', options, '</select>\n');
@@ -150,7 +150,7 @@ function jsmarty_function_html_select_time(params, jsmarty)
 
 		html.append('<select name="');
 		html.appendIf(field_array)(field_array, '[', prefix, 'Meridian]"');
-		html.appendIf(!field_array)(prefix, 'Meridian"');
+		html.appendUnless(field_array)(prefix, 'Meridian"');
 		html.appendIf(meridian_extra)(' ', meridian_extra);
 		html.appendIf(all_extra)(' ', all_extra);
 		html.append('>\n', options, '</select>\n');

@@ -19,5 +19,7 @@ JSmarty.Classes.History.extend
 
 		return this.superclass.put.call(this, key, value);
 	},
-	update : function(lifetime){}
+	update : function(lifetime)
+	{
+	}
 });

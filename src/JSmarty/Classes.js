@@ -11,34 +11,18 @@ JSmarty.Classes.extend = function(target)
 };
 JSmarty.Classes.create = function(superclass)
 {
-	if(typeof(superclass) != 'function')
-	{
-		return function()
-		{
-			if(this.initialize)
-			{
-				this.initialize(arguments);
-				delete(this.initialize);
-			};
-		};
-	};
-
 	var f = function()
 	{
-		this.getSuper = function(){ return superclass; };
-		this.superclass = superclass.prototype;
-		if(this.initialize)
-		{
-			this.initialize(arguments);
-			delete(this.initialize);
-		};
+		if(this.initialize){ this.initialize.apply(this, arguments); };
 	};
 
-	function c(){};
-	c.prototype = superclass.prototype;
-	f.prototype = new c();
-	f.prototype.constructor = superclass;
-	f.extend = JSmarty.Classes.extend(f.prototype);
+	if(typeof(superclass) == 'function')
+	{
+		f.prototype = JSmarty.Plugin['core.clone'](superclass.prototype);
+		f.prototype.getSuper = function(){ return superclass; };
+		f.prototype.superclass = superclass.prototype;
+		f.extend = JSmarty.Classes.extend(f.prototype);
+	};
 
 	return f;
 };

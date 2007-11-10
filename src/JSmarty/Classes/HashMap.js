@@ -53,5 +53,17 @@ JSmarty.Classes.HashMap.prototype =
 	},
 	size : function(){
 		return this.$pool.length;
+	},
+	entrySet : function()
+	{
+	},
+	putAll : function()
+	{
+	},
+	keySet : function()
+	{
+	},
+	isEmpty : function()
+	{
 	}
 };

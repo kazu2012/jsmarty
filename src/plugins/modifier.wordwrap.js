@@ -11,7 +11,7 @@
  * Name:     wordwrap<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
+ * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.modifier.wordwrap.php
  * @param    {String} n string
  * @param    {Number} l length
@@ -19,10 +19,6 @@
  * @param    {Boolean} c cut
  * @return   {String}
  */
-function jsmarty_modifier_wordwrap(n, l, s, c)
-{
-	if(l == void(0)){ l = 80; };
-	if(s == void(0)){ s = '\n'; };
-	if(c == void(0)){ c = false; };
-	return JSmarty.Plugin.get('php.wordwrap')(n, l, s, c);
+function jsmarty_modifier_wordwrap(n, l, s, c){
+	return JSmarty.Plugin.get('php.wordwrap')(n, l || 80, (s == void(0)) ? '\n' : s, c || false);
 };

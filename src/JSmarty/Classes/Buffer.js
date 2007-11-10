@@ -13,9 +13,9 @@ JSmarty.Classes.Buffer = function()
 };
 JSmarty.Classes.Buffer.prototype = new String();
 JSmarty.Classes.Buffer.prototype.appendIf = function(flag){
-	return (flag) ? this.append : this.NullFunction;
+	return (flag) ? this.append : this.N;
 };
 JSmarty.Classes.Buffer.prototype.appendUnless = function(flag){
-	return (flag) ? this.NullFunction : this.append;
+	return (flag) ? this.N : this.append;
 };
-JSmarty.Classes.Buffer.prototype.NullFunction = function(){};
+JSmarty.Classes.Buffer.prototype.N = function(){};
