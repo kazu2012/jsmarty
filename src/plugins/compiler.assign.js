@@ -12,13 +12,13 @@
  * Original: Smarty {assign} compiler plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  0.0.0
+ * @version  1.0.0
  * @param    {String} attrs
- * @param    {JSmarty.Compiler} compiler
+ * @param    {Compiler} compiler
  * @return   {String}
  */
 function jsmarty_compiler_assign(attrs, compiler)
 {
-	var params = compiler._parse_attrs(attrs);
-	return "";
+	
+	return '';
 };

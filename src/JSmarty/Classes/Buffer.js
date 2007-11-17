@@ -1,11 +1,11 @@
 JSmarty.Classes.Buffer = function()
 {
-	var i =0, b = [], o = this;
+	var i = 0, b = [];
 	var c = Array.prototype.join;
 	this.append = function()
 	{
 		b[i++] = c.call(arguments,'');
-		return o;
+		return this;
 	};
 	this.valueOf = this.toString = function(s){
 		return b.join(s || '');

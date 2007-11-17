@@ -23,7 +23,15 @@ JSmarty.Plugin =
 	 */
 	parse : function(script, namespace)
 	{
-		var f, suffix = 'return ' + this.realname(namespace) + ';';
+		var global = this.get('core.global');
+		var realname = this.realname(namespace);
+		var f, suffix = 'return ' + realname + ';';
+
+		if(global(realname))
+		{
+			this[namespace] = global()[realname];
+			return !!this[namespace];
+		};
 
 		try
 		{
@@ -89,17 +97,17 @@ JSmarty.Plugin =
 	importer : function()
 	{
 		var i, namespace, dir = this.dir;
-		var globalObject = this.get('core.global')();
+		var global = this.get('core.global')();
 
 		for(i=arguments.length-1;0<=i;i--)
 		{
 			namespace = arguments[i];
 			if(this.add(namespace, dir)){
-				globalObject[namespace.split('.')[1]] = this[namespace];
+				global[namespace.split('.')[1]] = this[namespace];
 			};
 		};
 
-		globalObject = null;
+		global = null;
 	},
 	'core.global' : function(globalObject)
 	{
@@ -115,22 +123,27 @@ JSmarty.Plugin =
 			return (c == -1);
 		};
 	}(this),
+	'core.clone' : function(o)
+	{
+		function f(){};
+		f.prototype = o;
+		return new f();
+	},
 	'core.copy_array' : function(v){
 		return [].concat(v);
 	},
 	'core.copy_object' : function(value)
 	{
-		var Plugin = JSmarty.Plugin;
 		switch(typeof(value))
 		{
 			case 'object':
 				switch(true)
 				{
 					case (value instanceof Array):
-						return Plugin['core.copy_array'](value);
+						return this.get('core.copy_array')(value);
 					case (value instanceof Object):
 						var i, o = {};
-						var copy_object = Plugin['core.copy_object'];
+						var copy_object = this.get('core.copy_object');
 						for(i in value){ o[i] = copy_object(value[i]); };
 						return o;
 				};

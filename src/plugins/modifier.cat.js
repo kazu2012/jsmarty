@@ -14,7 +14,7 @@
  * @version  1.0.1
  * @see      http://smarty.php.net/manual/en/language.modifier.cat.php
  * @param    {String} s string
- * @param    {String} s string
+ * @param    {String} c string
  * @return   {String} string with cat
  */
 

@@ -23,8 +23,8 @@ JSmarty.Classes.create = function(superclass)
 		f.prototype = new c();
 		f.prototype.getSuper = function(){ return superclass; };
 		f.prototype.superclass = superclass.prototype;
-		f.extend = JSmarty.Classes.extend(f.prototype);
 	};
 
+	f.extend = JSmarty.Classes.extend(f.prototype);
 	return f;
 };

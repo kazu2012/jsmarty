@@ -1,8 +1,11 @@
 JSmarty.Classes.HashMap = JSmarty.Classes.create(null);
 JSmarty.Classes.HashMap.prototype =
 {
+	/** @private **/
 	$pool : null,
+	/** @private **/
 	$keys : null,
+	/** @private **/
 	$maps : null,
 	initialize : function(){
 		this.clear();
@@ -12,11 +15,11 @@ JSmarty.Classes.HashMap.prototype =
 	},
 	put : function(key, value)
 	{
-		var size = this.size();
+		var i = this.size();
 
-		this.$maps[key] = size;
-		this.$pool[size] = value;
-		this.$keys[size] = key;
+		this.$pool[i] = value;
+		this.$keys[i] = key;
+		this.$maps[key] = i;
 
 		return value;
 	},
@@ -25,25 +28,23 @@ JSmarty.Classes.HashMap.prototype =
 	},
 	containsValue : function(value)
 	{
-		var i, f, values = this.$pool;
-		for(i=0,f=values.length;i<f;i++){
+		var i, values = this.$pool;
+		for(i=values.length-1;0<=i;i--){
 			if(value == values[i]){ return true; };
 		};
 		return false;
 	},
 	remove : function(key)
 	{
-		var o, i = this.$maps[key]
-		this.$pool.splice(i, 1);
-		this.$keys.splice(i, 1);
-		key = this.$keys, o = this.$maps;
-		for(i=this.size()-1;0<=i;i--){ o[key[i]] = i; };
+		var i, map, n = this.$maps[key];
+
+		this.$pool.splice(n, 1);
+		this.$keys.splice(n, 1);
+		key = this.$keys, map = this.$maps = {};
+		for(i=this.size()-1;0<=i;i--){ map[key[i]] = i; };
 	},
-	clear : function()
-	{
-		this.$maps = {};
-		this.$pool = [];
-		this.$keys = [];
+	clear : function(){
+		this.$maps = {}, this.$pool = [], this.$keys = [];
 	},
 	clone : function(){
 		return JSmarty.Plugin.get('core.clone')(this);

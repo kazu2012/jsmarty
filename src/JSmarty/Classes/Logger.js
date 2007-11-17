@@ -1,38 +1,32 @@
 JSmarty.Classes.Logger = JSmarty.Classes.create(null);
 JSmarty.Classes.Logger.prototype = (typeof(console) != 'undefined') ? console :
 {
+	/** StringBuffer **/
 	buffer : null,
+	/** timelines **/
 	timeline : null,
-	log : function()
-	{
-		var args = JSmarty.Plugin.get('core.argsformat')(arguments);
-		this.buffer.append(args);
-		return args;
-	},
-	info : function(){
-		this.log('['+ info +']', arguments);
-	},
-	warn : function(){
-		this.log('['+ warn +']', arguments);
+	/**
+	 * infomation
+	 */
+	info : function(){ this.append('[info]', arguments); },
+	/**
+	 * warning
+	 */
+	warn : function(){ this.append('[warn]', arguments); },
+	debug : function(){
+		this.append('[debug]', arguments);
 	},
 	error : function(){
-		throw new Error(this.log('['+ error +']', arguments));
+		throw new Error(this.append('[error]', arguments));
 	},
-	time : function(id){
-		this.timelines[id] = new Date().getTime();
-	},
-	debug : function(){
-		this.log('[' + debug + ']', arguments);
+	time : function(id)
+	{
+		this.timelines[id] = JSmarty.System.timestamp();
 	},
 	timeEnd : function(id)
 	{
-		var time = (new Date().getTime() - this.timeline[id]);
-		this.log(id, ':', time, 'ms');
-	},
-	initialize : function()
-	{
-		this.timeline = {};
-		this.buffer = JSmarty.Classes('Buffer');
+		var diff = (JSmarty.System.timestamp() - this.timelines[id]);
+		this.append(id, ':', diff, 'ms');
 	},
 	toString : function(){
 		return this.buffer.toString('\n');

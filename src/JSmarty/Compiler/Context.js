@@ -1,18 +1,14 @@
-JSmarty.Compiler.Context = function(){};
+JSmarty.Compiler.Context = JSmarty.Classes.create(null);
+JSmarty.Compiler.Context.PLAIN = {strip:true,literal:true,javascript:true};
 JSmarty.Compiler.Context.prototype =
 {
-	/** TagStack **/
-	_tags : [],
-	/** folded block element **/
-	_blocks : {},
-	/** folded plain element **/
-	_plains :
-	{
-		strip : true,
-		literal : true,
-		javascript : true
-	},
-	/** index of plain **/
+	/** stack of tags **/
+	$tags : null,
+	/** the elements are type of block **/
+	$blockElement : null,
+	/** the elements are type of plain **/
+	$plainElement : null,
+	/** index of plain element **/
 	iPlain : -1,
 	/** left_delimiter **/
 	ldelim : '{',
@@ -25,6 +21,12 @@ JSmarty.Compiler.Context.prototype =
 	get : function(key){
 		return this[key];
 	},
+	initialize : function()
+	{
+		var clone = JSmarty.Plugin.get('core.clone');
+		this.$tags = [], this.$blockElement = {};
+		this.$plainElement = clone(JSmarty.Compiler.Context.PLAIN);
+	},
 	/**
 	 * setTree function
 	 * @param {String}  n name
@@ -32,9 +34,9 @@ JSmarty.Compiler.Context.prototype =
 	 */
 	setTree : function(n, f)
 	{
-		var t = this._tags, p = this._plains;
+		var t = this.$tags, p = this.$plainElement;
 
-		if(n in this._blocks)
+		if(n in this.$blockElement)
 		{
 			if(f)
 			{
@@ -66,24 +68,40 @@ JSmarty.Compiler.Context.prototype =
 	/**
 	 * addElement function
 	 * add the type of element to this context.
-	 * @param {String} t type
-	 * @param {String} n name
+	 * @param {String} type of element
+	 * @param {String} name of element
 	 */
-	addElement : function(t, n)
+	addElement : function(type, name)
 	{
-		switch(t)
+		switch(type)
 		{
 			case 'block':
-				this._blocks[n] = true;
+				this.$blockElement[name] = true;
 				break;
 			case 'plain':
-				this._plains[n] = true;
+				this.$plainElement[name] = true;
 				break;
 		};
 	},
-	typeOf : function(n)
+	/**
+	 * Return the type of element
+	 * @param {String} name of element
+	 * @return{String} type of element
+	 */
+	typeOf : function(name)
 	{
-		if(n in this._blocks) return 'block';
+		var Plugin = JSmarty.Plugin;
+
+		switch(true)
+		{
+			case (name in this.$blockElement):
+				return 'block';
+			case (Plugin.add('function.' + name)):
+				return 'function';
+			case (Plugin.add('compiler.' + name)):
+				return 'compiler';
+		};
+
 		return 'function';
 	}
 };

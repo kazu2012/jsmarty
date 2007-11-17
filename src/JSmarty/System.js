@@ -6,7 +6,12 @@ JSmarty.System =
 {
 	modified : {},
 	isWritable : false,
-	getArgs : function(){ return null; },
+
+	getArgs : function()
+	{
+		JSmarty.Logger.info('');
+		return null;
+	},
 
 	buildPath : function(p, d)
 	{
