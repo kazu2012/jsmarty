@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSmarty" default="main" basedir="../">
-
-	<!-- Taskdef -->
-	<taskdef name="yuic" classname="YUICTask" classpath="build/bin;build/bin/yuicompressor-1.0.jar" />
+<project name="JSmarty" default="JSmarty" basedir="../">
 
 	<property name="version" value="0.4.2" /> 
 
 	<!-- Directories -->
-	<property name="src" value="src" />
+
 	<property name="lib" value="lib" />
 	<property name="tmp" value="Temp/JSmarty" />
 	<property name="dist" value="dist" />
 
-	<!-- Target :: build -->
-	<target name="build">
+	<target name="dist" depends="JSmarty">
+		<taskdef name="yuic" classname="YUICTask" classpath="build/bin;build/bin/yuicompressor-1.0.jar" />
+		<mkdir dir="${tmp}" />
+		<mkdir dir="${dist}" />
+		<yuic todir="${tmp}/${lib}"><fileset dir="${lib}" /></yuic>
+		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
+		<zip destfile="${dist}/JSmarty-${version}.zip" basedir="Temp" />
+		<tar destfile="${dist}/JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
+		<delete dir="Temp" />
+	</target>
+
+	<target name="JSmarty">
+		<property name="src" value="src/scripts" />
+
 		<mkdir dir="${lib}" />
 		<mkdir dir="${tmp}" />
 		<concat destfile="${tmp}/JSmarty.js">
@@ -38,17 +47,6 @@
 		<delete dir="${lib}/JSmarty" excludes="Compiler.js" />
 		<delete dir="${lib}/JSmarty/Classes" />
 		<delete dir="${lib}/JSmarty/Compiler" />
-		<delete dir="${tmp}" />
-	</target>
-
-	<!-- Target :: main -->
-	<target name="main" depends="build">
-		<mkdir dir="${tmp}" />
-		<mkdir dir="${dist}" />
-		<yuic todir="${tmp}/${lib}"><fileset dir="${lib}" /></yuic>
-		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
-		<zip destfile="${dist}/JSmarty-${version}.zip" basedir="Temp" />
-		<tar destfile="${dist}/JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />
 	</target>
 
