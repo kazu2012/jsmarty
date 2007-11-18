@@ -96,6 +96,7 @@ JSmarty.Compiler = function(renderer)
 
 		context.set('ldelim', renderer.left_delimiter);
 		context.set('rdelim', renderer.right_delimiter);
+		context.set('plugins_dir', renderer.plugins_dir);
 
 		// postfilter
 		src = filter(src, 'pre');

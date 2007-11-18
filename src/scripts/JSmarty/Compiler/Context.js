@@ -96,9 +96,9 @@ JSmarty.Compiler.Context.prototype =
 		{
 			case (name in this.$blockElement):
 				return 'block';
-			case (Plugin.add('function.' + name)):
+			case (Plugin.add('function.' + name, this.plugins_dir)):
 				return 'function';
-			case (Plugin.add('compiler.' + name)):
+			case (Plugin.add('compiler.' + name, this.plugins_dir)):
 				return 'compiler';
 		};
 
