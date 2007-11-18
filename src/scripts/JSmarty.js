@@ -217,9 +217,11 @@ JSmarty.prototype =
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
-		var result, logging, Templatec;
+		var temp, result, logging, Templatec;
 
+		temp = [].concat(this.plugins_dir);
 		name = this.getResourceName(name);
+		this.plugins_dir = this.plugins_dir.concat(JSmarty.Plugin.dir);
 
 		Templatec = JSmarty.Templatec;
 		Templatec.setRenderer(this);
@@ -242,6 +244,8 @@ JSmarty.prototype =
 		if(display){
 			JSmarty.System.outputString(result);
 		};
+
+		this.plugins_dir = temp;
 
 		if(this.isDebugging()){
 			logging.timeEnd('EXECUTE');

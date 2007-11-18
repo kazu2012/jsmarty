@@ -35,7 +35,8 @@ JSmarty.Plugin =
 
 		try
 		{
-			f = new Function((script || '') + suffix);
+			if(script){ script += 'return ' + realname +';'; };
+			f = new Function(script || 'return null;');
 			this[namespace] = f();
 		}
 		catch(e)
@@ -140,10 +141,10 @@ JSmarty.Plugin =
 				switch(true)
 				{
 					case (value instanceof Array):
-						return this.get('core.copy_array')(value);
+						return JSmarty.Plugin.get('core.copy_array')(value);
 					case (value instanceof Object):
 						var i, o = {};
-						var copy_object = this.get('core.copy_object');
+						var copy_object = JSmarty.Plugin.get('core.copy_object');
 						for(i in value){ o[i] = copy_object(value[i]); };
 						return o;
 				};
