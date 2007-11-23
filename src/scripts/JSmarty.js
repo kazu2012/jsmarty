@@ -199,32 +199,30 @@ JSmarty.prototype =
 	 * @param {String} n name
 	 */
 	clear_cache : function(name){
-		this.cache[this.getResourceName(name)] = null;
+		this.cache[this.getTemplateName(name)] = null;
 	},
 	/**
 	 * is_cashed function
 	 * @param {String} n name
 	 */
 	is_cashed : function(name){
-		return !!this.cache[this.getResourceName(name)];
+		return !!this.cache[this.getTemplateName(name)];
 	},
 	/**
 	 * clear_compiled_tpl function
 	 * @param {String} name the name of template
 	 */
 	clear_compiled_tpl : function(name){
-		JSmarty.Templatec.remove(this.getResourceName(name));
+		JSmarty.Templatec.remove(this.getTemplateName(name));
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
-		var temp, result, logging, Templatec;
+		name = this.getTemplateName(name);
 
-		temp = [].concat(this.plugins_dir);
-		name = this.getResourceName(name);
-		this.plugins_dir = this.plugins_dir.concat(JSmarty.Plugin.dir);
+		var logging, temp = [].concat(this.plugins_dir);
+		var result, item = new JSmarty.Classes.Item(name);
 
-		Templatec = JSmarty.Templatec;
-		Templatec.setRenderer(this);
+		this.plugins_dir = this.plugins_dir.concat(JSmarty.Plugin.repos);
 
 		if(this.isDebugging())
 		{
@@ -233,12 +231,16 @@ JSmarty.prototype =
 			logging.time('COMPILE');
 		};
 
-		if(Templatec.isCompiled(name) || Templatec.newFunction(name))
+		if
+		(
+			JSmarty.Templatec.isCompiled(item, this.force_compile) ||
+			JSmarty.Templatec.newFunction(item.load(this), this.getCompiler())
+		)
 		{
 			if(this.isDebugging()){
 				logging.timeEnd('COMPILE');
 			};
-			result = Templatec.call(name, this);
+			result = JSmarty.Templatec.call(name, this);
 		};
 
 		if(display){
@@ -401,7 +403,7 @@ JSmarty.prototype =
 			return self.compiler;
 		}(this);
 	},
-	getResourceName : function(name){
+	getTemplateName : function(name){
 		return (0 <= name.indexOf(':')) ? name : this.default_resource_type + ':' + name;
 	},
 	/**

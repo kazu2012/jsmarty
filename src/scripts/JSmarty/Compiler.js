@@ -233,3 +233,6 @@ JSmarty.Compiler.MODSYMBL = '@@COMPILER::MODIFIER@@';
 JSmarty.Compiler.toUcfirst = function(s){
 	return s.slice(0,1).toUpperCase().concat(s.slice(1));
 };
+JSmarty.Compiler.isBuiltIn = function(name){
+	return (this.toUcfirst(name) in this);
+};

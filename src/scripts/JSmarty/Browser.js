@@ -37,7 +37,7 @@ JSmarty.Browser =
 			var p = s[s.length - 1].getAttribute('src');
 			var i = p.lastIndexOf('/'), s = null;
 			p = (i == -1) ? path : path + p.slice(0, i);
-			JSmarty.Plugin.dir = [p + '/plugins', p + '/internals'];
+			JSmarty.Plugin.repos = [p + '/plugins', p + '/internals'];
 		})();
 
 		delete(this.buildSystemObject);
@@ -48,9 +48,9 @@ JSmarty.Browser =
 			read : function(f, d)
 			{
 				var a = this.buildPath(f, d);
-				var i, t, r, h = JSmarty.Browser.Request;
+				var i, t, r, x, h = JSmarty.Browser.Request;
 
-				for(i=a.length-1;0<=i;i--)
+				for(i=0,x=a.length;i<x;i++)
 				{
 					try
 					{

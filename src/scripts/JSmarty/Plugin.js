@@ -4,7 +4,7 @@ JSmarty.Plugin =
 	 * Repository
 	 * @type Array
 	 */
-	dir : ['.'],
+	repos : ['.'],
 	/**
 	 * additional plugin types
 	 * @type Object
@@ -74,7 +74,7 @@ JSmarty.Plugin =
 	add : function(namespace, repository)
 	{
 		return (namespace in this) || this.parse(
-			JSmarty.System.read(namespace + '.js', repository || this.dir), namespace
+			JSmarty.System.read(namespace + '.js', repository || this.repos), namespace
 		);
 	},
 	unset : function(namespace)

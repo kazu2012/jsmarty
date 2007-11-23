@@ -9,37 +9,35 @@ JSmarty.Classes.Item.extend
 		this.put('type', parts[0]);
 		this.put('name', parts[1]);
 		this.put('namespace', namespace);
+	},
+	load : function(renderer)
+	{
+		var f, Plugin = JSmarty.Plugin;
+		var dir = renderer.plugins_dir;
+
+		if(Plugin.add('resource.' + this.get('type'), dir))
+		{
+			f = Plugin.get('resource.' + this.get('type'), dir);
+			this.put('isFailure',
+				!(f[0](this.get('name'), this, renderer)
+				&&f[1](this.get('name'), this, renderer))
+			);
+		};
+
+		if(this.get('isFailure'))
+		{
+			f = renderer.default_template_handler_func;
+			switch(typeof(f))
+			{
+				case 'function':
+					this.put('isFailure', !f(this.get('type'), this.get('name'), this, renderer));
+					break;
+				default:
+					renderer.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
+					break;
+			};
+		};
+
+		return this;
 	}
 });
-
-JSmarty.Classes.Item.fetch = function(name, renderer)
-{
-	var item = new this(name);
-	var f, Plugin = JSmarty.Plugin;
-	var dir = renderer.plugins_dir;
-
-	if(Plugin.add('resource.' + item.get('type'), dir))
-	{
-		f = Plugin.get('resource.' + item.get('type'), dir);
-		item.put('isFailure',
-			!(f[0](item.get('name'), item, renderer)
-			&&f[1](item.get('name'), item, renderer))
-		);
-	};
-
-	if(item.get('isFailure'))
-	{
-		f = renderer.default_template_handler_func;
-		switch(typeof(f))
-		{
-			case 'function':
-				item.put('isFailure', !f(item.get('type'), item.get('name'), item, renderer));
-				break;
-			default:
-				renderer.trigger_error("default template handler function \"this.default_template_handler_func\" doesn't exist.");
-				break;
-		};
-	};
-
-	return item;
-};

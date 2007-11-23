@@ -1,11 +1,11 @@
 /**
- * JSmarty plugin
- * @package JSmarty
+ * renderer plugin
+ * @package renderer
  * @subpackage plugins
  */
 
 /**
- * JSmarty {fetch} function plugin
+ * renderer {fetch} function plugin
  *
  * Type:     function<br />
  * Name:     fetch<br />
@@ -15,28 +15,28 @@
  * @version  1.0.0RC2
  * @see      http://smarty.php.net/manual/en/language.function.fetch.php
  * @param    {Object}  params parameters
- * @param    {JSmarty} jsmarty JSmarty
+ * @param    {renderer} renderer renderer
  * @return   {String}
  */
-function jsmarty_function_fetch(params, jsmarty)
+function jsmarty_function_fetch(params, renderer)
 {
 	var name, cache, caches = jsmarty_function_fetch.caches;
 
 	if(!('file' in params)){
-		jsmarty.trigger_error('fetch : parameter "file" cannot be empty', 'die');
+		renderer.trigger_error('fetch : parameter "file" cannot be empty', 'die');
 		return;
 	};
 
-	name = jsmarty.getResourceName(params.file);
+	name = renderer.getTemplateName(params.file);
 	cache = caches[name] || function()
 	{
-		caches[name] = JSmarty.Classes.Item.fetch(name, jsmarty);
-		return caches[name];
+		caches[name] = new JSmarty.Classes.Item(name);
+		return caches[name].load(renderer);
 	}();
 
 	if(params.assign)
 	{
-		jsmarty.assign(params.assign, cache.get('src'));
+		renderer.assign(params.assign, cache.get('src'));
 		return;
 	};
 

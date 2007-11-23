@@ -94,6 +94,8 @@ JSmarty.Compiler.Context.prototype =
 
 		switch(true)
 		{
+			case (JSmarty.Compiler.isBuiltIn(name)):
+				return 'builtin';
 			case (name in this.$blockElement):
 				return 'block';
 			case (Plugin.add('function.' + name, this.plugins_dir)):
