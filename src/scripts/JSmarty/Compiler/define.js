@@ -82,6 +82,14 @@ JSmarty.Compiler.define
 					','+ this.toModify() +')';
 			}
 		},
+		Compiler :
+		{
+			parse : function(ctx)
+			{
+				alert(this.text);
+				return this;
+			}
+		},
 		Ldelim :
 		{
 			sString : '$.left_delimiter'

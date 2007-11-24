@@ -237,5 +237,10 @@ Model =
 		smarty.assign('text','El ingenioso hidalgo Don Quijote de La Mancha');
 		smarty.display('wordwrap.txt');
 		smarty.clear_all_assign();
+	},
+	Assign : function()
+	{
+		smarty.display('assign.txt');
+		smarty.clear_all_assign();
 	}
 };

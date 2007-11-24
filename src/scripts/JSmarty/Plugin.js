@@ -6,6 +6,11 @@ JSmarty.Plugin =
 	 */
 	repos : ['.'],
 	/**
+	 * Repository for internals
+	 * @type String
+	 */
+	internals : './internals',
+	/**
 	 * additional plugin types
 	 * @type Object
 	 */
@@ -21,48 +26,48 @@ JSmarty.Plugin =
 	 * @param  {String} namespace namespace of plugin
 	 * @return {Boolean} evalute done, or not.
 	 */
-	parse : function(script, namespace)
+	parse : function(script, pluginName)
 	{
 		var global = this.get('core.global');
-		var realname = this.realname(namespace);
+		var realname = this.realname(pluginName);
 		var f, suffix = 'return ' + realname + ';';
 
 		if(global(realname))
 		{
-			this[namespace] = global()[realname];
-			return !!this[namespace];
+			this[pluginName] = global()[realname];
+			return !!this[pluginName];
 		};
 
 		try
 		{
 			if(script){ script += 'return ' + realname +';'; };
 			f = new Function(script || 'return null;');
-			this[namespace] = f();
+			this[pluginName] = f();
 		}
 		catch(e)
 		{
-			this[namespace] = null;
+			this[pluginName] = null;
 			JSmarty.Logger.error(e);
 		};
 
-		return !!f;
+		return !!this[pluginName];
 	},
 	/**
-	 * @param namespace namespace of plugin
-	 * @param f function
+	 * @param {String} the name of plugin
+	 * @param {Function}
 	 */
-	set : function(namespace, f){
-		this[namespace] = f;
+	set : function(pluginName, func){
+		this[pluginName] = func;
 	},
 	/**
-	 * @param {String} namespace namaspace of plugin
-	 * @param {Array} repository repository path of plugins. 
+	 * @param {String} the name of plugin
+	 * @param {Array} the path to directory of plugins
 	 * @type Boolean
 	 */
-	get : function(namespace, repository)
+	get : function(pluginName, repository)
 	{
-		return this[namespace] || function(self){
-			return (self.add(namespace, repository)) ? self[namespace] : self.F;
+		return this[pluginName] || function(self){
+			return (self.add(pluginName, repository)) ? self[pluginName] : self.F;
 		}(this);
 	},
 	/**
@@ -71,25 +76,38 @@ JSmarty.Plugin =
 	 * @param {mixed}  repository The repository path of plugins. 
 	 * @type Boolean
 	 */
-	add : function(namespace, repository)
+	add : function(pluginName, repository)
 	{
-		return (namespace in this) || this.parse(
-			JSmarty.System.read(namespace + '.js', repository || this.repos), namespace
+		return (pluginName in this) || this.parse(
+			JSmarty.System.read(pluginName + '.js', repository || this.internals), pluginName
 		);
 	},
-	unset : function(namespace)
+	/**
+	 * @param {String} the name of plugin
+	 */
+	unset : function(pluginName)
 	{
-		this[namespace] = null;
-		delete(this[namespace]);
+		this[pluginName] = null;
+		delete(this[pluginName]);
 	},
-	realname : function(namespace)
+	/**
+	 * Return the name of plugin.
+	 * @param {String} the type of plugin
+	 * @param {String} the name of function
+	 * @return the name of plugin.
+	 */
+	name : function(type, funcName){
+		return type + '.' + funcName;
+	},
+	/**
+	 * Return the name of JavaScript function.
+	 * @param {String} the 
+	 */
+	realname : function(pluginName)
 	{
-		var names = namespace.split('.');
-		if(this.additional[names[0]]){ return names[1]; };
-		return ['jsmarty'].concat(names).join('_');
-	},
-	namespace : function(type, name){
-		return type + '.' + name;
+		var name = pluginName.split('.');
+		if(this.additional[name[0]]){ return name[1]; };
+		return ['jsmarty'].concat(name).join('_');
 	},
 	/**
 	 * import functions for globalObject
@@ -97,14 +115,14 @@ JSmarty.Plugin =
 	 */
 	importer : function()
 	{
-		var i, namespace, dir = this.dir;
+		var i, pluginName, dir = this.dir;
 		var global = this.get('core.global')();
 
 		for(i=arguments.length-1;0<=i;i--)
 		{
-			namespace = arguments[i];
-			if(this.add(namespace, dir)){
-				global[namespace.split('.')[1]] = this[namespace];
+			pluginName = arguments[i];
+			if(this.add(pluginName, dir)){
+				global[pluginName.split('.')[1]] = this[pluginName];
 			};
 		};
 

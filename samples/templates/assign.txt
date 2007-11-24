@@ -1,0 +1,11 @@
+<h2>compiler : assign</h2>
+<h3>Model</h3>
+{model name="assign"}
+<h3>Template</h3>
+{literal|htmlspecialchars|nl2br}
+{assign var="foo" value="Hello World!!"}
+{$foo}
+{/literal}
+<h3>Result</h3>
+{assign var="foo" value="Hello World!!"}
+{$foo}

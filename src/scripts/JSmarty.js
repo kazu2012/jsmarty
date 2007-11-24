@@ -18,11 +18,8 @@
  * @class This is the JSmarty class
  * @constructor
  */
-function JSmarty()
-{
-	this.initialize();
-	delete(this.initialize);
-};
+function JSmarty(){ this.initialize(); };
+
 JSmarty.prototype =
 {
 	config_dir   : 'configs',
@@ -427,9 +424,9 @@ JSmarty.prototype =
 	{
 		var Plugin = JSmarty.Plugin;
 		var type = (src != null) ? 'block' : 'function';
-		var f, namespace = Plugin.namespace(type, name);
+		var f, pluginName = Plugin.name(type, name);
 
-		f = Plugin.get(namespace, this.plugins_dir);
+		f = Plugin.get(pluginName, this.plugins_dir);
 		if(type == 'function'){
 			return this.$m(modify, f(params, this));
 		}

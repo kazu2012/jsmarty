@@ -136,6 +136,8 @@ JSmarty.Compiler = function(renderer)
 		// prefilter
 		return filter(buf.toString(), 'post');
 	};
+
+	this.getRenderer = function(){ return renderer; };
 };
 
 /**
@@ -164,13 +166,22 @@ JSmarty.Compiler.define = function(s, o)
  * @param {String} con context
  * @return {Compiler.String}
  **/
-JSmarty.Compiler.newString = function(src, con)
+JSmarty.Compiler.newString = function(src, ctx)
 {
 	var module;
-	module = (con.isPlain()) ? new this.Plains(src): new this.String(src);
-	module.parse(con);
+	module = (ctx.isPlain()) ? new this.Plains(src): new this.String(src);
+	module.parse(ctx);
 	return module;
 };
+
+/**
+JSmarty.Compiler.newString = function(src, ctx)
+{
+	return (ctx.isPlain()) ?
+		(new this.Plains(src)).parse(ctx) :
+		(new this.String(src)).parse(ctx) ;
+};
+**/
 
 JSmarty.Compiler.newModule = function(t, c)
 {

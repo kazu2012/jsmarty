@@ -6,17 +6,15 @@ JSmarty.Templatec = JSmarty.Classes.extend(JSmarty.Classes('History'))
 	isCompiled : function(item, isForceCompile)
 	{
 		if(isForceCompile){ return false; };
-		return this.containsKey(item.get('name'));
+		return this.containsKey(item.get('namespace'));
 	},
 	newFunction : function(item, compiler)
 	{
-		var src;
-
 		if(!item.get('isFailure'))
 		{
 			try
 			{
-				src = compiler.execute(item.get('src'));
+				var src = compiler.execute(item.get('src'));
 				this.put(item.get('namespace'), new Function('$', src));
 				return true;
 			}
