@@ -4,13 +4,12 @@
 <h3>Template</h3>
 {literal|htmlspecialchars|nl2br}
 <textarea style="width:98%;">
-{include file="default.txt" foo="foo"}
+{include file="default.txt" foo="Hello Foo!!"}
 </textarea>
 {$foo}
 {/literal}
 <h3>Result</h3>
-{$foo}
 <textarea rows="10" style="width:98%;">
-{include file="default.txt" foo="foo"}
+{include file="default.txt" foo="Hello Foo!!"}
 </textarea>
 {$foo}
