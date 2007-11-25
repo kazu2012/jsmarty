@@ -7,11 +7,17 @@
 {/template}
 <h3>Result</h3>
 {if $hoge==1}
-Hello, World!! Part1.
+Hello World!! Part1-1
 {elseif $hoge==2}
-Hello, World!! Part2.
+Hello World!! Part1-2
 {elseif $hoge==3}
-Hello, World!! Part3.
+Hello World!! Part1-3
 {else}
-Hello, World!! Part4.
+Hello World!! Part1-3
+{/if}
+<br />
+{if $hoge.hoge==0}
+Hello World!! Part2-1
+{else}
+Hello World!! Part2-2
 {/if}

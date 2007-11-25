@@ -124,6 +124,7 @@ JSmarty.Compiler.define
 			},
 			toExpression : function()
 			{
+				var buf = JSmarty.Classes('Buffer');
 				var iap = this.get('iap'), op = this.OPERATORS;
 				var i, f, c, s = this.text.slice(this.iap).split('');
 
@@ -156,7 +157,7 @@ JSmarty.Compiler.define
 					};
 				};
 
-				return s.join('');
+				return buf.append('(function(){ try{ return (', s.join('') ,'); }catch(e){ return false; }; })()').toString();
 			}
 		},
 		Else :

@@ -2,69 +2,148 @@ JSmarty.Classes.HashMap = JSmarty.Classes.create(null);
 JSmarty.Classes.HashMap.prototype =
 {
 	/** @private **/
-	$pool : null,
-	/** @private **/
 	$keys : null,
 	/** @private **/
-	$maps : null,
+	$values : null,
+	/** @private **/
+	$entries : null,
+	/**
+	 *
+	 */
 	initialize : function(){
 		this.clear();
 	},
+	/**
+	 *
+	 * @params {String}
+	 */
 	get : function(key){
-		return this.$pool[this.$maps[key]];
+		return this.$values[this.$entries[key]];
 	},
+	/**
+	 *
+	 * @params {String} 
+	 * @params {Object} 
+	 */
 	put : function(key, value)
 	{
 		var i = this.size();
 
-		this.$pool[i] = value;
 		this.$keys[i] = key;
-		this.$maps[key] = i;
+		this.$values[i] = value;
+		this.$entries[key] = i;
 
 		return value;
 	},
+	/**
+	 *
+	 * @params {String}
+	 */
 	containsKey : function(key){
-		return (key in this.$maps);
+		return (key in this.$keys);
 	},
+	/**
+	 *
+	 * @params {Object}
+	 */
 	containsValue : function(value)
 	{
-		var i, values = this.$pool;
+		var i, values = this.$values;
 		for(i=values.length-1;0<=i;i--){
 			if(value == values[i]){ return true; };
 		};
 		return false;
 	},
+	/**
+	 *
+	 * @params {String}
+	 */
 	remove : function(key)
 	{
-		var i, map, n = this.$maps[key];
+		var i = this.$entries[key];
 
-		this.$pool.splice(n, 1);
-		this.$keys.splice(n, 1);
-		key = this.$keys, map = this.$maps = {};
-		for(i=this.size()-1;0<=i;i--){ map[key[i]] = i; };
+		this.$keys.splice(i, 1);
+		this.$values.splice(i, 1);
+
+		this.doMapping();
 	},
-	clear : function(){
-		this.$maps = {}, this.$pool = [], this.$keys = [];
+	/**
+	 *
+	 */
+	clear : function()
+	{
+		this.$keys = [];
+		this.$values = [];
+		this.$entries = {};
 	},
+	/**
+	 *
+	 * @return {Number}
+	 */
+	size : function(){
+		return this.$values.length;
+	},
+	/**
+	 * Return 
+	 * @return {JSmarty.Classes.HashMap}
+	 */
 	clone : function(){
 		return JSmarty.Plugin.get('core.clone')(this);
 	},
+	/**
+	 *
+	 * @return {Array}
+	 */
 	values : function(){
-		return [].concat(this.$pool);
+		return [].concat(this.$values);
 	},
-	size : function(){
-		return this.$pool.length;
+	/**
+	 *
+	 * @return {Array}
+	 */
+	entrySet : function(){
+		return JSmarty.Plugin.get('core.clone')(this.$entries);
 	},
-	entrySet : function()
+	/**
+	 *
+	 * @param {Object} 
+	 */
+	putAll : function(target)
 	{
+		var key, length = this.size();
+		var keys = this.$keys, values = this.$values;
+
+		if(key in target)
+		{
+			if(!this.containsKey(key) && target.hasOwnProperty(key))
+			{
+				keys[length++] = key;
+				values[length++] = target[key];
+			};
+		};
+
+		this.doMapping();
 	},
-	putAll : function()
-	{
+	/**
+	 * 
+	 * @return {Array}
+	 */
+	keySet : function(){
+		return [].concat(this.$keys);
 	},
-	keySet : function()
-	{
+	/**
+	 * 
+	 * @return {Boolean}
+	 */
+	isEmpty : function(){
+		return (this.$values.length == 0);
 	},
-	isEmpty : function()
+	/**
+	 *
+	 */
+	doMapping : function()
 	{
+		var i, keys = this.$keys, entries = this.$entries = {};
+		for(i=this.size()-1;0<=i;i--){ entries[keys[i]] = i; };
 	}
 };

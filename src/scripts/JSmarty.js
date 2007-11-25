@@ -216,6 +216,7 @@ JSmarty.prototype =
 	{
 		name = this.getTemplateName(name);
 
+		var Templatec = JSmarty.Templatec;
 		var logging, temp = [].concat(this.plugins_dir);
 		var result, item = new JSmarty.Classes.Item(name);
 
@@ -230,14 +231,14 @@ JSmarty.prototype =
 
 		if
 		(
-			JSmarty.Templatec.isCompiled(item, this.force_compile) ||
-			JSmarty.Templatec.newFunction(item.load(this), this.getCompiler())
+			Templatec.isCompiled(item, this.force_compile) ||
+			Templatec.newFunction(item.load(this), this.getCompiler())
 		)
 		{
 			if(this.isDebugging()){
 				logging.timeEnd('COMPILE');
 			};
-			result = JSmarty.Templatec.call(name, this);
+			result = Templatec.call(name, this);
 		};
 
 		if(display){
@@ -272,116 +273,116 @@ JSmarty.prototype =
 	},
 	/**
 	 * register_block function
-	 * @param {String} n the name of block plugin.
-	 * @param {Function} f
+	 * @param {String} the name of block plugin.
+	 * @param {Function}
 	 */
-	register_block : function(n, f){
-		JSmarty.Plugin.set('block.' + n, f);
+	register_block : function(name, implement){
+		JSmarty.Plugin.set('block.' + name, implement);
 	},
 	/**
 	 * unregister_block function
 	 * @param {String} n the name of block plugin.
 	 */
-	unregister_block : function(n){
-		JSmarty.Plugin.unset('block.' + n);
+	unregister_block : function(name){
+		JSmarty.Plugin.unset('block.' + name);
 	},
 	/**
 	 * register_function function
-	 * @param {String} n the name of function plugin.
-	 * @param {Function} i
+	 * @param {String} the name of function plugin.
+	 * @param {Function} implement for plugin
 	 */
-	register_function : function(n, f){
-		JSmarty.Plugin.set('function.' + n, f);
+	register_function : function(name, implement){
+		JSmarty.Plugin.set('function.' + name, implement);
 	},
 	/**
 	 * unregister_function function
-	 * @param {String} n the name of function plugin.
+	 * @param {String} the name of function plugin.
 	 */
-	unregister_function : function(n){
-		JSmarty.Plugin.unset('function.' + n);
+	unregister_function : function(name){
+		JSmarty.Plugin.unset('function.' + name);
 	},
 	/**
 	 * register_modifier function
-	 * @param {String} n the name of modifier plugin.
+	 * @param {String} the name of modifier plugin.
 	 * @param {Function} i
 	 */
-	register_modifier : function(n, f){
-		JSmarty.Plugin.set('modifier.' + n, f);
+	register_modifier : function(name, implement){
+		JSmarty.Plugin.set('modifier.' + name, implement);
 	},
 	/**
 	 * unregister_modifier function
 	 * @param {String} n the name of modifier plugin.
 	 */
-	unregister_modifier : function(n){
-		JSmarty.Plugin.unset('modifier.' + n);
+	unregister_modifier : function(name){
+		JSmarty.Plugin.unset('modifier.' + name);
 	},
-	register_resource : function(n, f)
+	register_resource : function(name, implement)
 	{
-		if(f instanceof Array && f.length == 4){
-			JSmarty.Plugin.set('resource.' + n, f);
+		if(implement instanceof Array && implement.length == 4){
+			JSmarty.Plugin.set('resource.' + name, implement);
 		}else{
-			this.trigger_error("malformed function-list for '"+ f +"' in register_resource");
+			this.trigger_error("malformed function-list for '"+ name +"' in register_resource");
 		};
 	},
-	unregister_resource : function(n){
-		JSmarty.Plugin.unset('resource.' + n);
+	unregister_resource : function(name){
+		JSmarty.Plugin.unset('resource.' + name);
 	},
-	register_compiler_function : function(n, f){
-		JSmarty.Plugin.set('compiler.' + n, f);
+	register_compiler_function : function(name, implement){
+		JSmarty.Plugin.set('compiler.' + name, implement);
 	},
-	unregister_compiler_function : function(n){
-		JSmarty.Plugin.unset('compiler.' + n);
+	unregister_compiler_function : function(name){
+		JSmarty.Plugin.unset('compiler.' + name);
 	},
 	load_filter : function(t, n)
 	{
 	},
 	/**
 	 * register_prefilter function
-	 * @param {String} n the name of prefilter
+	 * @param {String} the name of prefilter
 	 */
-	register_prefilter : function(n)
+	register_prefilter : function(name)
 	{
 		var g = JSmarty.Plugin.get('shared.global')();
-		JSmarty.Plugin.get('prefilter.' + n, g[n]);
+		JSmarty.Plugin.get('prefilter.' + name, g[name]);
 	},
 	/**
 	 * unregister_prefilter function
-	 * @param {String} n the name of prefilter
+	 * @param {String} the name of prefilter
 	 */
-	unregister_prefilter : function(n){
-		JSmarty.Plugin.unset('prefilter.' + n);
+	unregister_prefilter : function(name){
+		JSmarty.Plugin.unset('prefilter.' + name);
 	},
 	/**
 	 * register_postfilter function
-	 * @param {String} n the name of postfilter
+	 * @param {String} the name of postfilter
 	 */
-	register_postfilter : function(n)
+	register_postfilter : function(name)
 	{
 		var g = JSmarty.Plugin.get('shared.global')();
-		JSmarty.Plugin.set('postfilter.' + n, g[n]);
+		JSmarty.Plugin.set('postfilter.' + name, g[name]);
 	},
 	/**
 	 * unregister_postfilter function
-	 * @param {String} n the name of postfilter
+	 * @param {String} the name of postfilter
 	 */
-	unregister_postfilter : function(n){
-		JSmarty.Plugin.unset('postfilter.' + n);
+	unregister_postfilter : function(name){
+		JSmarty.Plugin.unset('postfilter.' + name);
 	},
 	/**
 	 * register_outputfilter function
-	 * @param {String} n the name of postfilter
+	 * @param {String} the name of postfilter
 	 */
-	register_outputfilter : function(n)
+	register_outputfilter : function(name)
 	{
 		var g = JSmarty.Plugin.get('shared.global')();
-		JSmarty.Plugin.set('outputfilter.' + n, g[n]);
+		JSmarty.Plugin.set('outputfilter.' + name, g[name]);
 	},
 	/**
 	 * unregister_outputfilter function
-	 * @param {String} n the name of postfilter
+	 * @param {String} the name of postfilter
 	 */
-	unregister_outputfilter : function(n){
-		JSmarty.Plugin.unset('outputfilter.' + n);
+	unregister_outputfilter : function(name){
+		JSmarty.Plugin.unset('outputfilter.' + name);
 	},
 	/**
 	 * trigger_error function

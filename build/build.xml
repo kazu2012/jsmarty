@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSmarty" default="JSmarty" basedir="../">
 
-	<property name="version" value="0.4.2a" /> 
+	<property name="version" value="0.5.0M1" /> 
 
 	<!-- Directories -->
 
