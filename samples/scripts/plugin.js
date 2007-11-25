@@ -242,5 +242,11 @@ Model =
 	{
 		smarty.display('assign.txt');
 		smarty.clear_all_assign();
+	},
+	Include : function()
+	{
+		smarty.assign('foo', 'Hello World!!');
+		smarty.display('include.txt');
+		smarty.clear_all_assign();
 	}
 };

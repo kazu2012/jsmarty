@@ -18,7 +18,32 @@
  */
 function jsmarty_function_include(params, renderer)
 {
-	var result;
+	if(!('file' in params))
+	{
+		renderer.trigger_error('fetch : parameter "file" cannot be empty', 'die');
+		return;
+	};
 
-	return result;
+	var i, temp, Templatec = JSmarty.Templatec;
+	var templateName = renderer.getTemplateName(params.file);
+	var result, item = new JSmarty.Classes.Item(templateName);
+
+	if
+	(
+		Templatec.isCompiled(item, renderer.force_compile) ||
+		Templatec.newFunction(item.load(renderer), renderer.getCompiler())
+	)
+	{
+		temp = renderer.$vars;
+		renderer.$vars = JSmarty.Plugin.get('core.clone')(temp);
+		for(i in params)
+		{
+			if(i == 'file'){ continue; };
+			renderer.assign(i, params[i]);
+		};
+		result = Templatec.call(templateName, renderer);
+		renderer.$vars = temp;
+	};
+
+	return result || '';
 };

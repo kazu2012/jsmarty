@@ -15,14 +15,15 @@
  * @version  1.0.0RC2
  * @see      http://smarty.php.net/manual/en/language.function.fetch.php
  * @param    {Object}  params parameters
- * @param    {renderer} renderer renderer
+ * @param    {JSmarty} renderer renderer
  * @return   {String}
  */
 function jsmarty_function_fetch(params, renderer)
 {
 	var name, cache, caches = jsmarty_function_fetch.caches;
 
-	if(!('file' in params)){
+	if(!('file' in params))
+	{
 		renderer.trigger_error('fetch : parameter "file" cannot be empty', 'die');
 		return;
 	};
