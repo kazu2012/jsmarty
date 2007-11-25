@@ -84,9 +84,12 @@ JSmarty.Compiler.define
 		},
 		Compiler :
 		{
+			sPrefix : '',
+			sSuffix : '',
 			parse : function(ctx)
 			{
-				alert(this.text);
+				var func = JSmarty.Plugin.get('compiler.' + this.getName().slice(1, -1));
+				this.sString = func(this.text, this);
 				return this;
 			}
 		},

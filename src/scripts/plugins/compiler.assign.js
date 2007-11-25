@@ -12,13 +12,13 @@
  * Original: Smarty {assign} compiler plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0
- * @param    {String} attrs
- * @param    {Compiler} compiler
+ * @version  1.0.0RC1
+ * @param    {Module}
+ * @param    {Context}
  * @return   {String}
  */
-function jsmarty_compiler_assign(attrs, compiler)
+function jsmarty_compiler_assign(module, context)
 {
-	
-	return '';
+	var buf = JSmarty.Classes('Buffer');
+	return buf.append('$.assign(',')').toString();
 };

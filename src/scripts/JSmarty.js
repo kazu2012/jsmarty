@@ -219,7 +219,7 @@ JSmarty.prototype =
 		var logging, temp = [].concat(this.plugins_dir);
 		var result, item = new JSmarty.Classes.Item(name);
 
-		this.plugins_dir = this.plugins_dir.concat(JSmarty.Plugin.repos);
+		this.plugins_dir = JSmarty.Plugin.repos.concat(this.plugins_dir);
 
 		if(this.isDebugging())
 		{
