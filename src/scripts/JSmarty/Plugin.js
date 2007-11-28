@@ -110,6 +110,13 @@ JSmarty.Plugin =
 		return ['jsmarty'].concat(name).join('_');
 	},
 	/**
+	 *
+	 *
+	 */
+	isEnabled : function(pluginName, repos){
+		return (pluginName in this) ? !!this[pluginName] : this.add(pluginName, repos);
+	},
+	/**
 	 * import functions for globalObject
 	 * @param {String...}
 	 */
@@ -127,6 +134,10 @@ JSmarty.Plugin =
 		};
 
 		global = null;
+	},
+	'util.invokeArgs' : function()
+	{
+		
 	},
 	'core.global' : function(globalObject)
 	{
