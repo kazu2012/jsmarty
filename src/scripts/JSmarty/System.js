@@ -23,7 +23,7 @@ JSmarty.System =
 	},
 	getName : function()
 	{
-		var global = JSmarty.Plugin.get('core.global');
+		var global = JSmarty.Plugin['util.global'];
 		if(global('System', 'Core')){ return 'ajaja'; };
 		if(global('window', 'System')){ return 'gadget'; };
 		if(global('window', 'document')){ return 'browser'; };

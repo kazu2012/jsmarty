@@ -276,8 +276,8 @@ JSmarty.prototype =
 	 * @param {String} the name of block plugin.
 	 * @param {Function}
 	 */
-	register_block : function(name, implement){
-		JSmarty.Plugin.set('block.' + name, implement);
+	register_block : function(name, impl){
+		JSmarty.Plugin.set('block.' + name, impl);
 	},
 	/**
 	 * unregister_block function
@@ -289,10 +289,10 @@ JSmarty.prototype =
 	/**
 	 * register_function function
 	 * @param {String} the name of function plugin.
-	 * @param {Function} implement for plugin
+	 * @param {Function} impl for plugin
 	 */
-	register_function : function(name, implement){
-		JSmarty.Plugin.set('function.' + name, implement);
+	register_function : function(name, impl){
+		JSmarty.Plugin.set('function.' + name, impl);
 	},
 	/**
 	 * unregister_function function
@@ -306,8 +306,8 @@ JSmarty.prototype =
 	 * @param {String} the name of modifier plugin.
 	 * @param {Function} i
 	 */
-	register_modifier : function(name, implement){
-		JSmarty.Plugin.set('modifier.' + name, implement);
+	register_modifier : function(name, impl){
+		JSmarty.Plugin.set('modifier.' + name, impl);
 	},
 	/**
 	 * unregister_modifier function
@@ -316,10 +316,10 @@ JSmarty.prototype =
 	unregister_modifier : function(name){
 		JSmarty.Plugin.unset('modifier.' + name);
 	},
-	register_resource : function(name, implement)
+	register_resource : function(name, impl)
 	{
-		if(implement instanceof Array && implement.length == 4){
-			JSmarty.Plugin.set('resource.' + name, implement);
+		if(impl instanceof Array && impl.length == 4){
+			JSmarty.Plugin.set('resource.' + name, impl);
 		}else{
 			this.trigger_error("malformed function-list for '"+ name +"' in register_resource");
 		};
@@ -327,8 +327,8 @@ JSmarty.prototype =
 	unregister_resource : function(name){
 		JSmarty.Plugin.unset('resource.' + name);
 	},
-	register_compiler_function : function(name, implement){
-		JSmarty.Plugin.set('compiler.' + name, implement);
+	register_compiler_function : function(name, impl){
+		JSmarty.Plugin.set('compiler.' + name, impl);
 	},
 	unregister_compiler_function : function(name){
 		JSmarty.Plugin.unset('compiler.' + name);
@@ -342,7 +342,7 @@ JSmarty.prototype =
 	 */
 	register_prefilter : function(name)
 	{
-		var g = JSmarty.Plugin.get('shared.global')();
+		var g = JSmarty.Plugin['util.global']();
 		JSmarty.Plugin.get('prefilter.' + name, g[name]);
 	},
 	/**
@@ -358,7 +358,7 @@ JSmarty.prototype =
 	 */
 	register_postfilter : function(name)
 	{
-		var g = JSmarty.Plugin.get('shared.global')();
+		var g = JSmarty.Plugin['util.global']();
 		JSmarty.Plugin.set('postfilter.' + name, g[name]);
 	},
 	/**
@@ -374,7 +374,7 @@ JSmarty.prototype =
 	 */
 	register_outputfilter : function(name)
 	{
-		var g = JSmarty.Plugin.get('shared.global')();
+		var g = JSmarty.Plugin['util.global']();
 		JSmarty.Plugin.set('outputfilter.' + name, g[name]);
 	},
 	/**

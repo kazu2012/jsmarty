@@ -23,7 +23,7 @@ JSmarty.Compiler.Context.prototype =
 	},
 	initialize : function()
 	{
-		var clone = JSmarty.Plugin.get('core.clone');
+		var clone = JSmarty.Plugin['util.clone'];
 		this.$tags = [], this.$blockElement = {};
 		this.$plainElement = clone(JSmarty.Compiler.Context.PLAIN);
 	},

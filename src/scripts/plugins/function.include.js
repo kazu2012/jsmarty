@@ -11,7 +11,7 @@
  * Name:     include<br />
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.0RC1
+ * @version  1.0.0RC2
  * @param    {Object} params
  * @param    {JSmarty} renderer
  * @return   {String}
@@ -34,11 +34,10 @@ function jsmarty_function_include(params, renderer)
 		Templatec.newFunction(item.load(renderer), renderer.getCompiler())
 	)
 	{
+		delete(params.file);
 		temp = renderer.$vars;
-		renderer.$vars = JSmarty.Plugin.get('core.clone')(temp);
-		for(i in params)
-		{
-			if(i == 'file'){ continue; };
+		renderer.$vars = JSmarty.Plugin['util.clone'](temp);
+		for(i in params){
 			renderer.assign(i, params[i]);
 		};
 		result = Templatec.call(templateName, renderer);
