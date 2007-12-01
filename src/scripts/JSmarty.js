@@ -78,7 +78,7 @@ JSmarty.prototype =
 	 */
 	assign : function(k, v)
 	{
-		var o = this.$vars, c = JSmarty.Plugin.get('core.copy_object');
+		var o = this.$vars, c = JSmarty.Plugin['util.copy'];
 		if(k instanceof Object){
 			for(var i in k){ o[i] = c(k[i])};
 		}else if(k != ''){

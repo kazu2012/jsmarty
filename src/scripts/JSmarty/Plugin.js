@@ -28,7 +28,7 @@ JSmarty.Plugin =
 	 */
 	parse : function(script, pluginName)
 	{
-		var global = this.get('core.global');
+		var global = this.get('util.global');
 		var realname = this.realname(pluginName);
 		var f, suffix = 'return ' + realname + ';';
 
@@ -47,7 +47,7 @@ JSmarty.Plugin =
 		catch(e)
 		{
 			this[pluginName] = null;
-			JSmarty.Logger.error(e);
+			JSmarty.Logger.invoke('error')(e);
 		};
 
 		return !!this[pluginName];
@@ -123,7 +123,7 @@ JSmarty.Plugin =
 	importer : function()
 	{
 		var i, pluginName, dir = this.dir;
-		var global = this.get('core.global')();
+		var global = this.get('util.global')();
 
 		for(i=arguments.length-1;0<=i;i--)
 		{
@@ -135,11 +135,15 @@ JSmarty.Plugin =
 
 		global = null;
 	},
-	'util.invokeArgs' : function()
+	'util.invokeArgs' : function(funcs)
 	{
-		
+		var i, f;
+		for(i=0,f=funcs.length;i<f;i++){
+			try{ return funcs[i](); }catch(e){};
+		};
+		return null;
 	},
-	'core.global' : function(globalObject)
+	'util.global' : function(globalObject)
 	{
 		return function()
 		{
@@ -153,16 +157,13 @@ JSmarty.Plugin =
 			return (c == -1);
 		};
 	}(this),
-	'core.clone' : function(o)
+	'util.clone' : function(o)
 	{
 		function f(){};
 		f.prototype = o;
 		return new f();
 	},
-	'core.copy_array' : function(v){
-		return [].concat(v);
-	},
-	'core.copy_object' : function(value)
+	'util.copy' : function(value)
 	{
 		switch(typeof(value))
 		{
@@ -170,11 +171,10 @@ JSmarty.Plugin =
 				switch(true)
 				{
 					case (value instanceof Array):
-						return JSmarty.Plugin.get('core.copy_array')(value);
+						return [].concat(value);
 					case (value instanceof Object):
-						var i, o = {};
-						var copy_object = JSmarty.Plugin.get('core.copy_object');
-						for(i in value){ o[i] = copy_object(value[i]); };
+						var i, o = {}, copy = arguments.callee;
+						for(i in value){ o[i] = copy(value[i]); };
 						return o;
 				};
 				return null;
