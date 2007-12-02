@@ -30,8 +30,6 @@ JSmarty.System =
 	},
 	forName : function(name)
 	{
-		JSmarty.Logger = JSmarty.Classes('Logger');
-
 		switch(name)
 		{
 			case 'ajaja':
