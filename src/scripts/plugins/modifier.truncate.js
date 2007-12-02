@@ -12,7 +12,7 @@
  * Original: Smarty truncate modifier plugin
  *
  * @author   shogo < shogo4405 at gmail dot com>
- * @version  1.0.1
+ * @version  1.0.2
  * @see      http://smarty.php.net/manual/en/language.modifier.truncate.php
  * @param    {String} s string
  * @param    {Number} l length
@@ -23,17 +23,17 @@
  */
 function jsmarty_modifier_truncate(s, l, e, b, m)
 {
-	l = (l) ? Number(l) : 80;
+	if(l == 0){ return ''; };
 
-	if(l == 0){ return; };
-	if(e == void(0)){ e = '...' };
-	if(m == void(0)){ m = false; };
-	if(b == void(0)){ b = false; };
+	l = Number(l || 80);
+	e = (e == void(0)) ? e : '...';
 
-	if(s.length > length)
+	if(l < s.length)
 	{
-		l -= e.length;
-		if(!b && !m){ s = s.replace(/\s+?(\S+)?$/,'').slice(0, l + 1); };
+		l -= JSmarty.Plugin.get('php.min')(l, e.length);
+		if(!b && !m){
+			s = s.replace(/\s+?(\S+)?$/,'').slice(0, l + 1); 
+		};
 		return (!m) ? s.slice(0, l) + e : s.slice(0, l/2) + e + s.slice(-l/2);
 	};
 

@@ -20,5 +20,5 @@
 function jsmarty_compiler_assign(module, context)
 {
 	var buf = JSmarty.Classes('Buffer');
-	return buf.append('$.assign(',')').toString();
+	return buf.append('$.assign(',');').toString();
 };

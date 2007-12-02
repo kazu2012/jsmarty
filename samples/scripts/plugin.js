@@ -250,3 +250,5 @@ Model =
 		smarty.clear_all_assign();
 	}
 };
+
+
