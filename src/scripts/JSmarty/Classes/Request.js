@@ -1,10 +1,4 @@
 JSmarty.Classes.Request = JSmarty.Classes.create(null);
-JSmarty.Classes.Request.XMLNS =
-[
-	function(){ return new ActiveXObject(); },
-	function(){ return new ActiveXObject(); },
-	function(){ return new XMLHttpRequest(); }
-];
 JSmarty.Classes.Request.prototype =
 {
 	caching : null,

@@ -1,5 +1,5 @@
 JSmarty.Classes = function(className){
-	return new JSmarty.Classes[className]();
+	return new JSmarty.Classes[className];
 };
 JSmarty.Classes.extend = function(target)
 {
@@ -13,7 +13,9 @@ JSmarty.Classes.create = function(superclass)
 {
 	var f = function()
 	{
-		if(this.initialize){ this.initialize.apply(this, arguments); };
+		if(typeof(this.main) == 'functuion'){
+			this.main.apply(this, arguments);
+		};
 	};
 
 	if(typeof(superclass) == 'function')

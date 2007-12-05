@@ -386,11 +386,11 @@ JSmarty.prototype =
 	},
 	/**
 	 * trigger_error function
-	 * @param {String} m msg
-	 * @param {String} l level
+	 * @param {String} error message
+	 * @param {String} level
 	 */
-	trigger_error : function(m, l){
-		JSmarty.Logging[l || 'warn'](m, 'from', 'JSmarty');
+	trigger_error : function(msg, level){
+		JSmarty.Logger.invoke(level)(msg);
 	},
 	/** getter for compiler **/
 	getCompiler : function()

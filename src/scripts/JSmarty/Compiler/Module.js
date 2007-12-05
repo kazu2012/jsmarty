@@ -107,7 +107,7 @@ JSmarty.Compiler.Module.prototype =
 				case "'":
 					c = s[i++];
 					while(s[i] != c && i <= f){ ++i; };
-					if(f < i){ this._error(); };
+					if(f < i){ new Error('template syntax error'); };
 					if(s[i-1] == '\\'){ i--; };
 					break;
 				case '|':

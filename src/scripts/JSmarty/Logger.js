@@ -1,13 +1,21 @@
 JSmarty.Logger =
 {
-	console : null,
-	invokeMethod : function(method){
-		return (this.console[method] || function(){})
+	console : {},
+	dictionary : {},
+	invoke: function(method)
+	{
+		var m = this.dictionary[method] || method;
+		return (this.console[m] || function(){});
 	},
 	forName : function()
 	{
-		if(JSmarty.Plugin['util.global']('console')){
-			if(!!console.firebug){ JSmarty.Logger.console = console; };
+		if(JSmarty.Plugin['util.global']('console'))
+		{
+			if(!!console.firebug)
+			{
+				this.dictionary = {'die':'error'};
+				JSmarty.Logger.console = console;
+			};
 		};
 		this.forName = function(){};
 	}

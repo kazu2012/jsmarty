@@ -10,7 +10,7 @@ JSmarty.Classes.HashMap.prototype =
 	/**
 	 *
 	 */
-	initialize : function(){
+	main : function(){
 		this.clear();
 	},
 	/**
@@ -88,7 +88,7 @@ JSmarty.Classes.HashMap.prototype =
 	 * @return {JSmarty.Classes.HashMap}
 	 */
 	clone : function(){
-		return JSmarty.Plugin.get('core.clone')(this);
+		return new JSmarty.Classes.HashMap(this);
 	},
 	/**
 	 *
@@ -102,7 +102,7 @@ JSmarty.Classes.HashMap.prototype =
 	 * @return {Array}
 	 */
 	entrySet : function(){
-		return JSmarty.Plugin.get('core.clone')(this.$entries);
+		return [].concat(this.$entries);
 	},
 	/**
 	 *
