@@ -17,7 +17,7 @@ JSmarty.Plugin =
 	additional : { php:true },
 	F : function()
 	{
-		JSmarty.Logger.info('called undefined function','from','Plugin');
+		JSmarty.Logger.invoke('info')('called undefined function','from','Plugin');
 		return '';
 	},
 	/**
@@ -137,8 +137,9 @@ JSmarty.Plugin =
 	},
 	'util.tryout' : function(funcs, defaultValue)
 	{
+		funcs.reverse();
 		while(!!funcs.length){
-			try{ return funcs[0](); }catch(e){ funcs.pop(); };
+			try{ return funcs.pop()(); }catch(e){};
 		};
 		return defaultValue;
 	},

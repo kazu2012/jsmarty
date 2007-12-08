@@ -20,7 +20,7 @@ JSmarty.Templatec = JSmarty.Classes.extend(JSmarty.Classes('History'))
 			}
 			catch(e)
 			{
-				JSmarty.Logger.error(e, 'from Templatec#newFunction');
+				JSmarty.Logger.invoke('error')(e, 'from Templatec#newFunction');
 			};
 		};
 
