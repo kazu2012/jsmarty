@@ -454,3 +454,4 @@ JSmarty.prototype =
 };
 
 JSmarty.VERSION = '@version@';
+JSmarty.emptyFunction = function(){};

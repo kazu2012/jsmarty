@@ -1,6 +1,5 @@
-JSmarty.Classes.Request = JSmarty.Classes.create(null);
-JSmarty.Classes.Request.prototype =
-{
+JSmarty.Classes.Request = JSmarty.Classes.create
+({
 	caching : null,
 	transport : null,
 	init : function(){},
@@ -11,6 +10,7 @@ JSmarty.Classes.Request.prototype =
 	},
 	doPost : function()
 	{
+		
 	},
 	doGet : function()
 	{
@@ -24,7 +24,12 @@ JSmarty.Classes.Request.prototype =
 			return self.transport;
 		}(this);
 	},
-	newTransport : function(){
-		return JSmarty.Plugin['util.invoke'](JSmarty.Request.XMLNS, null);
-	}
-};
+	newTransport : function(xmlns){
+		var invoke = JSmarty.Plugin['util.invoke'];
+		return function(){ return invoke(xmlns, null); };
+	}([
+		function(){ return new ActiveXObject(); },
+		function(){ return new ActiveXObject(); },
+		function(){ return new XMLHttpRequest(); }
+	])
+});

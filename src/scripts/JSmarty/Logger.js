@@ -1,11 +1,12 @@
 JSmarty.Logger =
 {
+	dict : {},
 	console : {},
-	dictionary : {},
-	invoke: function(method)
-	{
-		var m = this.dictionary[method] || method;
-		return (this.console[m] || function(){});
+	lookup : function(method){
+		return (this.dict[method] || method);
+	},
+	invoke: function(method){
+		return (this.console[this.lookup(method)] || JSmarty.emptyFunction);
 	},
 	forName : function()
 	{
@@ -13,7 +14,7 @@ JSmarty.Logger =
 		{
 			if(!!console.firebug)
 			{
-				this.dictionary = {'die':'error'};
+				this.dict = {'die':'error'};
 				JSmarty.Logger.console = console;
 			};
 		};
