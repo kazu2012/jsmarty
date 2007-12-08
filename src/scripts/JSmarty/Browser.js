@@ -1,33 +1,17 @@
 JSmarty.Browser =
 {
-	newRequest : function()
+	newRequest : function(xmlns)
 	{
-		var i, x;
-		if(typeof(ActiveXObject) != 'undefined')
-		{
-			x =
-			[
-				'Microsoft.XMLHTTP',
-				'Msxml2.XMLHTTP',
-				'Msxml2.XMLHTTP.3.0',
-				'Msxml2.XMLHTTP.4.0',
-				'Msxml2.XMLHTTP.5.0'
-			];
-
-			for(i=x.length-1;0<=i;i--)
-			{
-				try{ return new ActiveXObject(x[i]); }
-				catch(e){};
-			};
-		};
-
-		if(typeof(XMLHttpRequest) != 'undefined'){
-			return new XMLHttpRequest();
-		};
-
-		JSmarty.Logger.warn('cant\'t create XMLHttpRequestObject', 'from', 'Browser#newRequest');
-		return null;
-	},
+		var tryout = JSmarty.Plugin['util.tryout'];
+		return function(){ return tryout(xmlns, null); };
+	}([
+		function(){ return new ActiveXObject('Msxml2.XMLHTTP.5.0'); },
+		function(){ return new ActiveXObject('Msxml2.XMLHTTP.4.0'); },
+		function(){ return new ActiveXObject('Msxml2.XMLHTTP.3.0'); },
+		function(){ return new ActiveXObject('Msxml2.XMLHTTP'); },
+		function(){ return new ActiveXObject('Microsoft.XMLHTTP'); },
+		function(){ return new XMLHttpRequest(); }
+	]),
 	buildSystemObject : function()
 	{
 		(function()
@@ -71,7 +55,7 @@ JSmarty.Browser =
 
 				return r || function()
 				{
-					JSmarty.Logger.info('can\'t load the ' + f, 'from', 'System#read');
+					JSmarty.Logger.invoke('info', 'can\'t load the ' + f, 'from', 'System#read');
 					return null;
 				}();
 			},
@@ -103,7 +87,7 @@ JSmarty.Browser =
 				catch(e)
 				{
 					flag = false;
-					JSmarty.Logger.warn(e, 'from System#loadScript');
+					JSmarty.Logger.invoke('error', e, 'from System#loadScript');
 				};
 				return flag;
 			}

@@ -13,8 +13,8 @@ JSmarty.Classes.create = function(superclass)
 {
 	var f = function()
 	{
-		if(typeof(this.main) == 'functuion'){
-			this.main.apply(this, arguments);
+		if(typeof(this.init) == 'function'){
+			this.init.apply(this, arguments);
 		};
 	};
 

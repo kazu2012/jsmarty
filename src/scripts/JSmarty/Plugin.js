@@ -135,13 +135,12 @@ JSmarty.Plugin =
 
 		global = null;
 	},
-	'util.invokeArgs' : function(funcs)
+	'util.tryout' : function(funcs, defaultValue)
 	{
-		var i, f;
-		for(i=0,f=funcs.length;i<f;i++){
-			try{ return funcs[i](); }catch(e){};
+		while(!!funcs.length){
+			try{ return funcs[0](); }catch(e){ funcs.pop(); };
 		};
-		return null;
+		return defaultValue;
 	},
 	'util.global' : function(globalObject)
 	{

@@ -10,9 +10,7 @@ JSmarty.Classes.HashMap.prototype =
 	/**
 	 *
 	 */
-	init : function(){
-		this.clear();
-	},
+	init : function(){ this.clear(); },
 	/**
 	 *
 	 * @params {String}

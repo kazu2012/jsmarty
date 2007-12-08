@@ -24,9 +24,10 @@ JSmarty.Classes.Request = JSmarty.Classes.create
 			return self.transport;
 		}(this);
 	},
-	newTransport : function(xmlns){
-		var invoke = JSmarty.Plugin['util.invoke'];
-		return function(){ return invoke(xmlns, null); };
+	newTransport : function(xmlns)
+	{
+		var tryout = JSmarty.Plugin['util.tryout'];
+		return function(){ return tryout(xmlns, null); };
 	}([
 		function(){ return new ActiveXObject(); },
 		function(){ return new ActiveXObject(); },
