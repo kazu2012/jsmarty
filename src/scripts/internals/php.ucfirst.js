@@ -9,5 +9,5 @@
  * @return {String}
  */
 function ucfirst(s){
-	return s.slice(0,1).toUpperCase() + s.slice(1);
+	return s.slice(0,1).toUpperCase().concat(s.slice(1));
 };

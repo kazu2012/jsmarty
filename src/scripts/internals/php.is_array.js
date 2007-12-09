@@ -5,7 +5,7 @@
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0
  * @see http://www.php.net/is_array
- * @param  {Object} v var
+ * @param  {mixed} v var
  * @return {Boolean}
  */
 function is_array(v){

@@ -99,7 +99,7 @@ JSmarty.Compiler = function(renderer)
 		context.set('plugins_dir', renderer.plugins_dir);
 
 		// postfilter
-		src = filter(src, 'pre');
+		src = Compiler.escapeLiteral(src);
 
 		buf.append('var $C = JSmarty.Classes;');
 		buf.append('var $v = $.$vars, $b = $C("Buffer");');
@@ -217,6 +217,7 @@ JSmarty.Compiler.newModule = function(t, c)
 			m = (name in this) ? new this[name](t) : new this[type](t);
 			break;
 		default:
+			if(c.isPlain()){ break; };
 			iap = t.indexOf(' ');
 			imp = t.indexOf('|');
 			inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : t.length;
@@ -246,4 +247,7 @@ JSmarty.Compiler.toUcfirst = function(s){
 };
 JSmarty.Compiler.isBuiltIn = function(name){
 	return (this.toUcfirst(name) in this);
+};
+JSmarty.Compiler.escapeLiteral = function(src){
+	return src.replace(/\t/g, '\\t').replace(/\r?\n/g, '\\n');
 };

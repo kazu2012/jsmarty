@@ -16,7 +16,9 @@ JSmarty.Compiler.Module.prototype =
 	/**
 	 * parse function
 	 */
-	parse : function(c){},
+	parse : function(c){
+		return this;
+	},
 	/**
 	 * prefix function
 	 */
@@ -155,9 +157,9 @@ JSmarty.Compiler.Module.prototype =
 	 * @param {String} s string
 	 * @return {String}
 	 */
-	escape : function(s){
-		return (s.indexOf("'") == -1) ? s : s.split("'").join("\\'");
-	},
+	escape : function(pat){
+		return function(s){ return s.replace(pat, "\\'"); };
+	}(/'/g),
 	toString : function(){
 		return this.sString;
 	},

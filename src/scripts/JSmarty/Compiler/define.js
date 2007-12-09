@@ -88,8 +88,8 @@ JSmarty.Compiler.define
 			sSuffix : '',
 			parse : function(ctx)
 			{
-				var func = JSmarty.Plugin.get('compiler.' + this.getName().slice(1, -1));
-				this.sString = func(this.text, this);
+				var lambda = JSmarty.Plugin.get('compiler.' + this.getName().slice(1, -1));
+				this.sString = lambda(this, ctx);
 				return this;
 			}
 		},

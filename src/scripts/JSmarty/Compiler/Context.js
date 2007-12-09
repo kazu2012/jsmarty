@@ -3,11 +3,11 @@ JSmarty.Compiler.Context.PLAIN = {strip:true,literal:true,javascript:true};
 JSmarty.Compiler.Context.prototype =
 {
 	/** stack of tags **/
-	$tags : null,
+	tags : null,
 	/** the elements are type of block **/
-	$blockElement : null,
+	blockElement : null,
 	/** the elements are type of plain **/
-	$plainElement : null,
+	plainElement : null,
 	/** index of plain element **/
 	iPlain : -1,
 	/** left_delimiter **/
@@ -24,8 +24,8 @@ JSmarty.Compiler.Context.prototype =
 	init : function()
 	{
 		var clone = JSmarty.Plugin['util.clone'];
-		this.$tags = [], this.$blockElement = {};
-		this.$plainElement = clone(JSmarty.Compiler.Context.PLAIN);
+		this.tags = [], this.blockElement = {};
+		this.plainElement = clone(JSmarty.Compiler.Context.PLAIN);
 	},
 	/**
 	 * setTree function
@@ -34,9 +34,9 @@ JSmarty.Compiler.Context.prototype =
 	 */
 	setTree : function(n, f)
 	{
-		var t = this.$tags, p = this.$plainElement;
+		var t = this.tags, p = this.plainElement;
 
-		if(n in this.$blockElement)
+		if(n in this.blockElement)
 		{
 			if(f)
 			{
@@ -76,10 +76,10 @@ JSmarty.Compiler.Context.prototype =
 		switch(type)
 		{
 			case 'block':
-				this.$blockElement[name] = true;
+				this.blockElement[name] = true;
 				break;
 			case 'plain':
-				this.$plainElement[name] = true;
+				this.plainElement[name] = true;
 				break;
 		};
 	},
@@ -96,7 +96,7 @@ JSmarty.Compiler.Context.prototype =
 		{
 			case (JSmarty.Compiler.isBuiltIn(name)):
 				return 'builtin';
-			case (name in this.$blockElement):
+			case (name in this.blockElement):
 				return 'block';
 			case (Plugin.isEnabled('function.' + name, this.plugins_dir)):
 				return 'function';

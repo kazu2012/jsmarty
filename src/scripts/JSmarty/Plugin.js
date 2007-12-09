@@ -135,11 +135,10 @@ JSmarty.Plugin =
 
 		global = null;
 	},
-	'util.tryout' : function(funcs, defaultValue)
+	'util.tryout' : function(lamda, defaultValue)
 	{
-		funcs.reverse();
-		while(!!funcs.length){
-			try{ return funcs.pop()(); }catch(e){};
+		while(!!lamda.length){
+			try{ return (lamda[0])(); }catch(e){ lamda.splice(0,1); };
 		};
 		return defaultValue;
 	},
