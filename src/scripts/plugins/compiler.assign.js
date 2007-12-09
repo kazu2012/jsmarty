@@ -19,6 +19,10 @@
  */
 function jsmarty_compiler_assign(module, context)
 {
+	var key, value;
+
 	var buf = JSmarty.Classes('Buffer');
-	return buf.append('$.assign(',');').toString();
+	var params = module.toObject(module.toParams());
+
+	return buf.append('$.assign("',params['var'],'","',params.value,'");').toString();
 };
