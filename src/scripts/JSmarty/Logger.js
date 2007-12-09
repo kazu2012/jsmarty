@@ -15,9 +15,14 @@ JSmarty.Logger =
 			if(!!console.firebug)
 			{
 				this.dict = {'die':'error'};
-				JSmarty.Logger.console = console;
+				this.invoke = function(method)
+				{
+					method = this.lookup(method);
+					return function(){ console[method].apply(console, arguments); };
+				};
 			};
 		};
 		this.forName = function(){};
 	}
 };
+JSmarty.Logger.forName();

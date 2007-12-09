@@ -21,7 +21,7 @@ JSmarty.Compiler.Context.prototype =
 	get : function(key){
 		return this[key];
 	},
-	initialize : function()
+	init : function()
 	{
 		var clone = JSmarty.Plugin['util.clone'];
 		this.$tags = [], this.$blockElement = {};
