@@ -84,14 +84,17 @@ JSmarty.prototype =
 		}else if(k != ''){
 			o[k] = c(v);
 		};
+		return this;
 	},
 	/**
 	 * assign_by_ref function
 	 * @param {String} k key
 	 * @param {String} v value
 	 */
-	assign_by_ref : function(k, v){
+	assign_by_ref : function(k, v)
+	{
 		if(k != ''){ this.$vars[k] = v; };
+		return this;
 	},
 	/**
 	 * append function
@@ -133,6 +136,7 @@ JSmarty.prototype =
 			};
 			a[a.length] = v;
 		};
+		return this;
 	},
 	/**
 	 * append_by_ref function
@@ -155,6 +159,7 @@ JSmarty.prototype =
 			return;
 		};
 		a[a.length] = v;
+		return this;
 	},
 	/**
 	 * clear_assign function
