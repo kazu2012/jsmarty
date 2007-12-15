@@ -138,7 +138,7 @@ JSmarty.Plugin =
 	'util.tryout' : function(lamda, defaultValue)
 	{
 		while(!!lamda.length){
-			try{ return (lamda[0])(); }catch(e){ lamda.splice(0,1); };
+			try{ return lamda[0](); }catch(e){ lamda.splice(0,1); };
 		};
 		return defaultValue;
 	},
@@ -182,6 +182,9 @@ JSmarty.Plugin =
 			default:
 				return value;
 		};
+	},
+	'util.bind' : function(lambda, object){
+		return function(){ lambda.call(object); };
 	},
 	'resource.file' :
 	[
