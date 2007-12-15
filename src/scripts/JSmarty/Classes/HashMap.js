@@ -2,11 +2,11 @@ JSmarty.Classes.HashMap = JSmarty.Classes.create(null);
 JSmarty.Classes.HashMap.prototype =
 {
 	/** @private **/
-	$keys : null,
+	$K : null,
 	/** @private **/
-	$values : null,
+	$V : null,
 	/** @private **/
-	$entries : null,
+	$E : null,
 	/**
 	 *
 	 */
@@ -16,7 +16,7 @@ JSmarty.Classes.HashMap.prototype =
 	 * @params {String}
 	 */
 	get : function(key){
-		return this.$values[this.$entries[key]];
+		return this.$V[this.$E[key]];
 	},
 	/**
 	 *
@@ -27,9 +27,9 @@ JSmarty.Classes.HashMap.prototype =
 	{
 		var i = this.size();
 
-		this.$keys[i] = key;
-		this.$values[i] = value;
-		this.$entries[key] = i;
+		this.$K[i] = key;
+		this.$V[i] = value;
+		this.$E[key] = i;
 
 		return value;
 	},
@@ -38,7 +38,7 @@ JSmarty.Classes.HashMap.prototype =
 	 * @params {String}
 	 */
 	containsKey : function(key){
-		return (key in this.$keys);
+		return (key in this.$K);
 	},
 	/**
 	 *
@@ -46,7 +46,7 @@ JSmarty.Classes.HashMap.prototype =
 	 */
 	containsValue : function(value)
 	{
-		var i, values = this.$values;
+		var i, values = this.$V;
 		for(i=values.length-1;0<=i;i--){
 			if(value == values[i]){ return true; };
 		};
@@ -58,10 +58,10 @@ JSmarty.Classes.HashMap.prototype =
 	 */
 	remove : function(key)
 	{
-		var i = this.$entries[key];
+		var i = this.$E[key];
 
-		this.$keys.splice(i, 1);
-		this.$values.splice(i, 1);
+		this.$K.splice(i, 1);
+		this.$V.splice(i, 1);
 
 		this.doMapping();
 	},
@@ -70,16 +70,16 @@ JSmarty.Classes.HashMap.prototype =
 	 */
 	clear : function()
 	{
-		this.$keys = [];
-		this.$values = [];
-		this.$entries = {};
+		this.$K = [];
+		this.$V = [];
+		this.$E = {};
 	},
 	/**
 	 *
 	 * @return {Number}
 	 */
 	size : function(){
-		return this.$values.length;
+		return this.$V.length;
 	},
 	/**
 	 * Return 
@@ -93,14 +93,14 @@ JSmarty.Classes.HashMap.prototype =
 	 * @return {Array}
 	 */
 	values : function(){
-		return [].concat(this.$values);
+		return [].concat(this.$V);
 	},
 	/**
 	 *
 	 * @return {Array}
 	 */
 	entrySet : function(){
-		return [].concat(this.$entries);
+		return [].concat(this.$E);
 	},
 	/**
 	 *
@@ -109,7 +109,7 @@ JSmarty.Classes.HashMap.prototype =
 	putAll : function(target)
 	{
 		var key, length = this.size();
-		var keys = this.$keys, values = this.$values;
+		var keys = this.$K, values = this.$V;
 
 		if(key in target)
 		{
@@ -127,21 +127,21 @@ JSmarty.Classes.HashMap.prototype =
 	 * @return {Array}
 	 */
 	keySet : function(){
-		return [].concat(this.$keys);
+		return [].concat(this.$K);
 	},
 	/**
 	 * 
 	 * @return {Boolean}
 	 */
 	isEmpty : function(){
-		return (this.$values.length == 0);
+		return (this.$V.length == 0);
 	},
 	/**
 	 *
 	 */
 	doMapping : function()
 	{
-		var i, keys = this.$keys, entries = this.$entries = {};
+		var i, keys = this.$K, entries = this.$E = {};
 		for(i=this.size()-1;0<=i;i--){ entries[keys[i]] = i; };
 	}
 };
