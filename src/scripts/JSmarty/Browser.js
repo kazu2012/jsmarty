@@ -16,6 +16,13 @@ JSmarty.Browser =
 		var scripts = document.getElementsByTagName('script');
 		return scripts[scripts.length - 1];
 	},
+	appendScript : function()
+	{
+		var http_build_query = JSmarty.Plugin.get('php.http_build_query');
+		var script = document.createElement('script');
+		document.getElementsByTagName('body')[0].appendChild(script);
+		script = null;
+	},
 	setEnviroment : function()
 	{
 		var path = JSmarty.System.path;
