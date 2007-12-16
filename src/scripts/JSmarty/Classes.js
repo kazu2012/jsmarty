@@ -11,7 +11,7 @@ JSmarty.Classes.extend = function(target)
 };
 JSmarty.Classes.create = function(superclass)
 {
-	var f = function()
+	function Class()
 	{
 		if(typeof(this.init) == 'function'){
 			this.init.apply(this, arguments);
@@ -22,11 +22,11 @@ JSmarty.Classes.create = function(superclass)
 	{
 		function c(){};
 		c.prototype = superclass.prototype;
-		f.prototype = new c();
-		f.prototype.getSuper = function(){ return superclass; };
-		f.prototype.superclass = superclass.prototype;
+		Class.prototype = new c();
+		Class.prototype.getSuper = function(){ return superclass; };
+		Class.prototype.superclass = superclass.prototype;
 	};
 
-	f.extend = JSmarty.Classes.extend(f.prototype);
-	return f;
+	Class.extend = JSmarty.Classes.extend(Class.prototype);
+	return Class;
 };

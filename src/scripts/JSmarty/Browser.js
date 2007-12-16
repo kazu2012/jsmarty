@@ -11,18 +11,30 @@ JSmarty.Browser =
 		function(){ return new ActiveXObject('Microsoft.XMLHTTP'); },
 		function(){ return new XMLHttpRequest(); }
 	]),
+	getCurrentScript : function()
+	{
+		var scripts = document.getElementsByTagName('script');
+		return scripts[scripts.length - 1];
+	},
+	setEnviroment : function()
+	{
+		var path = JSmarty.System.path;
+		var i, Plugin = JSmarty.Plugin;
+		var script = this.getCurrentScript();
+		var dir = script.getAttribute('src');
+
+		i = dir.lastIndexOf('/');
+		dir = (i == -1) ? path : path + dir.slice(0, i)
+
+		Plugin.repos = [dir + '/plugins'];
+		Plugin.internals = dir + '/internals';
+		script = null;
+
+		this.setEnviroment = JSmarty.emptyFunction();
+	},
 	buildSystemObject : function()
 	{
-		(function()
-		{
-			var path = JSmarty.System.path;
-			var s = document.getElementsByTagName('script');
-			var p = s[s.length - 1].getAttribute('src');
-			var i = p.lastIndexOf('/'), s = null;
-			p = (i == -1) ? path : path + p.slice(0, i);
-			JSmarty.Plugin.repos = [p + '/plugins'];
-			JSmarty.Plugin.internals = p + '/internals';
-		})();
+		this.setEnviroment();
 
 		delete(this.buildSystemObject);
 		this.Request = this.newRequest();

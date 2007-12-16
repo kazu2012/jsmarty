@@ -237,7 +237,7 @@ JSmarty.prototype =
 		if
 		(
 			Templatec.isCompiled(item, this.force_compile) ||
-			Templatec.newFunction(item.load(this), this.getCompiler())
+			Templatec.newTemplate(item.load(this), this.getCompiler())
 		)
 		{
 			if(this.isDebugging()){

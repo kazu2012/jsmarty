@@ -8,7 +8,7 @@ JSmarty.Templatec = JSmarty.Classes.extend(JSmarty.Classes('History'))
 		if(isForceCompile){ return false; };
 		return this.containsKey(item.get('namespace'));
 	},
-	newFunction : function(item, compiler)
+	newTemplate : function(item, compiler)
 	{
 		if(!item.get('isFailure'))
 		{

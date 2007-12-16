@@ -10,10 +10,10 @@ JSmarty.Classes.Request = JSmarty.Classes.create
 	},
 	forAsync : function(lambda)
 	
+		var bind = JSmarty.Plugin.get('util.bind');
 		var transport = this.$T = this.newTransport();
-		var binder = JSmarty.Plugin.get('util.binder');
 		this.option.asynchronous = true;
-		transport.onreadystatechange = binder(lambda, this);
+		transport.onreadystatechange = bind(lambda, this);
 		return this;
 	},
 	request : function(url)
