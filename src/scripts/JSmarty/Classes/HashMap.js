@@ -38,7 +38,7 @@ JSmarty.Classes.HashMap.prototype =
 	 * @params {String}
 	 */
 	containsKey : function(key){
-		return (key in this.$K);
+		return (key in this.$E);
 	},
 	/**
 	 *
