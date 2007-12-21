@@ -1,7 +1,3 @@
-/**
- * Provide interface of System.
- * @type JSmarty.System.Object
- */
 JSmarty.System =
 {
 	modified : {},

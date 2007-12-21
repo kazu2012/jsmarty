@@ -1,6 +1,5 @@
-JSmarty.Classes.HashMap = JSmarty.Classes.create(null);
-JSmarty.Classes.HashMap.prototype =
-{
+JSmarty.Classes.HashMap = JSmarty.Classes.create
+({
 	/** @private **/
 	$K : null,
 	/** @private **/
@@ -144,4 +143,4 @@ JSmarty.Classes.HashMap.prototype =
 		var i, keys = this.$K, entries = this.$E = {};
 		for(i=this.size()-1;0<=i;i--){ entries[keys[i]] = i; };
 	}
-};
+});

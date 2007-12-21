@@ -1,32 +1,43 @@
 JSmarty.Classes = function(className){
 	return new JSmarty.Classes[className];
 };
-JSmarty.Classes.extend = function(target)
+
+JSmarty.Classes.extend = function(Class, $super)
 {
-	return function(object)
-	{
-		for(var i in object){ target[i] = object[i]; };
-		return target;
+	function f(){};
+	f.prototype = ($super.prototype || $super);
+	Class.prototype = new f();
+	Class.prototype.getSuper = function(method){
+		return (method) ? $super.prototype[method] : $super;
 	};
+	return this;
 };
-JSmarty.Classes.create = function(superclass)
+
+JSmarty.Classes.mixin = function(base, dest)
 {
-	function Class()
+	var i, target = base.prototype || base;
+	dest = dest.prototype || dest;
+	for(i in dest){ target[i] = dest[i]; };
+	return base;
+};
+
+JSmarty.Classes.create = function($super, field)
+{
+	function Class(){ this.init.apply(this, arguments); };
+
+	switch(arguments.length)
 	{
-		if(typeof(this.init) == 'function'){
-			this.init.apply(this, arguments);
-		};
+		case 1:
+			this.mixin(Class, $super);
+			break;
+		case 2:
+			this.extend(Class, $super).mixin(Class, field);
+			break;
 	};
 
-	if(typeof(superclass) == 'function')
-	{
-		function c(){};
-		c.prototype = superclass.prototype;
-		Class.prototype = new c();
-		Class.prototype.getSuper = function(){ return superclass; };
-		Class.prototype.superclass = superclass.prototype;
+	if(!Class.prototype.init){
+		Class.prototype.init = JSmarty.emptyFunction;
 	};
 
-	Class.extend = JSmarty.Classes.extend(Class.prototype);
 	return Class;
 };

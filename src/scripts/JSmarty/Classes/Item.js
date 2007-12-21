@@ -1,6 +1,5 @@
-JSmarty.Classes.Item = JSmarty.Classes.create(JSmarty.Classes.HashMap);
-JSmarty.Classes.Item.extend
-({
+JSmarty.Classes.Item = JSmarty.Classes.create(JSmarty.Classes.HashMap,
+{
 	init : function(namespace)
 	{
 		var parts = namespace.split(':');

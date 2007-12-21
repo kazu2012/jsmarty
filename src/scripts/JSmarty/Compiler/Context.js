@@ -1,7 +1,5 @@
-JSmarty.Compiler.Context = JSmarty.Classes.create(null);
-JSmarty.Compiler.Context.PLAIN = {strip:true,literal:true,javascript:true};
-JSmarty.Compiler.Context.prototype =
-{
+JSmarty.Compiler.Context = JSmarty.Classes.create
+({
 	/** stack of tags **/
 	tags : null,
 	/** the elements are type of block **/
@@ -106,4 +104,5 @@ JSmarty.Compiler.Context.prototype =
 
 		return 'function';
 	}
-};
+});
+JSmarty.Compiler.Context.PLAIN = {strip:true,literal:true,javascript:true};

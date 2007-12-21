@@ -16,10 +16,12 @@ JSmarty.Browser =
 		var scripts = document.getElementsByTagName('script');
 		return scripts[scripts.length - 1];
 	},
-	appendScript : function()
+	addScript : function(url, query, option)
 	{
-		var http_build_query = JSmarty.Plugin.get('php.http_build_query');
+		var i, http_build_query = JSmarty.Plugin.get('php.http_build_query');
 		var script = document.createElement('script');
+		script.src = (query) ? url + '?' + http_build_query(query) : url;
+		for(i in option){ script[i] = option[i]; };
 		document.getElementsByTagName('body')[0].appendChild(script);
 		script = null;
 	},
@@ -46,8 +48,8 @@ JSmarty.Browser =
 		delete(this.buildSystemObject);
 		this.Request = this.newRequest();
 
-		JSmarty.Classes.extend(JSmarty.System)
-		({
+		JSmarty.Classes.mixin(JSmarty.System,
+		{
 			read : function(f, d)
 			{
 				var a = this.buildPath(f, d);
