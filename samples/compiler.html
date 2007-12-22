@@ -13,32 +13,9 @@
 	}
 	</style>
 	<script type="text/javascript" src="../lib/JSmarty.js"></script>
-	<script type="text/javascript" src="../src/scripts/JSmarty/Compiler.js"></script>
-	<script type="text/javascript" src="../src/scripts/JSmarty/Compiler/Context.js"></script>
-	<script type="text/javascript" src="../src/scripts/JSmarty/Compiler/Module.js"></script>
-	<script type="text/javascript" src="../src/scripts/JSmarty/Compiler/define.js"></script>
-
+	<script type="text/javascript" src="../lib/JSmarty/Compiler.js"></script>
 	<script type="text/javascript">
-	compiler = new JSmarty.Compiler
-	({
-		left_delimiter:'{',
-		right_delimiter:'}',
-		plugins_dir : ['../lib/plugins','plugins']
-	});
 
-	window.onload = function()
-	{
-		var idResult = document.getElementById('result');
-		var idResource = document.getElementById('resource');
-
-		idResource.onkeyup = function()
-		{
-			var s = new Date();
-			var result = compiler.execute(this.value);
-			var e = new Date();
-			idResult.value = result + (e.getTime() - s.getTime());
-		};
-	};
 	</script>
 </head>
 <body>
@@ -50,15 +27,15 @@
 
 <div class="main" id="main">
 	<h2>Template Resource</h2>
-	<textarea id="resource"></textarea>
+	<textarea id="idResource"></textarea>
 	<h2>Compile Result</h2>
-	<textarea id="result"></textarea>
+	<textarea id="idResult"></textarea>
 	<div class="footer">
 		powerd by JSmarty
 		<script type="text/javascript">document.write(JSmarty.VERSION);</script>
 	</div>
 </div>
-<div class="sidebar" id="sidebar"><h2>Sample Templates</h2>
+<div class="sidebar" id="idSidebar"><h2>Sample Templates</h2>
 </div>
 
 </body>
