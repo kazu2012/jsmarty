@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSmarty" default="JSmarty" basedir="../">
 
-	<property name="version" value="0.5.0M2" /> 
+	<property name="version" value="0.5.0" /> 
 
 	<!-- Directories -->
 
@@ -32,7 +32,7 @@
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
 			<filelist dir="${src}/JSmarty" files="Compiler.js" />
-			<filelist dir="${src}/JSmarty/Compiler" files="Context.js,Module.js,define.js" />
+			<filelist dir="${src}/JSmarty/Compiler" files="Context.js,Module.js,Literal.js,String.js,Compiler.js,Plainm.js,Plains.js,Plugin.js,Variable.js,Function.js,Ldelim.js,Rdelim.js,Strip.js,Block.js,Section.js,Sectionelse.js,Foreach.js,Foreachelse.js,If.js,Elseif.js,Else.js" />
 		</concat>
 		<copy todir="${lib}" overwrite="Yes" preservelastmodified="true">
 			<fileset dir="${src}" />
