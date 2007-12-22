@@ -1,6 +1,5 @@
-JSmarty.Compiler.Module = function(){};
-JSmarty.Compiler.Module.prototype =
-{
+JSmarty.Compiler.Module = JSmarty.Classes.create
+({
 	imp : -1,
 	iap : -1,
 	name : null,
@@ -36,6 +35,9 @@ JSmarty.Compiler.Module.prototype =
 	 */
 	isTerminal : function(){
 		return this.bTerminal;
+	},
+	init : function(text){
+		this.text = text;
 	},
 	/**
 	 * modifier function
@@ -169,4 +171,4 @@ JSmarty.Compiler.Module.prototype =
 	get : function(key){
 		return this[key];
 	}
-};
+});

@@ -141,25 +141,6 @@ JSmarty.Compiler = function(renderer)
 };
 
 /**
- * define function
- * @param {String} s the name of superclass.
- * @param {Object} o definitive list
- */
-JSmarty.Compiler.define = function(s, o)
-{
-	var i, c, k, d, p = this[s];
-	for(i in o)
-	{
-		d = o[i];
-		c = function(t){ this.text = t; };
-		c.prototype = new p();
-		c.prototype.parent = p.prototype;
-		for(k in d){ c.prototype[k] = d[k]; };
-		this[i] = c;
-	};
-};
-
-/**
  * newString function
  * The factory for Compiler's StringObject
  * @param {String} src
@@ -242,12 +223,19 @@ JSmarty.Compiler.newModule = function(t, c)
 JSmarty.Compiler.VALSYMBL = '@@COMPILER::VARIABLE@@';
 JSmarty.Compiler.FNCSYMBL = '@@COMPILER::FUNCTION@@';
 JSmarty.Compiler.MODSYMBL = '@@COMPILER::MODIFIER@@';
+
 JSmarty.Compiler.toUcfirst = function(s){
 	return s.slice(0,1).toUpperCase().concat(s.slice(1));
 };
+
 JSmarty.Compiler.isBuiltIn = function(name){
 	return (this.toUcfirst(name) in this);
 };
+
 JSmarty.Compiler.escapeLiteral = function(src){
 	return src.replace(/\t/g, '\\t').replace(/\r?\n/g, '\\n');
+};
+
+JSmarty.Compiler.escape = function(src){
+	return src.replace(/\r/,'').replace(/(\n|\t)/, '\$1');
 };
