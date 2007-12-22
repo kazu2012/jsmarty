@@ -1,9 +1,14 @@
+html, body
+{
+	width: 100%; height: 100%;
+	margin: 0px; padding: 0px;
+}
+
 body
 {
 	margin: 0px; padding: 0px;
-	color: #330000; font-size: 90%;
+	color: #330000; font-size: 86%;
 	font-family: Verdana, Helvetica, sans-serif;
-	background: url('../images/wall0041.gif') repeat-x;
 }
 
 h2{ font-size: 125%; }
@@ -80,22 +85,50 @@ pre
 
 .sidebar
 {
-	width: 248px;
+	width: 246px;
 	position: absolute;
-	top: 84px; right: 16px;
+	top : 84px; right: 16px;
+	background-color: red;
 }
 
-.sidebar h2
+.sidebar div
 {
-	padding: 8px; margin: 0px;
-	color: #ffffff; border: 1px solid #000000;
-	background: url('../images/wall0042.gif') fixed;
+	background-color: #eee;
+	margin-bottom : 10px;
+	border: none;
+	text-decoration: none;
+	font-weight: 100;
+	font-size: 12px;
+	margin: 0px;
+	padding: 10px;
 }
 
-.sidebar ul
-{
-	font-size: 86%;
+.sidebar a {
+	cursor:pointer;
+	display:block;
+	padding:5px;
+	margin-top: 0;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 12px;
+	color: black;
+	background-color: #00a0c6;
+	border-top: 1px solid #FFFFFF;
+	background-image: url("AccordionTab0.gif");
 }
+.sidebar a:hover
+{
+	background-color: white;
+	background-image: url("AccordionTab3.gif");
+}
+.sidebar a.selected
+{
+	color: black;
+	background-color: #80cfe2;
+	border-bottom: 1px solid black;
+	background-image: url("AccordionTab3.gif");
+}
+
 
 /* ---------------------------------------------------------------------
  .footer

@@ -16,7 +16,7 @@
 		<yuic todir="${tmp}/${lib}"><fileset dir="${lib}" /></yuic>
 		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
 		<zip destfile="${dist}/JSmarty-${version}.zip" basedir="Temp" />
-		<tar destfile="${dist}/JSmarty-${version}.tgz" basedir="Temp" compression="gzip" />
+		<tar destfile="${dist}/JSmarty-${version}.tar.gz" basedir="Temp" compression="gzip" />
 		<delete dir="Temp" />
 	</target>
 
