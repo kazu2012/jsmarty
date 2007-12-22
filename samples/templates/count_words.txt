@@ -1,9 +1,0 @@
-<h2>modifier : count_words</h2>
-<h3>Model</h3>
-{model name="count_words"}
-<h3>Template</h3>
-{literal|htmlspecialchars|nl2br}
-{"What is this?\\n\\nThis is a pen."|count_words}
-{/literal}
-<h3>Result</h3>
-{"What is this?\n\nThis is a pen."|count_words}

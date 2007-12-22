@@ -1,25 +1,4 @@
-/**
- * FILE:
- * JSmarty.js
- *
- * LICENCE:
- * This library is free software; you can redistribute it and/or modify
- * it under the LGPL2.1 as published by the Free Software Foundation.
- * See the http://www.gnu.org/licenses/lgpl.txt in this distribution.
- *
- * @author shogo < shogo4405 at gmail dot com>
- * @package JSmarty
- * @version @version@
- */
-
-/**
- * Construct a new JSmarty.
- *
- * @class This is the JSmarty class
- * @constructor
- */
-function JSmarty(){ this.initialize(); };
-
+function JSmarty(){ this.init(); };
 JSmarty.prototype =
 {
 	config_dir   : 'configs',
@@ -273,7 +252,7 @@ JSmarty.prototype =
 	template_exists : function(file)
 	{
 	},
-	initialize : function(){
+	init : function(){
 		this.cache = {};
 	},
 	/**

@@ -1,12 +1,4 @@
 /**
- * FILE:
- * JSmarty/Compiler.js
- *
- * LICENCE:
- * This library is free software; you can redistribute it and/or modify
- * it under the LGPL2.1 as published by the Free Software Foundation.
- * See the http://www.gnu.org/licenses/lgpl.txt in this distribution.
- *
  * @author shogo < shogo4405 at gmail dot com>
  * @package JSmarty
  * @version @version@

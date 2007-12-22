@@ -1,9 +1,0 @@
-<h2>function : html : options</h2>
-<h3>Model</h3>
-{model name="html_options"}
-<h3>Template</h3>
-{literal|htmlspecialchars|nl2br}
-{html_options name="select001" options=$data selected="002"}
-{/literal}
-<h3>Result</h3>
-{html_options name="select001" options=$data selected="002"}

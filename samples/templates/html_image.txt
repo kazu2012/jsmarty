@@ -1,9 +1,0 @@
-<h2>function : html : image</h2>
-<h3>Model</h3>
-{model name="html_image"}
-<h3>Template</h3>
-{literal|htmlspecialchars|nl2br}
-{html_image file=$img}
-{/literal}
-<h3>Result</h3>
-{html_image file=$img}

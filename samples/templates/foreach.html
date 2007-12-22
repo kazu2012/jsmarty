@@ -1,9 +1,3 @@
-<h2>block : foreach</h2>
-<h3>Model</h3>
-{model name="foreach"}
-<h3>Template</h3>
-{template|htmlspecialchars|nl2br}{fetch file="foreach.txt"}{/template}
-<h3>Result</h3>
 {foreach from=$hoge name="mydata" item="datum" key="key"}
 {if $smarty.foreach.mydata.first}
 <table border="1" width="50%" cellpadding="8" cellspacing="0">
