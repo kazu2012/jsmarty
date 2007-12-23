@@ -6,38 +6,64 @@
 	<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	<title>JSmarty - Template Engine</title>
 	<link href="default.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="shared/ext-2.0/ext-all.js"></script>
+	<script type="text/javascript" src="shared/scripts/jquery-1.2.1.min.js"></script>
+	<script type="text/javascript" src="shared/jquery.ui/jquery.dimensions.js"></script>
+	<script type="text/javascript" src="shared/jquery.ui/ui.mouse.js"></script>
+	<script type="text/javascript" src="shared/jquery.ui/ui.tabs.js"></script>
+	<script type="text/javascript" src="shared/jquery.ui/ui.resizable.js"></script>
 	<script type="text/javascript" src="../lib/JSmarty.js"></script>
 	<script type="text/javascript" src="../lib/JSmarty/Compiler.js"></script>
 	<script type="text/javascript" src="common.js"></script>
-<!--
-	<script type="text/javascript" src="../lib/jsmartyc.js?smarty" id="version">
-	powerd by {javascript}return JSmarty.VERSION;{/javascript}
-	</script>
--->
 </head>
 <body>
 
-<div class="header" id="header"><h1>JSmarty</h1></div>
+<div class="header" id="header">
+	<ul class="navigation">
+		<li><a href="index.html#sample"><span>Sample</span></a></li>
+		<li><a href="index.html#compiler"><span>Compiler</span></a></li>
+	</ul>
+</div>
 
 <div class="main" id="main">
-	<div id="container">
+	<div id="sample">
+		<div id="sample-container" class="container">
+		{if $mode == 'index'}
+		<h2>usage</h2>
+		<pre>
+		</pre>
+		<h2>license</h2>
 		<ul>
-			<li><a href="index.html#sample"><span>Sample</span></a></li>
-			<li><a href="index.html#compiler"><span>Compiler</span></a></li>
+			<li>license under the LGPL(2.0)</li>
 		</ul>
-		<div id="sample">
-		</div>
-		<div id="compiler">
-		<h2>Template</h2>
-		<textarea id="idResource"></textarea>
+		<h2>author</h2>
+		<ul>
+			<li>shogo4405
+				<ul>
+					<li>web : <a href="http://d.hatena.ne.jp/shogo4405/">http://d.hatena.ne.jp/shogo4405/</a></li>
+				</ul>
+			</li>
+		</ul>
+		{else}
+		<h2>{$plugin.type} - {$plugin.name}</h2>
+		<h2>Model</h2>
+		<h2>Resource</h2>
+		{$resource}
 		<h2>Result</h2>
-		<textarea id="idResult"></textarea>
+		{$contents}
+		{/if}
 		</div>
+		<div id="sample-sidebar" class="sidebar">
+		</div>
+	</div>
+	<div id="compiler">
+		<h2>Template</h2>
+		<textarea id="resource"></textarea>
+		<h2>Result(<span id="resource-timestamp">0ms</span>)</h2>
+		<textarea name="resource-compiled" id="resource-compiled"></textarea>
 	</div>
 </div>
 
-<div class="footer" id="footer"></div>
+<div class="footer" id="footer">powerd by JSmarty {$smarty.version}</div>
 
 </body>
 </html>

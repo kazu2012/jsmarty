@@ -1,12 +1,14 @@
+@import url("shared/styles/ui.tabs.css");
+
 html, body
 {
-	width: 100%; height: 100%;
+	background-color: #000000;
 	margin: 0px; padding: 0px;
 }
 
 body
 {
-	margin: 0px; padding: 0px;
+	margin: 0px; padding: 0px 32px;
 	color: #330000; font-size: 86%;
 	font-family: Verdana, Helvetica, sans-serif;
 }
@@ -30,26 +32,8 @@ pre
  -------------------------------------------------------------------- */
 .header
 {
-	width: 100%; height: 68px;
-}
-.header h1
-{
-	line-height: 60px;
-	text-indent: -1000px;
-	margin: 0px; padding: 0px;
-	background: url('../images/jsmarty_icon.gif') no-repeat left;
-}
-
-.header .col01{ width: 30%; float: left; clear: right; }
-.header .col02
-{
-	line-height: 60px;text-align: right;
-	width: 70%; float: left; clear: right;
-}
-.header a
-{
-	font-size: 18px;
-	margin: 0px 8px;
+	background-color: #ffffff;
+	margin: 16px 0px; padding: 8px;
 }
 
 /* ---------------------------------------------------------------------
@@ -57,21 +41,9 @@ pre
  -------------------------------------------------------------------- */
 .main
 {
-	padding: 16px 32px;
-	margin: 0px 264px 0px 0px;
-}
-
-.main h2
-{
-	margin: 0px -16px; padding: 8px;
-	color: #ffffff; border: 1px solid #000000;
-	background: url('../images/wall0042.gif') fixed;
-}
-
-.main h3
-{
-	margin: 16px -16px; padding: 8px;
-	border-left: 8px solid #000000;
+	background-color: #ffffff;
+	margin: 0px 0px 16px 0px;
+	border: 1px solid #ffffff;
 }
 
 .main pre
@@ -79,55 +51,24 @@ pre
 	padding: 16px;
 }
 
+.main h2
+{
+	color: #ffffff;
+	padding: 0px 0px 0px 8px;
+	margin: 0px; line-height: 32px;
+	background: url('shared/images/wall0044.gif') right repeat-x;
+}
+
+.main textarea
+{
+	border : none;
+	width: 100%; height: 200px;
+	color: #330000; font-size: 12px;
+}
+
 /* ---------------------------------------------------------------------
  .sidebar
  -------------------------------------------------------------------- */
-
-.sidebar
-{
-	width: 246px;
-	position: absolute;
-	top : 84px; right: 16px;
-	background-color: red;
-}
-
-.sidebar div
-{
-	background-color: #eee;
-	margin-bottom : 10px;
-	border: none;
-	text-decoration: none;
-	font-weight: 100;
-	font-size: 12px;
-	margin: 0px;
-	padding: 10px;
-}
-
-.sidebar a {
-	cursor:pointer;
-	display:block;
-	padding:5px;
-	margin-top: 0;
-	text-decoration: none;
-	font-weight: bold;
-	font-size: 12px;
-	color: black;
-	background-color: #00a0c6;
-	border-top: 1px solid #FFFFFF;
-	background-image: url("AccordionTab0.gif");
-}
-.sidebar a:hover
-{
-	background-color: white;
-	background-image: url("AccordionTab3.gif");
-}
-.sidebar a.selected
-{
-	color: black;
-	background-color: #80cfe2;
-	border-bottom: 1px solid black;
-	background-image: url("AccordionTab3.gif");
-}
 
 
 /* ---------------------------------------------------------------------
@@ -135,7 +76,6 @@ pre
  -------------------------------------------------------------------- */
 .footer
 {
-	text-align: right;
-	padding: 8px 0px; margin: 16px -16px 0px -16px;
-	border-top: 3px dotted #000000;
+	text-align: right; padding: 8px;
+	border-top: 3px dotted #ffffff;
 }

@@ -4,7 +4,7 @@
  * @subpackages Strings
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0
- * @see http://www.php.net/str_tr
+ * @see http://www.php.net/strtr
  */
 function strtr(s, p, r)
 {

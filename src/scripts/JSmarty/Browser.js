@@ -99,17 +99,17 @@ JSmarty.Browser =
 			},
 			loadScript : function(path, dir)
 			{
-				var flag = true;
 				try
 				{
-					(new Function(this.read(path, dir)))();
+					(new Function(this.read(path, dir || '')))();
+					return true;
 				}
 				catch(e)
 				{
-					flag = false;
 					JSmarty.Logger.invoke('error')(e, 'from System#loadScript');
 				};
-				return flag;
+
+				return false;
 			}
 		});
 	}

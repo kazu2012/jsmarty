@@ -32,10 +32,8 @@ function count(v, m)
 			if(v instanceof Array){
 				return v.length;
 			};
-			if(v instanceof Object)
-			{
-				for(k in v){ i++; };
-				return i;
+			if(v instanceof Object){
+				for(k in v){ i++; }; return i;
 			};
 			break;
 	};

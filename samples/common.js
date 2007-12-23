@@ -1,25 +1,21 @@
-var renderer = new JSmarty();
-
-var Action =
-{
-	bind : function()
-	{
-		var lambda = (this[name] || JSmarty.emptyFunction);
-		return function()
-		{
-			var smarty = new JSmarty();
-			lambda(smarty);
-		//	renderer.assign('action', name);
-			renderer.assign('result', smarty.fetch());
-			renderer.display('id:content');
-		}
-	}
-};
 
 $(function()
 {
-	var anchors = $('sidebar').getElementsByTagName('a');
-	for(var i=0,f=anchors.length;i<f;i++){
-		anchors[i].onclick = Action.bind(anchors[i].href);
-	};
+	var renderer, compiler;
+	renderer = (new JSmarty()).assign('mode','index');
+	compiler = renderer.getCompiler();
+
+	$('#header ul').tabs();
+
+	$('#sample-container').html(renderer.fetch('id:sample-container'));
+	$('#footer').html(renderer.fetch('id:footer'));
+
+	$('#resource').keyup(function()
+	{
+		var html, timeEnd, time = new Date().getTime();
+		html = compiler.execute(this.value);
+		timeEnd = new Date().getTime();
+		$('#resource-compiled').val(html.replace(/;/g,';\n'));
+		$('#resource-timestamp').html((timeEnd - time) + "ms");
+	});
 });
