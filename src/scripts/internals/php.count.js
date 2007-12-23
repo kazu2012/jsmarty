@@ -3,7 +3,7 @@
  *
  * @subpackage Arrays
  * @author shogo < shogo4405 at gmail dot com >
- * @version 1.0.0RC1
+ * @version 1.0.0RC2
  * @see http://www.php.net/count
  * @param  {Object} v var
  * @param  {Number} m mode
@@ -18,7 +18,7 @@ function count(v, m)
 		case 1:
 			if(v instanceof Array)
 			{
-				for(k=v.length-1;0<=K;K--){ i += count(v[k], 1) || 1; };
+				for(k=v.length-1;0<=k;k--){ i += count(v[k], 1) || 1; };
 				return i;
 			};
 			if(v instanceof Object)
@@ -32,8 +32,10 @@ function count(v, m)
 			if(v instanceof Array){
 				return v.length;
 			};
-			if(v instanceof Object){
-				for(k in v){ i++; }; return i;
+			if(v instanceof Object)
+			{
+				for(k in v){ i++; };
+				return i;
 			};
 			break;
 	};

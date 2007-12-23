@@ -31,12 +31,12 @@ function jsmarty_function_include(params, renderer)
 	if
 	(
 		Templatec.isCompiled(item, renderer.force_compile) ||
-		Templatec.newFunction(item.load(renderer), renderer.getCompiler())
+		Templatec.newTemplate(item.load(renderer), renderer.getCompiler())
 	)
 	{
 		delete(params.file);
 		temp = renderer.$vars;
-		renderer.$vars = JSmarty.Plugin['util.clone'](temp);
+		renderer.$vars = JSmarty.Plugin.get('util.clone')(temp);
 		for(i in params){
 			renderer.assign(i, params[i]);
 		};
@@ -44,5 +44,5 @@ function jsmarty_function_include(params, renderer)
 		renderer.$vars = temp;
 	};
 
-	return result || '';
+	return result;
 };
