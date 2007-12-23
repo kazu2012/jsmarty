@@ -1,9 +1,0 @@
-<h2>modifier : strip</h2>
-<h3>Model</h3>
-{model name="stripm"}
-<h3>Template</h3>
-{literal|htmlspecialchars|nl2br}
-<pre>{"Hello    World!!"|strip:"&nbsp;"}</pre>
-{/literal}
-<h3>Result</h3>
-<pre>{"Hello    World!!"|strip:"&nbsp;"}</pre>

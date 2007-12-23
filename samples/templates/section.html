@@ -1,11 +1,3 @@
-<h2>block : section</h2>
-<h3>Model</h3>
-{model name="section"}
-<h3>Template</h3>
-{template|htmlspecialchars|nl2br}
-{fetch file="section.txt"}
-{/template}
-<h3>Result</h3>
 {section name="mydata" loop=$custid}
 {if $smarty.section.mydata.first}
 <table border="1" width="50%" cellpadding="8" cellspacing="0">

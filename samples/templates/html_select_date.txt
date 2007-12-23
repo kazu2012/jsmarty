@@ -1,9 +1,0 @@
-<h2>function : html : select : date</h2>
-<h3>Model</h3>
-{model name="html_select_date"}
-<h3>Template</h3>
-{template|htmlspecialchars|nl2br}
-{fetch file="html_select_date.txt"}
-{/template}
-<h3>Result</h3>
-{html_select_date field_order="YMD"}

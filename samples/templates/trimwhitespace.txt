@@ -1,4 +1,0 @@
-<h2>outputfilter : trimwhitespace</h2>
-<h3>Model</h3>
-{model name="trimwhitespace"}
-<h3>Template</h3>

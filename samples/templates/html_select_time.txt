@@ -1,9 +1,0 @@
-<h2>function : html : select : time</h2>
-<h3>Model</h3>
-{model name="html_select_time"}
-<h3>Template</h3>
-{literal|htmlspecialchars|nl2br}
-{html_select_time use_24_hours=false}
-{/literal}
-<h3>Result</h3>
-{html_select_time use_24_hours=false}
