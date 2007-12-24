@@ -4,16 +4,13 @@ JSmarty.Classes.mixin(JSmarty.Classes.Buffer,
 {
 	init : function()
 	{
-		var i = 0, buf = [];
+		var buf = [];
 		var c = Array.prototype.join;
 
 		this.append = function()
 		{
-			buf[i++] = c.call(arguments,'');
+			buf[buf.length] = c.call(arguments,'');
 			return this;
-		};
-		this.valueOf = this.toString = function(s){
-			return buf.join(s || '');
 		};
 
 		this.getContents = function(){ return buf; };
@@ -23,5 +20,11 @@ JSmarty.Classes.mixin(JSmarty.Classes.Buffer,
 	},
 	appendUnless : function(flag){
 		return (flag) ? JSmarty.empthFunction : this.append;
+	},
+	valueOf : function(s){
+		return this.getContents().join(s || '');
+	},
+	toString : function(s){
+		return this.getContents().join(s || '');
 	}
 });
