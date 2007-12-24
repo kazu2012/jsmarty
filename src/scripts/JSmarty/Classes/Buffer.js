@@ -1,21 +1,27 @@
-JSmarty.Classes.Buffer = function()
-{
-	var i = 0, b = [];
-	var c = Array.prototype.join;
-	this.append = function()
-	{
-		b[i++] = c.call(arguments,'');
-		return this;
-	};
-	this.valueOf = this.toString = function(s){
-		return b.join(s || '');
-	};
-};
+JSmarty.Classes.Buffer = function(){ this.init(); };
 JSmarty.Classes.Buffer.prototype = new String();
-JSmarty.Classes.Buffer.prototype.appendIf = function(flag){
-	return (flag) ? this.append : this.N;
-};
-JSmarty.Classes.Buffer.prototype.appendUnless = function(flag){
-	return (flag) ? this.N : this.append;
-};
-JSmarty.Classes.Buffer.prototype.N = function(){};
+JSmarty.Classes.mixin(JSmarty.Classes.Buffer,
+{
+	init : function()
+	{
+		var i = 0, buf = [];
+		var c = Array.prototype.join;
+
+		this.append = function()
+		{
+			buf[i++] = c.call(arguments,'');
+			return this;
+		};
+		this.valueOf = this.toString = function(s){
+			return buf.join(s || '');
+		};
+
+		this.getContents = function(){ return buf; };
+	},
+	appendIf : function(flag){
+		return (flag) ? this.append : JSmarty.emptyFunction;
+	},
+	appendUnless : function(flag){
+		return (flag) ? JSmarty.empthFunction : this.append;
+	}
+});

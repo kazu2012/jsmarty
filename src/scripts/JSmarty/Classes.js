@@ -18,6 +18,12 @@ JSmarty.Classes.mixin = function(base, dest)
 	var i, target = base.prototype || base;
 	dest = dest.prototype || dest;
 	for(i in dest){ target[i] = dest[i]; };
+	if(dest.hasOwnProperty('valueOf')){
+		target.valueOf = dest.valueOf;
+	};
+	if(dest.hasOwnProperty('toString')){
+		target.toString = dest.toString;
+	};
 	return base;
 };
 
