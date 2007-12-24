@@ -1,6 +1,6 @@
 JSmarty.Compiler.Variable = JSmarty.Classes.create(JSmarty.Compiler.Module,
 {
-	parse : function(c)
+	parse : function()
 	{
 		var m = this.toModify();
 		var n = JSmarty.Compiler.VALSYMBL + this.get('name');

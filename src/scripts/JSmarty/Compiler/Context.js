@@ -23,7 +23,7 @@ JSmarty.Compiler.Context = JSmarty.Classes.create
 	{
 		var clone = JSmarty.Plugin['util.clone'];
 		this.tags = [], this.blockElement = {};
-		this.plainElement = clone(JSmarty.Compiler.Context.PLAIN);
+		this.plainElement = clone(JSmarty.Compiler.PLAINELM);
 	},
 	/**
 	 * setTree function
@@ -105,4 +105,3 @@ JSmarty.Compiler.Context = JSmarty.Classes.create
 		return 'function';
 	}
 });
-JSmarty.Compiler.Context.PLAIN = {strip:true,literal:true,javascript:true};

@@ -162,13 +162,13 @@ JSmarty.Compiler.Module = JSmarty.Classes.create
 	escape : function(pat){
 		return function(s){ return s.replace(pat, "\\'"); };
 	}(/'/g),
-	toString : function(){
-		return this.sString;
-	},
 	set : function(key, value){
 		this[key] = value;
 	},
 	get : function(key){
 		return this[key];
+	},
+	toString : function(){
+		return this.sString;
 	}
 });

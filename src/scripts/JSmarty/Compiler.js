@@ -215,6 +215,7 @@ JSmarty.Compiler.newModule = function(t, c)
 JSmarty.Compiler.VALSYMBL = '@@COMPILER::VARIABLE@@';
 JSmarty.Compiler.FNCSYMBL = '@@COMPILER::FUNCTION@@';
 JSmarty.Compiler.MODSYMBL = '@@COMPILER::MODIFIER@@';
+JSmarty.Compiler.PLAINELM = {strip:true,literal:true,javascript:true};
 
 JSmarty.Compiler.toUcfirst = function(s){
 	return s.slice(0,1).toUpperCase().concat(s.slice(1));
