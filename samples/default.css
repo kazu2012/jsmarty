@@ -76,6 +76,6 @@ pre
  -------------------------------------------------------------------- */
 .footer
 {
-	text-align: right; padding: 8px;
-	border-top: 3px dotted #ffffff;
+	background-color: #ffffff;
+	margin: 16px 0px; padding: 8px;
 }

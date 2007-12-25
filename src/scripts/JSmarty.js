@@ -389,16 +389,6 @@ JSmarty.prototype =
 		return (0 <= name.indexOf(':')) ? name : this.default_resource_type + ':' + name;
 	},
 	/**
-	 * internals : filter function
-	 * @param {String} t type of filter
-	 * @param {String} s source
-	 * @return {String}
-	 */
-	$f : function(t, s)
-	{
-		return s;
-	},
-	/**
 	 * internals: call function
 	 * @param {String} n name
 	 * @param {Object} a attribute
