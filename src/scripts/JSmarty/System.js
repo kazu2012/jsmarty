@@ -1,14 +1,6 @@
 JSmarty.System =
 {
 	modified : {},
-	isWritable : false,
-
-	getArgs : function()
-	{
-		JSmarty.Logger.info('');
-		return null;
-	},
-
 	buildPath : function(p, d)
 	{
 		var i, a = [].concat(d);
@@ -33,18 +25,16 @@ JSmarty.System =
 				load('./internals/system.'+ name +'.js');
 				break;
 			case 'gadget':
-				this.path = String(System.Gadget.path).replace(/\\/g, '/') + '/';
-				JSmarty.Browser.buildSystemObject();
-				JSmarty.System.loadScript('system.gadget.js', JSmarty.Plugin.repos);
 				break;
 			case 'browser':
-				this.path = ''; // temp
-				JSmarty.Browser.buildSystemObject();
+				JSmarty.Navigator.setEnviroment();
 				break;
 		};
 	},
 
-	timestamp : function(value){
-		return (value) ? new Date(time).getTime() : new Date().getTime();
+	timestamp : function(time){
+		return (time) ? new Date(time).getTime() : new Date().getTime();
 	}
 };
+
+JSmarty.System.forName(JSmarty.System.getName());

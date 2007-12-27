@@ -28,7 +28,7 @@
 		<concat destfile="${tmp}/JSmarty.js">
 			<filelist dir="${src}" files="JSmarty.js,JSmarty/Classes.js" />
 			<filelist dir="${src}/JSmarty/Classes" files="HashMap.js,History.js,Buffer.js,Item.js" />
-			<filelist dir="${src}/JSmarty" files="System.js,Plugin.js,Logger.js,Templatec.js,Browser.js" />
+			<filelist dir="${src}/JSmarty" files="Plugin.js,Logger.js,Templatec.js,Navigator.js,System.js" />
 		</concat>
 		<concat destfile="${tmp}/JSmarty/Compiler.js">
 			<filelist dir="${src}/JSmarty" files="Compiler.js" />

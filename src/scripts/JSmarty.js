@@ -429,3 +429,14 @@ JSmarty.prototype =
 
 JSmarty.VERSION = '@version@';
 JSmarty.emptyFunction = function(){};
+JSmarty.getInstance = function()
+{
+	var instance = null;
+	return function(update)
+	{
+		if(update || instance == null){
+			instance = new JSmarty();
+		};
+		return instance;
+	};
+}();
