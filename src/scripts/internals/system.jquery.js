@@ -1,11 +1,12 @@
 (function($)
 {
-	if(typeof($) == 'undefiend'){ return; };
+	if(typeof($) == 'undefiend'){return;};
 
 	$.fn.assign = function()
 	{
 		var renderer = this.getRenderer();
 		renderer.assign.apply(renderer, arguments);
+		return this;
 	};
 
 	$.fn.assignByRef = function()
@@ -15,18 +16,18 @@
 		return this;
 	};
 
-	$.fn.dot = function(resourceName, type)
+	$.fn.fetch = function(resourceName)
 	{
-		$(this)[type || 'html'](this.getRenderer().fetch(resourceName));
+		$(this).html(this.getRenderer().fetch(resourceName));
 		return this;
 	};
 
 	$.fn.getRenderer = function()
 	{
-		return this.$renderer || function(self)
+		return this.$renderer || function($)
 		{
-			self.$renderer = new JSmarty();
-			return self.$renderer;
+			$.$renderer = new JSmarty();
+			return $.$renderer;
 		}(this);
 	};
 

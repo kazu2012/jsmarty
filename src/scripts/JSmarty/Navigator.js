@@ -30,6 +30,9 @@ JSmarty.Navigator =
 		var path, script, Classes = JSmarty.Classes;
 		var currentScript = this.getCurrentScript();
 
+		path = String(currentScript.src);
+		path = path.slice(0, path.lastIndexOf('/')) || '.';
+
 		Classes.mixin(JSmarty.Plugin,
 		{
 			repos : [path + '/plugins'],
@@ -42,13 +45,14 @@ JSmarty.Navigator =
 		{
 			script = document.createElement('script');
 			script.src = path + '/internals/system.jquery.js';
-			currentScript.insertBefore(script);
+			currentScript.parentNode.insertBefore(script, null);
 		};
 
 		script = document.createElement('script');
-		script.src = path + 'JSmarty/Compiler.js';
-		currentScript.insertBefore(script);
+		script.src = path + '/JSmarty/Compiler.js';
+		currentScript.parentNode.insertBefore(script, null);
 
+		this.Request = this.newRequest();
 		currentScript = null, this.$SYSTEM = null;
 		this.setEnviroment = JSmarty.emptyFunction;
 	}
@@ -59,7 +63,7 @@ JSmarty.Navigator.$SYSTEM =
 	read : function(f, d)
 	{
 		var a = this.buildPath(f, d);
-		var i, t, r, x, h = JSmarty.Browser.Request;
+		var i, t, r, x, h = JSmarty.Navigator.Request;
 
 		for(i=0,x=a.length;i<x;i++)
 		{
