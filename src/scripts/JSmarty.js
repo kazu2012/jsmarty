@@ -435,9 +435,11 @@ JSmarty.getInstance = function()
 	var instance = null;
 	return function(update)
 	{
-		if(update || instance == null){
+		if(update){ instance = null; };
+		return instance || function()
+		{
 			instance = new JSmarty();
+			return instance;
 		};
-		return instance;
 	};
 }();

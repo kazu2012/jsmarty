@@ -1,4 +1,3 @@
-
 $(function()
 {
 	var renderer, compiler;
@@ -7,8 +6,8 @@ $(function()
 
 	$('#header ul').tabs();
 
-	$('#sample').fetch('id:sample');
-	$('#footer').fetch('id:footer');
+	$('#sample').fetch();
+	$('#footer').fetch();
 
 	$('#resource').keyup(function()
 	{

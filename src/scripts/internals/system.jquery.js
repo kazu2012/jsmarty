@@ -2,33 +2,35 @@
 {
 	if(typeof($) == 'undefiend'){return;};
 
+	function render(){
+		if(!!this.id){ this.innerHTML = JSmarty.getInstance().fetch('id:'+ this.id);};
+	};
+
 	$.fn.assign = function()
 	{
-		var renderer = this.getRenderer();
+		var renderer = JSmarty.getInstance();
 		renderer.assign.apply(renderer, arguments);
 		return this;
 	};
 
 	$.fn.assignByRef = function()
 	{
-		var renderer = this.getRenderer();
+		var renderer = JSmarty.getInstance();
 		renderer.assign_by_ref.apply(renderer, arguments);
 		return this;
 	};
 
 	$.fn.fetch = function(resourceName)
 	{
-		$(this).html(this.getRenderer().fetch(resourceName));
-		return this;
-	};
-
-	$.fn.getRenderer = function()
-	{
-		return this.$renderer || function($)
+		switch(arguments.length)
 		{
-			$.$renderer = new JSmarty();
-			return $.$renderer;
-		}(this);
+			case 0:
+				this.each(render);
+				return this;
+			case 1:
+				this.html(JSmarty.getInstance().fetch(resourceName));
+				return this;
+		};
 	};
 
 })(window.jQuery);
