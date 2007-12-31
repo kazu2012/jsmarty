@@ -5,14 +5,14 @@
  */
 function jsmarty_modifier_escape(s, t)
 {
-	var P = JSmarty.Plugin;
+	var Plugin = JSmarty.Plugin;
 
 	switch(t)
 	{
 		case 'html':
-			return P.get('php.htmlspecialchars')(s, 'ENT_QUOTES');
+			return Plugin.get('php.htmlspecialchars')(s, 'ENT_QUOTES');
 		case 'htmlall':
-			return P.get('php.htmlentities')(s, 'ENT_QUOTES');
+			return Plugin.get('php.htmlentities')(s, 'ENT_QUOTES');
 		case 'url':
 			return escape(s);
 		case 'urlpathinfo':
@@ -22,7 +22,7 @@ function jsmarty_modifier_escape(s, t)
 		case 'hex':
 			return null;
 		case 'javascript':
-			return P.get('php.strtr')(s, {"\\'":'\\\\', "'":"\\'", "\r":"\\r", "\n":'\\n', '</':'<\/'});
+			return Plugin.get('php.strtr')(s, {"\\'":'\\\\', "'":"\\'", "\r":"\\r", "\n":'\\n', '</':'<\/'});
 		case 'mail':
 			return s.replace(/@/g, ' [AT] ').replace(/\./g, ' [DOT] ');
 		default:

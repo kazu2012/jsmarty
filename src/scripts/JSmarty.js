@@ -252,7 +252,8 @@ JSmarty.prototype =
 	template_exists : function(file)
 	{
 	},
-	init : function(){
+	init : function()
+	{
 		this.cache = {};
 	},
 	/**
