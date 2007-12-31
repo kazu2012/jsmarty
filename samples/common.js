@@ -7,8 +7,8 @@ $(function()
 
 	$('#header ul').tabs();
 
-	$('#sample-container').html(renderer.fetch('id:sample-container'));
-	$('#footer').html(renderer.fetch('id:footer'));
+	$('#sample').fetch('id:sample');
+	$('#footer').fetch('id:footer');
 
 	$('#resource').keyup(function()
 	{

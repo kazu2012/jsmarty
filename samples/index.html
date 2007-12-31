@@ -22,11 +22,11 @@
 		<li><a href="index.html#sample"><span>Sample</span></a></li>
 		<li><a href="index.html#compiler"><span>Compiler</span></a></li>
 	</ul>
+	<h1>JSmarty</h1>
 </div>
 
 <div class="main" id="main">
 	<div id="sample">
-		<div id="sample-container" class="container">
 		{if $mode == 'index'}
 		<h2>usage</h2>
 		<pre>
@@ -51,9 +51,6 @@
 		<h2>Result</h2>
 		{$contents}
 		{/if}
-		</div>
-		<div id="sample-sidebar" class="sidebar">
-		</div>
 	</div>
 	<div id="compiler">
 		<h2>Template</h2>
@@ -63,7 +60,11 @@
 	</div>
 </div>
 
-<div class="footer" id="footer">powerd by JSmarty {$smarty.version}</div>
+<div class="sidebar">
+	<div id="sidebar" class="sidebar-container"></div>
+</div>
+
+<div class="footer" id="footer">powerd by<br /><a href="http://code.google.com/p/jsmarty">JSmarty {$smarty.version}</a> and jQuery</div>
 
 </body>
 </html>

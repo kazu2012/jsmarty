@@ -2,38 +2,40 @@
 
 html, body
 {
-	background-color: #000000;
 	margin: 0px; padding: 0px;
+	font-size: 86%; color: #330000;
+	font-family: Verdana, Helvetica, sans-serif;
 }
 
 body
 {
-	margin: 0px; padding: 0px 32px;
-	color: #330000; font-size: 86%;
-	font-family: Verdana, Helvetica, sans-serif;
+	background-color: #ffffff;
 }
 
+h1, h2, h3, h4, h5, h6{ margin: 16px 0px; }
 h2{ font-size: 125%; }
-
-pre
-{
-	border: 1px solid #000000;
-	white-space:-pre-wrap;
-	white-space: -o-pre-wrap;
-	white-space:-moz-pre-wrap;
-	white-space: pre-wrap;
-	line-break:strict;
-	word-break:break-all;
-	word-wrap:break-word;
-}
 
 /* ---------------------------------------------------------------------
  .header
  -------------------------------------------------------------------- */
 .header
 {
+	margin: 0px; padding: 0px;
 	background-color: #ffffff;
-	margin: 16px 0px; padding: 8px;
+	border: 1px solid black;
+}
+
+.header h1
+{
+	color: #ffffff; line-height: 72px; padding: 0px 16px; margin: 0px;
+	background: #ffffff url('shared/images/wall00ZZ.gif') repeat-x;
+	border: 8px solid #000080; border-width: 8px 0px 0px 0px;
+}
+
+.navigation
+{
+	height: 30px;
+	color: #ffffff;
 }
 
 /* ---------------------------------------------------------------------
@@ -41,41 +43,44 @@ pre
  -------------------------------------------------------------------- */
 .main
 {
-	background-color: #ffffff;
-	margin: 0px 0px 16px 0px;
-	border: 1px solid #ffffff;
+	padding: 16px 32px; margin-right: 200px;
+	background: url('shared/images/wall00ZY.gif') repeat-x top;
 }
 
-.main pre
+h2
 {
-	padding: 16px;
+	padding-left: 8px;
+	line-height: 32px; color: #ffffff;
+	background: url('shared/images/wall0044.gif');
 }
 
-.main h2
+textarea
 {
-	color: #ffffff;
-	padding: 0px 0px 0px 8px;
-	margin: 0px; line-height: 32px;
-	background: url('shared/images/wall0044.gif') right repeat-x;
-}
-
-.main textarea
-{
-	border : none;
-	width: 100%; height: 200px;
-	color: #330000; font-size: 12px;
+	margin: 0px auto;
+	width: 99%; height: 125px;
 }
 
 /* ---------------------------------------------------------------------
  .sidebar
  -------------------------------------------------------------------- */
+.sidebar
+{
+	position: absolute;
+	top: 112px; right: 0px;
+	padding: 32px 32px 0px 0px;
+}
 
+.sidebar-container
+{
+	width: 200px;
+}
 
 /* ---------------------------------------------------------------------
  .footer
  -------------------------------------------------------------------- */
 .footer
 {
-	background-color: #ffffff;
-	margin: 16px 0px; padding: 8px;
+	float: none; clear: both;
+	margin: 0px 200px 0px 0px; padding: 16px 32px;
+	color: #ffffff; background: navy;
 }
