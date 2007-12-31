@@ -2,8 +2,8 @@
 $(function()
 {
 	var renderer, compiler;
-	renderer = (new JSmarty()).assign('mode','index');
-	compiler = renderer.getCompiler();
+	renderer = JSmarty.getInstance().assign('mode','index');
+	compiler = renderer.get_compiler();
 
 	$('#header ul').tabs();
 

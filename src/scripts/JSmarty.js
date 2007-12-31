@@ -48,6 +48,7 @@ JSmarty.prototype =
 	$foreach : {},
 	$section : {},
 	$filters : {},
+	$version : '@version@',
 	$template : '',
 
 	/**
@@ -180,25 +181,25 @@ JSmarty.prototype =
 	 * @param {String} n name
 	 */
 	clear_cache : function(name){
-		this.cache[this.getTemplateName(name)] = null;
+		this.cache[this.get_resource_name(name)] = null;
 	},
 	/**
 	 * is_cashed function
 	 * @param {String} n name
 	 */
 	is_cashed : function(name){
-		return !!this.cache[this.getTemplateName(name)];
+		return !!this.cache[this.get_resource_name(name)];
 	},
 	/**
 	 * clear_compiled_tpl function
 	 * @param {String} name the name of template
 	 */
 	clear_compiled_tpl : function(name){
-		JSmarty.Templatec.remove(this.getTemplateName(name));
+		JSmarty.Templatec.remove(this.get_resource_name(name));
 	},
 	fetch : function(name, ccid, cpid, display)
 	{
-		name = this.getTemplateName(name);
+		name = this.get_resource_name(name);
 
 		var Templatec = JSmarty.Templatec;
 		var logging, temp = [].concat(this.plugins_dir);
@@ -206,7 +207,7 @@ JSmarty.prototype =
 
 		this.plugins_dir = JSmarty.Plugin.repos.concat(this.plugins_dir);
 
-		if(this.isDebugging())
+		if(this.is_debugging())
 		{
 			logging = JSmarty.Logging;
 			logging.time('EXECUTE');
@@ -216,10 +217,10 @@ JSmarty.prototype =
 		if
 		(
 			Templatec.isCompiled(item, this.force_compile) ||
-			Templatec.newTemplate(item.load(this), this.getCompiler())
+			Templatec.newTemplate(item.load(this), this.get_compiler())
 		)
 		{
-			if(this.isDebugging()){
+			if(this.is_debugging()){
 				logging.timeEnd('COMPILE');
 			};
 			result = Templatec.call(name, this);
@@ -231,13 +232,13 @@ JSmarty.prototype =
 
 		this.plugins_dir = temp;
 
-		if(this.isDebugging()){
+		if(this.is_debugging()){
 			logging.timeEnd('EXECUTE');
 		};
 
 		return result;
 	},
-	isDebugging : function()
+	is_debugging : function()
 	{
 		if(!this.debugging && this.debugging_ctrl)
 		{
@@ -378,15 +379,15 @@ JSmarty.prototype =
 		JSmarty.Logger.invoke(level)(msg);
 	},
 	/** getter for compiler **/
-	getCompiler : function()
+	get_compiler : function()
 	{
-		return this.compiler || function(self)
+		return this.compiler || function($)
 		{
-			self.compiler = new JSmarty[self.compiler_class](self);
-			return self.compiler;
+			$.compiler = new JSmarty[$.compiler_class]($);
+			return $.compiler;
 		}(this);
 	},
-	getTemplateName : function(name){
+	get_resource_name : function(name){
 		return (0 <= name.indexOf(':')) ? name : this.default_resource_type + ':' + name;
 	},
 	/**
@@ -428,7 +429,6 @@ JSmarty.prototype =
 	}
 };
 
-JSmarty.VERSION = '@version@';
 JSmarty.emptyFunction = function(){};
 JSmarty.getInstance = function()
 {
