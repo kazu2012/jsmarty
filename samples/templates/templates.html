@@ -1,0 +1,30 @@
+<h3>block</h3>
+{section name="block" loop=$block}
+	{if $smarty.section.block.first}<ul>{/if}
+		<li><a href="index.html#block:{$block[block]}">{$block[block]}</a></li>
+	{if $smarty.section.block.last}</ul>{/if}
+{/section}
+<h3>builtin</h3>
+{section name="builtin" loop=$builtin}
+	{if $smarty.section.builtin.first}<ul>{/if}
+		<li><a href="index.html#builtin:{$builtin[builtin]}">{$builtin[builtin]}</a></li>
+	{if $smarty.section.builtin.last}</ul>{/if}
+{/section}
+<h3>compiler</h3>
+{section name="compiler" loop=$compiler}
+	{if $smarty.section.compiler.first}<ul>{/if}
+		<li><a href="index.html#compiler:{$compiler[compiler]}">{$compiler[compiler]}</a></li>
+	{if $smarty.section.compiler.last}</ul>{/if}
+{/section}
+<h3>modifer</h3>
+{section name="modifier" loop=$modifier}
+	{if $smarty.section.modifier.first}<ul>{/if}
+		<li><a href="index.html#modifier:{$modifier[modifier]}">{$modifier[modifier]}</a></li>
+	{if $smarty.section.modifier.last}</ul>{/if}
+{/section}
+<h3>outputfiler</h3>
+{section name="outputfilter" loop=$outputfilter}
+	{if $smarty.section.outputfilter.first}<ul>{/if}
+		<li><a href="index.html#outputfilter:{$outputfilter[outputfilter]}">{$outputfilter[outputfilter]}</a></li>
+	{if $smarty.section.outputfilter.last}</ul>{/if}
+{/section}

@@ -18,9 +18,11 @@
  * @param    {JSmarty} renderer renderer
  * @return   {String}
  */
+var jsmarty_function_fetch_caches = {};
+
 function jsmarty_function_fetch(params, renderer)
 {
-	var name, cache, caches = jsmarty_function_fetch.caches;
+	var name, cache, caches = jsmarty_function_fetch_caches;
 
 	if(!('file' in params))
 	{
@@ -28,7 +30,7 @@ function jsmarty_function_fetch(params, renderer)
 		return;
 	};
 
-	name = renderer.getTemplateName(params.file);
+	name = renderer.get_resource_name(params.file);
 	cache = caches[name] || function()
 	{
 		caches[name] = new JSmarty.Classes.Item(name);
@@ -44,4 +46,3 @@ function jsmarty_function_fetch(params, renderer)
 	return cache.get('src');
 };
 
-jsmarty_function_fetch.caches = {};

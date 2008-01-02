@@ -5,6 +5,7 @@ html, body
 	margin: 0px; padding: 0px;
 	font-size: 86%; color: #330000;
 	font-family: Verdana, Helvetica, sans-serif;
+	background: url('shared/images/wall00ZX.gif') right repeat-y;
 }
 
 body
@@ -47,17 +48,23 @@ h2{ font-size: 125%; }
 	background: url('shared/images/wall00ZY.gif') repeat-x top;
 }
 
-h2
+.main h2
 {
 	padding-left: 8px;
 	line-height: 32px; color: #ffffff;
 	background: url('shared/images/wall0044.gif');
 }
 
+.main h3
+{
+	padding-bottom: 8px; color: forestgreen;
+	border-bottom: 2px solid forestgreen;
+}
+
 textarea
 {
-	margin: 0px auto;
-	width: 99%; height: 125px;
+	margin: 0px auto; font-size: 12px;
+	width: 99%; height: 150px;
 }
 
 /* ---------------------------------------------------------------------
@@ -67,7 +74,7 @@ textarea
 {
 	position: absolute;
 	top: 112px; right: 0px;
-	padding: 32px 32px 0px 0px;
+	padding: 0px;
 }
 
 .sidebar-container

@@ -440,6 +440,6 @@ JSmarty.getInstance = function()
 		{
 			instance = new JSmarty();
 			return instance;
-		};
+		}();
 	};
 }();

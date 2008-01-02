@@ -25,7 +25,7 @@ function jsmarty_function_include(params, renderer)
 	};
 
 	var i, temp, Templatec = JSmarty.Templatec;
-	var templateName = renderer.getTemplateName(params.file);
+	var templateName = renderer.get_resource_name(params.file);
 	var result, item = new JSmarty.Classes.Item(templateName);
 
 	if
