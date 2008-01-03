@@ -27,11 +27,13 @@ JSmarty.Navigator =
 	},
 	setEnviroment : function()
 	{
-		var path, script, Classes = JSmarty.Classes;
-		var currentScript = this.getCurrentScript();
+		var slice = JSmarty.Plugin['util.slice'];
 
-		path = String(currentScript.src);
-		path = path.slice(0, path.lastIndexOf('/')) || '.';
+		var currentScript = this.getCurrentScript();
+		var query, path, script, Classes = JSmarty.Classes;
+
+		path = slice(currentScript.src, '/', true) || '.';
+		query = slice(currentScript.src, '?') || '';
 
 		Classes.mixin(JSmarty.Plugin,
 		{
@@ -41,16 +43,20 @@ JSmarty.Navigator =
 
 		Classes.mixin(JSmarty.System, this.$SYSTEM);
 
+		if(query != '')
+		{
+			JSmarty.prototype.compiler_class = query;
+			script = document.createElement('script');
+			script.src = path + '/JSmarty/' + query +'.js';
+			currentScript.parentNode.insertBefore(script, null);
+		};
+
 		if(typeof(jQuery) != 'undefined')
 		{
 			script = document.createElement('script');
 			script.src = path + '/internals/system.jquery.js';
 			currentScript.parentNode.insertBefore(script, null);
 		};
-
-		script = document.createElement('script');
-		script.src = path + '/JSmarty/Compiler.js';
-		currentScript.parentNode.insertBefore(script, null);
 
 		this.Request = this.newRequest();
 		currentScript = null, this.$SYSTEM = null;

@@ -44,12 +44,12 @@ JSmarty.prototype =
 
 	default_template_handler_func : null,
 
-	$vars : {},
-	$foreach : {},
-	$section : {},
-	$filters : {},
+	$vars : null,
+	$foreach : null,
+	$section : null,
+	$filters : null,
 	$version : '@version@',
-	$template : '',
+	$template : null,
 
 	/**
 	 * assign function
@@ -256,6 +256,9 @@ JSmarty.prototype =
 	init : function()
 	{
 		this.cache = {};
+		this.$vars = {};
+		this.$foreach = {};
+		this.$section = {};
 	},
 	/**
 	 * register_block function
@@ -430,16 +433,3 @@ JSmarty.prototype =
 };
 
 JSmarty.emptyFunction = function(){};
-JSmarty.getInstance = function()
-{
-	var instance = null;
-	return function(update)
-	{
-		if(update){ instance = null; };
-		return instance || function()
-		{
-			instance = new JSmarty();
-			return instance;
-		}();
-	};
-}();

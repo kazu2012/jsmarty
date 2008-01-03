@@ -1,21 +1,27 @@
 (function($)
 {
-	if(typeof($) == 'undefiend'){return;};
+	if(typeof($) == 'undefiend'){
+		return;
+	};
 
-	function render(){
-		if(!!this.id){ this.innerHTML = JSmarty.getInstance().fetch('id:'+ this.id);};
+	var renderer = new JSmarty();
+
+	function fetch()
+	{
+		var elementId = this.id;
+		if(!!elementId){
+			this.innerHTML = renderer.fetch('id:' + elementId);
+		};
 	};
 
 	$.fn.assign = function()
 	{
-		var renderer = JSmarty.getInstance();
 		renderer.assign.apply(renderer, arguments);
 		return this;
 	};
 
 	$.fn.assignByRef = function()
 	{
-		var renderer = JSmarty.getInstance();
 		renderer.assign_by_ref.apply(renderer, arguments);
 		return this;
 	};
@@ -25,12 +31,14 @@
 		switch(arguments.length)
 		{
 			case 0:
-				this.each(render);
+				this.each(fetch);
 				return this;
 			case 1:
-				this.html(JSmarty.getInstance().fetch(resourceName));
+				this.html(renderer.fetch(resourceName));
 				return this;
 		};
 	};
+
+	$.getRenderer = function(){ return renderer; };
 
 })(window.jQuery);

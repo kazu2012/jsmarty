@@ -25,4 +25,3 @@ JSmarty.Logger =
 		this.forName = function(){};
 	}
 };
-JSmarty.Logger.forName();

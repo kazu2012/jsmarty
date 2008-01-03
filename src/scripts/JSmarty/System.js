@@ -31,10 +31,13 @@ JSmarty.System =
 				break;
 		};
 	},
-
 	timestamp : function(time){
 		return (time) ? new Date(time).getTime() : new Date().getTime();
 	}
 };
 
-JSmarty.System.forName(JSmarty.System.getName());
+(function(System, Logger)
+{
+	System.forName(System.getName());
+	Logger.forName();
+})(JSmarty.System, JSmarty.Logger);

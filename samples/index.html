@@ -7,12 +7,8 @@
 	<title>JSmarty - Template Engine</title>
 	<link href="default.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="shared/scripts/jquery-1.2.1.min.js"></script>
-	<script type="text/javascript" src="shared/jquery.ui/jquery.dimensions.js"></script>
-	<script type="text/javascript" src="shared/jquery.ui/ui.mouse.js"></script>
 	<script type="text/javascript" src="shared/jquery.ui/ui.tabs.js"></script>
-	<script type="text/javascript" src="shared/jquery.ui/ui.resizable.js"></script>
-	<script type="text/javascript" src="../lib/JSmarty.js"></script>
-	<script type="text/javascript" src="../lib/JSmarty/Compiler.js"></script>
+	<script type="text/javascript" src="../lib/JSmarty.js?Compiler"></script>
 	<script type="text/javascript" src="common.js"></script>
 </head>
 <body>
@@ -44,7 +40,7 @@
 		<h2>{$plugin.type} - {$plugin.name}</h2>
 		<h3>Model</h3>
 		<h3>Resource</h3>
-		<textarea>{fetch file=$resource}</textarea>
+		<textarea>{$resource}</textarea>
 		<h3>Result</h3>
 		{$contents}
 		{/if}
