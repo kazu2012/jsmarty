@@ -10,6 +10,12 @@
 		<li><a href="index.html#builtin:{$builtin[builtin]}">{$builtin[builtin]}</a></li>
 	{if $smarty.section.builtin.last}</ul>{/if}
 {/section}
+<h3>function</h3>
+{section name="func" loop=$func}
+	{if $smarty.section.func.first}<ul>{/if}
+		<li><a href="index.html#function:{$func[func]}">{$func[func]}</a></li>
+	{if $smarty.section.func.last}</ul>{/if}
+{/section}
 <h3>compiler</h3>
 {section name="compiler" loop=$compiler}
 	{if $smarty.section.compiler.first}<ul>{/if}

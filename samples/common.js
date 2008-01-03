@@ -5,6 +5,7 @@ $(function()
 	renderer = $.getRenderer();
 	renderer.assign('mode','index');
 	renderer.assign(eval('(' + JSmarty.System.read('templates.json','templates')+')'));
+	renderer.$vars.func = renderer.$vars['function'];
 	compiler = renderer.get_compiler();
 
 	$('#header ul').tabs();
@@ -18,7 +19,8 @@ $(function()
 		var fetch = JSmarty.Plugin.get('function.fetch', JSmarty.Plugin.repos);
 		var resource, hash = this.href;
 
-		hash = hash.slice(hash.lastIndexOf('#') + 1).split(':')
+		hash = hash.slice(hash.lastIndexOf('#') + 1).split(':');
+		(Models.getModelByName(hash.join(':')) || JSmarty.emptyFunction)();
 
 		resource = fetch({file:hash.join('/') + '.html'}, renderer);
 
