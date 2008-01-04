@@ -1,8 +1,6 @@
 var Models =
 {
-	getModelByName : function(name){
-		return this[name] || null;
-	},
+	getModelByName : function(name){ return this[name] || null; },
 	'builtin:if' : function()
 	{
 		var jsmarty = $.getRenderer();
@@ -25,5 +23,55 @@ var Models =
 		var jsmarty = $.getRenderer();
 		jsmarty.assign('data', [0,1,2,3,4,5,6,7,8]);
 		jsmarty.assign('tr', ['bgcolor="#eeeeee"','bgcolor="#dddddd"']);
+	},
+	'function:html_image' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('img','shared/images/jsmarty_icon.gif');
+	},
+	'function:html_checkboxes' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('data', {'001':'tanaka', '002':'suzuki', '003':'kato'});
+	},
+	'function:html_options' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('data', {'001':'tanaka', '002':'suzuki', '003':'kato'});
+	},
+	'function:html_radios' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign_by_ref('data', {'001':'tanaka', '002':'suzuki', '003':'kato'});
+	},
+	'modifier:capitalize' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('foo', 'this is a pen.');
+	},
+	'modifier:nl2br' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign("html",'Hello\nWorld!!\n');
+	},
+	'modifier:truncate' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('text','El ingenioso hidalgo Don Quijote de La Mancha');
+	},
+	'modifier:wordwrap' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('text','El ingenioso hidalgo Don Quijote de La Mancha');
+	},
+	'modifier:cat' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('hoge', 'Hello');
+	},
+	'modifier:truncate' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('text','El ingenioso hidalgo Don Quijote de La Mancha');
 	}
 };

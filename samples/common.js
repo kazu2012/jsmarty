@@ -4,15 +4,18 @@ $(function()
 
 	renderer = $.getRenderer();
 	renderer.assign('mode','index');
-	renderer.assign(eval('(' + JSmarty.System.read('templates.json','templates')+')'));
-	renderer.$vars.func = renderer.$vars['function'];
 	compiler = renderer.get_compiler();
 
 	$('#header ul').tabs();
 
 	$('#sample').fetch();
 	$('#footer').fetch();
-	$('#sidebar').fetch('templates.html');
+
+	// -- sidebar
+	renderer.assign(eval('(' + JSmarty.System.read('templates.json','templates')+')'));
+	renderer.$vars.func = renderer.$vars['function'];
+	$('#sidebar').fetch('templates.html').accordion({event:'click',header:'h3'});
+	renderer.clear_all_assign();
 
 	$('a', $('#sidebar')).click(function()
 	{

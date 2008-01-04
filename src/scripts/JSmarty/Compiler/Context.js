@@ -39,7 +39,7 @@ JSmarty.Compiler.Context = JSmarty.Classes.create
 			if(f)
 			{
 				if(n != t.pop()){
-					this._error();
+					JSmarty.Logger.invoke('error','syntax error');
 				};
 				if(n in p && this.iPlain == t.length){
 					this.iPlain = -1;

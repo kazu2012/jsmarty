@@ -26,7 +26,7 @@ function jsmarty_modifier_truncate(s, l, e, b, m)
 	if(l == 0){ return ''; };
 
 	l = Number(l || 80);
-	e = (e == void(0)) ? e : '...';
+	e = (e == void(0)) ? '...' : e;
 
 	if(l < s.length)
 	{

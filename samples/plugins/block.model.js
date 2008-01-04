@@ -8,7 +8,7 @@ function jsmarty_block_model(params, contents, jsmarty)
 	if(model)
 	{
 		model = model.toString();
-		model = model.slice(model.indexOf('{') + 1, model.indexOf('}'));
+		model = model.slice(model.indexOf('{') + 1, model.lastIndexOf('}'));
 		model = model.replace(/^[\r\n\t\s]*/gm,'');
 
 		html.append(contents);
