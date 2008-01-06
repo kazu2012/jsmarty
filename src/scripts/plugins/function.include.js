@@ -31,7 +31,7 @@ function jsmarty_function_include(params, renderer)
 	if
 	(
 		Templatec.isCompiled(item, renderer.force_compile) ||
-		Templatec.newTemplate(item.load(renderer), renderer.getCompiler())
+		Templatec.newTemplate(item.load(renderer), renderer.get_compiler())
 	)
 	{
 		delete(params.file);

@@ -13,6 +13,11 @@ var Models =
 		jsmarty.assign('name',   [ 'hoge', 'foo', 'bar', 'foofoo', 'barbar']);
 		jsmarty.assign('address',[ 'hoge@com', 'foo@com', 'bar@com', 'foofoo@com', 'barbar@com']);
 	},
+	'builtin:include' : function()
+	{
+		var jsmarty = $.getRenderer();
+		jsmarty.assign('foo','foo');
+	},
 	'builtin:foreach' : function()
 	{
 		var jsmarty = $.getRenderer();
