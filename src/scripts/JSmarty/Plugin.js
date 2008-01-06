@@ -135,9 +135,9 @@ JSmarty.Plugin =
 
 		global = null;
 	},
-	'util.slice': function(str, char, isBefore)
+	'util.slice': function(str, symbol, isBefore)
 	{
-		var i = str.lastIndexOf(char);
+		var i = str.lastIndexOf(symbol);
 		return (0 < i) ? (isBefore) ? str.slice(0, i) : str.slice(i + 1) : null;
 	},
 	'util.tryout' : function(lamda, value)

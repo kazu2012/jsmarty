@@ -6,7 +6,7 @@ html, body
 	margin: 0px; padding: 0px;
 	font-size: 86%; color: #330000;
 	font-family: Verdana, Helvetica, sans-serif;
-	background: url('shared/images/wall00ZX.gif') right repeat-y;
+	background: url('shared/images/wall0046.gif') right repeat-y;
 }
 
 body
@@ -31,7 +31,7 @@ h2{ font-size: 125%; }
 .header h1
 {
 	color: #ffffff; line-height: 72px; padding: 0px 16px; margin: 0px;
-	background: #ffffff url('shared/images/wall00ZZ.gif') repeat-x;
+	background: #ffffff url('shared/images/wall0048.gif') repeat-x;
 	border: 8px solid #000080; border-width: 8px 0px 0px 0px;
 }
 
@@ -47,7 +47,7 @@ h2{ font-size: 125%; }
 .main
 {
 	padding: 16px 32px; margin-right: 200px;
-	background: url('shared/images/wall00ZY.gif') repeat-x top;
+	background: url('shared/images/wall0047.gif') repeat-x top;
 }
 
 .main h2
@@ -92,7 +92,9 @@ textarea
 
 .sidebar h3
 {
-	margin: 0px;
+	padding-left: 16px;
+	margin: 0px; line-height: 32px; color: #ffffff;
+	background: url('shared/images/wall0045.gif');
 }
 
 .sidebar-container
