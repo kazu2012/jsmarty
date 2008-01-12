@@ -140,10 +140,10 @@ JSmarty.Plugin =
 		var i = str.lastIndexOf(symbol);
 		return (0 < i) ? (isBefore) ? str.slice(0, i) : str.slice(i + 1) : null;
 	},
-	'util.tryout' : function(lamda, value)
+	'util.tryout' : function(lambda, value)
 	{
-		while(!!lamda.length){
-			try{ return lamda[0](); }catch(e){ lamda.splice(0, 1); };
+		while(!!lambda.length){
+			try{ return lambda[0](); }catch(e){ lambda.splice(0, 1); };
 		};
 		return value;
 	},

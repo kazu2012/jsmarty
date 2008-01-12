@@ -5,6 +5,7 @@ JSmarty.Navigator =
 		var tryout = JSmarty.Plugin['util.tryout'];
 		return function(){ return tryout(xmlns, null); };
 	}([
+		function(){ return new ActiveXObject('Msxml2.XMLHTTP.6.0'); },
 		function(){ return new ActiveXObject('Msxml2.XMLHTTP.4.0'); },
 		function(){ return new ActiveXObject('Msxml2.XMLHTTP.3.0'); },
 		function(){ return new ActiveXObject('Msxml2.XMLHTTP'); },
@@ -16,7 +17,7 @@ JSmarty.Navigator =
 		var scripts = document.getElementsByTagName('script');
 		return scripts[scripts.length - 1];
 	},
-	addScript : function(url, query, option)
+	addScriptTag : function(url, query, option)
 	{
 		var i, http_build_query = JSmarty.Plugin.get('php.http_build_query');
 		var script = document.createElement('script');
