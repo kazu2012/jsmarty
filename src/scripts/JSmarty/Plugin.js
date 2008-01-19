@@ -9,17 +9,13 @@ JSmarty.Plugin =
 	 * Repository for internals
 	 * @type String
 	 */
-	internals : './internals',
+	internals : 'internals',
 	/**
 	 * additional plugin types
 	 * @type Object
 	 */
 	additional : { php:true },
-	F : function()
-	{
-		JSmarty.Logger.invoke('info')('called undefined function','from','Plugin');
-		return '';
-	},
+	namespaces : { modifier: true, compiler: true, block: true, 'function': true },
 	/**
 	 * Evalute the source of plugin.
 	 * @param  {String} script The sourcecode of javascript.
@@ -56,8 +52,8 @@ JSmarty.Plugin =
 	 * @param {String} the name of plugin
 	 * @param {Function}
 	 */
-	set : function(pluginName, func){
-		this[pluginName] = func;
+	set : function(pluginName, lambda){
+		this[pluginName] = lambda;
 	},
 	/**
 	 * @param {String} the name of plugin
@@ -122,8 +118,8 @@ JSmarty.Plugin =
 	 */
 	importer : function()
 	{
-		var i, pluginName, dir = this.dir;
 		var global = this.get('util.global')();
+		var i, pluginName, dir = [this.internals].concat(this.repos);
 
 		for(i=arguments.length-1;0<=i;i--)
 		{

@@ -12,6 +12,14 @@
 	<script type="text/javascript" src="../lib/JSmarty.js?Compiler"></script>
 	<script type="text/javascript" src="models.js"></script>
 	<script type="text/javascript" src="common.js"></script>
+	<script type="text/javascript">
+	$(function()
+	{
+		if(String(location.href).indexOf('index.html') == -1){
+			location.href.assign(location.href + 'index.html');
+		};
+	});
+	</script>
 </head>
 <body>
 
