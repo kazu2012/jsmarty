@@ -1,5 +1,12 @@
 JSmarty.Classes.Loader = JSmarty.Classes.create
 ({
+	caching : null,
+	transport : null,
+	init : function(isCaching)
+	{
+		this.caching = (isCaching) ?
+			new JSmarty.Classes.History() : {set : function(){}};
+	},
 	newTransport : function(xmlns)
 	{
 		var tryout = JSmarty.Plugin['util.tryout'];
@@ -11,5 +18,21 @@ JSmarty.Classes.Loader = JSmarty.Classes.create
 		function(){ return new ActiveXObject('Msxml2.XMLHTTP'); },
 		function(){ return new ActiveXObject('Microsoft.XMLHTTP'); },
 		function(){ return new XMLHttpRequest(); }
-	])
+	]),
+	getTransport : function()
+	{
+		return this.transport || function($)
+		{
+			$.transport = $.newTransport();
+			return $.transport;
+		}(this);
+	},
+	fetch : function()
+	{
+		var transport = this.getTransport();
+	},
+	isSuccess : function(transport)
+	{
+		
+	}
 });
