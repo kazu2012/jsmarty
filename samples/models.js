@@ -73,10 +73,5 @@ var Models =
 	{
 		var jsmarty = $.getRenderer();
 		jsmarty.assign('hoge', 'Hello');
-	},
-	'modifier:truncate' : function()
-	{
-		var jsmarty = $.getRenderer();
-		jsmarty.assign('text','El ingenioso hidalgo Don Quijote de La Mancha');
 	}
 };

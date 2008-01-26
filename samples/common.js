@@ -46,4 +46,5 @@ $(function()
 		$('#resource-compiled').val(html.replace(/;/g,';\n'));
 		$('#resource-timestamp').html((timeEnd - time) + "ms");
 	});
+
 });
