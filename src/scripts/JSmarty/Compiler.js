@@ -226,9 +226,5 @@ JSmarty.Compiler.isBuiltIn = function(name){
 };
 
 JSmarty.Compiler.escapeLiteral = function(src){
-	return src.replace(/\t/g, '\\t').replace(/\r?\n/g, '\\n');
-};
-
-JSmarty.Compiler.escape = function(src){
-	return src.replace(/\r/,'').replace(/(\n|\t)/, '\$1');
+	return src.replace(/\\/g, '\\\\').replace(/\t/g, '\\t').replace(/\r?\n/g, '\\n');
 };

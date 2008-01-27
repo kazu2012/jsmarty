@@ -6,8 +6,25 @@ $(function()
 	renderer.assign('mode','index');
 	compiler = renderer.get_compiler();
 
-	$('#header ul').tabs();
+	function showHtml(hash)
+	{
+		var fetch = JSmarty.Plugin.get('function.fetch', JSmarty.Plugin.repos);
+		var resource = fetch({file:hash.join('/') + '.html'}, renderer);
 
+		(Models.getModelByName(hash.join(':')) || JSmarty.emptyFunction)();
+
+		renderer.assign('mode', 'templates');
+		renderer.assign('resource', resource);
+		renderer.assign('plugin', {type: hash[0], name: hash[1]});
+
+		renderer.assign('contents', renderer.fetch(hash.join('/') + '.html'));
+
+		$('#sample').fetch();
+		$('#resource').val(resource);
+		$('#resource-compiled').val(compiler.execute(resource).replace(/;/g,';\n'));
+	};
+
+	$('#header ul').tabs();
 	$('#sample').fetch();
 	$('#footer').fetch();
 
@@ -19,23 +36,8 @@ $(function()
 
 	$('a', $('#sidebar')).click(function()
 	{
-		var fetch = JSmarty.Plugin.get('function.fetch', JSmarty.Plugin.repos);
-		var resource, hash = this.href;
-
-		hash = hash.slice(hash.lastIndexOf('#') + 1).split(':');
-		(Models.getModelByName(hash.join(':')) || JSmarty.emptyFunction)();
-
-		resource = fetch({file:hash.join('/') + '.html'}, renderer);
-
-		renderer.assign('mode', 'templates');
-		renderer.assign('resource', resource);
-		renderer.assign('plugin', {type: hash[0], name: hash[1]});
-
-		renderer.assign('contents', renderer.fetch(hash.join('/') + '.html'));
-
-		$('#sample').fetch();
-		$('#resource').val(resource);
-		$('#resource-compiled').val(compiler.execute(resource).replace(/;/g,';\n'));
+		var hash = this.href;
+		showHtml(hash.slice(hash.indexOf('#') + 1).split(':'));
 	});
 
 	$('#resource').keyup(function()
@@ -47,4 +49,14 @@ $(function()
 		$('#resource-timestamp').html((timeEnd - time) + "ms");
 	});
 
+	switch(true)
+	{
+		case (String(location.href).indexOf('index.html') == -1):
+			location.replace(location.href + 'index.html');
+			return;
+		case (!!String(location.hash)):
+			var hash = String(location.hash);
+			showHtml(hash.slice(hash.indexOf('#') + 1).split(':'));
+			break;
+	};
 });
