@@ -3,134 +3,136 @@
  * @package JSmarty
  * @version @version@
  */
-
-JSmarty.Compiler = function(renderer)
-{
-	// resolve namespaces
-	var Buffer = JSmarty.Classes.Buffer;
-	var Context = JSmarty.Compiler.Context;
-	var Compiler = JSmarty.Compiler;
-
-	var L = renderer.left_delimiter;
-	var R = renderer.right_delimiter;
-
-	// regular expression
-	var regcrl = /\r?\n/g
-	var regtml = RegExp(L + '\\/(.*?)' + R,'g');
-	var regtag = RegExp(L + '[^'+ R +']*' + R,'g');
-	var regvar = RegExp(Compiler.VALSYMBL, 'g');
-	var regsva = RegExp(Compiler.VALSYMBL + 'smarty\.', 'g');
-
-	/**
-	 * filter function
-	 * @return {String} s source
-	 * @return {String} t type of filter
-	 */
-	function filter(s, t)
+JSmarty.Compiler = JSmarty.Classes.create
+({
+	init : function(renderer)
 	{
-		switch(t)
+		// resolve namespaces
+		var Buffer = JSmarty.Classes.Buffer;
+		var Context = JSmarty.Compiler.Context;
+		var Compiler = JSmarty.Compiler;
+
+		var L = renderer.left_delimiter;
+		var R = renderer.right_delimiter;
+
+		// regular expression
+		var regcrl = /\r?\n/g
+		var regtml = RegExp(L + '\\/(.*?)' + R,'g');
+		var regtag = RegExp(L + '[^'+ R +']*' + R,'g');
+		var regvar = RegExp(Compiler.VALSYMBL, 'g');
+		var regsva = RegExp(Compiler.VALSYMBL + 'smarty\.', 'g');
+
+		/**
+		 * filter function
+		 * @return {String} s source
+		 * @return {String} t type of filter
+		 */
+		function filter(s, t)
 		{
-			case 'pre':
-				s = s.replace(regcrl,'\\n');
-				break;
-			case 'post':
-				s = s.replace(regsva,'$.$');
-				s = s.replace(regvar,'$v.');
-				break;
+			switch(t)
+			{
+				case 'pre':
+					s = s.replace(regcrl,'\\n');
+					break;
+				case 'post':
+					s = s.replace(regsva,'$.$');
+					s = s.replace(regvar,'$v.');
+					break;
+			};
+
+			return s;
 		};
 
-		return s;
-	};
-
-	/**
-	 * pattern function
-	 */
-	function pattern()
-	{
-		regtml.compile(L + '\\/(.*?)' + R,'g');
-		regtag.compile(L + '[^'+ R +']*' + R,'g');
-	};
-
-	/**
-	 * delimiters function
-	 */
-	function delimiters()
-	{
-		var flag = false;
-
-		if(L != renderer.left_delimiter)
+		/**
+		 * pattern function
+		 */
+		function pattern()
 		{
-			flag = true;
-			L = renderer.left_delimiter;
-		}
-		if(R != renderer.right_delimiter)
-		{
-			flag = true;
-			R = renderer.right_delimiter;
+			regtml.compile(L + '\\/(.*?)' + R,'g');
+			regtag.compile(L + '[^'+ R +']*' + R,'g');
 		};
 
-		return flag;
-	};
-
-	/**
-	 * execute function
-	 * compile a source
-	 * @param {String} src source
-	 */
-	this.execute = function(src)
-	{
-		var buf = new Buffer();
-		var context = new Context();
-		var t, m, r, p, isp, tag, iap = 0;
-		var ilp = L.length, irp = -R.length;
-
-		if(delimiters()) pattern();
-
-		context.set('ldelim', renderer.left_delimiter);
-		context.set('rdelim', renderer.right_delimiter);
-		context.set('plugins_dir', renderer.plugins_dir);
-
-		// postfilter
-		src = Compiler.escape(src);
-
-		buf.append('var $B = JSmarty.Classes.Buffer;');
-		buf.append('var $v = $.$vars, $b = new $B($);');
-
-		// lookup block elements
-		p = regtml;
-		while((r = p.exec(src)) != null){
-			context.addElement('block', r[1]);
-		};
-
-		// compile source
-		p = regtag;
-		while((r = p.exec(src)) != null)
+		/**
+		 * delimiters function
+		 */
+		function delimiters()
 		{
-			tag = r[0];
-			isp = src.indexOf(tag, iap);
+			var flag = false;
 
-			t = Compiler.newString(src.slice(iap, isp), context);
-			buf.append(t.prefix(), t.toString(), t.suffix());
+			if(L != renderer.left_delimiter)
+			{
+				flag = true;
+				L = renderer.left_delimiter;
+			}
+			if(R != renderer.right_delimiter)
+			{
+				flag = true;
+				R = renderer.right_delimiter;
+			};
 
-			m = Compiler.newModule(tag.slice(ilp, irp), context);
-			buf.append(m.prefix(), m.toString(), m.suffix());
-
-			iap = isp + tag.length;
+			return flag;
 		};
 
-		t = Compiler.newString(src.slice(iap), context);
+		/**
+		 * execute function
+		 * compile a source
+		 * @param {String} src source
+		 */
+		this.execute = function(src)
+		{
+			var buf = new Buffer();
+			var context = new Context();
+			var t, m, r, p, isp, tag, iap = 0;
+			var ilp = L.length, irp = -R.length;
 
-		buf.append(
-			t.prefix(), t.toString(),  t.suffix(),
-			'return $b.toString();'
-		);
+			if(delimiters()) pattern();
 
-		// prefilter
-		return filter(buf.toString(), 'post');
-	};
+			context.set('ldelim', renderer.left_delimiter);
+			context.set('rdelim', renderer.right_delimiter);
+			context.set('plugins_dir', renderer.plugins_dir);
 
-	this.getRenderer = function(){ return renderer; };
-};
+			// postfilter
+			src = Compiler.escape(src);
+
+			buf.append('var $B = JSmarty.Classes.Buffer;');
+			buf.append('var $v = $.$vars, $b = new $B($);');
+
+			// lookup block elements
+			p = regtml;
+			while((r = p.exec(src)) != null){
+				context.addElement('block', r[1]);
+			};
+
+			// compile source
+			p = regtag;
+			while((r = p.exec(src)) != null)
+			{
+				tag = r[0];
+				isp = src.indexOf(tag, iap);
+
+				t = Compiler.newString(src.slice(iap, isp), context);
+				buf.append(t.prefix(), t.toString(), t.suffix());
+
+				m = Compiler.newModule(tag.slice(ilp, irp), context);
+				buf.append(m.prefix(), m.toString(), m.suffix());
+
+				iap = isp + tag.length;
+			};
+
+			t = Compiler.newString(src.slice(iap), context);
+
+			buf.append(
+				t.prefix(), t.toString(),  t.suffix(),
+				'return $b.toString();'
+			);
+
+			// prefilter
+			return filter(buf.toString(), 'post');
+		};
+
+		this.getRenderer = function(){ return renderer; };
+	}
+});
 
 JSmarty.Classes.mixin(JSmarty.Compiler,
 {
