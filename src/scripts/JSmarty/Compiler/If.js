@@ -21,7 +21,7 @@ JSmarty.Compiler.If = JSmarty.Classes.create(JSmarty.Compiler.Module,
 	},
 	toExpression : function()
 	{
-		var buf = JSmarty.Classes('Buffer');
+		var buf = new JSmarty.Classes.Buffer();
 		var iap = this.get('iap'), op = this.OPERATORS;
 		var i, f, c, s = this.text.slice(this.iap).split('');
 

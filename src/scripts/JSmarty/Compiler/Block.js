@@ -10,7 +10,7 @@ JSmarty.Compiler.Block = JSmarty.Classes.create(JSmarty.Compiler.Module,
 		}
 		else
 		{
-			this.sSuffix = '(function(){var $b = $C("Buffer");';
+			this.sSuffix = '(function(){var $b = new $B($);';
 			this.sString = [this.getName(), this.toParams(), this.toModify(), ''].toString();
 		};
 

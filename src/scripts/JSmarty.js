@@ -396,4 +396,4 @@ JSmarty.prototype =
 	}
 };
 
-JSmarty.emptyFunction = function(){};
+JSmarty.$function = function(){};

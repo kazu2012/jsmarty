@@ -13,14 +13,14 @@ JSmarty.Compiler.Section = JSmarty.Classes.create(JSmarty.Compiler.Module,
 		var p = this.toObject(this.toParams());
 		var e, k = p.name || 'i';
 
-		var buf = JSmarty.Classes('Buffer');
-		var exp = JSmarty.Classes('Buffer');
+		var buf = new JSmarty.Classes.Buffer();
+		var exp = new JSmarty.Classes.Buffer();
 
 		exp.append(k, '=', p.start || 0);
 		exp.append(k, '<=', p.max || isNaN(Number(p.loop)) ? p.loop + '.length-1' : p.loop);
 		exp.append(k, '+=', p.step || 1);
 
-		buf.append('(function(){var ', k,', $b = $C("Buffer");');
+		buf.append('(function(){var ', k,', $b = new $B($);');
 		buf.appendIf(p.name)
 		(
 			'$.$section.', p.name,'={total:0,index:-1,iteration:0};',

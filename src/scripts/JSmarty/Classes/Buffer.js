@@ -1,6 +1,6 @@
-JSmarty.Classes.Buffer = function(){ this.init(); };
+JSmarty.Classes.Buffer = function($){ this.init($); };
 JSmarty.Classes.Buffer.prototype = new String();
-JSmarty.Classes.mixin(JSmarty.Classes.Buffer,
+JSmarty.Classes.mixin(JSmarty.Classes.Buffer.prototype,
 {
 	init : function($)
 	{
@@ -45,10 +45,10 @@ JSmarty.Classes.mixin(JSmarty.Classes.Buffer,
 		return this;
 	},
 	appendIf : function(flag){
-		return (flag) ? this.append : JSmarty.emptyFunction;
+		return (flag) ? this.append : JSmarty.$function;
 	},
 	appendUnless : function(flag){
-		return (flag) ? JSmarty.empthFunction : this.append;
+		return (flag) ? JSmarty.$function : this.append;
 	},
 	valueOf : function(s){
 		return this.getContents().join(s || '');

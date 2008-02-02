@@ -11,7 +11,7 @@ $(function()
 		var fetch = JSmarty.Plugin.get('function.fetch', JSmarty.Plugin.repos);
 		var resource = fetch({file:hash.join('/') + '.html'}, renderer);
 
-		(Models.getModelByName(hash.join(':')) || JSmarty.emptyFunction)();
+		(Models.getModelByName(hash.join(':')) || JSmarty.$function)();
 
 		renderer.assign('mode', 'templates');
 		renderer.assign('resource', resource);

@@ -93,8 +93,8 @@ JSmarty.Compiler = function(renderer)
 		// postfilter
 		src = Compiler.escapeLiteral(src);
 
-		buf.append('var $C = JSmarty.Classes;');
-		buf.append('var $v = $.$vars, $b = $C("Buffer");');
+		buf.append('var $B = JSmarty.Classes.Buffer;');
+		buf.append('var $v = $.$vars, $b = new $B($);');
 
 		// lookup block elements
 		p = regtml;
@@ -146,15 +146,6 @@ JSmarty.Compiler.newString = function(src, ctx)
 	module.parse(ctx);
 	return module;
 };
-
-/**
-JSmarty.Compiler.newString = function(src, ctx)
-{
-	return (ctx.isPlain()) ?
-		(new this.Plains(src)).parse(ctx) :
-		(new this.String(src)).parse(ctx) ;
-};
-**/
 
 JSmarty.Compiler.newModule = function(t, c)
 {

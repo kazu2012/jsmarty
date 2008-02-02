@@ -1,7 +1,7 @@
-JSmarty.Templatec = JSmarty.Classes.mixin(JSmarty.Classes('History'),
+JSmarty.Templatec = JSmarty.Classes.mixin(new JSmarty.Classes.History(),
 {
 	call : function(key, renderer){
-		return (this.get(key) || JSmarty.emptyFunction)(renderer);
+		return (this.get(key) || JSmarty.$function)(renderer);
 	},
 	isCompiled : function(item, isForceCompile)
 	{

@@ -2,7 +2,7 @@ function jsmarty_block_model(params, contents, jsmarty)
 {
 	if(!params.type || !params.name){ return; };
 
-	var model, html = JSmarty.Classes('Buffer');
+	var model, html = new JSmarty.Classes.Buffer();
 	model = Models.getModelByName([params.type, params.name].join(':'));
 
 	if(model)

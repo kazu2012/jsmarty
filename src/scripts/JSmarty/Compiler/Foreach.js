@@ -13,11 +13,7 @@ JSmarty.Compiler.Foreach = JSmarty.Classes.create(JSmarty.Compiler.Module,
 		var b = new JSmarty.Classes.Buffer();
 		var p = this.toObject(this.toParams());
 
-		b.append
-		(
-			'$.$m(', this.toModify(), ',',
-			'function(){var $b = $C("Buffer");'
-		);
+		b.append('(function(){var $b = new $B($);');
 		b.appendIf(p.name)
 		(
 			'$.$foreach.', p.name,'={total:0,index:-1,iteration:0};',
