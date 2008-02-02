@@ -1,11 +1,13 @@
 <pre>
 {"<b>Hello&World!!</b>"|escape:"html"}
-{""|escape:"htmlall"}
+{"&> <"|escape:"htmlall"}
 {"/Hello World!!"|escape:"url"}
 {"/fo o/bar"|escape:"urlpathinfo"}
-{""|escape:"quotes"}
-{""|escape:"hex"}
-{""|escape:"javascript"}
+{"'Hello'"|escape:"quotes"}
+{"Hello"|escape:"hex"}
+{"Hello"|escape:"hexentity"}
+{"Hello"|escape:"decentity"}
+{"\r\n\t'"|escape:"javascript"}
 {"mail@foo.com"|escape:"mail"}
 {"foo"|escape:"unknow"}
 </pre>

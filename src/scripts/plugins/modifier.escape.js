@@ -5,24 +5,40 @@
  */
 function jsmarty_modifier_escape(s, t)
 {
-	var Plugin = JSmarty.Plugin;
+	var i;
 
 	switch(t)
 	{
 		case 'html':
-			return Plugin.get('php.htmlspecialchars')(s, 'ENT_QUOTES');
+			return JSmarty.Plugin.get('php.htmlspecialchars')(s, 'ENT_QUOTES');
 		case 'htmlall':
-			return Plugin.get('php.htmlentities')(s, 'ENT_QUOTES');
+			return JSmarty.Plugin.get('php.htmlentities')(s, 'ENT_QUOTES');
 		case 'url':
 			return escape(s);
 		case 'urlpathinfo':
 			return escape(s).replace(/%2F/g, '/');
-//		case 'quotes':
-//			return s.replace(/%(?<!\\\\)'%/g, "\\'");
+		case 'quotes':
+			return s.replace(/'/g, "\\'");
 		case 'hex':
-			return null;
+			s = s.split('');
+			for(i=s.length-1;0<=i;i--){
+				s[i] = '%' + s[i].charCodeAt(0).toString(16);
+			};
+			return s.join('');
+		case 'hexentity':
+			s = s.split('');
+			for(i=s.length-1;0<=i;i--){
+				s[i] = '&#x' + s[i].charCodeAt(0).toString(16) + ';';
+			};
+			return s.join('');
+		case 'decentity':
+			s = s.split('');
+			for(i=s.length-1;0<=i;i--){
+				s[i] = '&#' + s[i].charCodeAt(0).toString(10) +';';
+			};
+			return s.join('');
 		case 'javascript':
-			return Plugin.get('php.strtr')(s, {"\\'":'\\\\', "'":"\\'", "\r":"\\r", "\n":'\\n', '</':'<\/'});
+			return JSmarty.Plugin.get('php.strtr')(s, {"\\":'\\\\', "'":"\\'", '"':'\\"', "\r":"\\r", "\n":'\\n', '</':'<\/'});
 		case 'mail':
 			return s.replace(/@/g, ' [AT] ').replace(/\./g, ' [DOT] ');
 		default:
