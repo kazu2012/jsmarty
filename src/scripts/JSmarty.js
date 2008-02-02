@@ -259,6 +259,7 @@ JSmarty.prototype =
 		this.$vars = {};
 		this.$foreach = {};
 		this.$section = {};
+		this.$filters = [];
 	},
 	/**
 	 * register_block function
@@ -392,43 +393,6 @@ JSmarty.prototype =
 	},
 	get_resource_name : function(name){
 		return (0 <= name.indexOf(':')) ? name : this.default_resource_type + ':' + name;
-	},
-	/**
-	 * internals: call function
-	 * @param {String} n name
-	 * @param {Object} a attribute
-	 * @param {Object} m modifier
-	 * @param {String} s source
-	 */
-	$p : function(name, params, modify, src)
-	{
-		var Plugin = JSmarty.Plugin;
-		var type = (src != null) ? 'block' : 'function';
-		var f, pluginName = Plugin.name(type, name);
-
-		f = Plugin.get(pluginName, this.plugins_dir);
-		if(type == 'function'){
-			return this.$m(modify, f(params, this));
-		}
-		return this.$m(modify, f(params, src, this));
-	},
-	/**
-	 * internals: modifier function
-	 * @param {Object} m modifier
-	 * @param {Object} s source
-	 */
-	$m : function(modify, src)
-	{
-		var dir = this.plugins_dir;
-		var k, Plugin = JSmarty.Plugin;
-
-		for(k in modify)
-		{
-			modify[k][0] = src;
-			src = Plugin.get('modifier.' + k, dir).apply(null, modify[k]);
-		};
-
-		return src;
 	}
 };
 

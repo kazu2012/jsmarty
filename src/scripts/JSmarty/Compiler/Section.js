@@ -7,7 +7,7 @@ JSmarty.Compiler.Section = JSmarty.Classes.create(JSmarty.Compiler.Module,
 		{
 			this.sPrefix = '';
 			this.sString = '};return $b.toString();}()));';
-			return;
+			return this;
 		};
 
 		var p = this.toObject(this.toParams());
@@ -20,11 +20,7 @@ JSmarty.Compiler.Section = JSmarty.Classes.create(JSmarty.Compiler.Module,
 		exp.append(k, '<=', p.max || isNaN(Number(p.loop)) ? p.loop + '.length-1' : p.loop);
 		exp.append(k, '+=', p.step || 1);
 
-		buf.append
-		(
-			'$.$m(', this.toModify(), ',',
-			'function(){var ', k,', $b = $C("Buffer");'
-		);
+		buf.append('(function(){var ', k,', $b = $C("Buffer");');
 		buf.appendIf(p.name)
 		(
 			'$.$section.', p.name,'={total:0,index:-1,iteration:0};',
@@ -40,5 +36,7 @@ JSmarty.Compiler.Section = JSmarty.Classes.create(JSmarty.Compiler.Module,
 		);
 
 		this.sString = buf.toString('\n');
+
+		return this;
 	}
 });

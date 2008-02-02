@@ -2,14 +2,13 @@ JSmarty.Compiler.Literal = JSmarty.Classes.create(JSmarty.Compiler.Module,
 {
 	sPrefix : '',
 	sSuffix : '',
-	sString : '\'));',
+	sString : '\');',
 	parse : function()
 	{
 		if(!this.isTerminal())
 		{
-			var m = this.toModify();
-			this.sPrefix = '$b.append(';
-			this.sString = '$.$m(' + m + ',' + "'";
+			this.sPrefix = '$b.modify(';
+			this.sString = [this.toModify(), '\'']
 		};
 
 		return this;

@@ -4,7 +4,7 @@ JSmarty.Compiler.Variable = JSmarty.Classes.create(JSmarty.Compiler.Module,
 	{
 		var m = this.toModify();
 		var n = JSmarty.Compiler.VALSYMBL + this.get('name');
-		this.sString = '$.$m('+ m +','+ n +')';
+		this.sString = n + ').modify(' + m + '';
 
 		return this;
 	}

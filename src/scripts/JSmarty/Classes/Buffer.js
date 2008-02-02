@@ -7,7 +7,7 @@ JSmarty.Classes.mixin(JSmarty.Classes.Buffer,
 		var buf = [];
 		var c = Array.prototype.join;
 
-		this.append = function()
+		this.append = function(x)
 		{
 			buf[buf.length] = c.call(arguments,'');
 			return this;
@@ -18,10 +18,10 @@ JSmarty.Classes.mixin(JSmarty.Classes.Buffer,
 	},
 	plugin : function(name, params, modifier, inner)
 	{
-		var lambda, Plugin = JSmarty.Plugin;
+		var lambda, P = JSmarty.Plugin;
 		var type = (inner) ? 'block' : 'function';
 
-		lambda = Plugin.get(Plugin.name(type, name));
+		lambda = P.get(P.name(type, name), this.getRenderer().plugins_dir);
 
 		this.getContents().push((!inner) ?
 			lambda(params, this.getRenderer()) :
@@ -32,16 +32,16 @@ JSmarty.Classes.mixin(JSmarty.Classes.Buffer,
 	},
 	modify : function(modifier)
 	{
-		var Plugin = JSmarty.Plugin;
-		var name, str = this.getContents().pop();
+		var P = JSmarty.Plugin, dir = this.getRenderer().plugins_dir;
+		var key, buf = this.getContents().pop();
 
-		for(name in modifier)
+		for(key in modifier)
 		{
-			modifier[name][0] = str;
-			str = Plugin.get('modifier.' + name, dir).apply(null, modifier[k]);
+			modifier[key][0] = buf;
+			buf = P.get('modifier.' + key, dir).apply(null, modifier[key]);
 		};
 
-		this.getContents().push(str);
+		this.getContents().push(buf);
 		return this;
 	},
 	appendIf : function(flag){
