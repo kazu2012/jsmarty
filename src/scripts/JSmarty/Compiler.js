@@ -91,7 +91,7 @@ JSmarty.Compiler = function(renderer)
 		context.set('plugins_dir', renderer.plugins_dir);
 
 		// postfilter
-		src = Compiler.escapeLiteral(src);
+		src = Compiler.escape(src);
 
 		buf.append('var $B = JSmarty.Classes.Buffer;');
 		buf.append('var $v = $.$vars, $b = new $B($);');
@@ -132,90 +132,82 @@ JSmarty.Compiler = function(renderer)
 	this.getRenderer = function(){ return renderer; };
 };
 
-/**
- * newString function
- * The factory for Compiler's StringObject
- * @param {String} src
- * @param {String} con context
- * @return {Compiler.String}
- **/
-JSmarty.Compiler.newString = function(src, ctx)
+JSmarty.Classes.mixin(JSmarty.Compiler,
 {
-	var module;
-	module = (ctx.isPlain()) ? new this.Plains(src): new this.String(src);
-	module.parse(ctx);
-	return module;
-};
+	VALSYMBL : '@@COMPILER::VARIABLE@@',
+	FNCSYMBL : '@@COMPILER::FUNCTION@@',
+	MODSYMBL : '@@COMPILER::MODIFIER@@',
+	PLAINELM : {strip:true,literal:true,javascript:true},
 
-JSmarty.Compiler.newModule = function(t, c)
-{
-	var m, imp, name, type, main = t.slice(0, 1);
-	var inp = 0, iap = imp = -1, plain = c.isPlain();
-
-	switch(main)
+	toUcfirst : function(s){
+		return s.slice(0,1).toUpperCase().concat(s.slice(1));
+	},
+	isBuiltIn : function(name){
+		return (this.toUcfirst(name) in this);
+	},
+	escape : function(s){
+		return s.replace(/\\/g, '\\\\').replace(/\t/g, '\\t').replace(/\r?\n/g, '\\n');
+	},
+	newString : function(src, ctx)
 	{
-		case '*':
-			m = new this.String();
-			break;
-		case '#':
-			m = new this.String();
-			break;
-		case '"':
-		case "'":
-			do{ inp = t.indexOf(main, inp + 1); }
-			while(t.charAt(inp - 1) == '\\');
-			m = new this.String(t);
-			m.set('imp', t.indexOf('|', ++inp) + 1);
-			m.set('sString', t.slice(0, inp));
-			break;
-		case '$':
-			imp = t.indexOf('|');
-			inp = (-1 < imp) ? imp++ : t.length;
-			m = new this.Variable(t);
-			m.set('imp', imp);
-			m.set('name', t.slice(1, inp));
-			break;
-		case '/':
-			name = this.toUcfirst(c.setTree(t.slice(1), true));
-			type = this.toUcfirst(c.typeOf(name.toLowerCase()));
-			m = (name in this) ? new this[name](t) : new this[type](t);
-			break;
-		default:
-			if(c.isPlain()){ break; };
-			iap = t.indexOf(' ');
-			imp = t.indexOf('|');
-			inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : t.length;
-			name = this.toUcfirst(c.setTree(t.slice(0, inp), false));
-			type = this.toUcfirst(c.typeOf(name.toLowerCase()));
-			m = (name in this) ? new this[name](t) : new this[type](t);
-			m.set('iap', iap);
-			m.set('imp', imp);
-			m.set('bTerminal', false)
-			m.set('name', name.toLowerCase());
-			break;
-	};
+		var module;
+		module = (ctx.isPlain()) ? new this.Plains(src): new this.String(src);
+		module.parse(ctx);
+		return module;
+	},
+	newModule : function(t, c)
+	{
+		var m, imp, name, type, main = t.slice(0, 1);
+		var inp = 0, iap = imp = -1, plain = c.isPlain();
 
-	if(plain && c.isPlain()){
-		m = new this.Plainm(t);
-	};
+		switch(main)
+		{
+			case '*':
+				m = new this.String();
+				break;
+			case '#':
+				m = new this.String();
+				break;
+			case '"':
+			case "'":
+				do{ inp = t.indexOf(main, inp + 1); }
+				while(t.charAt(inp - 1) == '\\');
+				m = new this.String(t);
+				m.set('imp', t.indexOf('|', ++inp) + 1);
+				m.set('sString', t.slice(0, inp));
+				break;
+			case '$':
+				imp = t.indexOf('|');
+				inp = (-1 < imp) ? imp++ : t.length;
+				m = new this.Variable(t);
+				m.set('imp', imp);
+				m.set('name', t.slice(1, inp));
+				break;
+			case '/':
+				name = this.toUcfirst(c.setTree(t.slice(1), true));
+				type = this.toUcfirst(c.typeOf(name.toLowerCase()));
+				m = (name in this) ? new this[name](t) : new this[type](t);
+				break;
+			default:
+				if(c.isPlain()){ break; };
+				iap = t.indexOf(' ');
+				imp = t.indexOf('|');
+				inp = (-1 < iap) ? iap++ : (-1 < imp) ? imp++ : t.length;
+				name = this.toUcfirst(c.setTree(t.slice(0, inp), false));
+				type = this.toUcfirst(c.typeOf(name.toLowerCase()));
+				m = (name in this) ? new this[name](t) : new this[type](t);
+				m.set('iap', iap);
+				m.set('imp', imp);
+				m.set('bTerminal', false)
+				m.set('name', name.toLowerCase());
+				break;
+		};
 
-	m.parse(c);
-	return m;
-};
+		if(plain && c.isPlain()){
+			m = new this.Plainm(t);
+		};
 
-JSmarty.Compiler.VALSYMBL = '@@COMPILER::VARIABLE@@';
-JSmarty.Compiler.FNCSYMBL = '@@COMPILER::FUNCTION@@';
-JSmarty.Compiler.MODSYMBL = '@@COMPILER::MODIFIER@@';
-JSmarty.Compiler.PLAINELM = {strip:true,literal:true,javascript:true};
-
-JSmarty.Compiler.toUcfirst = function(s){
-	return s.slice(0,1).toUpperCase().concat(s.slice(1));
-};
-
-JSmarty.Compiler.isBuiltIn = function(name){
-	return (this.toUcfirst(name) in this);
-};
-
-JSmarty.Compiler.escapeLiteral = function(src){
-	return src.replace(/\\/g, '\\\\').replace(/\t/g, '\\t').replace(/\r?\n/g, '\\n');
-};
+		m.parse(c);
+		return m;
+	}
+});
