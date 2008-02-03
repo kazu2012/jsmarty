@@ -30,18 +30,19 @@ JSmarty.Classes.mixin(JSmarty.Classes.Buffer.prototype,
 
 		return (modifier) ? this.modify(modifier) : this;
 	},
-	modify : function(modifier)
+	modify : function(mod, str)
 	{
 		var P = JSmarty.Plugin, dir = this.getRenderer().plugins_dir;
-		var key, buf = this.getContents().pop();
+		var key, str = (arguments.length == 1) ? this.getContents().pop() : str;
 
-		for(key in modifier)
+		for(key in mod)
 		{
-			modifier[key][0] = buf;
-			buf = P.get('modifier.' + key, dir).apply(null, modifier[key]);
+			mod[key][0] = str;
+			str = P.get('modifier.' + key, dir).apply(null, mod[key]);
 		};
 
-		this.getContents().push(buf);
+		this.getContents().push(str);
+
 		return this;
 	},
 	appendIf : function(flag){

@@ -3,12 +3,16 @@ JSmarty.Compiler.String = JSmarty.Classes.create(JSmarty.Compiler.Module,
 	sString : '',
 	parse : function(c)
 	{
-		var m, s, str = this.sString;
+		var m, s, text, str = this.sString;
 
 		switch(true)
 		{
 			case (str == ''):
-				this.sString = this.quote(this.getText());
+				text = this.getText();
+				this.sString = this.quote(text);
+				if(text == ''){
+					this.sPrefix = this.sString = this.sSuffix = '';
+				};
 				return this;
 			case (str != ''):
 				m = this.toModify();
