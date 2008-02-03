@@ -17,5 +17,5 @@
  * @return   {Number} integer of \r or \n numbers.
  */
 function jsmarty_modifier_count_paragraphs(s){
-	return s.match(/[\r\n]+/g).length;
+	return s.match(/[\r?\n]+/g).length;
 };
