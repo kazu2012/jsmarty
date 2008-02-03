@@ -101,9 +101,6 @@ JSmarty.Compiler.Module = JSmarty.Classes.create
 					s[i] = ':';
 					break;
 				case ' ':
-				case '\t':
-				case '\r':
-				case '\n':
 					s[i++] = ',';
 					while(s[i] <= ' '){ s[i++] = ''; };
 					break;
@@ -115,7 +112,7 @@ JSmarty.Compiler.Module = JSmarty.Classes.create
 					if(s[i-1] == '\\'){ i--; };
 					break;
 				case '|':
-					s.splice(i);
+					s = s.slice(0, i);
 					this.imp = this.iap + i + 1;
 					break outerloop;
 			};

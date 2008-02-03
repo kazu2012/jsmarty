@@ -37,8 +37,8 @@ function jsmarty_modifier_escape(s, t)
 				s[i] = '&#' + s[i].charCodeAt(0).toString(10) +';';
 			};
 			return s.join('');
-		case 'javascript':
-			return JSmarty.Plugin.get('php.strtr')(s, {"\\":'\\\\', "'":"\\'", '"':'\\"', "\r":"\\r", "\n":'\\n', '</':'<\/'});
+//		case 'javascript':
+//			return JSmarty.Plugin.get('php.strtr')(s, {'\\':'\\\\', "'":"\\'", "\r":"\\r", "\n":'\\n', '</':'<\/'});
 		case 'mail':
 			return s.replace(/@/g, ' [AT] ').replace(/\./g, ' [DOT] ');
 		default:

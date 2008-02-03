@@ -5,6 +5,17 @@
  */
 JSmarty.Compiler = JSmarty.Classes.create
 ({
+	/**
+	 * left_delimiters
+	 * @private
+	 */
+	$ldelim : null,
+	/**
+	 * right_delimiters
+	 * @private
+	 */
+	$rdelim : null,
+
 	init : function(renderer)
 	{
 		// resolve namespaces
@@ -92,10 +103,9 @@ JSmarty.Compiler = JSmarty.Classes.create
 			context.set('plugins_dir', renderer.plugins_dir);
 
 			// postfilter
-			src = Compiler.escape(src);
+			src = this.escape(src);
 
-			buf.append('var $B = JSmarty.Classes.Buffer;');
-			buf.append('var $v = $.$vars, $b = new $B($);');
+			buf.append(Compiler.HEADER);
 
 			// lookup block elements
 			p = regtml;
@@ -131,6 +141,23 @@ JSmarty.Compiler = JSmarty.Classes.create
 		};
 
 		this.getRenderer = function(){ return renderer; };
+	},
+	escape : function(src)
+	{
+		var $ = this.getRenderer(), L = $.left_delimiter, R = $.right_delimiter;
+		return src.replace(RegExp('('+L+'[^'+R+']*'+R+')\\r?\\n', 'g'), '$1'
+				).replace(/\\/g, '\\\\'
+				).replace(/\t/g, '\\t'
+				).replace(/\r?\n/g, '\\n');
+	},
+	isDelimiterChanged : function()
+	{
+		var $ = this.getRenderer();
+		return !((this.$ldelim == $.left_delimiter) && (this.$rdelim == $.right_deliiter));
+	},
+	updatePatternObject : function(isDelimiterChanged)
+	{
+		if(!isDelimiterChanged){ return; };
 	}
 });
 
@@ -139,6 +166,8 @@ JSmarty.Classes.mixin(JSmarty.Compiler,
 	VALSYMBL : '@@COMPILER::VARIABLE@@',
 	FNCSYMBL : '@@COMPILER::FUNCTION@@',
 	MODSYMBL : '@@COMPILER::MODIFIER@@',
+
+	HEADER : 'var $B = JSmarty.Classes.Buffer, $v = $.$vars, $b = new $B($);',
 	PLAINELM : {strip:true,literal:true,javascript:true},
 
 	toUcfirst : function(s){
