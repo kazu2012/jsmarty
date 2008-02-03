@@ -6,7 +6,7 @@ JSmarty.Logger =
 		return (this.dict[method] || method);
 	},
 	invoke: function(method){
-		return (this.console[this.lookup(method)] || JSmarty.emptyFunction);
+		return (this.console[this.lookup(method)] || JSmarty.$function);
 	},
 	forName : function()
 	{
