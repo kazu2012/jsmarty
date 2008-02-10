@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSmarty" default="JSmarty" basedir="../">
 
-	<property name="version" value="0.5.1" /> 
+	<!-- Taskdef -->
+	<taskdef name="yuic" classname="org.coderepos.utiljs.taskdefs.Yuic">
+		<classpath>
+			<fileset dir="build/bin">
+				<include name="*.jar"/>
+			</fileset>
+		</classpath>
+	</taskdef>
 
-	<!-- Directories -->
-
+	<!-- Properties -->
+	<property name="version" value="0.5.1" />
 	<property name="lib" value="lib" />
 	<property name="tmp" value="Temp/JSmarty" />
 	<property name="dist" value="dist" />
 
 	<target name="dist" depends="JSmarty">
-		<taskdef name="yuic" classname="YUICTask" classpath="build/bin;build/bin/yuicompressor-1.0.jar" />
 		<mkdir dir="${tmp}" />
 		<mkdir dir="${dist}" />
-		<yuic todir="${tmp}/${lib}"><fileset dir="${lib}" /></yuic>
+		<yuic verbose="off" srcDir="${lib}" destDir="${tmp}/lib" />
 		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
 		<zip destfile="${dist}/JSmarty-${version}.zip" basedir="Temp" />
 		<tar destfile="${dist}/JSmarty-${version}.tar.gz" basedir="Temp" compression="gzip" />
