@@ -1,8 +1,6 @@
 (function($)
 {
-	if(typeof($) == 'undefiend'){
-		return;
-	};
+	if(typeof($) == 'undefiend'){ return; };
 
 	var renderer = new JSmarty();
 

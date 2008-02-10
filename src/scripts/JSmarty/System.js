@@ -12,7 +12,6 @@ JSmarty.System =
 	getName : function()
 	{
 		var global = JSmarty.Plugin['util.global'];
-		if(global('System', 'Core')){ return 'ajaja'; };
 		if(global('window', 'System')){ return 'gadget'; };
 		if(global('window', 'document')){ return 'browser'; };
 	},
@@ -20,7 +19,6 @@ JSmarty.System =
 	{
 		switch(name)
 		{
-			case 'ajaja':
 			case 'mustang':
 				load('./internals/system.'+ name +'.js');
 				break;
