@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSmarty" default="JSmarty" basedir="../">
-
-	<!-- Taskdef -->
-	<taskdef name="yuic" classname="org.coderepos.utiljs.taskdefs.Yuic">
-		<classpath>
-			<fileset dir="build/bin">
-				<include name="*.jar"/>
-			</fileset>
-		</classpath>
-	</taskdef>
+<project name="JSmarty" default="default" basedir="../">
 
 	<!-- Properties -->
 	<property name="version" value="0.5.1" />
@@ -16,17 +7,8 @@
 	<property name="tmp" value="Temp/JSmarty" />
 	<property name="dist" value="dist" />
 
-	<target name="dist" depends="JSmarty">
-		<mkdir dir="${tmp}" />
-		<mkdir dir="${dist}" />
-		<yuic verbose="off" srcDir="${lib}" destDir="${tmp}/lib" />
-		<copy todir="${tmp}/samples"><fileset dir="samples" /></copy>
-		<zip destfile="${dist}/JSmarty-${version}.zip" basedir="Temp" />
-		<tar destfile="${dist}/JSmarty-${version}.tar.gz" basedir="Temp" compression="gzip" />
-		<delete dir="Temp" />
-	</target>
-
-	<target name="JSmarty">
+	<!-- Target :: default -->
+	<target name="default">
 		<property name="src" value="src/scripts" />
 
 		<mkdir dir="${lib}" />
@@ -53,6 +35,20 @@
 		<delete dir="${lib}/JSmarty" excludes="Compiler.js" />
 		<delete dir="${lib}/JSmarty/Classes" />
 		<delete dir="${lib}/JSmarty/Compiler" />
+		<delete dir="Temp" />
+	</target>
+
+	<!-- Target :: dist -->
+	<target name="dist" depends="default">
+		<taskdef name="yuic" classname="org.coderepos.utiljs.taskdefs.Yuic">
+			<classpath><fileset dir="build/bin"><include name="*.jar"/></fileset></classpath>
+		</taskdef>
+		<mkdir dir="${tmp}" />
+		<mkdir dir="${dist}" />
+		<yuic verbose="off" srcDir="${lib}" destDir="${tmp}/lib" />
+		<copy toDir="${tmp}/samples"><fileset dir="samples" /></copy>
+		<zip basedir="Temp" destFile="${dist}/JSmarty-${version}.zip" />
+		<tar basedir="Temp" destFile="${dist}/JSmarty-${version}.tar.gz" compression="gzip" />
 		<delete dir="Temp" />
 	</target>
 
