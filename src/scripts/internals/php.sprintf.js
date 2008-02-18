@@ -5,9 +5,9 @@
  * @author shogo < shogo4405 at gmail dot com >
  * @version 1.0.0RC2
  * @see http://www.php.net/sprintf
- * @param  {String} s format
+ * @param  {string} s format
  * @param  {mixed}  1..n arguments
- * @return {String}
+ * @return {string}
  */
 function sprintf(s)
 {
