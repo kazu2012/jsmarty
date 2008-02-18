@@ -41,7 +41,7 @@
 	<!-- Target :: dist -->
 	<target name="dist" depends="default">
 		<taskdef name="yuic" classname="org.coderepos.utiljs.taskdefs.Yuic">
-			<classpath><fileset dir="build/bin"><include name="*.jar"/></fileset></classpath>
+			<classpath><fileset dir="build/classes"><include name="*.jar"/></fileset></classpath>
 		</taskdef>
 		<mkdir dir="${tmp}" />
 		<mkdir dir="${dist}" />
