@@ -167,7 +167,8 @@ JSmarty.Classes.mixin(JSmarty.Compiler,
 	FNCSYMBL : '@@COMPILER::FUNCTION@@',
 	MODSYMBL : '@@COMPILER::MODIFIER@@',
 
-	HEADER : 'var $B = JSmarty.Classes.Buffer, $v = $.$vars, $b = new $B($);',
+	HEADER :
+		'var $B = JSmarty.Classes.Buffer, $P = JSmarty.Plugin, $v = $.$vars, $b = new $B($);',
 	PLAINELM : {strip:true,literal:true,javascript:true},
 
 	toUcfirst : function(s){
