@@ -3,6 +3,9 @@ JSmarty.prototype =
 {
 	config_dir   : 'configs',
 	compile_dir  : 'templates_c',
+	/**
+	 * @type {Array}
+	 */
 	plugins_dir  : ['plugins'],
 	template_dir : 'templates',
 
@@ -382,7 +385,10 @@ JSmarty.prototype =
 	trigger_error : function(msg, level){
 		JSmarty.Logger.invoke(level)(msg);
 	},
-	/** getter for compiler **/
+	/**
+	 * getter for compilerObject
+	 * @return {JSmarty.Compiler}
+	 */
 	get_compiler : function()
 	{
 		return this.compiler || function($)
@@ -396,4 +402,8 @@ JSmarty.prototype =
 	}
 };
 
-JSmarty.$function = function(){};
+/**
+ * NullFunction
+ * @type {function}
+ */
+JSmarty.$function = function(){ return false; };
