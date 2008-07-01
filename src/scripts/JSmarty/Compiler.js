@@ -209,6 +209,7 @@ JSmarty.Classes.mixin(JSmarty.Compiler,
 				m.set('sString', t.slice(0, inp));
 				break;
 			case '$':
+				t = t.replace(/(\s)*->(\s)*/g, '.');
 				imp = t.indexOf('|');
 				inp = (-1 < imp) ? imp++ : t.length;
 				m = new this.Variable(t);
