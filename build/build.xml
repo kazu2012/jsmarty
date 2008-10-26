@@ -2,10 +2,15 @@
 <project name="JSmarty" default="default" basedir="../">
 
 	<!-- Properties -->
-	<property name="version" value="0.5.1" />
+	<property name="version" value="0.5.2" />
 	<property name="lib" value="lib" />
 	<property name="tmp" value="Temp/JSmarty" />
 	<property name="dist" value="dist" />
+
+	<!-- require utiljs.jar >= 0.0.3 -->
+	<taskdef resource="utiljs.tasks">
+		<classpath><fileset dir="build/classes"><include name="*.jar"/></fileset></classpath>
+	</taskdef>
 
 	<!-- Target :: default -->
 	<target name="default">
@@ -40,9 +45,6 @@
 
 	<!-- Target :: dist -->
 	<target name="dist" depends="default">
-		<taskdef name="yuic" classname="org.coderepos.utiljs.taskdefs.Yuic">
-			<classpath><fileset dir="build/classes"><include name="*.jar"/></fileset></classpath>
-		</taskdef>
 		<mkdir dir="${tmp}" />
 		<mkdir dir="${dist}" />
 		<yuic verbose="off" srcDir="${lib}" destDir="${tmp}/lib" />

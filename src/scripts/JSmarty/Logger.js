@@ -1,3 +1,6 @@
+/**
+ * @namespace Logging API
+ */
 JSmarty.Logger =
 {
 	dict : {},
@@ -8,6 +11,10 @@ JSmarty.Logger =
 	invoke: function(method){
 		return (this.console[this.lookup(method)] || JSmarty.$function);
 	},
+	/**
+	 * setup for LoggerObject
+	 * @return {void}
+	 */
 	forName : function()
 	{
 		if(JSmarty.Plugin['util.global']('console'))
@@ -22,6 +29,6 @@ JSmarty.Logger =
 				};
 			};
 		};
-		this.forName = function(){};
+		this.forName = JSmarty.$function;
 	}
 };

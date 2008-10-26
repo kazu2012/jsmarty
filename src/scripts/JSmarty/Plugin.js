@@ -1,3 +1,4 @@
+/** @namespace **/
 JSmarty.Plugin =
 {
 	/**
@@ -105,10 +106,6 @@ JSmarty.Plugin =
 		if(this.additional[name[0]]){ return name[1]; };
 		return ['jsmarty'].concat(name).join('_');
 	},
-	/**
-	 *
-	 *
-	 */
 	isEnabled : function(pluginName, repos){
 		return (pluginName in this) ? !!this[pluginName] : this.add(pluginName, repos);
 	},
@@ -130,76 +127,87 @@ JSmarty.Plugin =
 		};
 
 		global = null;
-	},
-	'util.slice': function(str, symbol, isBefore)
-	{
-		var i = str.lastIndexOf(symbol);
-		return (0 < i) ? (isBefore) ? str.slice(0, i) : str.slice(i + 1) : null;
-	},
-	'util.tryout' : function(lambda, value)
-	{
-		while(!!lambda.length){
-			try{ return lambda[0](); }catch(e){ lambda.splice(0, 1); };
-		};
-		return value;
-	},
-	'util.global' : function(globalObject)
-	{
-		return function()
-		{
-			var i, c;
-			if(arguments.length == 0){
-				return globalObject;
-			};
-			for(i=c=arguments.length-1;0<=i;i--){
-				if(arguments[i] in globalObject){ c--; };
-			};
-			return (c == -1);
-		};
-	}(this),
-	'util.clone' : function(o)
-	{
-		function f(){};
-		f.prototype = o;
-		return new f();
-	},
-	'util.copy' : function(value)
-	{
-		switch(typeof(value))
-		{
-			case 'object':
-				switch(true)
-				{
-					case (value instanceof Array):
-						return [].concat(value);
-					case (value instanceof Object):
-						var i, o = {}, copy = arguments.callee;
-						for(i in value){ o[i] = copy(value[i]); };
-						return o;
-				};
-				return null;
-			case 'undefined':
-				return null;
-			default:
-				return value;
-		};
-	},
-	'util.bind' : function(lambda, object){
-		return function(){ lambda.call(object); };
-	},
-	'resource.file' :
-	[
-		function(name, item, renderer)
-		{
-			item.put('src', JSmarty.System.read(name, renderer.template_dir));
-			return !!(item.get('src'));
-		},
-		function(name, item, renderer)
-		{
-			item.put('timestamp', JSmarty.System.time(name, renderer.template_dir));
-			return !!(item.get('timestamp'));
-		},
-		function(){ return true; },
-		function(){ return true; }
-	]
+	}
 };
+
+/*----------------------------------------------------------------------
+ bultin plugins
+ ---------------------------------------------------------------------*/
+
+JSmarty.Plugin['util.global'] = function(global)
+{
+	return function()
+	{
+		var i, c;
+		if(arguments.length == 0){
+			return global;
+		};
+		for(i=c=arguments.length-1;0<=i;i--){
+			if(arguments[i] in global){ c--; };
+		};
+		return (c == -1);
+	};
+}(this);
+
+JSmarty.Plugin['util.tryout'] = function(lambda, value)
+{
+	while(!!lambda.length){
+		try{ return lambda[0](); }catch(e){ lambda.splice(0, 1); };
+	};
+	return value;
+};
+
+JSmarty.Plugin['util.clone'] = function(o)
+{
+	function f(){};	
+	f.prototype = o;
+	return new f();
+};
+
+JSmarty.Plugin['util.slice'] = function(str, symbol, isBefore)
+{
+	var i = str.lastIndexOf(symbol);
+	return (0 < i) ? (isBefore) ? str.slice(0, i) : str.slice(i + 1) : null;
+};
+
+JSmarty.Plugin['util.copy'] = function(value)
+{
+	switch(typeof(value))
+	{
+		case 'object':
+			switch(true)
+			{
+				case (value instanceof Array):
+					return [].concat(value);
+				case (value instanceof Object):
+					var i, o = {}, copy = arguments.callee;
+					for(i in value){ o[i] = copy(value[i]); };
+					return o;
+			};
+			return null;
+		case 'undefined':
+			return null;
+		default:
+			return value;
+	};
+};
+
+JSmarty.Plugin['util.bind'] = function(lambda, object){
+	return function(){ lambda.call(object); };
+};
+
+JSmarty.Plugin['resource.file'] = 
+[
+	function(name, item, renderer)
+	{
+		item.put('src', JSmarty.System.read(name, renderer.template_dir));
+		return !!(item.get('src'));
+	},
+	function(name, item, renderer)
+	{
+		item.put('timestamp', JSmarty.System.time(name, renderer.template_dir));
+		return !!(item.get('timestamp'));
+	},
+	function(){ return true; },
+	function(){ return true; }
+];
