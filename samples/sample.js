@@ -54,8 +54,8 @@ $(function()
 		case (String(location.href).indexOf('index.html') == -1):
 			location.replace(location.href + 'index.html');
 			return;
-		case (!!String(location.hash)):
-			var hash = String(location.hash);
+		case (!!location.hash):
+			var hash = location.hash;
 			showHtml(hash.slice(hash.indexOf('#') + 1).split(':'));
 			break;
 	};
