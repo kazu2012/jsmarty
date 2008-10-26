@@ -205,16 +205,16 @@ JSmarty.prototype =
 		name = this.get_resource_name(name);
 
 		var Templatec = JSmarty.Templatec;
-		var logging, temp = [].concat(this.plugins_dir);
+		var logger, temp = [].concat(this.plugins_dir);
 		var result, item = new JSmarty.Classes.Item(name);
 
 		this.plugins_dir = JSmarty.Plugin.repos.concat(this.plugins_dir);
 
 		if(this.is_debugging())
 		{
-			logging = JSmarty.Logging;
-			logging.time('EXECUTE');
-			logging.time('COMPILE');
+			logger = JSmarty.Logger;
+			logger.invoke('time')('EXECUTE');
+			logger.invoke('time')('COMPILE');
 		};
 
 		if
@@ -224,7 +224,7 @@ JSmarty.prototype =
 		)
 		{
 			if(this.is_debugging()){
-				logging.timeEnd('COMPILE');
+				logger.invoke('timeEnd')('COMPILE');
 			};
 			result = Templatec.call(name, this);
 		};
@@ -236,7 +236,7 @@ JSmarty.prototype =
 		this.plugins_dir = temp;
 
 		if(this.is_debugging()){
-			logging.timeEnd('EXECUTE');
+			logger('timeEnd')('EXECUTE');
 		};
 
 		return result;

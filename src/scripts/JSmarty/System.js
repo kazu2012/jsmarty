@@ -34,8 +34,7 @@ JSmarty.System =
 	}
 };
 
-(function(System, Logger)
+(function(System)
 {
 	System.forName(System.getName());
-	Logger.forName();
-})(JSmarty.System, JSmarty.Logger);
+})(JSmarty.System);

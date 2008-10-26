@@ -3,13 +3,16 @@
  */
 JSmarty.Logger =
 {
-	dict : {},
-	console : {},
-	lookup : function(method){
-		return (this.dict[method] || method);
-	},
-	invoke: function(method){
-		return (this.console[this.lookup(method)] || JSmarty.$function);
+	/**
+	 * @param {String} level 
+	 * @return {Function}
+	 * @sample
+	 * JSmarty.Logger.invoke('info', 'Hello World!!');
+	 */
+	invoke : function(verbose)
+	{
+		this.forName();
+		return this.invoke(verbose);
 	},
 	/**
 	 * setup for LoggerObject
@@ -17,6 +20,23 @@ JSmarty.Logger =
 	 */
 	forName : function()
 	{
+		var mapping = {};
+		var console = JSmarty.Plugin['util.global']().console || {};
+
+		switch(true)
+		{
+			// firefox with firebug
+			case (!!console.firebug):
+				mapping = {info: "log"};
+				break;
+			default:
+				break;
+		};
+
+		this.invoke = function(verbose){
+			return (console[mapping[verbose] || verbose] || JSmarty.$function)
+		};
+
 		this.forName = JSmarty.$function;
 	}
 };
