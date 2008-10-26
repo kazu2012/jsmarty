@@ -49,6 +49,7 @@
 		<mkdir dir="${dist}" />
 		<yuic verbose="off" srcDir="${lib}" destDir="${tmp}/lib" />
 		<copy toDir="${tmp}/samples"><fileset dir="samples" /></copy>
+		<delete file="${tmp}/lib/JSmartyc.js" />
 		<zip basedir="Temp" destFile="${dist}/JSmarty-${version}.zip" />
 		<tar basedir="Temp" destFile="${dist}/JSmarty-${version}.tar.gz" compression="gzip" />
 		<delete dir="Temp" />
