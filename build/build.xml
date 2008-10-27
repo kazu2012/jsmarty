@@ -2,7 +2,7 @@
 <project name="JSmarty" default="default" basedir="../">
 
 	<!-- Properties -->
-	<property name="version" value="0.5.2" />
+	<property name="version" value="0.5.3" />
 	<property name="lib" value="lib" />
 	<property name="tmp" value="Temp/JSmarty" />
 	<property name="dist" value="dist" />
