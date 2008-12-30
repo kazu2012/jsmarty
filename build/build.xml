@@ -2,7 +2,7 @@
 <project name="JSmarty" default="default" basedir="../">
 
 	<!-- Properties -->
-	<property name="version" value="0.5.3" />
+	<property name="version" value="0.5.3.1" />
 	<property name="lib" value="lib" />
 	<property name="tmp" value="Temp/JSmarty" />
 	<property name="dist" value="dist" />
@@ -48,7 +48,7 @@
 		<mkdir dir="${tmp}" />
 		<mkdir dir="${dist}" />
 		<yuic verbose="off" srcDir="${lib}" destDir="${tmp}/lib" />
-		<copy toDir="${tmp}/samples"><fileset dir="samples" /></copy>
+		<copy toDir="${tmp}/docs"><fileset dir="docs" /></copy>
 		<delete file="${tmp}/lib/JSmartyc.js" />
 		<zip basedir="Temp" destFile="${dist}/JSmarty-${version}.zip" />
 		<tar basedir="Temp" destFile="${dist}/JSmarty-${version}.tar.gz" compression="gzip" />
