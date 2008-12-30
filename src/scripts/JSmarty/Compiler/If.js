@@ -25,7 +25,7 @@ JSmarty.Compiler.If = JSmarty.Classes.create(JSmarty.Compiler.Module,
 		var iap = this.get('iap'), op = this.OPERATORS;
 		var i, f, c, s = this.text.slice(this.iap).split('');
 
-		outerloop:
+		outerloopif:
 		for(i=0,f=s.length;i<=f;i++)
 		{
 			switch(s[i])
@@ -50,7 +50,7 @@ JSmarty.Compiler.If = JSmarty.Classes.create(JSmarty.Compiler.Module,
 					break;
 				case '|':
 					s.splice(i);
-					break outerloop;
+					break outerloopif;
 			};
 		};
 
